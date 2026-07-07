@@ -659,7 +659,221 @@ correctly sourced in `avalanche_danger_map_presets()`).
 
 ---
 
-## 16. Reference: key files to study in the source codebases
+## 16. Phase 4: Config classification manifest
+
+Phase 4 (classify config; reconcile machine-name/path exceptions; strip
+dead `snowobs`/`avyobs` entries) is complete. Worked from the actual
+active config on both reference sites (834 files on Gulmarg, 824 on
+Argentina) rather than re-deriving §5's summary from memory, which
+surfaced several corrections and a few genuinely new findings — this
+phase earned its "biggest effort" billing. **This section documents
+classification decisions; Phase 5 does the actual file copying.**
+
+### Corrections to §5
+
+- **All 9 taxonomy vocabularies are identical on both sites** and
+  structural, not just `region` and the glossary vocab as originally
+  written: `avalanche_terms`, `class_type`, `conditions_alerts`,
+  `gallery_collections`, `newsletter`, `page_category`, `region`,
+  `sponsor_level`, `tags`.
+- **Field-set parity check across all 17 "identical" node types** (to
+  catch hidden per-type divergence the way `fwp`'s field_collection setup
+  first looked divergent — see below): only `advisory` actually differs,
+  by exactly one field, `field_overall_danger_rose` (Gulmarg has it,
+  Argentina doesn't). Traced its usage: it's **not dead** — both sites'
+  shared `responsive_sac/templates/node--advisory.tpl.php` (byte-identical
+  on both sites) unconditionally calls
+  `field_view_field('node', $node, 'field_overall_danger_rose', ...)` at
+  two points, and `gulmarg_modern`'s (→ `avalanche_modern`'s)
+  `advisory-node-form.tpl.php` deliberately demotes it to a collapsed
+  "Other fields (optional)" `$legacy_fields` section rather than removing
+  it — a supported legacy field, not cruft. **Decision: fold into the
+  canonical `advisory` bundle as structural** — Argentina's advisory pages
+  are currently silently missing this display element (querying a
+  nonexistent field returns nothing, no error); the distribution actually
+  fixes that gap once Argentina migrates onto it (Phase 8).
+- **`fwp` (Field Work Plan) is identical on both sites**, 13 fields
+  including 4 `field_collection` fields (`field_destination_and_route`,
+  `field_trip_members`, `field_vehicle_location_and_infor`,
+  `field_responsible_party`) plus a nested field_collection
+  (`field_emergency_contact`, attached both to `field_trip_members` items
+  and directly to `user.user`). An initial name-only grep undercounted
+  Gulmarg's fields and made this look divergent; the full field lists are
+  identical. `field_collection` is already in `avalanche_center.info`'s
+  dependencies from Phase 1 — no action needed beyond confirming Phase 5
+  exports the field_collection_item bundle config alongside `fwp`'s.
+
+### New discovery: dead config from disabled modules (exclude entirely)
+
+Both sites' `system.extensions.json` show **Commerce and its ~15-20
+submodules, and the `registration` module and its submodules, fully
+disabled** (`false`) — yet their field/view config is still sitting in
+active config, unshipped-cruft-style, same pattern as the `snowobs`/
+`avyobs` permission strings but not previously noticed:
+
+- All `field.field.commerce_*` / `field.instance.commerce_*` /
+  `field.instance.*.commerce_discount*` etc. — dead, exclude.
+- `views.view.donations.json` ("Donation Views") — dead, exclude.
+- `views.view.attendees.json` (`base_table: registration`) — dead, exclude.
+- `views.view.snowmobile_classes.json` and the
+  `field.instance.*.registration.snowmobile_class` field — dead
+  (registration-module-dependent), exclude.
+- `views.view.ski_days.json` — fields include `field_price` and
+  `field_buy_tickets_link` (paid-event ticketing tied to the same disabled
+  commerce stack) — exclude.
+
+### New discovery: legacy pre-Leaflet danger-map views (exclude entirely)
+
+`gulmarg_danger_map.module`'s own docblock says it replaces "D7
+OpenLayers map" — the old OpenLayers-based Views are still sitting in
+active config, unused since the Leaflet-based custom module (now
+genericized as `avalanche_danger_map`) took over and queries the database
+directly rather than through Views:
+
+- `views.view.danger_rating_map.json`,
+  `views.view.danger_rating_map_ol_data_overlay.json` (Gulmarg),
+  `views.view.ol_data_overlay_danger_ratings_.json` (Argentina's
+  differently-named equivalent), `views.view.oldata.json` (Gulmarg) — all
+  exclude.
+
+### New discovery: other dead/personal views (exclude entirely)
+
+- `views.view.clone_of_advisory_views.json` — human name literally "Clone
+  of Advisory Views," duplicate of the real `advisory_views` — exclude.
+- `views.view.andy_fwp.json` — human name "Andy FWP," a personal filtered
+  view for one named staff member — exclude.
+
+### Views needing behavioral reconciliation, not just a keep/exclude call
+
+- **`views.view.observations.json`** (structural, per §5): 5 of its
+  displays (`page_1`, `page_2`, `7_day_obs`, `page_4`, `page_5`) filter
+  `type` on `{avyobs, observation, snowobs}`. Strip the two dead keys,
+  keep `observation`.
+- **`views.view.Avalanche_LIst.json`** ("Avalanche List" — "list of
+  reported avalanches"): on **both** sites, all 4 displays
+  (`default`, `page_1`, `views_data_export_1`, `views_data_export_2`)
+  filter `type` on `avyobs`/`snowobs` **only** — unlike `observations`,
+  there's no live `observation` entry alongside the dead ones. Shipping
+  this "as-is minus the dead strings" would ship a view that returns zero
+  rows forever. But the feature itself is fully reconstructible: the
+  unified `observation` type has a
+  `field_is_this_an_avalanche_obser` field (present, same name, on both
+  sites) that is exactly the boolean distinguishing an avalanche
+  observation from a general snow observation. **Recommendation: Phase 5
+  should rewrite this view's `type` filter to
+  `type = observation` plus a value filter on
+  `field_is_this_an_avalanche_obser = Yes`, reviving the feature instead
+  of either shipping it broken or deleting it.** Flagging rather than just
+  doing it — this changes behavior, not just removes cruft, so it's worth
+  a second look before Phase 5 executes it.
+
+### Role permission cleanup — bigger than previously documented
+
+§5/CLAUDE.md previously said only `user.role.7.json`
+(Forecaster)/`user.role.9.json` (Program_manager) carry dead
+`snowobs`/`avyobs` permission strings. Checked all 12 roles on both
+sites — **9 of 12 are affected**, not 2:
+
+| Role (same id/label both sites) | Dead perms |
+|---|---|
+| Administrator (3) | 16 |
+| Admin (4) | 2 |
+| Board_admin (5) | 10 |
+| Board_member (6) | 0 (clean) |
+| Forecaster (7) | 14 |
+| Observer (8) | 12 |
+| Program_manager (9) | 4 |
+| Guide-educator (10) | 6 |
+| administrator (core) | 0 (clean) |
+| anonymous | 4 |
+| authenticated | 8 |
+| editor (core) | 0 (clean) |
+
+Role machine-names and labels match exactly between Gulmarg and
+Argentina, so Phase 5 can strip the same permission-string set uniformly
+across both sites' role exports.
+
+### Family-level classification rules
+
+**Structural (ship as-is), inherited from parent bundle:**
+`field.field.*`, `field.instance.*`, `field.bundle.*`,
+`field_group.field_group.*` — structural when attached to one of the 22
+canonical node types or the 9 canonical vocabularies; excluded when
+attached to an excluded bundle (`nws_snow_observation`, the leftover
+Gulmarg `test` type, or any of the dead commerce/registration bundles
+above).
+
+**Structural (core/module defaults, not site content):**
+`image.style.*` (all 13 — the 4 named in §5 plus 9 standard core image
+styles), `file.type.*` (all 5), `filter.format.*` (all 8),
+`taxonomy.vocabulary.*` (all 9, corrected above), `views.settings`,
+`views_ui.settings`, and the standard Backdrop/Views-module default views
+(`admin_views_node`, `node_admin_content`, `user_admin`, `file_admin`,
+`comments_recent`, `taxonomy_term`, `promoted`, `rules_scheduler`).
+
+**Structural (tied to canonical content types):** `views.view.advisory_views`,
+`views.view.observations` (post-strip), `views.view.Avalanche_LIst`
+(post-reconstruction, see above), `views.view.banner_ads`,
+`views.view.Education`, `views.view.events_upcoming`,
+`views.view.field_work_plans`, `views.view.home_announcements`,
+`views.view.image_library`, `views.view.media_gallery`,
+`views.view.newsletter_articles`, `views.view.obs_by_author`,
+`views.view.recent_content`, `views.view.week_in_review_views`,
+`views.view.considerable_sponsors` ("Sponsors" — generic sponsor
+listing, name is a red herring), `views.view.promoted_cards` (Gulmarg —
+ties to the folded-in `card` type), `views.view.incidents` /
+`views.view.All_Incidents` / `views.view.incidents_dump` (all filter
+`type = observation`, i.e. incident-tagged observations, not a separate
+content type — legitimate specialized admin/display views on canonical
+content), `views.view.forecaster_tools` ("Tools for the annual report"),
+`views.view.modify_content`, `views.view.advisory_dump`,
+`views.view.advisory_board` (ties to `people`; human name says "People of
+**SAC**" — genericize this description string during export),
+`views.view.email_subscribers`. `metatag.instance.*` (all — global,
+403/404, frontpage, node default, node.advisory, node.observation,
+taxonomy_term, user, view — **except** strip the `fb:app_id` key
+specifically from `metatag.instance.node.advisory.json`, per §5).
+`layout.layout.default/node/admin_default` (standard scaffolding).
+`menu.menu.main-menu/user-menu/management/navigation` (the 4 core
+Backdrop menus).
+
+**Site-specific (do not ship), family-wide:**
+- `block.custom.*` — **all of it, on both sites** (spot-checked all 23
+  Gulmarg titles: things like "Sierra Avalanche Center Newsletter", "Test
+  donor form", "FS shield", "Disclaimer - Site owned by Non-Profit",
+  "Scholarships" — every one is authored, center-specific content, not
+  reusable structure).
+- `layout.layout.home` / `layout.layout.dashboard` (Gulmarg has both,
+  Argentina neither — each center's homepage block arrangement is exactly
+  the kind of thing that should be set up per-center, not shipped).
+- `menu.menu.menu-responsive-links` / `features` / `menu-contact` /
+  `menu-doormat-menu` / `menu-archives` / `menu-about` — Gulmarg-specific
+  site navigation structure, not core menus.
+- Confirmed site-specific among the `*.settings` singletons:
+  `gulmarg_modern.settings.json` / `responsive_sac.settings.json` (theme
+  settings storage — matches §5's existing "all theme settings" rule
+  exactly) and, newly confirmed by reading the file,
+  `simplenews.settings.json` (`from_address` and `from_name` are literally
+  `Gulmarg Avalanche Center`-specific, not a generic default).
+
+**Verified safe, no secrets present:** spot-checked `geocoder.settings`
+and `leaflet_more_maps.settings` (both have every API-key field blank) —
+safe to ship as generic empty defaults rather than needing exclusion for
+credential-leak reasons.
+
+### Still needs a closer look before Phase 5 executes the export
+
+This phase covered the highest-value/highest-risk ground (the parts most
+likely to hide bugs or leak site identity) but didn't individually audit
+every one of the ~29 remaining `*.settings` singletons for a stray
+site-specific value the way `simplenews.settings` turned out to have one
+— Phase 5 should spot-check each on both sites before copying, not just
+trust the "probably a generic module default" assumption this section
+made for time's sake.
+
+---
+
+## 17. Reference: key files to study in the source codebases
 
 - Theme settings GUI: `themes/argentina_modern/theme-settings.php`
 - Shared settings schema: `themes/argentina_modern/argentina_modern.info`

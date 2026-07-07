@@ -37,23 +37,33 @@ applying the equivalent fixes to the live Gulmarg/Argentina sites.
 ## Environment
 - DDEV for local; this repo will get its own DDEV project for the
   greenfield demo install (Phase 7).
-- Current phase: 4 (classify config; reconcile machine-name/path exceptions;
-  strip dead snowobs/avyobs entries from role/view config). Phase 1 done:
-  repo skeleton scaffolded; structural node-type list corrected from 2 to 22
-  types (independently re-verified against node.type.*.json on both sites);
-  NAC level-0 grey set to `#939598`. Phase 2 done: avalanche_modern merged
-  from gulmarg_modern (renamed, t()-wrapped, canonical NAC colors applied);
-  responsive_sac/responsive_bartik copied with vestigial/instance-specific
-  files stripped — a post-Phase-3 double-check found this pass had been
+- Current phase: 5 (export structural config into
+  profiles/avalanche_center/config/, per Phase 4's classification).
+  Phase 1 done: repo skeleton scaffolded; structural node-type list
+  corrected from 2 to 22 types (independently re-verified against
+  node.type.*.json on both sites); NAC level-0 grey set to `#939598`.
+  Phase 2 done: avalanche_modern merged from gulmarg_modern (renamed,
+  t()-wrapped, canonical NAC colors applied); responsive_sac/
+  responsive_bartik copied with vestigial/instance-specific files
+  stripped — a post-Phase-3 double-check found this pass had been
   interrupted mid-way (battery died) and missed a whole separate body of
   work on responsive_sac's larger advisory templates/inc file; that's now
   fixed (see §14's "Phase 2 remediation" addendum). Phase 3 done:
   avalanche_danger_map (config-driven NAC/SAC presets, PHP-8
-  hook_menu_alter fix, luminance-based legend contrast replacing fragile CSS
-  nth-child assumptions), avalanche_glossary (single /avalanche-terms path,
-  no language fork), avalanche_social_meta (fallback logo filename now
-  config, not hardcoded) genericized under modules/. See
-  AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §13-15 for the full logs.
+  hook_menu_alter fix, fixed black/white text rule for legend + popup —
+  white only on level 5 "Extreme" — replacing an earlier computed-contrast
+  approach), avalanche_glossary (single /avalanche-terms path, no language
+  fork), avalanche_social_meta (fallback logo filename now config, not
+  hardcoded) genericized under modules/; map popup later got NAPADS danger
+  icons + a No-Rating travel-advice message (see
+  PORTING_DANGER_MAP_UPDATES.md to carry these back to the live sites).
+  Phase 4 done: full config classification against the actual ~1,650
+  active config files on both sites (not just §5's summary) — corrected
+  the role-permission-cleanup scope from 2 roles to 9 of 12, found dead
+  config from fully-disabled Commerce/registration modules and legacy
+  pre-Leaflet OpenLayers danger-map views that need excluding, and a
+  reconstructable (not just deletable) `Avalanche_LIst` view. See
+  AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §13-16 for the full logs.
 
 ## Conventions
 - Machine names must match Gulmarg's existing field/vocab names.
