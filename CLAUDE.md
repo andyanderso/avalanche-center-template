@@ -3,7 +3,9 @@
 Backdrop CMS distribution merging two near-identical avalanche center
 sites (Argentina + Gulmarg) into one generic installable profile.
 Full spec: AVALANCHE_CENTER_DISTRIBUTION_PLAN.md — read it before
-any structural work.
+any structural work. PORTING_DANGER_MAP_UPDATES.md documents the
+avalanche_danger_map map/popup UI changes as a manual checklist for
+applying the equivalent fixes to the live Gulmarg/Argentina sites.
 
 ## Reference codebases (READ-ONLY — never edit these)
 - Gulmarg (canonical baseline): ~/Siesta_Solutions/Gulmarg/backdrop/gulmarg-backdrop/
