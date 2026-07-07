@@ -595,6 +595,39 @@ beyond straightforward renaming:
   from Phase 2 (`avalanche_modern_danger_colors()`) exactly — no more of the
   two-independent-copies divergence flagged in §6.
 
+### Map-popup icon addition (post-Phase-3)
+
+Added danger-level icons to the map popups (`avalanche_danger_map.js`/`.css`)
+alongside the existing color-coded rating and travel advice, using resources
+from the NAC's public repo
+(https://github.com/NationalAvalancheCenter/north-american-public-avalanche-danger-scale).
+That repo also holds the full danger-scale definition graphics and travel-
+advice-only tables (not used here — our travel-advice text is already
+correctly sourced in `avalanche_danger_map_presets()`).
+
+- **Vendored the 6 SVG icons** ("With number" style: levels 1-5, plus the
+  "Standard" No-Rating icon for level 0, which has no numbered variant) into
+  `modules/avalanche_danger_map/icons/level-{0-5}.svg`. Verified by
+  rendering them (via headless Chrome) that their baked-in colors match our
+  canonical NAC palette exactly. **Note**: the upstream repo has no LICENSE
+  file; its README frames it as intended for avalanche centers to reuse, but
+  this wasn't independently confirmed with NAC before vendoring — worth
+  following up if redistribution terms matter for a given deployment (see
+  `icons/SOURCE.md`).
+- **Found and fixed a pre-existing contrast bug while testing the popup
+  visually**: the rating badge's text color was hardcoded white
+  (`.danger-map-popup-rating { color: #fff }`), unlike the legend (which
+  already used `avalanche_danger_map_contrast_color()` from the Phase 3
+  work). Level 2 (bright yellow) with white text was nearly unreadable.
+  Region data now carries a `text_color` field computed the same way as the
+  legend, and the popup's inline style uses it (with `text-shadow`
+  conditionally dropped for dark text, matching the legend's approach).
+  Confirmed via an actual headless-Chrome screenshot, not just code review.
+- Icon markup uses `height: 30px; width: auto` rather than fixed
+  width+height — the six icons have different natural aspect ratios (levels
+  0-2 are ~1:1, levels 4-5 widen to ~1.39:1 as more triangles stack in the
+  design), so a fixed box would visibly stretch/squash some of them.
+
 ---
 
 ## 16. Reference: key files to study in the source codebases

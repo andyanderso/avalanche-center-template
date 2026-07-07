@@ -36,13 +36,22 @@
   font-size: 1em;
   font-weight: bold;
 }
+.danger-map-popup-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.danger-map-popup-icon {
+  flex: none;
+  height: 30px;
+  width: auto;
+}
 .danger-map-popup-rating {
+  flex: 1;
   padding: 4px 8px;
   border-radius: 3px;
-  color: #fff;
   font-size: 0.95em;
-  margin-bottom: 8px;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
 .danger-map-popup-advice {
   font-size: 0.9em;

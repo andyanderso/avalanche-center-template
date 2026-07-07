@@ -52,9 +52,18 @@
 
           var popupHtml = '<div class="danger-map-popup">' +
             '<h4>' + region.name + '</h4>' +
-            '<div class="danger-map-popup-rating" style="background:' + region.color + ';">' +
+            '<div class="danger-map-popup-header">';
+
+          if (region.icon_url) {
+            popupHtml += '<img class="danger-map-popup-icon" src="' + region.icon_url + '" alt="">';
+          }
+
+          var textColor = region.text_color || '#fff';
+          var textShadow = textColor === '#fff' ? '0 1px 2px rgba(0,0,0,0.5)' : 'none';
+          popupHtml += '<div class="danger-map-popup-rating" style="background:' + region.color + ';color:' + textColor + ';text-shadow:' + textShadow + ';">' +
               Backdrop.t('Danger Rating:') + ' <strong>' + region.label + '</strong>' +
-            '</div>';
+            '</div>' +
+          '</div>';
 
           if (region.travel_advice) {
             popupHtml += '<div class="danger-map-popup-advice">' +
