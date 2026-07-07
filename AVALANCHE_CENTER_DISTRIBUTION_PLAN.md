@@ -628,6 +628,35 @@ correctly sourced in `avalanche_danger_map_presets()`).
   0-2 are ~1:1, levels 4-5 widen to ~1.39:1 as more triangles stack in the
   design), so a fixed box would visibly stretch/squash some of them.
 
+### Popup/legend redesign (post-Phase-3, second round)
+
+- **Replaced the computed-luminance contrast rule with a fixed one, in both
+  the legend and the popup**: white text on level 5 ("Extreme") only, black
+  everywhere else. `avalanche_danger_map_contrast_color()` (the luminance
+  function from the note above) is gone — it had a single remaining caller
+  (the legend) once the popup switched to the fixed rule, and its own
+  output didn't actually agree with the fixed rule on levels 3 and 5 (it
+  put dark text on level 3's orange and light text was already right on 5,
+  but a mockup built to demo the fixed rule got those two backwards by hand
+  and only then was the real inconsistency between the two approaches
+  caught). One rule, used in both places now, is simpler and matches what
+  the shipped colors actually need.
+- **Popup rating badge reformatted**: dropped `text-shadow`; text is now
+  two lines, `LEVEL - LABEL` (bold, uppercase) over an `Avalanche Danger`
+  caption, replacing the single-line "Danger Rating: **1 - Low**" string.
+- **Level 0 ("No Rating") gets real travel advice**: "Insufficient data
+  exists to issue a danger rating." with an inline "Get more information"
+  link to the region's most recent advisory when `advisory_url` is
+  available (falls back to plain text otherwise); the separate bottom
+  "Read Full Advisory" link is suppressed for level 0 so the same link
+  isn't shown twice.
+- **Defensive borders added to both the legend segments and the popup
+  rating badge**: level 5's near-black fill has no inherent edge, so on a
+  dark surrounding background it can blend in completely. Doesn't affect
+  the shipped light-themed site, but it's a one-line, no-downside fix,
+  caught by actually rendering the components rather than only reading the
+  CSS.
+
 ---
 
 ## 16. Reference: key files to study in the source codebases

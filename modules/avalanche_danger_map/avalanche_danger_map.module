@@ -360,34 +360,6 @@ function avalanche_danger_map_icon_url($level) {
 }
 
 /**
- * Picks a readable text color ('#fff' or '#333') for a given background hex.
- *
- * Colors are config-driven (per-preset, and overridable), so a fixed set of
- * CSS positional rules (e.g. ":nth-child(2)") can't reliably keep text
- * legible across presets — a color that needs light text in one preset can
- * land in the same position as a color that needs dark text in another.
- * Compute contrast from the actual color instead.
- *
- * @param string $hex
- *   A "#rrggbb" color.
- *
- * @return string
- *   '#333' for light backgrounds, '#fff' for dark ones.
- */
-function avalanche_danger_map_contrast_color($hex) {
-  $hex = ltrim($hex, '#');
-  if (strlen($hex) !== 6) {
-    return '#fff';
-  }
-  $r = hexdec(substr($hex, 0, 2));
-  $g = hexdec(substr($hex, 2, 2));
-  $b = hexdec(substr($hex, 4, 2));
-  // Relative luminance (ITU-R BT.601).
-  $luminance = (0.299 * $r + 0.587 * $g + 0.114 * $b) / 255;
-  return $luminance > 0.6 ? '#333' : '#fff';
-}
-
-/**
  * Returns an HTML danger rating legend using the active preset's colors.
  */
 function avalanche_danger_map_legend() {
@@ -398,7 +370,10 @@ function avalanche_danger_map_legend() {
   $items = '';
   foreach ($labels as $level => $label) {
     $color = isset($colors[$level]) ? $colors[$level] : $colors[0];
-    $text_color = avalanche_danger_map_contrast_color($color);
+    // Fixed rule rather than computed contrast, matching the popup's
+    // rating badge: level 5 ("Extreme") is the one level dark enough to
+    // need white text; every other level gets black.
+    $text_color = ((int) $level === 5) ? '#fff' : '#000';
     $items .= '<span class="legend-item" style="background:' . check_plain($color) . ';color:' . $text_color . ';">' . check_plain($label) . '</span>';
   }
 

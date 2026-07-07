@@ -10,18 +10,16 @@ colors, labels, travel advice, and legend link are config-driven via
 read from `map_center_lat` / `map_center_lng` / `map_zoom`.
 
 Includes the PHP 8 `hook_menu_alter()` node-title-callback fix (originally
-Argentina-only; now the shared default). Legend text color is computed from
-each color's luminance rather than assumed by CSS position, so it stays
-legible regardless of which preset (or override) is active.
+Argentina-only; now the shared default). Legend and popup text color both
+use the same fixed rule — white on level 5 ("Extreme"), black everywhere
+else — rather than computed contrast, since those are the only two colors
+dark/light enough in the shipped presets to need it.
 
 Map popups show the region's NAPADS danger-level icon (`icons/level-0.svg`
 through `level-5.svg`, vendored from the National Avalanche Center's public
 danger-scale repo — see `icons/SOURCE.md`) alongside the color-coded rating
-(level label + "Avalanche Danger" caption) and travel advice text. The
-popup's rating-badge text color is a fixed rule rather than computed
-contrast — white on level 5 ("Extreme"), black everywhere else — since
-those are the only two colors dark/light enough in the shipped presets to
-need it. Level 0 ("No Rating") gets its own travel advice text pointing to
-the region's most recent advisory, if one exists.
+(level label + "Avalanche Danger" caption) and travel advice text. Level 0
+("No Rating") gets its own travel advice text pointing to the region's most
+recent advisory, if one exists.
 
 See `AVALANCHE_CENTER_DISTRIBUTION_PLAN.md` §6, §13, §15.
