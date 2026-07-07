@@ -56,7 +56,17 @@
   flex: 1;
   padding: 4px 8px;
   border-radius: 3px;
-  font-size: 0.95em;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+.danger-map-popup-rating-level {
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 1.05em;
+}
+.danger-map-popup-rating-caption {
+  font-size: 0.8em;
 }
 .danger-map-popup-advice {
   font-size: 0.9em;

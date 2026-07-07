@@ -460,16 +460,32 @@ function avalanche_danger_map_get_data() {
     $danger_rating = $advisory_info['rating'];
     $advisory_url = $advisory_info['url'];
 
+    // Level 0 ("No Rating") gets its own travel advice pointing back to
+    // whatever advisory is available, rather than the presets' blank string.
+    if ($danger_rating === 0) {
+      $region_travel_advice = t('Insufficient data exists to issue a danger rating.');
+      if (!empty($advisory_url)) {
+        $region_travel_advice .= ' <a href="' . check_url($advisory_url) . '">' . t('Get more information') . '</a>.';
+      }
+    }
+    else {
+      $region_travel_advice = isset($travel_advice[$danger_rating]) ? $travel_advice[$danger_rating] : '';
+    }
+
     $result[] = array(
       'tid' => $region->tid,
       'name' => $region->name,
       'geojson' => $geojson,
       'danger_rating' => $danger_rating,
       'color' => isset($colors[$danger_rating]) ? $colors[$danger_rating] : $colors[0],
-      'text_color' => avalanche_danger_map_contrast_color(isset($colors[$danger_rating]) ? $colors[$danger_rating] : $colors[0]),
+      // Fixed rule rather than computed contrast: level 5 ("Extreme") is the
+      // one level dark enough to need white text; every other level gets
+      // black. Assumes level 5 stays the darkest color if a center overrides
+      // the palette via config.
+      'text_color' => ($danger_rating === 5) ? '#fff' : '#000',
       'label' => isset($labels[$danger_rating]) ? $labels[$danger_rating] : $labels[0],
       'icon_url' => avalanche_danger_map_icon_url($danger_rating),
-      'travel_advice' => isset($travel_advice[$danger_rating]) ? $travel_advice[$danger_rating] : '',
+      'travel_advice' => $region_travel_advice,
       'advisory_url' => $advisory_url,
       'expired' => !empty($advisory_info['expired']),
     );

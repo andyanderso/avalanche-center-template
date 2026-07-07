@@ -58,10 +58,10 @@
             popupHtml += '<img class="danger-map-popup-icon" src="' + region.icon_url + '" alt="">';
           }
 
-          var textColor = region.text_color || '#fff';
-          var textShadow = textColor === '#fff' ? '0 1px 2px rgba(0,0,0,0.5)' : 'none';
-          popupHtml += '<div class="danger-map-popup-rating" style="background:' + region.color + ';color:' + textColor + ';text-shadow:' + textShadow + ';">' +
-              Backdrop.t('Danger Rating:') + ' <strong>' + region.label + '</strong>' +
+          var textColor = region.text_color || '#000';
+          popupHtml += '<div class="danger-map-popup-rating" style="background:' + region.color + ';color:' + textColor + ';">' +
+              '<span class="danger-map-popup-rating-level">' + region.label.toUpperCase() + '</span>' +
+              '<span class="danger-map-popup-rating-caption">' + Backdrop.t('Avalanche Danger') + '</span>' +
             '</div>' +
           '</div>';
 
@@ -71,7 +71,10 @@
             '</div>';
           }
 
-          if (region.advisory_url) {
+          // Level 0's travel advice already links to the same advisory_url
+          // inline ("Get more information"), so skip the redundant link
+          // below it.
+          if (region.advisory_url && region.danger_rating !== 0) {
             var linkText = region.expired ? Backdrop.t('Get more information') : Backdrop.t('Read Full Advisory');
             popupHtml += '<div class="danger-map-popup-link">' +
               '<a href="' + region.advisory_url + '">' + linkText + ' &raquo;</a>' +
