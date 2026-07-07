@@ -1,0 +1,551 @@
+/**
+ * Avalanche Center Modern - avalanche forecast.
+ * Faithful reproduction of the avalanche.org / NAC forecast widget (Sierra
+ * Avalanche Center). Class names and values mirror the NAC component CSS.
+ */
+
+.am-forecast {
+  --primary: #0b5fa5;
+  font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: #27282a;
+  line-height: 1.6;
+}
+.am-forecast .nac-h1,
+.am-forecast .nac-h2,
+.am-forecast .nac-h3,
+.am-forecast .nac-h4,
+.am-forecast .nac-h5,
+.am-forecast .nac-h6 {
+  font-family: 'Lato', sans-serif;
+  color: #27282a;
+  margin: 0 0 .5rem;
+  line-height: 1.2;
+}
+.am-forecast .nac-h1 { font-size: 2rem; font-weight: 900; }
+.am-forecast .nac-h2 { font-size: 1.6rem; font-weight: 900; }
+.am-forecast .nac-h3 { font-size: 1.3rem; font-weight: 700; }
+.am-forecast .nac-h4 { font-size: 1.1rem; font-weight: 700; }
+.am-forecast .nac-h5 { font-size: 1rem; font-weight: 700; }
+.am-forecast .nac-h6 { font-size: .8rem; font-weight: 700; }
+.am-forecast .nac-row { display: flex; flex-wrap: wrap; }
+.am-forecast .nac-d-none { display: none !important; }
+.am-forecast .nac-d-inline { display: inline; }
+.am-forecast .nac-text-center { text-align: center; }
+.am-forecast .nac-icon { display: inline-block; width: 1em; height: 1em; vertical-align: -0.125em; }
+
+/* Title + region */
+.am-forecast .nac-forecast-title .nac-h1 { margin-bottom: .5rem; }
+.am-forecast .nac-region-row { display: flex; align-items: center; gap: .35rem; margin-bottom: 1rem; }
+.am-forecast .nac-region-pin { color: #515558; font-size: 1.5rem; }
+.am-forecast .nac-region-name { color: #515558; margin: 0; }
+
+/* Expired forecast banner */
+.am-forecast .nac-expired-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+  background: #fff3cd;
+  border: 1px solid #ffe69c;
+  color: #664d03;
+  border-radius: 6px;
+  padding: .75rem 1rem;
+  margin-bottom: 1.5rem;
+  font-size: .95rem;
+  line-height: 1.5;
+}
+.am-forecast .nac-expired-banner .nac-icon { color: #997404; font-size: 1.3rem; flex-shrink: 0; margin-top: .1rem; }
+.am-forecast .nac-expired-banner a { color: #664d03; font-weight: 700; text-decoration: underline; white-space: nowrap; }
+
+/* Header meta */
+.am-forecast .nac-header { display: flex; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.am-forecast .nac-header-meta {
+  flex: 1 1 200px;
+  border-left: 1.5px solid #e0e2e5;
+  padding: .5rem 0 .5rem 2rem;
+}
+.am-forecast .nac-header-meta:first-child { border-left: 0; padding-left: 0; }
+.am-forecast .nac-header-meta .nac-h6 {
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  color: #797d80;
+  margin: 0 0 .15rem;
+}
+
+/* Card */
+.am-forecast .nac-card {
+  background: #fff;
+  border: 1px solid #e8ecee;
+  border-radius: .25rem;
+  box-shadow: 0 1px 2px rgba(157, 162, 165, .35);
+}
+
+/* Bottom line */
+.am-forecast .nac-bottom-line { position: relative; margin-top: 3rem; margin-bottom: 2rem; overflow: visible; }
+.am-forecast .nac-bottom-line .nac-card-body { padding: 2rem; }
+.am-forecast .nac-bottom-line-icon { position: absolute; top: -25px; left: -15px; height: 60px; width: auto; }
+.am-forecast .nac-bottom-line-icon img { height: 60px; width: auto; max-width: none; display: block; }
+.am-forecast .nac-bottom-line-title {
+  display: inline-block;
+  border-bottom: 1px solid #c8cace;
+  padding-bottom: .1rem;
+  font-weight: 900;
+  font-size: 1rem;
+  margin: 0;
+}
+.am-forecast .nac-bottom-line-text { font-size: 1.2rem; margin-top: .7rem; }
+.am-forecast .nac-bottom-line-text p:last-child { margin-bottom: 0; }
+
+/* Tabs */
+.am-forecast .nac-nav-tabs { display: flex; list-style: none; padding: 0 .5rem; margin: 1rem 0 0; }
+.am-forecast .nac-nav-item { list-style: none; margin: 0; }
+.am-forecast .nac-nav-link {
+  text-decoration: none;
+  color: #797d80;
+  font-weight: 700;
+  font-size: 90%;
+  white-space: nowrap;
+  border-bottom: 3px solid transparent;
+  padding: .5rem 1rem;
+  display: inline-block;
+}
+.am-forecast .nac-nav-link:hover { color: var(--primary); text-decoration: none; }
+.am-forecast .nac-nav-link.active { color: var(--primary); border-bottom: 3px solid var(--primary); }
+
+/* Content panel */
+.am-forecast .nac-content-panel { border-radius: .25rem; }
+.am-forecast .nac-content-panel > .nac-card-body { padding: 2rem 1rem 0; }
+
+/* Divider sections */
+.am-forecast .nac-divider { border-top: 1px solid #e0e2e5; padding-top: 1.5rem; margin-top: 1.5rem; margin-bottom: 1.5rem; }
+
+/* ---------- Avalanche danger ---------- */
+.am-forecast .nac-danger { margin-bottom: 1.5rem; }
+.am-forecast .nac-dangerToday { flex: 0 0 100%; max-width: 100%; margin-bottom: 1rem; }
+.am-forecast .nac-dangerDate { font-weight: 700; margin-bottom: 1rem; }
+.am-forecast .nac-dangerGraphic { position: relative; }
+.am-forecast .nac-elevationBlock {
+  position: relative;
+  background-color: #e8ecee;
+  height: 90px;
+  margin-right: 45px;
+  margin-bottom: 5px;
+  font-size: .8rem;
+}
+.am-forecast .nac-elevationLabel {
+  position: absolute; z-index: 1; left: 15px; top: 50%;
+  transform: translateY(-50%);
+  display: block; font-size: .8rem; font-weight: 700;
+  color: #797d80; background-color: #fff;
+  padding: .1rem .3rem; border-radius: .15rem;
+}
+.am-forecast .nac-dangerLabel {
+  position: absolute; right: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 30%; display: block; font-weight: 700; z-index: 1; font-size: 1.1rem;
+}
+.am-forecast .nac-dangerIcon {
+  position: absolute; left: 100%; height: 50px; width: auto;
+  top: 50%; transform: translate(-50%, -50%); z-index: 1;
+}
+.am-forecast .nac-dangerIcon img { height: 50px; width: auto; max-width: none; display: block; }
+.am-forecast #nac-dangerGraphicToday { position: absolute; top: 0; bottom: 0; left: 20%; width: auto; }
+.am-forecast #nac-dangerGraphicToday svg { height: 100%; width: auto; }
+.am-forecast .am-dangerGraphic-svg path { stroke-linejoin: round; }
+
+/* Danger scale */
+.am-forecast .nac-dangerScale { font-size: .8rem; margin-top: 1.5rem; }
+.am-forecast .nac-dangerScale-row { display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
+.am-forecast .nac-dangerScale-head { flex: 0 0 auto; }
+.am-forecast .nac-dangerScale-ratings { flex: 1 1 460px; display: flex; gap: 6px; }
+.am-forecast .nac-dangerScale-rating { flex: 1; }
+.am-forecast .nac-dangerScale-rating .nac-text-center { padding: .5rem 2px 0; }
+.am-forecast .nac-dangerScale-expand { text-align: center; margin-top: 1.5rem; }
+.am-forecast .nac-btn {
+  display: inline-flex; align-items: center; gap: .35rem;
+  border: 0; border-radius: .25rem; padding: .55rem 1.1rem;
+  font-weight: 700; font-size: .9rem; line-height: 1; cursor: pointer;
+  text-decoration: none;
+}
+.am-forecast .nac-btn-primary { background: var(--primary); color: #fff; }
+.am-forecast .nac-btn-primary:hover { background: #094f8a; color: #fff; text-decoration: none; }
+
+/* ---------- Avalanche problem ---------- */
+.am-forecast .nac-problem { overflow: hidden; margin-bottom: 1.5rem; padding-top: 1rem; }
+.am-forecast .nac-problem .nac-h3 { margin-bottom: 1rem; }
+.am-forecast .nac-infoGraphics { display: flex; flex-wrap: wrap; }
+.am-forecast .nac-problem-column { flex: 0 0 50%; max-width: 50%; text-align: center; margin-bottom: 1rem; }
+.am-forecast .nac-infoGraphics .nac-h5 {
+  display: inline-block;
+  border-bottom: 1px solid #c8cace;
+  padding-bottom: .3rem;
+  margin-bottom: 1rem;
+}
+.am-forecast .nac-problemIcon { height: 170px; width: 170px; margin: 20px 15px 10px; }
+.am-forecast .nac-problemText { font-weight: 700; }
+
+/* Octagon rose */
+.am-forecast .nac-rose { width: 190px; margin-left: auto; margin-right: auto; }
+.am-forecast .nac-roseContainer { margin: 20px 20px 80px; position: relative; height: 150px; width: 150px; }
+.am-forecast .nac-aspectMarker { position: absolute; transform: translate(-50%, -50%); font-size: .7rem; font-weight: 700; margin: 0; }
+.am-forecast .nac-north { left: 50%; top: -10px; }
+.am-forecast .nac-south { left: 50%; top: 160px; }
+.am-forecast .nac-east { top: 50%; left: 160px; }
+.am-forecast .nac-west { top: 50%; left: -10px; }
+.am-forecast .nac-northwest { left: 13px; top: 13px; }
+.am-forecast .nac-northeast { left: 137px; top: 13px; }
+.am-forecast .nac-southeast { left: 137px; top: 137px; }
+.am-forecast .nac-southwest { left: 13px; top: 137px; }
+.am-forecast .nac-roseContainer .nac-elevationMarker { position: absolute; height: 90px; width: 1px; background-color: #797d80; }
+.am-forecast .nac-roseContainer .nac-elevationMarker:before { content: ""; position: absolute; width: 4px; height: 4px; border-radius: 50%; background-color: #797d80; left: -1.5px; top: 0; }
+.am-forecast .nac-roseContainer .nac-elevationMarkerUpper { left: 63px; top: 87px; }
+.am-forecast .nac-roseContainer .nac-elevationMarkerMiddle { left: 49.5px; top: 100.5px; }
+.am-forecast .nac-roseContainer .nac-elevationMarkerLower { left: 34.5px; top: 115.5px; }
+.am-forecast .nac-roseContainer .nac-elevationLabel { position: absolute; font-size: .7rem; transform: translateY(-30%); padding-left: .3rem; margin: 0; width: 180px; text-align: left; overflow: hidden; white-space: nowrap; background: none; color: #27282a; border-radius: 0; }
+.am-forecast .nac-roseContainer .nac-elevationLabelUpper { left: 63px; top: 177px; }
+.am-forecast .nac-roseContainer .nac-elevationLabelMiddle { left: 49.5px; top: 191.25px; }
+.am-forecast .nac-roseContainer .nac-elevationLabelLower { left: 34.5px; top: 205.5px; }
+.am-forecast .nac-rose-svg { height: 150px; width: 150px; }
+
+/* Vertical likelihood / size sliders */
+.am-forecast .nac-problemSlider { position: relative; margin: 0 auto 40px; padding: .5rem; width: 8rem; height: 200px; }
+.am-forecast .nac-rail { height: 100%; background-color: #9aa0a4; width: 1px; position: relative; top: 0; left: 15px; }
+.am-forecast .nac-step { position: absolute; background-color: #9aa0a4; width: 20px; height: 1px; left: -10px !important; }
+.am-forecast .nac-process { position: absolute; border: 2px solid #515558; background-color: #c8cace; width: 20px !important; left: -10px; transform: translateY(-1px); }
+.am-forecast .nac-label { position: absolute; font-size: 14px; line-height: 1; text-transform: capitalize; text-align: left; color: #a8aaac; width: 8rem; left: 20px; transform: translateY(6px); }
+.am-forecast .nac-label.active { font-weight: 700; color: #1e2326; }
+
+/* TinyMCE body text */
+.am-forecast .nac-tinymce { line-height: 1.65; }
+.am-forecast .nac-tinymce p { margin: 0 0 1rem; }
+.am-forecast .nac-tinymce a { color: var(--primary); }
+.am-forecast .nac-tinymce img { max-width: 100%; height: auto; }
+
+/* Disclaimer */
+.am-forecast .nac-disclaimer { padding: 3rem 0; font-size: .8rem; text-align: center; color: #515558; }
+
+/* ---------- Responsive ---------- */
+@media (min-width: 992px) {
+  .am-forecast .nac-problem-column { flex: 0 0 25%; max-width: 25%; }
+}
+@media (max-width: 575.98px) {
+  .am-forecast .nac-rose { width: 160px; }
+  .am-forecast .nac-roseContainer { margin-bottom: 55px; }
+  .am-forecast .nac-dangerLabel { font-size: 1rem; width: 40%; }
+}
+
+/* ==========================================================================
+   Advisory add/edit form — styled to mirror the published advisory layout.
+   ========================================================================== */
+.am-forecast-form {
+  max-width: var(--am-maxw);
+  margin: 1.5rem auto;
+  padding: 0 1rem;
+  font-family: var(--am-font-body);
+  color: var(--am-ink);
+}
+.am-forecast-form .nac-h2,
+.am-forecast-form .nac-h3,
+.am-forecast-form .nac-h5 {
+  font-family: var(--am-font-head);
+  color: var(--am-ink);
+  line-height: 1.2;
+  margin: 0 0 1rem;
+}
+.am-forecast-form .nac-h2 { font-size: 1.5rem; font-weight: 900; }
+.am-forecast-form .nac-h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; }
+.am-forecast-form .nac-h5 {
+  font-size: .8rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .04em; color: var(--am-ink-soft); margin-bottom: .5rem;
+}
+
+/* Card sections */
+.am-forecast-form .nac-form-card {
+  background: var(--am-surface);
+  border: 1px solid var(--am-line);
+  border-radius: var(--am-radius);
+  box-shadow: var(--am-shadow-sm);
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.am-forecast-form .nac-form-hint {
+  margin: -.5rem 0 1rem;
+  color: var(--am-muted);
+  font-size: .9rem;
+}
+
+/* Grids */
+.am-forecast-form .nac-form-grid { display: grid; gap: 1.25rem; }
+.am-forecast-form .nac-form-grid-3 { grid-template-columns: repeat(3, 1fr); }
+.am-forecast-form .nac-form-grid-4 { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 880px) {
+  .am-forecast-form .nac-form-grid-3,
+  .am-forecast-form .nac-form-grid-4 { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 560px) {
+  .am-forecast-form .nac-form-grid-3,
+  .am-forecast-form .nac-form-grid-4 { grid-template-columns: 1fr; }
+}
+
+/* The Bottom Line — emphasised, accent left border like the published card */
+.am-forecast-form .nac-form-bottom-line {
+  border-left: 6px solid var(--am-accent);
+}
+.am-forecast-form .nac-form-overall { max-width: 320px; margin-bottom: 1rem; }
+
+/* Danger-by-elevation bands */
+.am-forecast-form .nac-form-band {
+  border: 1px solid var(--am-line);
+  border-radius: var(--am-radius-sm);
+  padding: 1rem;
+  background: var(--am-bg);
+}
+
+/* Avalanche problem blocks */
+.am-forecast-form .nac-form-problem {
+  border: 1px solid var(--am-line);
+  border-radius: var(--am-radius-sm);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  background: var(--am-bg);
+}
+.am-forecast-form .nac-form-problem:last-child { margin-bottom: 0; }
+.am-forecast-form .nac-form-problem .nac-h3 {
+  padding-bottom: .5rem;
+  border-bottom: 2px solid var(--am-line);
+}
+.am-forecast-form .nac-form-problem-desc { margin-top: 1rem; }
+
+/* Form control look-and-feel */
+.am-forecast-form label,
+.am-forecast-form .form-item label {
+  font-weight: 600;
+  color: var(--am-ink);
+}
+.am-forecast-form .form-item { margin: 0 0 .75rem; }
+.am-forecast-form input.form-text,
+.am-forecast-form input.form-number,
+.am-forecast-form select,
+.am-forecast-form textarea {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--am-line);
+  border-radius: var(--am-radius-sm);
+  padding: .5rem .65rem;
+  font: inherit;
+  background: #fff;
+  color: var(--am-ink);
+}
+.am-forecast-form input.form-number { width: auto; min-width: 6rem; }
+.am-forecast-form input.form-text:focus,
+.am-forecast-form select:focus,
+.am-forecast-form textarea:focus {
+  outline: none;
+  border-color: var(--am-primary);
+  box-shadow: 0 0 0 3px rgba(11, 95, 165, 0.15);
+}
+.am-forecast-form .description {
+  font-size: .8rem;
+  color: var(--am-muted);
+}
+
+/* Detailed-weather (collapsed) + trailing system fields */
+.am-forecast-form .nac-form-advanced > summary {
+  cursor: pointer;
+  font-family: var(--am-font-head);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--am-ink);
+}
+.am-forecast-form .nac-form-advanced-body {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: .5rem 1.5rem;
+}
+@media (max-width: 560px) {
+  .am-forecast-form .nac-form-advanced-body { grid-template-columns: 1fr; }
+}
+
+/* Save / Preview action bar */
+.am-forecast-form .nac-form-tail .form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+  padding: 1.25rem;
+  margin-top: .5rem;
+  background: var(--am-surface);
+  border: 1px solid var(--am-line);
+  border-radius: var(--am-radius);
+  box-shadow: var(--am-shadow-sm);
+}
+.am-forecast-form .nac-form-tail .form-submit {
+  background: var(--am-primary);
+  color: #fff;
+  border: 0;
+  border-radius: var(--am-radius-sm);
+  padding: .6rem 1.4rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.am-forecast-form .nac-form-tail .form-submit:hover { background: var(--am-primary-dark); }
+.am-forecast-form .nac-form-tail .form-submit#edit-preview,
+.am-forecast-form .nac-form-tail .form-submit[id*="delete"] {
+  background: #fff;
+  color: var(--am-ink);
+  border: 1px solid var(--am-line);
+}
+
+/* ==========================================================================
+   Detailed weather: current conditions + two-day forecast tables.
+   Shared by the published advisory (.am-forecast) and the edit form
+   (.am-forecast-form).
+   ========================================================================== */
+.am-forecast .nac-wx-block,
+.am-forecast-form .nac-wx-block { margin-top: 1.5rem; }
+.am-forecast .nac-wx-subtitle,
+.am-forecast-form .nac-wx-subtitle {
+  font-family: var(--am-font-head);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--am-ink);
+  margin: 0 0 .65rem;
+}
+.am-forecast .nac-wx-subtitle a,
+.am-forecast-form .nac-wx-subtitle a { color: var(--am-primary); }
+.am-forecast .nac-wx-band-label,
+.am-forecast-form .nac-wx-band-label {
+  font-weight: 700;
+  color: var(--am-ink-soft);
+  margin: 1rem 0 .4rem;
+}
+.am-forecast .nac-wx-table,
+.am-forecast-form .nac-wx-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: .75rem;
+  font-size: .95rem;
+  background: var(--am-surface);
+  border: 1px solid var(--am-line);
+  border-radius: var(--am-radius-sm);
+  overflow: hidden;
+}
+.am-forecast .nac-wx-table th,
+.am-forecast .nac-wx-table td,
+.am-forecast-form .nac-wx-table th,
+.am-forecast-form .nac-wx-table td {
+  padding: .5rem .7rem;
+  border-bottom: 1px solid var(--am-line);
+  text-align: left;
+  vertical-align: top;
+}
+.am-forecast .nac-wx-table tr:last-child th,
+.am-forecast .nac-wx-table tr:last-child td,
+.am-forecast-form .nac-wx-table tr:last-child th,
+.am-forecast-form .nac-wx-table tr:last-child td { border-bottom: 0; }
+/* The global "#content table th" rule (an ID selector) styles all content
+   tables dark; override it here, scoped to the advisory weather tables only. */
+.am-forecast .nac-wx-table thead th,
+.am-forecast-form .nac-wx-table thead th {
+  background: #e0e2e5 !important;
+  color: var(--am-ink) !important;
+  border: 1px solid #fff !important;
+  font-weight: 700;
+  text-align: center;
+}
+.am-forecast .nac-wx-table th[scope="row"],
+.am-forecast-form .nac-wx-table th[scope="row"] {
+  background: #e0e2e5 !important;
+  color: var(--am-ink) !important;
+  border: 1px solid #fff !important;
+  font-weight: 700;
+  width: 40%;
+}
+.am-forecast .nac-wx-forecast td,
+.am-forecast-form .nac-wx-forecast td { text-align: center; }
+.am-forecast .nac-wx-forecast th[scope="row"],
+.am-forecast-form .nac-wx-forecast th[scope="row"] { width: 22%; }
+@media (max-width: 560px) {
+  .am-forecast .nac-wx-table,
+  .am-forecast-form .nac-wx-table { font-size: .85rem; }
+  .am-forecast .nac-wx-table th,
+  .am-forecast .nac-wx-table td,
+  .am-forecast-form .nac-wx-table th,
+  .am-forecast-form .nac-wx-table td { padding: .4rem .45rem; }
+}
+/* In the edit form, weather inputs sit inside table cells. */
+.am-forecast-form .nac-wx-table .form-item { margin: 0; }
+.am-forecast-form .nac-wx-table input.form-text,
+.am-forecast-form .nac-wx-table textarea { min-width: 0; }
+.am-forecast-form .nac-wx-table .form-textarea-wrapper textarea { min-height: 3rem; }
+.am-forecast .nac-wx-unit,
+.am-forecast-form .nac-wx-unit { color: var(--am-muted); font-size: .85em; white-space: nowrap; }
+.am-forecast-form .nac-form-newsletter { margin-top: 1rem; max-width: 420px; }
+
+/* ==========================================================================
+   Advisory form: danger-by-elevation (stacked dropdowns + mountain graphic),
+   collapsible detailed-weather group, newsletter / bulletin placement.
+   ========================================================================== */
+.am-forecast-form .nac-form-danger-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 1.5rem;
+  align-items: stretch;
+  max-width: 680px;
+}
+.am-forecast-form .nac-form-pyramid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.am-forecast-form .nac-form-pyramid svg {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+}
+.am-forecast-form .nac-form-band-rows {
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  gap: .75rem;
+}
+.am-forecast-form .nac-form-band-row {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 86px;
+  border: 1px solid var(--am-line);
+  border-radius: var(--am-radius-sm);
+  padding: .65rem .9rem;
+  background: var(--am-bg);
+}
+.am-forecast-form .nac-form-band-row .nac-h5 { margin-bottom: .35rem; }
+.am-forecast-form .nac-form-band-row .form-item { margin: 0; }
+@media (max-width: 560px) {
+  .am-forecast-form .nac-form-danger-layout { grid-template-columns: 96px 1fr; gap: .75rem; }
+  .am-forecast-form .nac-form-band-row { min-height: 72px; }
+}
+
+/* Collapsible detailed-weather group */
+.am-forecast-form .nac-form-wx-details {
+  margin-top: 1.25rem;
+  border: 1px solid var(--am-line);
+  border-radius: var(--am-radius-sm);
+  background: var(--am-bg);
+  padding: 0 1rem 1rem;
+}
+.am-forecast-form .nac-form-wx-details > summary {
+  cursor: pointer;
+  font-family: var(--am-font-head);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--am-ink);
+  padding: .85rem .25rem;
+  list-style-position: inside;
+}
+.am-forecast-form .nac-form-wx-details[open] > summary { border-bottom: 1px solid var(--am-line); margin-bottom: 1rem; }
+
+/* Special-bulletin toggle in the meta card + bottom newsletter card */
+.am-forecast-form .nac-form-bulletin { margin-top: 1rem; }
+.am-forecast-form .nac-form-newsletter-card { max-width: 520px; }

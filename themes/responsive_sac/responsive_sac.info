@@ -1,0 +1,101 @@
+type = theme
+name = responsive_sac
+description = Subtheme for Bartik which adds nice drop-down menus.
+backdrop = 1.x
+base theme = responsive_bartik
+version = 1.x-1.x
+
+stylesheets[all][] = css/colors.css
+
+stylesheets[all][] = css/responsive_sac.css
+stylesheets[all][] = css/responsive_sac_breakpoints.css
+stylesheets[all][] = css/responsive_sac_advisory.css
+stylesheets[all][] = css/responsive_sac_main_menu.css
+stylesheets[all][] = css/responsive_sac_sponsors.css
+stylesheets[all][] = css/responsive_sac_banner_ads.css
+stylesheets[all][] = css/responsive_sac_obs.css
+stylesheets[all][] = css/responsive_sac_donate.css
+stylesheets[all][] = css/responsive_sac_home.css
+stylesheets[all][] = css/responsive_sac_beauty_tips.css
+stylesheets[all][] = css/responsive_sac_events_announcements.css
+stylesheets[all][] = css/responsive_sac_fwp.css
+stylesheets[all][] = css/responsive_sac_footer.css
+stylesheets[all][] = css/responsive_sac_centered_header.css
+
+stylesheets[print][] = css/responsive_sac-print.css
+
+scripts[] = js/megamenu_keepinview.js
+
+regions[banner] = Banner
+regions[header] = Header
+regions[header_middle] = Header middle
+regions[help] = Help
+regions[page_top] = Page top
+regions[page_bottom] = Page bottom
+regions[highlighted] = Highlighted
+regions[megamenu] = Megamenu
+
+regions[featured] = Featured
+regions[content] = Content
+regions[side_decor] = Side decor
+regions[sidebar_first] = Sidebar first
+regions[sidebar_second] = Sidebar second
+
+regions[triptych_first] = Triptych first
+regions[triptych_middle] = Triptych middle
+regions[triptych_last] = Triptych last
+
+regions[footer_firstcolumn] = Footer first column
+regions[footer_secondcolumn] = Footer second column
+regions[footer_thirdcolumn] = Footer third column
+regions[footer_fourthcolumn] = Footer fourth column
+regions[footer_fifthcolumn] = Footer fifth column
+regions[footer] = Footer
+
+fonts[google_fonts_api][] = "PT Sans&subset=latin-ext#700"
+fonts[google_fonts_api][] = "PT Sans Caption&subset=latin-ext#700"
+fonts[google_fonts_api][] = "PT Sans Caption&subset=latin-ext#regular"
+fonts[google_fonts_api][] = "PT Sans Narrow&subset=latin-ext#700"
+fonts[google_fonts_api][] = "PT Sans Narrow&subset=latin-ext#regular"
+fonts[google_fonts_api][] = "PT Sans&subset=latin-ext#regular"
+
+; All defaults below are neutral English/NAC placeholders — every center
+; overrides them via theme settings or the install-profile "Center setup" form.
+settings[email_url] = /email-subscriptions
+settings[facebook_url] =
+settings[twitter_url] =
+settings[youtube_url] =
+settings[instagram_url] =
+settings[upper_elevation_band] = Above Treeline
+settings[middle_elevation_band] = Near Treeline
+settings[lower_elevation_band] = Below Treeline
+settings[enable_danger_rose_view] = 0
+settings[local_nws_name] =
+settings[local_nws_url] =
+settings[wx_elevation_low] =
+settings[wx_elevation_high] =
+settings[current_wx_conditions_desc] = Weather observations from local stations.
+settings[show_forecast_region] = 0
+settings[wx_map_page] = /weather-station-map
+settings[wx_table_page] = /weather-stations
+settings[obs_page] = /observations
+settings[submit_snowpack_obs_page] = /node/add/observation
+settings[submit_avalanche_obs_page] = /node/add/observation
+; No default header/email background image is shipped (a generic distribution
+; can't ship any one center's photography) — blank until a center configures
+; its own via theme settings.
+settings[email_header_img] =
+settings[backgroung_header_img] =
+settings[forecaster_name_field] = field_first_name
+settings[map_first] = 0
+
+; Header site name / slogan visibility (standard Backdrop toggle settings).
+; Neutral default: show the site name until a center configures its own logo.
+settings[toggle_name] = 1
+settings[toggle_slogan] = 0
+; No default logo is shipped (a generic distribution can't ship any one
+; center's brand) — leave the logo hidden until a center enables and uploads
+; its own via theme settings.
+settings[toggle_logo] = 0
+
+

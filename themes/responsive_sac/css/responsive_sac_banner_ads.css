@@ -1,0 +1,24 @@
+div#views_slideshow_cycle_teaser_section_banner_ads-block_2 {
+   width:728px;
+}
+
+div#block-views-banner-ads-block-2 {
+   /*position: relative; 
+   float: left;
+*/ 
+   overflow: hidden; 
+   width: 100%; 
+   text-align:center;
+}
+div#block-views-banner-ads-block-2 .views-field-body {
+    background: none repeat scroll 0 0 #ffffff;
+    }
+
+div#block-views-banner-ads-block-2 .views-field-body img{
+    vertical-align:middle;
+    max-width:100%;
+    }
+
+.banner img {
+    max-width:100%;
+}

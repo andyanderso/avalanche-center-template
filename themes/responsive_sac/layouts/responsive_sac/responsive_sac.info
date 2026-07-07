@@ -1,0 +1,30 @@
+type = layout
+name = Responsive SAC
+description = Custom layout for an avalanche center with all site regions.
+backdrop = 1.x
+version = 1.x-1.0
+
+; The default region automatically receives the Main Content block if needed.
+default region = content
+
+; Specify regions for this layout.
+regions[banner]              = Banner
+regions[header]              = Header
+regions[header_middle]       = Header Middle
+regions[help]                = Help
+regions[highlighted]         = Highlighted
+regions[megamenu]            = Megamenu
+regions[featured]            = Featured
+regions[content]             = Content
+regions[side_decor]          = Side Decor
+regions[sidebar_first]       = Sidebar First
+regions[sidebar_second]      = Sidebar Second
+regions[triptych_first]      = Triptych First
+regions[triptych_middle]     = Triptych Middle
+regions[triptych_last]       = Triptych Last
+regions[footer_firstcolumn]  = Footer First Column
+regions[footer_secondcolumn] = Footer Second Column
+regions[footer_thirdcolumn]  = Footer Third Column
+regions[footer_fourthcolumn] = Footer Fourth Column
+regions[footer_fifthcolumn]  = Footer Fifth Column
+regions[footer]              = Footer

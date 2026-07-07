@@ -1,0 +1,70 @@
+<script type="text/javascript">
+   // http://www.quirksmode.org/js/cookies.html
+   function readCookie(name) {
+     var nameEQ = name + "=";
+     var ca = document.cookie.split(';');
+     for(var i=0;i < ca.length;i++) {
+       var c = ca[i];
+       while (c.charAt(0)==' ') c = c.substring(1,c.length);
+       if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+     }
+     return null;
+   }
+   
+   function setCookie(val) {
+     document.cookie = 'avyviewpref' + '=' + val + ';expires=Wed, 1 May 2013 00:00:00 GMT';
+   }
+   
+   function initCookie() {
+     var c = readCookie('avyviewpref');
+     if (c == null) { setCookie("#simple"); }
+   }
+   
+   function toggleCookie() {
+     initCookie();
+     var c = readCookie('avyviewpref');
+     if (c == '#advanced') { setCookie('#simple'); }
+     else { setCookie('#advanced'); }
+   }
+   
+   (function($) {
+     initCookie();
+     if (window.location.hash == '') {
+       window.location.hash = readCookie('avyviewpref');
+     }
+     if (window.location.hash == '#advanced') {
+       $('div#advanced-rose').show();
+       $('div#simple-rose').hide();
+       $('div#avalanche-danger-row.advanced').show();
+       $('div#avalanche-danger-row.simple').hide();
+       $('div#elevation-ratings-div.simple').hide();
+       $('div#bottom-line-basic.simple').hide();
+       $('div#basic-danger-bar.simple').hide();
+       $('a#standard-link').show();
+       setCookie('#advanced');
+     } else {
+       $('div#advanced-rose').hide();
+       $('div#avalanche-danger-row.advanced').hide();
+       $('div#avalanche-danger-row.simple').show();
+       $('div#elevation-ratings-div.simple').show();
+       $('div#bottom-line-basic.simple').show();
+       $('div#basic-danger-bar.simple').show();
+       $('div#simple-rose').show();
+       $('a#advanced-link').show();
+       setCookie('#simple');
+     }
+     $("a.toggle-advisory").click(function() {
+       toggleCookie();
+       $("a.toggle-advisory").show();
+       $(this).hide();
+       $('div#advanced-rose').toggle();
+       $('div#avalanche-danger-row.simple').toggle();
+       $('div#elevation-ratings-div.simple').toggle();
+       $('div#bottom-line-basic.simple').toggle();
+       $('div#basic-danger-bar.simple').toggle();
+       $('div#simple-rose').toggle();
+       $('div#avalanche-danger-row.advanced').toggle();
+     });
+   })(jQuery);
+</script>
+

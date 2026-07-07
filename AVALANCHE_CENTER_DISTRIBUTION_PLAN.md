@@ -410,7 +410,53 @@ Phase 1 (repo skeleton + canonical baseline) is complete. Decisions made:
 
 ---
 
-## 14. Reference: key files to study in the source codebases
+## 14. Phase 2 decisions log
+
+Phase 2 (genericize themes) is complete. `avalanche_modern` was merged from
+`gulmarg_modern` (function/class prefixes, `t()`-wrapped labels and ~80
+hardcoded UI strings in `node--advisory.tpl.php`/`advisory-node-form.tpl.php`,
+canonical NAC colors from §6/§13 applied to `avalanche_modern_danger_colors()`).
+`responsive_sac` and `responsive_bartik` were copied over with branding
+(`logo.png`, `responsive_sac_sponsors.css`) and vestigial/non-portable files
+stripped rather than adapted. Notable findings beyond straightforward renaming:
+
+- **Vestigial `snowobs`/`avyobs` node-form templates and their `hook_theme()`
+  registrations** (`avyobs_node_form`, `snowobs_node_form` in
+  `responsive_sac/template.php`) were dropped, not just the templates —
+  leaving the registration in place would have pointed at template files
+  that no longer exist. Stale `/node/add/snowobs`/`/node/add/avyobs` example
+  text in `theme-settings.php`'s form descriptions was also updated to
+  `/node/add/observation`.
+- **Instance-specific dead files identified and excluded**, not shipped:
+  `page--node--5950.tpl.php` (hardcoded to one site's database node ID),
+  `simplenews-newsletter-body--16.tpl.php` / `--108.tpl.php` /
+  `rose-simplenews-newsletter-body--16.tpl.php` (Simplenews' `--[tid]`
+  convention keys these to one site's auto-assigned taxonomy term ID, which
+  won't match a fresh install), `page--old.tpl.php` (confirmed orphaned).
+  The `views-view-row-rss--advisory-views--feed-1/2/3.tpl.php` templates
+  were *kept* despite the similar-looking numeric suffix — that suffix is a
+  Views *display machine name* on the structural `advisory_views` view, not
+  a per-site data ID, so it's portable.
+- **One real bug fix carried over from Argentina's copy, not a language
+  difference**: `responsive_bartik/templates/block--menu.tpl.php` guards
+  `$title_attributes` with `isset()` before use; Gulmarg's unguarded version
+  can throw a PHP notice. Also applied the same defensive-guard pattern
+  Argentina used in `node--advisory.tpl.php` for `$classes`/`$attributes`.
+- **A theme-settings bug was introduced and then fixed during this phase**:
+  `backgroung_header_img` / a center's header background image is stored as
+  a Backdrop file ID (fid), not a path string. `page--advisory.tpl.php` and
+  `page--snowpack-summary.tpl.php` called
+  `file_create_url(file_load(theme_get_setting(...))->uri)` unconditionally;
+  blanking the setting's shipped default (correct — no fid is portable
+  across installs) meant `file_load('')` returns `FALSE` and `FALSE->uri`
+  fatals. Both templates now guard the fid/file-load result before
+  dereferencing `->uri`, falling back to an empty background.
+- Dropped `img/gulmarg-light.png` from `responsive_sac` — confirmed
+  unreferenced anywhere in the theme, a dead asset.
+
+---
+
+## 15. Reference: key files to study in the source codebases
 
 - Theme settings GUI: `themes/argentina_modern/theme-settings.php`
 - Shared settings schema: `themes/argentina_modern/argentina_modern.info`

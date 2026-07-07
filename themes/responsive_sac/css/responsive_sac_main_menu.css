@@ -1,0 +1,288 @@
+div#main-menu  {
+  float: right;
+  padding-top: 5px;
+  margin-right: 2px;
+  white-space: nowrap;
+  position: relative;
+  /*top: 3px;*/
+}
+div#main-menu-right{
+    float: right;
+    margin-bottom: -40px;
+    margin-right: 2px;
+    padding-top: 5px;
+    position: relative;
+    text-align: center;
+    top: -33px;
+    white-space: nowrap;
+    z-index:500;
+}
+
+div#main-menu-search{
+  float: right !important;
+}
+div#main-menu div#main-menu-right img.logo {
+  float: left;  
+  margin-right: 10px;
+}
+
+div#main-menu div#main-menu-right img.logo.first {
+  margin-left: 15px;
+  margin-right: 10px;
+}
+
+div#main-menu div#main-menu-right form#search-form {
+  margin: 0px;
+  padding: 0px;
+  float: left;
+}
+
+form.search-form {
+  margin-bottom: 0px;
+}
+
+
+div#main-menu div#main-menu-right form#search-form label { display: none; }
+div#main-menu div#main-menu-right form#search-form input.form-text {
+    position: relative;
+    top: -3px;
+    width: 90px;
+}
+body.page-search div#main-menu-right { display: none; }
+/* MENU */
+
+.tb-megamenu{
+    background:#333333;
+    color:#ce4141;
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-weight:bold;
+    text-transform:uppercase;
+    font-size:20px;
+    height:30px;
+}
+
+.dropdown-menu {
+    background:#454545 !important;
+    color:#ffffff !important;
+}
+
+.tb-megamenu .dropdown-menu a {
+color: #fff !important;
+font-size: 14px !important;
+text-transform: capitalize !important;
+font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+}
+
+.donate-menu a { 
+background-color: #CE4141 !important;
+color:#fff  !important;
+}
+.donate-menu a:hover { 
+color:#fff  !important;
+text-decoration:underline !important;
+}
+
+.ski-day-menu a { 
+background-color:#FFFF00 !important;
+color:#000  !important;
+}
+.ski-day-menu a:hover { 
+color:#000  !important;
+text-decoration:underline !important;
+}
+
+.tb-megamenu .nav > .active > a, .tb-megamenu .nav > .active > a:hover, .tb-megamenu .nav > .active > a:focus {
+    background:#000;
+}
+
+.tb-megamenu .nav li.dropdown.active > .dropdown-toggle {
+background:#000;
+}
+.tb-megamenu .nav li.dropdown.open.active > .dropdown-toggle, .tb-megamenu .nav > li.dropdown.open.active > a:hover, .tb-megamenu .nav li.dropdown.open > .dropdown-toggle{
+background:#454545;
+}
+
+.tb-megamenu .nav > li > a:focus, .tb-megamenu .nav > li > a:hover {
+    background:#333333;
+}
+
+.tb-megamenu .dropdown-menu .active > a, .tb-megamenu .dropdown-menu .active > a:hover {
+background:#454545 !important;
+}
+
+.tb-megamenu a:hover {
+    text-decoration:underline !important;
+    color: #CE4141;
+}
+
+.dropdown-menu a:hover {
+    color: #CE4141 !important;
+}
+
+div.mega-dropdown-inner h2,
+.tb-megamenu .mega-dropdown-inner h2,
+.tb-megamenu .dropdown-menu h2,
+.tb-megamenu .dropdown-menu .block-title {
+    color: #fff !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    background: #454545 !important;
+    margin: 0 0 6px !important;
+    padding: 4px 8px !important;
+    border: 0 !important;
+    letter-spacing: 0.5px;
+}
+
+.tb-megamenu .btn-navbar {
+    color:#000000;
+    font-size:18px;
+}
+/* Advisory, Obs, Donate Buttons on Mobile*/
+
+#block-menu-menu-responsive-links {
+    background:#333333;
+    color:#ce4141;
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-weight:bold;
+    text-transform:uppercase;
+    font-size:14px;
+    padding-top: 5px;
+    white-space: nowrap;
+    position: relative;
+    width:auto;
+    float:right;
+    top: 46px;
+    z-index: 1000;
+    border:none;
+}
+
+#block-menu-menu-responsive-links ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+#block-menu-menu-responsive-links li {
+    float: left;
+    margin:0;
+}
+
+#block-menu-menu-responsive-links li a {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    border-right: 1px solid #222;
+    border-top: 0px;
+    border-left:0px;
+    border-bottom:0px;
+    color: #fff;
+    padding: 19px 12px;
+    background-color: #333333;
+}
+
+#block-menu-menu-responsive-links li a:hover {
+    background-color: #111111;
+    text-decoration:underline;
+    color: #CE4141;
+}
+
+#block-menu-menu-responsive-links li.last a { 
+background-color: #CE4141 !important;
+color:#fff  !important;
+}
+
+/* ==========================================================================
+   Mobile quick links — D7-style float approach.
+   Uses the higher-specificity `#header .block` selector to beat the plain
+   `#header .block-menu-menu-responsive-links` rules in responsive_sac.css
+   that shrink the links to small grey text.
+   ========================================================================== */
+#header .block-menu-menu-responsive-links {
+    background: #333333 !important;
+    color: #ce4141 !important;
+    font-family: 'Barlow Semi Condensed', sans-serif !important;
+    font-weight: bold !important;
+    text-transform: uppercase !important;
+    font-size: 14px !important;
+    padding-top: 5px !important;
+    white-space: nowrap !important;
+    position: relative !important;
+    width: auto !important;
+    float: right !important;
+    top: 46px !important;
+    z-index: 1000 !important;
+    border: none !important;
+}
+#header .block-menu-menu-responsive-links h2 { display: none !important; }
+#header .block-menu-menu-responsive-links ul.menu {
+    list-style-type: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+#header .block-menu-menu-responsive-links ul.menu li {
+    display: block !important;
+    float: left !important;
+    margin: 0 !important;
+}
+#header .block-menu-menu-responsive-links ul.menu li a {
+    display: block !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    border-right: 1px solid #222 !important;
+    border-top: 0 !important;
+    border-left: 0 !important;
+    border-bottom: 0 !important;
+    color: #fff !important;
+    font-size: 14px !important;
+    padding: 19px 12px !important;
+    background-color: #333333 !important;
+}
+#header .block-menu-menu-responsive-links ul.menu li a:hover {
+    background-color: #111111 !important;
+    text-decoration: underline !important;
+    color: #CE4141 !important;
+}
+#header .block-menu-menu-responsive-links ul.menu li.last a {
+    background-color: #CE4141 !important;
+    color: #fff !important;
+}
+#header .block-menu-menu-responsive-links ul.menu li.last a:hover {
+    background-color: #b53636 !important;
+    color: #fff !important;
+}
+
+@media screen and (min-width: 980px) {
+    #header .block-menu-menu-responsive-links {
+        display: none !important;
+    }
+}
+@media screen and (max-width: 320px) {
+    #header .block-menu-menu-responsive-links {
+        top: 0 !important;
+    }
+}
+
+/* ==========================================================================
+   Hamburger menu z-index — appears above Leaflet map on homepage.
+   Give the header a stacking context above Leaflet (800), then put the
+   expanded nav-collapse above that.
+   ========================================================================== */
+#header {
+    position: relative;
+    z-index: 600;
+}
+
+/* TB Megamenu expanded drawer on mobile */
+.tb-megamenu .nav-collapse.in {
+    position: relative;
+    z-index: 1200;
+}
+
+/* Clamp Leaflet control containers below the header and menus.
+   Leaflet controls default to z-index 800. Setting them to 490 keeps them
+   below our header (1100) and expanded menus (1200) in both themes. */
+.leaflet-top,
+.leaflet-bottom { z-index: 490 !important; }

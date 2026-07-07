@@ -34,10 +34,14 @@ any structural work.
 ## Environment
 - DDEV for local; this repo will get its own DDEV project for the
   greenfield demo install (Phase 7).
-- Current phase: 2 (genericize themes). Phase 1 done: repo skeleton
-  scaffolded (profiles/avalanche_center/, modules/, themes/); structural
-  node-type list corrected from 2 to 22 types; NAC level-0 grey set to
-  `#939598`. See AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §13 for the full log.
+- Current phase: 3 (genericize modules: avalanche_danger_map,
+  avalanche_glossary, avalanche_social_meta). Phase 1 done: repo skeleton
+  scaffolded; structural node-type list corrected from 2 to 22 types; NAC
+  level-0 grey set to `#939598`. Phase 2 done: avalanche_modern merged from
+  gulmarg_modern (renamed, t()-wrapped, canonical NAC colors applied);
+  responsive_sac/responsive_bartik copied with vestigial/instance-specific
+  files stripped. See AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §13-14 for the
+  full logs.
 
 ## Conventions
 - Machine names must match Gulmarg's existing field/vocab names.
