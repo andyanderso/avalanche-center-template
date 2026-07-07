@@ -3,8 +3,87 @@
  * @file
  * Install-time hooks for the Avalanche Center distribution.
  *
- * hook_install() (write Center-setup form values into
- * avalanche_center.settings config + theme settings; structural config
- * auto-imports from config/ via config_install_default_config()) lands in
- * Phase 6 — see AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §9.
+ * Structural config (profiles/avalanche_center/config/) auto-imports from
+ * this profile's config/ directory via Backdrop's own
+ * config_install_default_config() as part of normal profile installation -
+ * nothing here needs to trigger that explicitly.
  */
+
+/**
+ * Implements hook_install().
+ *
+ * Runs during profile installation, before the "Center setup" form
+ * (avalanche_center.profile's hook_install_tasks()) is ever shown - so it
+ * has no access to center-specific values a user hasn't entered yet. This
+ * only seeds sane fallback defaults for avalanche_center.settings, in case
+ * the setup form is ever skipped (e.g. an automated/scripted install that
+ * bypasses install_state tasks). The setup form's submit handler
+ * overwrites these with real values in the normal interactive install
+ * path - see avalanche_center.profile.
+ */
+function avalanche_center_install() {
+  $settings = config('avalanche_center.settings');
+  if (!$settings->get('danger_scale')) {
+    $settings->set('danger_scale', 'NAC');
+    $settings->set('map_center_lat', 0);
+    $settings->set('map_center_lng', 0);
+    $settings->set('map_zoom', 2);
+    $settings->save();
+  }
+}
+
+/**
+ * Creates a tiny demo dataset: one forecast-zone region term (with a small
+ * square polygon centered on the chosen map center) and one published
+ * advisory for it, so the danger map renders something immediately after
+ * install instead of the "no current forecast" empty state.
+ *
+ * @param float $lat
+ *   Map center latitude, from the setup form.
+ * @param float $lng
+ *   Map center longitude, from the setup form.
+ */
+function avalanche_center_create_demo_content($lat, $lng) {
+  // Build a small square polygon (roughly +/- 5.5km) around the map
+  // center as placeholder forecast-zone geometry.
+  module_load_include('inc', 'geofield', 'libraries/geophp/geoPHP');
+  $delta = 0.05;
+  $wkt = sprintf(
+    'POLYGON((%F %F, %F %F, %F %F, %F %F, %F %F))',
+    $lng - $delta, $lat - $delta,
+    $lng + $delta, $lat - $delta,
+    $lng + $delta, $lat + $delta,
+    $lng - $delta, $lat + $delta,
+    $lng - $delta, $lat - $delta
+  );
+
+  // taxonomy_term_save() and node_save() type-hint against the Entity API's
+  // TaxonomyTerm/Node classes, not stdClass - entity_create() returns the
+  // right class for each (TaxonomyTerm's bundle key is 'vocabulary', per
+  // taxonomy_entity_info()'s 'bundle keys').
+  $term = entity_create('taxonomy_term', array('vocabulary' => 'region'));
+  $term->name = t('Demo Forecast Zone');
+  $term->description = t('Placeholder forecast zone created at install. Replace with your real forecast zones, or delete this one.');
+  $term->format = filter_default_format();
+  $term->field_region_map[LANGUAGE_NONE][0]['geom'] = $wkt;
+  taxonomy_term_save($term);
+
+  $node = entity_create('node', array('type' => 'advisory'));
+  node_object_prepare($node);
+  $node->title = t('Demo Avalanche Advisory');
+  $node->language = LANGUAGE_NONE;
+  $node->status = 1;
+  $node->promote = 0;
+  $node->uid = 1;
+
+  $node->field_forecast_region[LANGUAGE_NONE][0]['tid'] = $term->tid;
+  $node->field_overalldanger[LANGUAGE_NONE][0]['value'] = 1;
+  $node->field_danger_rating_1[LANGUAGE_NONE][0]['value'] = 'Low';
+  $node->field_danger_rating_2[LANGUAGE_NONE][0]['value'] = 'Low';
+  $node->field_danger_rating_3[LANGUAGE_NONE][0]['value'] = 'Low';
+  $node->field_duration[LANGUAGE_NONE][0]['value'] = 24;
+  $node->field_bottom_line[LANGUAGE_NONE][0]['value'] = t('This is a demo advisory created automatically at install so the danger map has something to show. Replace it with a real forecast, or delete it.');
+  $node->field_bottom_line[LANGUAGE_NONE][0]['format'] = filter_default_format();
+
+  node_save($node);
+}

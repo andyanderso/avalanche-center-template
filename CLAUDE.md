@@ -37,12 +37,13 @@ applying the equivalent fixes to the live Gulmarg/Argentina sites.
 ## Environment
 - DDEV for local; this repo will get its own DDEV project for the
   greenfield demo install (Phase 7).
-- Current phase: 6 (build the profile + setup form + hook_install; ship
-  demo content). Phase 1 done: repo skeleton scaffolded; structural
-  node-type list corrected from 2 to 22 types (independently re-verified
-  against node.type.*.json on both sites); NAC level-0 grey set to
-  `#939598`. Phase 2 done: avalanche_modern merged from gulmarg_modern
-  (renamed, t()-wrapped, canonical NAC colors applied); responsive_sac/
+- Current phase: 7 (greenfield validation: fresh DDEV install of a "demo"
+  center end-to-end — the first real test of everything Phases 1-6 built).
+  Phase 1 done: repo skeleton scaffolded; structural node-type list
+  corrected from 2 to 22 types (independently re-verified against
+  node.type.*.json on both sites); NAC level-0 grey set to `#939598`.
+  Phase 2 done: avalanche_modern merged from gulmarg_modern (renamed,
+  t()-wrapped, canonical NAC colors applied); responsive_sac/
   responsive_bartik copied with vestigial/instance-specific files
   stripped — a post-Phase-3 double-check found this pass had been
   interrupted mid-way (battery died) and missed a whole separate body of
@@ -70,8 +71,17 @@ applying the equivalent fixes to the live Gulmarg/Argentina sites.
   lists and view page titles Phase 4's family-level pass couldn't catch,
   and 8 more disabled-module field/widget references beyond
   Commerce/registration — all but one (`field_map`'s `gmap_polygon_field`
-  type, flagged unresolved) fixed with safe fallback widgets. See
-  AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §13-17 for the full logs.
+  type, flagged unresolved) fixed with safe fallback widgets. Phase 6
+  done: `avalanche_center.profile`'s "Center setup" install-task form +
+  `avalanche_center.install`'s demo-content creation (one forecast zone +
+  one advisory) — moved the setup form's config-writing out of
+  hook_install() into the form's own submit handler once it became clear
+  hook_install() runs before the custom install-task form does, so it
+  can't see values that haven't been submitted yet. **Entirely unverified
+  against a live install** — no DDEV environment exists yet; every fix
+  came from reading Backdrop core's function signatures, not from testing.
+  Phase 7 is where this code runs for the first time. See
+  AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §13-18 for the full logs.
 
 ## Conventions
 - Machine names must match Gulmarg's existing field/vocab names.

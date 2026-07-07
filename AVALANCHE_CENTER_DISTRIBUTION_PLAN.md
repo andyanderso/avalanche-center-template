@@ -1016,7 +1016,106 @@ directory. Distinguished by severity:
 
 ---
 
-## 18. Reference: key files to study in the source codebases
+## 18. Phase 6 decisions log
+
+Phase 6 (build the profile + setup form + `hook_install`; ship demo
+content) is complete: `avalanche_center.profile` implements
+`hook_install_tasks()` with the "Center setup" form §9 specifies, and
+`avalanche_center.install` seeds fallback defaults plus a demo forecast
+zone + advisory. Couldn't runtime-test any of this against a live
+Backdrop instance (no DDEV environment exists yet — that's Phase 7), so
+everything below was verified by reading Backdrop core's actual function
+signatures rather than by running it.
+
+### Found: §9's hook_install() ordering doesn't work as originally written
+
+§9 said `hook_install()` writes the setup form's values into
+`avalanche_center.settings` + theme settings. Checked Backdrop's actual
+install task order (`install.core.inc`): `hook_install()` fires while the
+profile's dependencies are being installed, which happens *before*
+`hook_install_tasks()`'s custom tasks (including our form) are ever shown
+to the user. `hook_install()` genuinely cannot access values from a form
+that hasn't been submitted yet. Resolved by moving the value-writing to
+the setup form's own submit handler (`avalanche_center_setup_form_submit()`
+in `.profile`) — the actual first point in the install where those values
+exist — and narrowing `hook_install()` (in `.install`) to just seeding
+safe fallback defaults, for the edge case of a scripted/automated install
+that skips interactive `install_state` tasks entirely.
+
+### Found: demo-content creation needed the real Entity API, not stdClass
+
+Backdrop type-hints its save functions against actual entity classes:
+`taxonomy_term_save(TaxonomyTerm $term)` and `node_save(Node $node)` (and
+`node_object_prepare(Node $node)`) all reject a plain `stdClass` — a
+TypeError, not a silent failure, but only caught by actually reading the
+function signatures in core, since there's no live site yet to catch it
+by testing. Used `entity_create('taxonomy_term', array('vocabulary' =>
+'region'))` / `entity_create('node', array('type' => 'advisory'))`
+instead, which return the correctly-typed objects. Confirmed
+`TaxonomyTerm`'s bundle key is `vocabulary` from `taxonomy_entity_info()`'s
+`'bundle keys'` — a `generate-d7-content.sh` script under Backdrop core's
+own `scripts/` uses `vocabulary_machine_name` for the same purpose, but
+that appears to be a stale leftover from Drupal 7's numeric-vid days, not
+the current API; didn't follow it.
+
+### Found: geofield's presave hook reads `geom`, not `wkt`
+
+The demo forecast-zone polygon is set via
+`$term->field_region_map[LANGUAGE_NONE][0][...]`. Initially used a `wkt`
+key (matching the widget type name, `geofield_wkt`), but
+`geofield_field_presave()` (in `geofield.module`) only ever reads
+`$item['geom']` — passing a WKT string under that key works fine since
+`geoPHP::load()` auto-detects the format; the widget name and the storage
+key aren't the same thing. Using `wkt` would have silently created a term
+with empty/null geometry — no error, just a forecast zone with nothing to
+draw on the map. Caught by reading `geofield_field_presave()`'s source
+directly, not by testing.
+
+### Design notes
+
+- Demo geometry is a small square (~±0.05° ≈ 5.5km) built with `sprintf()`
+  + `geoPHP::load()`, centered on whatever `map_center_lat`/`map_center_lng`
+  the setup form collected — so the demo zone is at least in the right
+  place for the center being set up, not hardcoded to any reference site's
+  coordinates.
+- Theme settings get written to **both** shipped themes
+  (`avalanche_modern` and `responsive_sac`), not just whichever ends up
+  default, so switching themes later doesn't land on a blank settings
+  page.
+- The demo advisory only fills the fields required to make it useful
+  (`field_forecast_region`, `field_overalldanger`, the three elevation-band
+  `field_danger_rating_*`, `field_duration`, `field_bottom_line`) —
+  `field_simplenews_term` is schema-required but left empty; Backdrop's
+  `required` flag is a form-validation constraint, not enforced by
+  `node_save()` called directly in code, and there's no newsletter term to
+  reference yet on a fresh install anyway.
+
+### Known gaps, not addressed this phase
+
+- **No ongoing admin settings form** — the setup form only runs once,
+  during install. Changing the danger-scale preset, map center, or the
+  social-meta fallback logo (`avalanche_center.settings.social_fallback_logo`,
+  §7) afterward currently has no admin UI; would need a proper
+  `hook_menu()` settings page. Not in §9's scope, but worth a future phase.
+- **`social_fallback_logo` isn't collected at install** — it's a file
+  upload (a `managed_file` widget, needing actual file-save handling
+  during form processing), not a simple textfield, and §9's setup-form
+  field list doesn't call for it. Left as a config value with no default,
+  same "no logo shipped" behavior `avalanche_social_meta` already handles
+  gracefully (falls back to `NULL`).
+- **Language selection is collected but not yet functional** — no `.po`
+  translation exists yet (§10), and `locale` isn't a declared dependency.
+  Selecting "Spanish" currently just records the preference in
+  `avalanche_center.settings.language`; the interface stays in English
+  until a later phase adds real locale support.
+- **None of this has run against a live Backdrop instance.** Every fix in
+  this log came from reading core source, not from a stack trace. Phase 7
+  (greenfield DDEV install) is where this actually gets exercised for the
+  first time — treat this phase's code as unverified until then.
+
+---
+
+## 19. Reference: key files to study in the source codebases
 
 - Theme settings GUI: `themes/argentina_modern/theme-settings.php`
 - Shared settings schema: `themes/argentina_modern/argentina_modern.info`
