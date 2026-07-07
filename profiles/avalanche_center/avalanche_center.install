@@ -1,0 +1,10 @@
+<?php
+/**
+ * @file
+ * Install-time hooks for the Avalanche Center distribution.
+ *
+ * hook_install() (write Center-setup form values into
+ * avalanche_center.settings config + theme settings; structural config
+ * auto-imports from config/ via config_install_default_config()) lands in
+ * Phase 6 — see AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §9.
+ */

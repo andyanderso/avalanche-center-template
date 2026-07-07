@@ -1,0 +1,74 @@
+name = Avalanche Center
+description = Installable distribution for avalanche forecast center websites (danger maps, observations, advisories, glossary).
+type = profile
+backdrop = 1.x
+
+; --- Core module dependencies ---
+; TODO(Phase 6): verify against each reference site's actually-enabled module
+; list (Backdrop stores enabled state in the DB, not in config JSON, so this
+; list was inferred from node/field/view usage, not confirmed against a live
+; site). Cross-check before first install.
+dependencies[] = node
+dependencies[] = field
+dependencies[] = field_ui
+dependencies[] = image
+dependencies[] = taxonomy
+dependencies[] = path
+dependencies[] = views
+dependencies[] = views_ui
+dependencies[] = block
+dependencies[] = menu
+dependencies[] = comment
+dependencies[] = date
+dependencies[] = link
+dependencies[] = list
+dependencies[] = number
+dependencies[] = options
+dependencies[] = file
+dependencies[] = config
+
+; --- Contrib modules (verified identical across Gulmarg + Argentina, see
+; AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §2) ---
+dependencies[] = addressfield
+dependencies[] = auto_nodetitle
+dependencies[] = backup_migrate
+dependencies[] = colorbox
+dependencies[] = conditional_fields
+dependencies[] = css_injector
+dependencies[] = elysia_cron
+dependencies[] = entity_plus
+dependencies[] = entity_token
+dependencies[] = entity_ui
+dependencies[] = field_collection
+dependencies[] = field_group
+dependencies[] = field_permissions
+dependencies[] = geocoder
+dependencies[] = geofield
+dependencies[] = geolocation
+dependencies[] = imce
+dependencies[] = job_scheduler
+dependencies[] = leaflet
+dependencies[] = leaflet_widget
+dependencies[] = metatag
+dependencies[] = node_clone
+dependencies[] = pathauto
+dependencies[] = rules
+dependencies[] = scheduler
+dependencies[] = seo_meta
+dependencies[] = simplenews
+dependencies[] = tb_megamenu
+dependencies[] = token_custom
+dependencies[] = token_filter
+dependencies[] = views_bulk_operations
+dependencies[] = youtube
+
+; --- Custom modules ---
+dependencies[] = danger_rose
+dependencies[] = avalanche_danger_map
+dependencies[] = avalanche_glossary
+dependencies[] = avalanche_social_meta
+
+; --- Themes ---
+themes[] = avalanche_modern
+themes[] = responsive_sac
+themes[] = responsive_bartik

@@ -1,0 +1,45 @@
+# Avalanche Center Distribution
+
+Backdrop CMS distribution merging two near-identical avalanche center
+sites (Argentina + Gulmarg) into one generic installable profile.
+Full spec: AVALANCHE_CENTER_DISTRIBUTION_PLAN.md — read it before
+any structural work.
+
+## Reference codebases (READ-ONLY — never edit these)
+- Gulmarg (canonical baseline): ~/Siesta_Solutions/Gulmarg/backdrop/gulmarg-backdrop/
+- Argentina(Spanish Language Version with Multiple forecast regions): ~/Siesta_Solutions/Argentina/backdrop/argentina-backdrop/
+
+## Key facts
+- Backdrop 1.x (Drupal 7 API-compatible). Config = JSON files in files/config_active/.
+- Baseline decisions: English/NAC preset, Gulmarg content model canonical.
+- danger_rose module is identical in both references — copy as-is.
+- 3 site-prefixed custom modules exist per site, all need genericizing:
+  *_danger_map, *_glossary, *_social_meta (gulmarg_social_meta /
+  argentina_social_meta — token provider for Metatag og:image/twitter:image,
+  no admin form). `danger_rose` is a 4th custom module but is shared/unprefixed
+  and already identical — copy as-is, no genericizing needed.
+  See AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §7.
+- Canonical NAC danger-scale colors (levels 1-5 only; there is no official
+  level 0) come from https://github.com/andyanderso/north-american-public-avalanche-danger-scale/blob/main/COLORS.md
+  — use these exact hex values, not either site's hardcoded module palette.
+  See AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §6.
+- Both sites use a single unified `observation` content type at
+  /node/add/observation. The old /node/add/snowobs and /node/add/avyobs
+  paths are vestigial theme-setting defaults (gulmarg_modern.info,
+  responsive_sac.info on both sites) — don't carry them forward.
+- Site-specifics go through 3 layers: install-profile setup form,
+  admin settings, content. Never hardcode a center's values.
+- All display strings through t(). Spanish = translation, not fork.
+
+## Environment
+- DDEV for local; this repo will get its own DDEV project for the
+  greenfield demo install (Phase 7).
+- Current phase: 2 (genericize themes). Phase 1 done: repo skeleton
+  scaffolded (profiles/avalanche_center/, modules/, themes/); structural
+  node-type list corrected from 2 to 22 types; NAC level-0 grey set to
+  `#939598`. See AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §13 for the full log.
+
+## Conventions
+- Machine names must match Gulmarg's existing field/vocab names.
+- Structural config ships in profiles/avalanche_center/config/;
+  site-specific config never ships.

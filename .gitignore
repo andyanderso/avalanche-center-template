@@ -1,0 +1,15 @@
+# --- Sensitive / local-only settings ---
+/settings.local.php
+/settings.ddev.php
+sites/*/settings.local.php
+sites/*/settings.ddev.php
+
+# --- User-generated content ---
+/files/*
+!/files/config_active/
+/private/*
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+.idea/
