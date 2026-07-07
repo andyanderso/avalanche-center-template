@@ -51,31 +51,31 @@
              <div id="advisory-published-date" class="advisory-date">
  <?php
 		if ($duration >= '120') {
-                echo 'Avalanche Advisory published on '.$forecastdate;
+                echo t('Avalanche Advisory published on @date', array('@date' => $forecastdate));
                 }
                 elseif ($nowTimestamp <= $expdateTimestamp) {
-                echo 'Snowpack Summary published on '.$forecastdate.'</br><span id="timeToExp">This Avalanche Advisory expires in ';
+                echo t('Avalanche Advisory published on @date', array('@date' => $forecastdate)) . '</br><span id="timeToExp">' . t('This Avalanche Advisory expires in') . ' ';
                 if ($timeLeftToExpire->format("%h") < 2) {
                    echo '<span style="color:red">';
-				   echo $timeLeftToExpire->format("%h hours, %i minutes");
+				   echo t('@hours hours, @minutes minutes', array('@hours' => $timeLeftToExpire->format('%h'), '@minutes' => $timeLeftToExpire->format('%i')));
 				   echo '</span></span>';
 		        }
 		        elseif (($timeLeftToExpire->format("%d") >= 1) && ($timeLeftToExpire->format("%d") < 2)) {
-		           echo $timeLeftToExpire->format("%d day, %h hours, %i minutes");
+		           echo t('@days day, @hours hours, @minutes minutes', array('@days' => $timeLeftToExpire->format('%d'), '@hours' => $timeLeftToExpire->format('%h'), '@minutes' => $timeLeftToExpire->format('%i')));
 		           echo '</span>';
 		        }
 		        elseif ($timeLeftToExpire->format("%d") > 2) {
-		           echo $timeLeftToExpire->format("%d days, %h hours, %i minutes");
+		           echo t('@days days, @hours hours, @minutes minutes', array('@days' => $timeLeftToExpire->format('%d'), '@hours' => $timeLeftToExpire->format('%h'), '@minutes' => $timeLeftToExpire->format('%i')));
 		           echo '</span>';
 		        }
 		        elseif ($timeLeftToExpire->format("%d") < 1) {
-		           echo $timeLeftToExpire->format("%h hours, %i minutes");
+		           echo t('@hours hours, @minutes minutes', array('@hours' => $timeLeftToExpire->format('%h'), '@minutes' => $timeLeftToExpire->format('%i')));
 		           echo '</span>';
 		        }
 		                        
         }
         elseif ($nowTimestamp > $expdateTimestamp) {
-                echo '<span style="background:red">THIS AVALANCHE ADVISORY EXPIRED ON '.$expdate.'</span></br>'.'Avalanche Advisory published on '.$forecastdate;
+                echo '<span style="background:red">' . t('THIS AVALANCHE ADVISORY EXPIRED ON @date', array('@date' => $expdate)) . '</span></br>' . t('Avalanche Advisory published on @date', array('@date' => $forecastdate));
         }
     ?>
              </div>
@@ -84,10 +84,10 @@
                     echo '';
                    }
                    elseif ($duration <= '120'){
-                   print "<span style='font-weight:bold; text-transform:uppercase'>This advisory is valid for $duration hours</span><br>";
+                   print '<span style=\'font-weight:bold; text-transform:uppercase\'>' . t('This advisory is valid for @duration hours', array('@duration' => $duration)) . '</span><br>';
                    }
                  ?> 
-               Issued by 
+               <?php print t('Issued by'); ?>
                  <?php print render($display_name[0]['name_line']);?> - <?php print render($company[0]['title']);?>
              </div>
       </div>
@@ -98,27 +98,27 @@
     <tr>
       <!--<td><img src="<?php print $url.$node->field_overall_danger_rose['und'][0]['img_detailed_rose']?>"/ >
       </td>--!>
-      <td><strong>Bottom Line:</strong><br /><?php print $node->field_bottom_line['und'][0]['value']; ?> 
+      <td><strong><?php print t('Bottom Line:'); ?></strong><br /><?php print $node->field_bottom_line['und'][0]['value']; ?> 
       </td>
     </table>
   </div>
 
     <?php if (isset($node->field_avalanche_watch['und'][0]['value'])): ?>
       <div>
-		<strong>Avalanche Watch:</strong><br />
+		<strong><?php print t('Avalanche Watch:'); ?></strong><br />
 	   <?php print $node->field_avalanche_watch['und'][0]['value']; ?>
       </div>
     <?php endif; ?>
 
 <!--Avalanche Problems-->
 <?php if (isset($node->field_type_1['und'][0]['value'])): ?>
-<div><strong>Avalanche Problem 1:</strong>
+<div><strong><?php print t('Avalanche Problem 1:'); ?></strong>
  <table>
   <tbody>
      <tr>
-       <th>Type</th>
-       <th>Aspect/Elevation</th>
-       <th>Characteristics</th>
+       <th><?php print t('Type'); ?></th>
+       <th><?php print t('Aspect/Elevation'); ?></th>
+       <th><?php print t('Characteristics'); ?></th>
      </tr>
      <tr align="center">
        <td>
@@ -131,8 +131,8 @@
          <table width="100%">
            <tbody align="center">
              <tr>
-               <th>Likelihood</th>
-               <th>Size</th>
+               <th><?php print t('Likelihood'); ?></th>
+               <th><?php print t('Size'); ?></th>
                <!--<th>Trend</th>-->
              </tr>
              <tr>
@@ -160,19 +160,19 @@
           </table>
         </td>
       <tr>
-       <td colspan="3" align="left"><strong>Description:</strong><?php print $node->field_description_1['und'][0]['value']; ?></td>
+       <td colspan="3" align="left"><strong><?php print t('Description:'); ?></strong><?php print $node->field_description_1['und'][0]['value']; ?></td>
      </table>
 </div>
 <?php endif; ?>
 
 <?php if (isset($node->field_type_2['und'][0]['value'])): ?>
-<div><strong>Avalanche Problem 2:</strong>
+<div><strong><?php print t('Avalanche Problem 2:'); ?></strong>
  <table>
   <tbody>
      <tr>
-       <th>Type</th>
-       <th>Aspect/Elevation</th>
-       <th>Characteristics</th>
+       <th><?php print t('Type'); ?></th>
+       <th><?php print t('Aspect/Elevation'); ?></th>
+       <th><?php print t('Characteristics'); ?></th>
      </tr>
      <tr align="center">
        <td>
@@ -185,8 +185,8 @@
          <table width="100%">
            <tbody align="center">
              <tr>
-               <th>Likelihood</th>
-               <th>Size</th>
+               <th><?php print t('Likelihood'); ?></th>
+               <th><?php print t('Size'); ?></th>
                <!--<th>Trend</th>-->
              </tr>
              <tr>
@@ -214,19 +214,19 @@
           </table>
         </td>
       <tr>
-       <td colspan="3" align="left"><strong>Description:</strong><?php print $node->field_description_2['und'][0]['value']; ?></td>
+       <td colspan="3" align="left"><strong><?php print t('Description:'); ?></strong><?php print $node->field_description_2['und'][0]['value']; ?></td>
      </table>
 </div>
 <?php endif; ?>
 
 <?php if (isset($node->field_type_3['und'][0]['value'])): ?>
-<div><strong>Avalanche Problem 3:</strong>
+<div><strong><?php print t('Avalanche Problem 3:'); ?></strong>
  <table>
   <tbody>
      <tr>
-       <th>Type</th>
-       <th>Aspect/Elevation</th>
-       <th>Characteristics</th>
+       <th><?php print t('Type'); ?></th>
+       <th><?php print t('Aspect/Elevation'); ?></th>
+       <th><?php print t('Characteristics'); ?></th>
      </tr>
      <tr align="center">
        <td>
@@ -239,8 +239,8 @@
          <table width="100%">
            <tbody align="center">
              <tr>
-               <th>Likelihood</th>
-               <th>Size</th>
+               <th><?php print t('Likelihood'); ?></th>
+               <th><?php print t('Size'); ?></th>
                <!--<th>Trend</th>-->
              </tr>
              <tr>
@@ -268,7 +268,7 @@
           </table>
         </td>
       <tr>
-       <td colspan="3" align="left"><strong>Description:</strong><?php print $node->field_description_3['und'][0]['value']; ?></td>
+       <td colspan="3" align="left"><strong><?php print t('Description:'); ?></strong><?php print $node->field_description_3['und'][0]['value']; ?></td>
      </table>
 </div>
 <?php endif; ?>
@@ -278,14 +278,14 @@
 
 <?php if (isset($node->field_text_discussion['und'][0]['value'])): ?>
 <div id="current-conditions-row" class="advisory-row">
-<strong>Advisory discussion</strong><br />
+<strong><?php print t('Advisory discussion'); ?></strong><br />
 <?php print_r($node->field_text_discussion['und'][0]['value']); ?>
 </div>
 <?php endif; ?>
 
 <?php if (isset($node->field_recent_activity['und'][0]['value'])): ?>
     <div id="recent-activity-row" class="advisory-row">
-		<strong>Recent Observations:</strong><br />
+		<strong><?php print t('Recent Observations:'); ?></strong><br />
 		<?php print $node->field_recent_activity['und'][0]['value']; ?>
     </div>
 <?php endif; ?>
@@ -295,36 +295,36 @@
     <tbody>
         <tr>
             <td colspan="2">
-        <strong>Current Conditions:<strong>&nbsp;- <?php print $current_wx_desc;?>:
+        <strong><?php print t('Current Conditions:'); ?></strong>&nbsp;- <?php print $current_wx_desc;?>:
             </td>
         </tr>
         <tr style="background-color:#ffffff">
-            <td >0600 temperature:</td>
-            <td ><?php print $node->field_temp8700['und'][0]['value'];?> deg. F.</td>
+            <td ><?php print t('0600 temperature:'); ?></td>
+            <td ><?php print $node->field_temp8700['und'][0]['value'];?> <?php print t('deg. F.'); ?></td>
         </tr>
         <tr  style="background-color:#ffffff">
-            <td >Max. temperature in the last 24 hours:</td>
-            <td ><?php print $node->field_hr24maxtemp['und'][0]['value'];?> deg. F.</td>
+            <td ><?php print t('Max. temperature in the last 24 hours:'); ?></td>
+            <td ><?php print $node->field_hr24maxtemp['und'][0]['value'];?> <?php print t('deg. F.'); ?></td>
         </tr>
         <tr  style="background-color:#ffffff">
-            <td >Average wind direction during the last 24 hours:</td>
+            <td ><?php print t('Average wind direction during the last 24 hours:'); ?></td>
             <td ><?php print $node->field_hr24winddir['und'][0]['value'];?></td>
         </tr>
         <tr  style="background-color:#ffffff">
-            <td >Average wind speed during the last 24 hours:</td>
-            <td ><?php print $node->field_hr24windspeed['und'][0]['value'];?> mph</td>
+            <td ><?php print t('Average wind speed during the last 24 hours:'); ?></td>
+            <td ><?php print $node->field_hr24windspeed['und'][0]['value'];?> <?php print t('mph'); ?></td>
         </tr>
         <tr  style="background-color:#ffffff">
-            <td >Maximum wind gust in the last 24 hours:</td>
-            <td ><?php print $node->field_hr24maxgust['und'][0]['value'];?> mph</td>
+            <td ><?php print t('Maximum wind gust in the last 24 hours:'); ?></td>
+            <td ><?php print $node->field_hr24maxgust['und'][0]['value'];?> <?php print t('mph'); ?></td>
         </tr>
         <tr  style="background-color:#ffffff">
-            <td >New snowfall in the last 24 hours:</td>
-            <td ><?php print $node->field_hr24snowfall['und'][0]['value'];?> inches</td>
+            <td ><?php print t('New snowfall in the last 24 hours:'); ?></td>
+            <td ><?php print $node->field_hr24snowfall['und'][0]['value'];?> <?php print t('inches'); ?></td>
         </tr>
         <tr  style="background-color:#ffffff">
-            <td >Total snow depth:</td>
-            <td ><?php print $node->field_totalsnowdepth['und'][0]['value'];?> inches</td>
+            <td ><?php print t('Total snow depth:'); ?></td>
+            <td ><?php print $node->field_totalsnowdepth['und'][0]['value'];?> <?php print t('inches'); ?></td>
         </tr>
     </tbody>
 </table>
@@ -332,13 +332,13 @@
 
 <?php if (isset($node->field_mountain_weather['und'][0]['value'])): ?>
     <div id="weather-row" class="advisory-row">
-		<strong>Weather:</strong><br /><?php print $node->field_mountain_weather['und'][0]['value']; ?>
+		<strong><?php print t('Weather:'); ?></strong><br /><?php print $node->field_mountain_weather['und'][0]['value']; ?>
      </div>       
 <?php endif; ?>
 
 
 <div id="current-conditions-row" class="advisory-row">
-    <strong>Two-Day Mountain Weather Forecast</strong>&nbsp;- Produced in partnership with the <a href="<?php print $nws_url;?>" target="_blank"><?php print $nws_name;?>:</a>
+    <strong><?php print t('Two-Day Mountain Weather Forecast'); ?></strong>&nbsp;- <?php print t('Produced in partnership with the'); ?> <a href="<?php print $nws_url;?>" target="_blank"><?php print $nws_name;?>:</a>
    <table width="100%" cellspacing="5" cellpadding="5" border="0" class="row-sub-table">
     <tbody>
         <tr  style="background-color:#ffffff">
@@ -351,7 +351,7 @@
             <td style="text-align:center">
 <?php 
 if (date('Y-m-d') == date('Y-m-d', $node->created)) {
-	print "Today";
+	print t('Today');
 }
 else { 
 	echo date("l", $node->created);
@@ -360,10 +360,10 @@ else {
             <td style="text-align:center">
 <?php 
 if (date('Y-m-d') == date('Y-m-d', $node->created)) {
-	print "Tonight";
+	print t('Tonight');
 }
 else { 
-	echo date("l", $node->created)." Night";
+	echo date("l", $node->created) . " " . t("Night");
 } ?>:
             </td>
             <td style="text-align:center">
@@ -373,34 +373,34 @@ echo date("l", $tomorrow);?>:
             </td>
         </tr>
         <tr  style="background-color:#ffffff">
-            <td width="15%" style="border-top: 3px groove rgb(126, 41, 11); border-left: 3px groove rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);">Weather:</td>
+            <td width="15%" style="border-top: 3px groove rgb(126, 41, 11); border-left: 3px groove rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print t('Weather:'); ?></td>
             <td width="28%"  style="text-align:center; border-top: 3px groove rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print $node->field_today7to8weather['und'][0]['value'] ?></td>
             <td width="28%"  style="text-align:center; border-top: 3px groove rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print $node->field_tonight7to8weather['und'][0]['value'] ?></td>
             <td width="28%"  style="text-align:center; border-top: 3px groove rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 3px groove rgb(126, 41, 11);"><?php print $node->field_tomorrow7to8weather['und'][0]['value'] ?></td>
         </tr>
         <tr  style="background-color:#ffffff">
-            <td style="border-top: 3px groove rgb(126, 41, 11); border-left: 3px groove rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);">Temperatures:</td>
-            <td style="text-align:center; border-top: 2px solid rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print $node->field_today7to8temp['und'][0]['value'] ?> deg. F.</td>
-            <td  style="text-align:center; border-top: 2px solid rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print $node->field_tonight7to8temp['und'][0]['value'] ?> deg. F.</td>
-            <td  style="text-align:center; border-top: 2px solid rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 3px groove rgb(126, 41, 11);"><?php print $node->field_tomorrow7to8temp['und'][0]['value'] ?> deg. F.</td>
+            <td style="border-top: 3px groove rgb(126, 41, 11); border-left: 3px groove rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print t('Temperatures:'); ?></td>
+            <td style="text-align:center; border-top: 2px solid rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print $node->field_today7to8temp['und'][0]['value'] ?> <?php print t('deg. F.'); ?></td>
+            <td  style="text-align:center; border-top: 2px solid rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print $node->field_tonight7to8temp['und'][0]['value'] ?> <?php print t('deg. F.'); ?></td>
+            <td  style="text-align:center; border-top: 2px solid rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 3px groove rgb(126, 41, 11);"><?php print $node->field_tomorrow7to8temp['und'][0]['value'] ?> <?php print t('deg. F.'); ?></td>
         </tr>
         <tr  style="background-color:#ffffff">
-            <td style="border-top: 3px groove rgb(126, 41, 11); border-left: 3px groove rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);">Wind direction:</td>
+            <td style="border-top: 3px groove rgb(126, 41, 11); border-left: 3px groove rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print t('Wind direction:'); ?></td>
             <td  style="text-align:center; border-top: 2px solid rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print $node->field_today7to8winddirection['und'][0]['value'] ?></td>
             <td  style="text-align:center; border-top: 2px solid rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print $node->field_tonight7to8winddirection['und'][0]['value'] ?></td>
             <td  style="text-align:center; border-top: 2px solid rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 3px groove rgb(126, 41, 11);"><?php print $node->field_tomorrow7to8winddirection['und'][0]['value'] ?></td>
         </tr>
         <tr  style="background-color:#ffffff">
-            <td style="border-top: 3px groove rgb(126, 41, 11); border-left: 3px groove rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);">Wind speed:</td>
+            <td style="border-top: 3px groove rgb(126, 41, 11); border-left: 3px groove rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print t('Wind speed:'); ?></td>
             <td  style="text-align:center; border-top: 2px solid rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print $node->field_today7to8windspeed['und'][0]['value'] ?> </td>
             <td  style="text-align:center; border-top: 2px solid rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print $node->field_tonight7to8windspeed['und'][0]['value'] ?> </td>
             <td  style="text-align:center; border-top: 2px solid rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 3px groove rgb(126, 41, 11);"><?php print $node->field_tomorrow7to8windspeed['und'][0]['value'] ?> </td>
         </tr>
         <tr  style="background-color:#ffffff">
-            <td style="border-style: groove solid groove groove; border-color: rgb(126, 41, 11); border-width: 3px 1px 3px 3px;">Expected snowfall:</td>
-            <td  style="text-align:center; border-style: solid solid groove; border-color: rgb(126, 41, 11); border-width: 2px 1px 3px;"><?php print $node->field_today7to8snow['und'][0]['value'] ?> in.</td>
-            <td  style="text-align:center; border-style: solid solid groove; border-color: rgb(126, 41, 11); border-width: 2px 1px 3px;"><?php print $node->field_tonight7to8snow['und'][0]['value'] ?> in.</td>
-            <td  style="text-align:center; border-style: solid groove groove solid; border-color: rgb(126, 41, 11); border-width: 2px 3px 3px 1px;"><?php print $node->field_tomorrow7to8snow['und'][0]['value'] ?> in.</td>
+            <td style="border-style: groove solid groove groove; border-color: rgb(126, 41, 11); border-width: 3px 1px 3px 3px;"><?php print t('Expected snowfall:'); ?></td>
+            <td  style="text-align:center; border-style: solid solid groove; border-color: rgb(126, 41, 11); border-width: 2px 1px 3px;"><?php print $node->field_today7to8snow['und'][0]['value'] ?> <?php print t('in.'); ?></td>
+            <td  style="text-align:center; border-style: solid solid groove; border-color: rgb(126, 41, 11); border-width: 2px 1px 3px;"><?php print $node->field_tonight7to8snow['und'][0]['value'] ?> <?php print t('in.'); ?></td>
+            <td  style="text-align:center; border-style: solid groove groove solid; border-color: rgb(126, 41, 11); border-width: 2px 3px 3px 1px;"><?php print $node->field_tomorrow7to8snow['und'][0]['value'] ?> <?php print t('in.'); ?></td>
         </tr>
         <tr  style="background-color:#ffffff">
             <td align="center" colspan="4">
@@ -412,7 +412,7 @@ echo date("l", $tomorrow);?>:
             <td style="text-align:center">
 <?php 
 if (date('Y-m-d') == date('Y-m-d', $node->created)) {
-	print "Today";
+	print t('Today');
 }
 else { 
 	echo date("l", $node->created);
@@ -421,10 +421,10 @@ else {
             <td style="text-align:center">
 <?php 
 if (date('Y-m-d') == date('Y-m-d', $node->created)) {
-	print "Tonight";
+	print t('Tonight');
 }
 else { 
-	echo date("l", $node->created)." Night";
+	echo date("l", $node->created) . " " . t("Night");
 } ?>:
 	    </td>
             <td style="text-align:center">
@@ -434,34 +434,34 @@ echo date("l", $tomorrow);?>:
 	    </td>
         </tr>
         <tr  style="background-color:#ffffff">
-            <td style="border-top: 3px groove rgb(126, 41, 11); border-left: 3px groove rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);">Weather:</td>
+            <td style="border-top: 3px groove rgb(126, 41, 11); border-left: 3px groove rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print t('Weather:'); ?></td>
             <td  style="text-align:center; border-top: 3px groove rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print $node->field_today8to9weather['und'][0]['value'] ?></td>
             <td  style="text-align:center; border-top: 3px groove rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print  $node->field_tonight8to9weather['und'][0]['value'] ?></td>            
             <td  style="text-align:center; border-top: 3px groove rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 3px groove rgb(126, 41, 11);"><?php print $node->field_tomorrow8to9weather['und'][0]['value'] ?></td>
         </tr>
         <tr  style="background-color:#ffffff">
-            <td style="border-top: 2px solid rgb(126, 41, 11); border-left: 3px groove rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);">Temperatures:</td>
-            <td  style="text-align:center; border-top: 2px solid rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print $node->field_today8to9temp['und'][0]['value'] ?> deg. F.</td>
-            <td  style="text-align:center; border-top: 2px solid rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print $node->field_tonight8to9temp['und'][0]['value'] ?> deg. F.</td>
-            <td  style="text-align:center; border-top: 2px solid rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 3px groove rgb(126, 41, 11);"><?php print $node->field_tomorrow8to9temp['und'][0]['value'] ?> deg. F.</td>
+            <td style="border-top: 2px solid rgb(126, 41, 11); border-left: 3px groove rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print t('Temperatures:'); ?></td>
+            <td  style="text-align:center; border-top: 2px solid rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print $node->field_today8to9temp['und'][0]['value'] ?> <?php print t('deg. F.'); ?></td>
+            <td  style="text-align:center; border-top: 2px solid rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print $node->field_tonight8to9temp['und'][0]['value'] ?> <?php print t('deg. F.'); ?></td>
+            <td  style="text-align:center; border-top: 2px solid rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 3px groove rgb(126, 41, 11);"><?php print $node->field_tomorrow8to9temp['und'][0]['value'] ?> <?php print t('deg. F.'); ?></td>
         </tr>
         <tr  style="background-color:#ffffff">
-            <td style="border-top: 2px solid rgb(126, 41, 11); border-left: 3px groove rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);">Wind direction:</td>
+            <td style="border-top: 2px solid rgb(126, 41, 11); border-left: 3px groove rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print t('Wind direction:'); ?></td>
             <td  style="text-align:center; border-top: 2px solid rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print $node->field_today8to9winddirection['und'][0]['value'] ?></td>
             <td  style="text-align:center; border-top: 2px solid rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print $node->field_tonight8to9winddirection['und'][0]['value'] ?></td>
             <td  style="text-align:center; border-top: 2px solid rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 3px groove rgb(126, 41, 11);"><?php print $node->field_tomorrow8to9winddirection['und'][0]['value'] ?></td>
         </tr>
         <tr  style="background-color:#ffffff">
-            <td style="border-top: 2px solid rgb(126, 41, 11); border-left: 3px groove rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);">Wind speed:</td>
+            <td style="border-top: 2px solid rgb(126, 41, 11); border-left: 3px groove rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print t('Wind speed:'); ?></td>
             <td  style="text-align:center; border-top: 2px solid rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print $node->field_today8to9windspeed['und'][0]['value'] ?> </td>
             <td  style="text-align:center; border-top: 2px solid rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 1px solid rgb(126, 41, 11);"><?php print $node->field_tonight8to9windspeed['und'][0]['value'] ?> </td>
             <td  style="text-align:center; border-top: 2px solid rgb(126, 41, 11); border-left: 1px solid rgb(126, 41, 11); border-right: 3px groove rgb(126, 41, 11);"><?php print $node->field_tomorrow8to9windspeed['und'][0]['value'] ?> </td>
         </tr>
         <tr  style="background-color:#ffffff">
-            <td style="border-style: groove solid groove groove; border-color: rgb(126, 41, 11); border-width: 3px 1px 3px 3px;">Expected snowfall:</td>
-            <td  style="text-align:center; border-style: solid solid groove; border-color: rgb(126, 41, 11); border-width: 2px 1px 3px;"><?php print $node->field_today8to9snow['und'][0]['value'] ?> in.</td>
-            <td  style="text-align:center; border-style: solid solid groove; border-color: rgb(126, 41, 11); border-width: 2px 1px 3px;"><?php print $node->field_tonight8to9snow['und'][0]['value'] ?> in.</td>
-            <td  style="text-align:center; border-style: solid groove groove solid; border-color: rgb(126, 41, 11); border-width: 2px 3px 3px 1px;"><?php print $node->field_tomorrow8to9snow['und'][0]['value'] ?> in.</td>
+            <td style="border-style: groove solid groove groove; border-color: rgb(126, 41, 11); border-width: 3px 1px 3px 3px;"><?php print t('Expected snowfall:'); ?></td>
+            <td  style="text-align:center; border-style: solid solid groove; border-color: rgb(126, 41, 11); border-width: 2px 1px 3px;"><?php print $node->field_today8to9snow['und'][0]['value'] ?> <?php print t('in.'); ?></td>
+            <td  style="text-align:center; border-style: solid solid groove; border-color: rgb(126, 41, 11); border-width: 2px 1px 3px;"><?php print $node->field_tonight8to9snow['und'][0]['value'] ?> <?php print t('in.'); ?></td>
+            <td  style="text-align:center; border-style: solid groove groove solid; border-color: rgb(126, 41, 11); border-width: 2px 3px 3px 1px;"><?php print $node->field_tomorrow8to9snow['und'][0]['value'] ?> <?php print t('in.'); ?></td>
         </tr>
     </tbody>
 </table>
@@ -469,7 +469,7 @@ echo date("l", $tomorrow);?>:
 
 <?php if (isset($node->field_disclaimer['und'][0]['value'])): ?>
     <div id="weather-row" class="advisory-row">
-		<strong>Disclaimer:</strong><br /><?php print $node->field_disclaimer['und'][0]['value']; ?>
+		<strong><?php print t('Disclaimer:'); ?></strong><br /><?php print $node->field_disclaimer['und'][0]['value']; ?>
      </div>       
 <?php endif; ?>
 

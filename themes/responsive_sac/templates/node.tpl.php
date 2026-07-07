@@ -106,7 +106,7 @@
 
     <div class="social-buttons">
     <iframe src="https://www.facebook.com/plugins/like.php?href=<?php $curr_url = check_plain("https://" .$_SERVER['HTTP_HOST'] .$node_url); echo $curr_url; ?>&amp;layout=button_count&amp;show_faces=false&amp;width=200&amp;action=like&amp;font=verdana&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:130px; height:21px;" allowTransparency="true"></iframe>
-    <a class="twitter-share-button" href="https://twitter.com/share" data-related="jasoncosta" data-lang="en" data-size="small" data-count="none">Tweet</a><script type="text/javascript">// <![CDATA[
+    <a class="twitter-share-button" href="https://twitter.com/share" data-lang="en" data-size="small" data-count="none"><?php print t('Tweet'); ?></a><script type="text/javascript">// <![CDATA[
 !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
 // ]]></script>
     </div>

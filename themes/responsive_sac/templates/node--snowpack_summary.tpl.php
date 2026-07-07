@@ -121,31 +121,31 @@
          <div id="advisory-published-date" class="advisory-date">
             <?php
                if ($duration >= '120') {
-                             echo 'Snowpack Summary published on '.$forecastdate;
+                             echo t('Snowpack Summary published on @date', array('@date' => $forecastdate));
                              }
                              elseif ($nowTimestamp <= $expdateTimestamp) {
-                             echo 'Snowpack Summary published on '.$forecastdate.'</br><span id="timeToExp">This snowpack summary expires in ';
+                             echo t('Snowpack Summary published on @date', array('@date' => $forecastdate)) . '</br><span id="timeToExp">' . t('This snowpack summary expires in') . ' ';
                              if (($timeLeftToExpire->format("%h") < 2) && ($timeLeftToExpire->format("%d") == 0) ) {
                                 echo '<span style="color:red">';
-               		   echo $timeLeftToExpire->format("%h hours, %i minutes");
+               		   echo t('@hours hours, @minutes minutes', array('@hours' => $timeLeftToExpire->format('%h'), '@minutes' => $timeLeftToExpire->format('%i')));
                		   echo '</span></span>';
                        }
                        elseif (($timeLeftToExpire->format("%d") >= 1) && ($timeLeftToExpire->format("%d") < 2)) {
-                          echo $timeLeftToExpire->format("%d day, %h hours, %i minutes");
+                          echo t('@days day, @hours hours, @minutes minutes', array('@days' => $timeLeftToExpire->format('%d'), '@hours' => $timeLeftToExpire->format('%h'), '@minutes' => $timeLeftToExpire->format('%i')));
                           echo '</span>';
                        }
                        elseif ($timeLeftToExpire->format("%d") > 2) {
-                          echo $timeLeftToExpire->format("%d days, %h hours, %i minutes");
+                          echo t('@days days, @hours hours, @minutes minutes', array('@days' => $timeLeftToExpire->format('%d'), '@hours' => $timeLeftToExpire->format('%h'), '@minutes' => $timeLeftToExpire->format('%i')));
                           echo '</span>';
                        }
                        elseif ($timeLeftToExpire->format("%d") < 1) {
-                          echo $timeLeftToExpire->format("%h hours, %i minutes");
+                          echo t('@hours hours, @minutes minutes', array('@hours' => $timeLeftToExpire->format('%h'), '@minutes' => $timeLeftToExpire->format('%i')));
                           echo '</span>';
                        }
 
                      }
                      elseif ($nowTimestamp > $expdateTimestamp) {
-                             echo '<span style="background:red">THIS SNOWPACK SUMMARY EXPIRED ON '.$expdate.'</span></br>'.'Snowpack Summary published on '.$forecastdate;
+                             echo '<span style="background:red">' . t('THIS SNOWPACK SUMMARY EXPIRED ON @date', array('@date' => $expdate)) . '</span></br>' . t('Snowpack Summary published on @date', array('@date' => $forecastdate));
                      }
                  ?>
          </div>
@@ -154,10 +154,10 @@
              echo '';
             }
             elseif ($duration <= '120'){
-            print "<span style='font-weight:bold; text-transform:uppercase'>This snowpack summary is valid for $duration hours</span><br>";
+            print '<span style=\'font-weight:bold; text-transform:uppercase\'>' . t('This snowpack summary is valid for @duration hours', array('@duration' => $duration)) . '</span><br>';
             }
             ?>
-            Issued by
+            <?php print t('Issued by'); ?>
             <?php print render($display_name[0]['name_line']);?> - <?php print render($company[0]['title']);?>
          </div>
       </div>
@@ -175,11 +175,11 @@
          <?php elseif ($show_regions == 0):?>
          <?php endif;?>
          <!-- How to read the summary link once a page is built
-            <a id="how-to-read-advisory-simple" href="<?php print $url; ?>/how-to-read-snowpack-summary">How to read the snowpack summary</a>
+            <a id="how-to-read-advisory-simple" href="<?php print $url; ?>/how-to-read-snowpack-summary"><?php print t('How to read the snowpack summary'); ?></a>
             -->
       </div>
       </br>
-      <span class="title">bottom line:</span>
+      <span class="title"><?php print t('bottom line:'); ?></span>
       <div id="bottom-line-adv" class="snowpack-summary-div-text">
          <?php if (isset($content['field_bottom_line'][0]['#markup'])) { print render($content['field_bottom_line'][0]['#markup']); } ?>
       </div>
@@ -188,7 +188,7 @@
       <!--Problem 1-->
       <?php if (isset($node->field_type_1['und'][0]['value'])): ?>
       <div class="clearbg avalanche-problem-row">
-         <span class="title">Avalanche Character 1: <?php print render($content['field_type_1']['0']['#markup']);?></span>
+         <span class="title"><?php print t('Avalanche Character 1:'); ?> <?php print render($content['field_type_1']['0']['#markup']);?></span>
          <div class="snowpack-summary">
             <div id="problem-type" class="border-right">
                <div class="problem-char-label">
@@ -204,7 +204,18 @@
                </div>
                <div class="problem-char-wrapper">
                   <div class="problem-text"><?php $ac = $node->field_type_1['und'][0]['value'];
-                     $ct = array('','Storm Slab avalanches release naturally during snow storms and can be triggered for a few days after a storm. They often release at or below the trigger point. They exist throughout the terrain. Avoid them by waiting for the storm snow to stabilize.','Deep Slab avalanches are destructive and deadly events that can release months after the weak layer was buried. They are scarce compared to Storm or Wind Slab avalanches. Their cycles include fewer avalanches and occur over a larger region. You can triggered them from well down in the avalanche path, and after dozens of tracks have crossed the slope. Avoid the terrain identified in the forecast and give yourself a wide safety buffer to address the uncertainty.','Wind Slab avalanches release naturally during wind events and can be triggered for up to a week after a wind event. They form in lee and cross-loaded terrain features. Avoid them by sticking to wind sheltered or wind scoured areas.','Wet Slab avalanches occur when there is liquid water in the snowpack, and can release during the first few days of a warming period. Travel early in the day and avoid avalanche terrain when you see pinwheels, roller balls, loose wet avalanches, or during rain-on-snow events.','Persistent Slab avalanches can be triggered days to weeks after the last storm. They often propagate across and beyond terrain features that would otherwise confine Wind and Storm Slab avalanches. In some cases they can be triggered remotely, from low-angle terrain or adjacent slopes. Give yourself a wide safety buffer to address the uncertainty.','Loose Wet avalanches occur when water is running through the snowpack, and release at or below the trigger point. Avoid very steep slopes and terrain traps such as cliffs, gullies, or tree wells. Exit avalanche terrain when you see pinwheels, roller balls, a slushy surface, or during rain-on-snow events.','Loose Dry avalanches exist throughout the terrain, release at or below the trigger point, and can run in densely-treed areas. Avoid very steep slopes and terrain traps such as cliffs, gullies, or tree wells.','Generally safe avalanche conditions. Watch for unstable snow on isolated terrain features. Use normal caution when travelling in the backcountry.','Cornice Fall avalanches are caused by a release of overhanging, wind drifted snow. Cornices form on lee and cross-loaded ridges, sub-ridges, and sharp convexities. They are easiest to trigger during periods of rapid growth from wind drifting, rapid warming, or during rain-on-snow events. Cornices may break farther back onto flatter areas than expected.','Glide avalanches occur when water lubricates the interface between the snowpack and the ground. The entire snowpack releases. These avalanches are difficult to predict. Avoid the terrain identified in the forecast or below glide cracks.'
+                     $ct = array(
+                       '',
+                       t('Storm Slab avalanches release naturally during snow storms and can be triggered for a few days after a storm. They often release at or below the trigger point. They exist throughout the terrain. Avoid them by waiting for the storm snow to stabilize.'),
+                       t('Deep Slab avalanches are destructive and deadly events that can release months after the weak layer was buried. They are scarce compared to Storm or Wind Slab avalanches. Their cycles include fewer avalanches and occur over a larger region. You can triggered them from well down in the avalanche path, and after dozens of tracks have crossed the slope. Avoid the terrain identified in the forecast and give yourself a wide safety buffer to address the uncertainty.'),
+                       t('Wind Slab avalanches release naturally during wind events and can be triggered for up to a week after a wind event. They form in lee and cross-loaded terrain features. Avoid them by sticking to wind sheltered or wind scoured areas.'),
+                       t('Wet Slab avalanches occur when there is liquid water in the snowpack, and can release during the first few days of a warming period. Travel early in the day and avoid avalanche terrain when you see pinwheels, roller balls, loose wet avalanches, or during rain-on-snow events.'),
+                       t('Persistent Slab avalanches can be triggered days to weeks after the last storm. They often propagate across and beyond terrain features that would otherwise confine Wind and Storm Slab avalanches. In some cases they can be triggered remotely, from low-angle terrain or adjacent slopes. Give yourself a wide safety buffer to address the uncertainty.'),
+                       t('Loose Wet avalanches occur when water is running through the snowpack, and release at or below the trigger point. Avoid very steep slopes and terrain traps such as cliffs, gullies, or tree wells. Exit avalanche terrain when you see pinwheels, roller balls, a slushy surface, or during rain-on-snow events.'),
+                       t('Loose Dry avalanches exist throughout the terrain, release at or below the trigger point, and can run in densely-treed areas. Avoid very steep slopes and terrain traps such as cliffs, gullies, or tree wells.'),
+                       t('Generally safe avalanche conditions. Watch for unstable snow on isolated terrain features. Use normal caution when travelling in the backcountry.'),
+                       t('Cornice Fall avalanches are caused by a release of overhanging, wind drifted snow. Cornices form on lee and cross-loaded ridges, sub-ridges, and sharp convexities. They are easiest to trigger during periods of rapid growth from wind drifting, rapid warming, or during rain-on-snow events. Cornices may break farther back onto flatter areas than expected.'),
+                       t('Glide avalanches occur when water lubricates the interface between the snowpack and the ground. The entire snowpack releases. These avalanches are difficult to predict. Avoid the terrain identified in the forecast or below glide cracks.'),
                      );
                      $ct_text = $ct[$ac];
                      print $ct_text; ?>
@@ -221,7 +232,7 @@
       <!--Problem 2-->
       <?php if (isset($node->field_type_2['und'][0]['value'])): ?>
       <div class="clearbg avalanche-problem-row">
-         <span class="title">Avalanche Character 2: <?php print render($content['field_type_2']['0']['#markup']);?></span>
+         <span class="title"><?php print t('Avalanche Character 2:'); ?> <?php print render($content['field_type_2']['0']['#markup']);?></span>
          <div class="snowpack-summary">
             <div id="problem-type" class="border-right">
                <div class="problem-char-label">
@@ -237,7 +248,18 @@
                </div>
                <div class="problem-char-wrapper">
                   <div class="problem-text"><?php $ac = $node->field_type_2['und'][0]['value'];
-                     $ct = array('','Storm Slab avalanches release naturally during snow storms and can be triggered for a few days after a storm. They often release at or below the trigger point. They exist throughout the terrain. Avoid them by waiting for the storm snow to stabilize.','Deep Slab avalanches are destructive and deadly events that can release months after the weak layer was buried. They are scarce compared to Storm or Wind Slab avalanches. Their cycles include fewer avalanches and occur over a larger region. You can triggered them from well down in the avalanche path, and after dozens of tracks have crossed the slope. Avoid the terrain identified in the forecast and give yourself a wide safety buffer to address the uncertainty.','Wind Slab avalanches release naturally during wind events and can be triggered for up to a week after a wind event. They form in lee and cross-loaded terrain features. Avoid them by sticking to wind sheltered or wind scoured areas.','Wet Slab avalanches occur when there is liquid water in the snowpack, and can release during the first few days of a warming period. Travel early in the day and avoid avalanche terrain when you see pinwheels, roller balls, loose wet avalanches, or during rain-on-snow events.','Persistent Slab avalanches can be triggered days to weeks after the last storm. They often propagate across and beyond terrain features that would otherwise confine Wind and Storm Slab avalanches. In some cases they can be triggered remotely, from low-angle terrain or adjacent slopes. Give yourself a wide safety buffer to address the uncertainty.','Loose Wet avalanches occur when water is running through the snowpack, and release at or below the trigger point. Avoid very steep slopes and terrain traps such as cliffs, gullies, or tree wells. Exit avalanche terrain when you see pinwheels, roller balls, a slushy surface, or during rain-on-snow events.','Loose Dry avalanches exist throughout the terrain, release at or below the trigger point, and can run in densely-treed areas. Avoid very steep slopes and terrain traps such as cliffs, gullies, or tree wells.','Generally safe avalanche conditions. Watch for unstable snow on isolated terrain features. Use normal caution when travelling in the backcountry.','Cornice Fall avalanches are caused by a release of overhanging, wind drifted snow. Cornices form on lee and cross-loaded ridges, sub-ridges, and sharp convexities. They are easiest to trigger during periods of rapid growth from wind drifting, rapid warming, or during rain-on-snow events. Cornices may break farther back onto flatter areas than expected.','Glide avalanches occur when water lubricates the interface between the snowpack and the ground. The entire snowpack releases. These avalanches are difficult to predict. Avoid the terrain identified in the forecast or below glide cracks.'
+                     $ct = array(
+                       '',
+                       t('Storm Slab avalanches release naturally during snow storms and can be triggered for a few days after a storm. They often release at or below the trigger point. They exist throughout the terrain. Avoid them by waiting for the storm snow to stabilize.'),
+                       t('Deep Slab avalanches are destructive and deadly events that can release months after the weak layer was buried. They are scarce compared to Storm or Wind Slab avalanches. Their cycles include fewer avalanches and occur over a larger region. You can triggered them from well down in the avalanche path, and after dozens of tracks have crossed the slope. Avoid the terrain identified in the forecast and give yourself a wide safety buffer to address the uncertainty.'),
+                       t('Wind Slab avalanches release naturally during wind events and can be triggered for up to a week after a wind event. They form in lee and cross-loaded terrain features. Avoid them by sticking to wind sheltered or wind scoured areas.'),
+                       t('Wet Slab avalanches occur when there is liquid water in the snowpack, and can release during the first few days of a warming period. Travel early in the day and avoid avalanche terrain when you see pinwheels, roller balls, loose wet avalanches, or during rain-on-snow events.'),
+                       t('Persistent Slab avalanches can be triggered days to weeks after the last storm. They often propagate across and beyond terrain features that would otherwise confine Wind and Storm Slab avalanches. In some cases they can be triggered remotely, from low-angle terrain or adjacent slopes. Give yourself a wide safety buffer to address the uncertainty.'),
+                       t('Loose Wet avalanches occur when water is running through the snowpack, and release at or below the trigger point. Avoid very steep slopes and terrain traps such as cliffs, gullies, or tree wells. Exit avalanche terrain when you see pinwheels, roller balls, a slushy surface, or during rain-on-snow events.'),
+                       t('Loose Dry avalanches exist throughout the terrain, release at or below the trigger point, and can run in densely-treed areas. Avoid very steep slopes and terrain traps such as cliffs, gullies, or tree wells.'),
+                       t('Generally safe avalanche conditions. Watch for unstable snow on isolated terrain features. Use normal caution when travelling in the backcountry.'),
+                       t('Cornice Fall avalanches are caused by a release of overhanging, wind drifted snow. Cornices form on lee and cross-loaded ridges, sub-ridges, and sharp convexities. They are easiest to trigger during periods of rapid growth from wind drifting, rapid warming, or during rain-on-snow events. Cornices may break farther back onto flatter areas than expected.'),
+                       t('Glide avalanches occur when water lubricates the interface between the snowpack and the ground. The entire snowpack releases. These avalanches are difficult to predict. Avoid the terrain identified in the forecast or below glide cracks.'),
                      );
                      $ct_text = $ct[$ac];
                      print $ct_text; ?>
@@ -254,7 +276,7 @@
       <!--Problem 3-->
       <?php if (isset($node->field_type_3['und'][0]['value'])): ?>
       <div class="clearbg avalanche-problem-row">
-         <span class="title">Avalanche Character 3: <?php print render($content['field_type_3']['0']['#markup']);?></span>
+         <span class="title"><?php print t('Avalanche Character 3:'); ?> <?php print render($content['field_type_3']['0']['#markup']);?></span>
          <div class="snowpack-summary">
             <div id="problem-type" class="border-right">
                <div class="problem-char-label">
@@ -270,7 +292,18 @@
                </div>
                <div class="problem-char-wrapper">
                   <div class="problem-text"><?php $ac = $node->field_type_3['und'][0]['value'];
-                     $ct = array('','Storm Slab avalanches release naturally during snow storms and can be triggered for a few days after a storm. They often release at or below the trigger point. They exist throughout the terrain. Avoid them by waiting for the storm snow to stabilize.','Deep Slab avalanches are destructive and deadly events that can release months after the weak layer was buried. They are scarce compared to Storm or Wind Slab avalanches. Their cycles include fewer avalanches and occur over a larger region. You can triggered them from well down in the avalanche path, and after dozens of tracks have crossed the slope. Avoid the terrain identified in the forecast and give yourself a wide safety buffer to address the uncertainty.','Wind Slab avalanches release naturally during wind events and can be triggered for up to a week after a wind event. They form in lee and cross-loaded terrain features. Avoid them by sticking to wind sheltered or wind scoured areas.','Wet Slab avalanches occur when there is liquid water in the snowpack, and can release during the first few days of a warming period. Travel early in the day and avoid avalanche terrain when you see pinwheels, roller balls, loose wet avalanches, or during rain-on-snow events.','Persistent Slab avalanches can be triggered days to weeks after the last storm. They often propagate across and beyond terrain features that would otherwise confine Wind and Storm Slab avalanches. In some cases they can be triggered remotely, from low-angle terrain or adjacent slopes. Give yourself a wide safety buffer to address the uncertainty.','Loose Wet avalanches occur when water is running through the snowpack, and release at or below the trigger point. Avoid very steep slopes and terrain traps such as cliffs, gullies, or tree wells. Exit avalanche terrain when you see pinwheels, roller balls, a slushy surface, or during rain-on-snow events.','Loose Dry avalanches exist throughout the terrain, release at or below the trigger point, and can run in densely-treed areas. Avoid very steep slopes and terrain traps such as cliffs, gullies, or tree wells.','Generally safe avalanche conditions. Watch for unstable snow on isolated terrain features. Use normal caution when travelling in the backcountry.','Cornice Fall avalanches are caused by a release of overhanging, wind drifted snow. Cornices form on lee and cross-loaded ridges, sub-ridges, and sharp convexities. They are easiest to trigger during periods of rapid growth from wind drifting, rapid warming, or during rain-on-snow events. Cornices may break farther back onto flatter areas than expected.','Glide avalanches occur when water lubricates the interface between the snowpack and the ground. The entire snowpack releases. These avalanches are difficult to predict. Avoid the terrain identified in the forecast or below glide cracks.'
+                     $ct = array(
+                       '',
+                       t('Storm Slab avalanches release naturally during snow storms and can be triggered for a few days after a storm. They often release at or below the trigger point. They exist throughout the terrain. Avoid them by waiting for the storm snow to stabilize.'),
+                       t('Deep Slab avalanches are destructive and deadly events that can release months after the weak layer was buried. They are scarce compared to Storm or Wind Slab avalanches. Their cycles include fewer avalanches and occur over a larger region. You can triggered them from well down in the avalanche path, and after dozens of tracks have crossed the slope. Avoid the terrain identified in the forecast and give yourself a wide safety buffer to address the uncertainty.'),
+                       t('Wind Slab avalanches release naturally during wind events and can be triggered for up to a week after a wind event. They form in lee and cross-loaded terrain features. Avoid them by sticking to wind sheltered or wind scoured areas.'),
+                       t('Wet Slab avalanches occur when there is liquid water in the snowpack, and can release during the first few days of a warming period. Travel early in the day and avoid avalanche terrain when you see pinwheels, roller balls, loose wet avalanches, or during rain-on-snow events.'),
+                       t('Persistent Slab avalanches can be triggered days to weeks after the last storm. They often propagate across and beyond terrain features that would otherwise confine Wind and Storm Slab avalanches. In some cases they can be triggered remotely, from low-angle terrain or adjacent slopes. Give yourself a wide safety buffer to address the uncertainty.'),
+                       t('Loose Wet avalanches occur when water is running through the snowpack, and release at or below the trigger point. Avoid very steep slopes and terrain traps such as cliffs, gullies, or tree wells. Exit avalanche terrain when you see pinwheels, roller balls, a slushy surface, or during rain-on-snow events.'),
+                       t('Loose Dry avalanches exist throughout the terrain, release at or below the trigger point, and can run in densely-treed areas. Avoid very steep slopes and terrain traps such as cliffs, gullies, or tree wells.'),
+                       t('Generally safe avalanche conditions. Watch for unstable snow on isolated terrain features. Use normal caution when travelling in the backcountry.'),
+                       t('Cornice Fall avalanches are caused by a release of overhanging, wind drifted snow. Cornices form on lee and cross-loaded ridges, sub-ridges, and sharp convexities. They are easiest to trigger during periods of rapid growth from wind drifting, rapid warming, or during rain-on-snow events. Cornices may break farther back onto flatter areas than expected.'),
+                       t('Glide avalanches occur when water lubricates the interface between the snowpack and the ground. The entire snowpack releases. These avalanches are difficult to predict. Avoid the terrain identified in the forecast or below glide cracks.'),
                      );
                      $ct_text = $ct[$ac];
                      print $ct_text; ?>
@@ -287,7 +320,7 @@
       <!--AVALANCHE TEXT DISCUSSION-->
       <?php if ($node->field_text_discussion['und'][0]['value'] != ''): ?>
       <div class="clearbg avalanche-problem-row">
-         <span class="title">Snowpack Discussion</span>
+         <span class="title"><?php print t('Snowpack Discussion'); ?></span>
          <div class="advisory-div">
             <div class="disc-advisory-div-text">
                <?php print render($content['field_text_discussion'][0]['#markup']); ?>
@@ -302,7 +335,7 @@
          <?php if (!empty($obs_page)):?>
          <a style="color:#ddd;" href="<?php print $url.$obs_page; ?>">
          <?php endif;?>
-         recent observations
+         <?php print t('recent observations'); ?>
          <?php if (!empty($obs_page)):?>
          </a>
          <?php endif;?>
@@ -311,12 +344,12 @@
             <div class="advisory-div-icon">
                <?php if (!empty($submit_snowpack_obs_page)):?>
                <div class="submit-obs-button">
-                  <a href="<?php print $url.$submit_snowpack_obs_page; ?>">Submit Snowpack Observations</a>
+                  <a href="<?php print $url.$submit_snowpack_obs_page; ?>"><?php print t('Submit Snowpack Observations'); ?></a>
                </div>
                <?php endif;?>
                <?php if (!empty($submit_avalanche_obs_page)):?>
                <div class="submit-obs-button">
-                  <a href="<?php print $url.$submit_avalanche_obs_page; ?>">Submit Avalanche Observations</a>
+                  <a href="<?php print $url.$submit_avalanche_obs_page; ?>"><?php print t('Submit Avalanche Observations'); ?></a>
                </div>
                <?php endif;?>
             </div>
@@ -332,11 +365,11 @@
       </div>
       <?php endif; ?>
       <div class="clearbg avalanche-problem-row">
-        <span class="title">Weather and CURRENT CONDITIONS</span>
+        <span class="title"><?php print t('Weather and Current Conditions'); ?></span>
         <!--MOUNTAIN WEATHER-->
         <?php if ($node->field_mountain_weather['und'][0]['value'] != ''): ?>
           <div id="wx-summary">
-            <span class="wx-sub-title">weather summary</span>
+            <span class="wx-sub-title"><?php print t('weather summary'); ?></span>
             <div class="advisory-div">
               <div class="disc-advisory-div-text">
                 <?php print render($content['field_mountain_weather'][0]['#markup']); ?>
@@ -353,44 +386,44 @@
             <div class="advisory-div-icon">
               <?php if (!empty($wx_map_page)):?>
                 <div class="submit-obs-button">
-                  <a href="<?php print $url.$wx_map_page; ?>">Weather Station Map</a>
+                  <a href="<?php print $url.$wx_map_page; ?>"><?php print t('Weather Station Map'); ?></a>
                 </div>
               <?php endif;?>
               <?php if (!empty($wx_table_page)):?>
                 <div class="submit-obs-button">
-                  <a href="<?php print $url.$wx_table_page; ?>">Weather Station Table</a>
+                  <a href="<?php print $url.$wx_table_page; ?>"><?php print t('Weather Station Table'); ?></a>
                 </div>
               <?php endif;?>
             </div>
             <table id="Wx-obs" class="row-sub-table">
               <tbody>
                 <tr>
-                  <td >0600 temperature:</td>
-                  <td ><?php print render($content['field_temp8700']['#items']['0']['value']);?> deg. F.</td>
+                  <td ><?php print t('0600 temperature:'); ?></td>
+                  <td ><?php print render($content['field_temp8700']['#items']['0']['value']);?> <?php print t('deg. F.'); ?></td>
                 </tr>
                 <tr>
-                  <td >Max. temperature in the last 24 hours:</td>
-                  <td ><?php print render($content['field_hr24maxtemp']['#items']['0']['value']);?> deg. F.</td>
+                  <td ><?php print t('Max. temperature in the last 24 hours:'); ?></td>
+                  <td ><?php print render($content['field_hr24maxtemp']['#items']['0']['value']);?> <?php print t('deg. F.'); ?></td>
                 </tr>
                 <tr>
-                  <td >Average wind direction during the last 24 hours:</td>
+                  <td ><?php print t('Average wind direction during the last 24 hours:'); ?></td>
                   <td ><?php print render($content['field_hr24winddir']['#items']['0']['value']);?></td>
                 </tr>
                 <tr>
-                  <td >Average wind speed during the last 24 hours:</td>
-                  <td ><?php print render($content['field_hr24windspeed']['#items']['0']['value']);?> mph</td>
+                  <td ><?php print t('Average wind speed during the last 24 hours:'); ?></td>
+                  <td ><?php print render($content['field_hr24windspeed']['#items']['0']['value']);?> <?php print t('mph'); ?></td>
                 </tr>
                 <tr>
-                  <td >Maximum wind gust in the last 24 hours:</td>
-                  <td ><?php print render($content['field_hr24maxgust']['#items']['0']['value']);?> mph</td>
+                  <td ><?php print t('Maximum wind gust in the last 24 hours:'); ?></td>
+                  <td ><?php print render($content['field_hr24maxgust']['#items']['0']['value']);?> <?php print t('mph'); ?></td>
                 </tr>
                 <tr>
-                  <td >New snowfall in the last 24 hours:</td>
-                  <td ><?php print render($content['field_hr24snowfall']['#items']['0']['value']);?> inches</td>
+                  <td ><?php print t('New snowfall in the last 24 hours:'); ?></td>
+                  <td ><?php print render($content['field_hr24snowfall']['#items']['0']['value']);?> <?php print t('inches'); ?></td>
                 </tr>
                 <tr>
-                  <td >Total snow depth:</td>
-                  <td ><?php print render($content['field_totalsnowdepth']['#items']['0']['value']);?> inches</td>
+                  <td ><?php print t('Total snow depth:'); ?></td>
+                  <td ><?php print render($content['field_totalsnowdepth']['#items']['0']['value']);?> <?php print t('inches'); ?></td>
                 </tr>
               </tbody>
             </table>
@@ -399,7 +432,7 @@
         <!--TWO DAY WEATHER FORECAST-->
         <?php if (isset($content['field_today7to8weather']['#items']['0']['value'])): ?>
           <div>
-            <span class="wx-sub-title">Two-Day Mountain Weather Forecast Produced in partnership with the <a href="<?php print $nws_url;?>" target="_blank"><?php print $nws_name;?></a></span>
+            <span class="wx-sub-title"><?php print t('Two-Day Mountain Weather Forecast Produced in partnership with the'); ?> <a href="<?php print $nws_url;?>" target="_blank"><?php print $nws_name;?></a></span>
             <!-- Weather Table Responsive -->
 
             <article>
@@ -409,7 +442,7 @@
                   <button>
                   <?php
                       if (date('Y-m-d') == date('Y-m-d', $node->created)) {
-                        print "Today";
+                        print t('Today');
                       }
                       else {
                         echo date("l", $node->created);
@@ -421,10 +454,10 @@
                   <button>
                   <?php
                       if (date('Y-m-d') == date('Y-m-d', $node->created)) {
-                        print "Tonight";
+                        print t('Tonight');
                       }
                       else {
-                        echo date("l", $node->created)." Night";
+                        echo date("l", $node->created) . " " . t("Night");
                       }
                       ?>
                  </button>
@@ -446,7 +479,7 @@
                     <th class="default">
                       <?php
                       if (date('Y-m-d') == date('Y-m-d', $node->created)) {
-                        print "Today";
+                        print t('Today');
                       }
                       else {
                         echo date("l", $node->created);
@@ -456,10 +489,10 @@
                     <th class="bg-light">
                       <?php
                       if (date('Y-m-d') == date('Y-m-d', $node->created)) {
-                        print "Tonight";
+                        print t('Tonight');
                       }
                       else {
-                        echo date("l", $node->created)." Night";
+                        echo date("l", $node->created) . " " . t("Night");
                       }
                       ?>
                     </th>
@@ -473,37 +506,37 @@
                 </thead>
                 <tbody>
                   <tr class="wxmidrow">
-                    <td class="wxfirstcol">Weather:</td>
+                    <td class="wxfirstcol"><?php print t('Weather:'); ?></td>
                     <td class="default"><span class="txt-l"><?php print render($content['field_today7to8weather']['#items']['0']['value']) ?></span></td>
                     <td><span class="txt-l"><?php print render($content['field_tonight7to8weather']['#items']['0']['value']) ?></span></td>
                     <td><span class="txt-l"><?php print render($content['field_tomorrow7to8weather']['#items']['0']['value']) ?></span></td>
                   </tr>
                   <tr class="wxmidrow">
-                    <td class="wxfirstcol">Temperatures:</td>
-                    <td class="default"><span class="txt-1"><?php print render($content['field_today7to8temp']['#items']['0']['value']) ?> deg. F.
+                    <td class="wxfirstcol"><?php print t('Temperatures:'); ?></td>
+                    <td class="default"><span class="txt-1"><?php print render($content['field_today7to8temp']['#items']['0']['value']) ?> <?php print t('deg. F.'); ?>
                     </span></td>
-                    <td><span class="txt-1"><?php print render($content['field_tonight7to8temp']['#items']['0']['value']) ?> deg. F.
+                    <td><span class="txt-1"><?php print render($content['field_tonight7to8temp']['#items']['0']['value']) ?> <?php print t('deg. F.'); ?>
                     </span></td>
-                    <td><span class="txt-1"><?php print render($content['field_tomorrow7to8temp']['#items']['0']['value']) ?> deg. F.
+                    <td><span class="txt-1"><?php print render($content['field_tomorrow7to8temp']['#items']['0']['value']) ?> <?php print t('deg. F.'); ?>
                     </span></td>
                   </tr>
                   <tr class="wxmidrow">
-                    <td class="wxfirstcol">Wind Direction:</td>
+                    <td class="wxfirstcol"><?php print t('Wind Direction:'); ?></td>
                     <td class="default"><span class="txt-1"><?php print render($content['field_today7to8winddirection']['#items']['0']['value']) ?></span></td>
                     <td><span class="txt-1"><?php print render($content['field_tonight7to8winddirection']['#items']['0']['value']) ?></span></td>
                     <td><span class="txt-1"><?php print render($content['field_tomorrow7to8winddirection']['#items']['0']['value']) ?></span></td>
                   </tr>
                   <tr class="wxmidrow">
-                    <td class="wxfirstcol">Wind Speed:</td>
+                    <td class="wxfirstcol"><?php print t('Wind Speed:'); ?></td>
                     <td class="default"><span class="txt-1"><?php print render($content['field_today7to8windspeed']['#items']['0']['value']) ?></span></td>
                     <td><span class="txt-1"><?php print render($content['field_tonight7to8windspeed']['#items']['0']['value']) ?></span></td>
                     <td><span class="txt-1"><?php print render($content['field_tomorrow7to8windspeed']['#items']['0']['value']) ?></span></td>
                   </tr>
                   <tr class="wxbottomrow">
-                    <td class="wxfirstcol">Expected snowfall:</td>
-                    <td class="default"><span class="txt-1"><?php print render($content['field_today7to8snow']['#items']['0']['value']) ?> in.</span></td>
-                    <td><span class="txt-1"><?php print render($content['field_tonight7to8snow']['#items']['0']['value']) ?> in.</span></td>
-                    <td><span class="txt-1"><?php print render($content['field_tomorrow7to8snow']['#items']['0']['value']) ?> in.</span></td>
+                    <td class="wxfirstcol"><?php print t('Expected snowfall:'); ?></td>
+                    <td class="default"><span class="txt-1"><?php print render($content['field_today7to8snow']['#items']['0']['value']) ?> <?php print t('in.'); ?></span></td>
+                    <td><span class="txt-1"><?php print render($content['field_tonight7to8snow']['#items']['0']['value']) ?> <?php print t('in.'); ?></span></td>
+                    <td><span class="txt-1"><?php print render($content['field_tomorrow7to8snow']['#items']['0']['value']) ?> <?php print t('in.'); ?></span></td>
                   </tr>
                 </tbody>
               </table>
@@ -515,7 +548,7 @@
                                   <th class="default">
                       <?php
                       if (date('Y-m-d') == date('Y-m-d', $node->created)) {
-                        print "Today";
+                        print t('Today');
                       }
                       else {
                         echo date("l", $node->created);
@@ -525,10 +558,10 @@
                     <th class="bg-light">
                       <?php
                       if (date('Y-m-d') == date('Y-m-d', $node->created)) {
-                        print "Tonight";
+                        print t('Tonight');
                       }
                       else {
-                        echo date("l", $node->created)." Night";
+                        echo date("l", $node->created) . " " . t("Night");
                       }
                       ?>
                     </th>
@@ -542,37 +575,37 @@
                 </thead>
                 <tbody>
                   <tr class="wxmidrow">
-                    <td class="wxfirstcol">Weather:</td>
+                    <td class="wxfirstcol"><?php print t('Weather:'); ?></td>
                     <td class="default"><span class="txt-l"><?php print render($content['field_today8to9weather']['#items']['0']['value']) ?></span></td>
                     <td><span class="txt-l"><?php print render($content['field_tonight8to9weather']['#items']['0']['value']) ?></span></td>
                     <td><span class="txt-l"><?php print render($content['field_tomorrow8to9weather']['#items']['0']['value']) ?></span></td>
                   </tr>
                   <tr class="wxmidrow">
-                    <td class="wxfirstcol">Temperatures:</td>
-                    <td class="default"><span class="txt-1"><?php print render($content['field_today8to9temp']['#items']['0']['value']) ?> deg. F.
+                    <td class="wxfirstcol"><?php print t('Temperatures:'); ?></td>
+                    <td class="default"><span class="txt-1"><?php print render($content['field_today8to9temp']['#items']['0']['value']) ?> <?php print t('deg. F.'); ?>
                     </span></td>
-                    <td><span class="txt-1"><?php print render($content['field_tonight8to9temp']['#items']['0']['value']) ?> deg. F.
+                    <td><span class="txt-1"><?php print render($content['field_tonight8to9temp']['#items']['0']['value']) ?> <?php print t('deg. F.'); ?>
                     </span></td>
-                    <td><span class="txt-1"><?php print render($content['field_tomorrow8to9temp']['#items']['0']['value']) ?> deg. F.
+                    <td><span class="txt-1"><?php print render($content['field_tomorrow8to9temp']['#items']['0']['value']) ?> <?php print t('deg. F.'); ?>
                     </span></td>
                   </tr>
                   <tr class="wxmidrow">
-                    <td class="wxfirstcol">Wind Direction:</td>
+                    <td class="wxfirstcol"><?php print t('Wind Direction:'); ?></td>
                     <td class="default"><span class="txt-1"><?php print render($content['field_today8to9winddirection']['#items']['0']['value']) ?></span></td>
                     <td><span class="txt-1"><?php print render($content['field_tonight8to9winddirection']['#items']['0']['value']) ?></span></td>
                     <td><span class="txt-1"><?php print render($content['field_tomorrow8to9winddirection']['#items']['0']['value']) ?></span></td>
                   </tr>
                   <tr class="wxmidrow">
-                    <td class="wxfirstcol">Wind Speed:</td>
+                    <td class="wxfirstcol"><?php print t('Wind Speed:'); ?></td>
                     <td class="default"><span class="txt-1"><?php print render($content['field_today8to9windspeed']['#items']['0']['value']) ?></span></td>
                     <td><span class="txt-1"><?php print render($content['field_tonight8to9windspeed']['#items']['0']['value']) ?></span></td>
                     <td><span class="txt-1"><?php print render($content['field_tomorrow8to9windspeed']['#items']['0']['value']) ?></span></td>
                   </tr>
                   <tr class="wxbottomrow">
-                    <td class="wxfirstcol">Expected snowfall:</td>
-                    <td class="default"><span class="txt-1"><?php print render($content['field_today8to9snow']['#items']['0']['value']) ?> in.</span></td>
-                    <td><span class="txt-1"><?php print render($content['field_tonight8to9snow']['#items']['0']['value']) ?> in.</span></td>
-                    <td><span class="txt-1"><?php print render($content['field_tomorrow8to9snow']['#items']['0']['value']) ?> in.</span></td>
+                    <td class="wxfirstcol"><?php print t('Expected snowfall:'); ?></td>
+                    <td class="default"><span class="txt-1"><?php print render($content['field_today8to9snow']['#items']['0']['value']) ?> <?php print t('in.'); ?></span></td>
+                    <td><span class="txt-1"><?php print render($content['field_tonight8to9snow']['#items']['0']['value']) ?> <?php print t('in.'); ?></span></td>
+                    <td><span class="txt-1"><?php print render($content['field_tomorrow8to9snow']['#items']['0']['value']) ?> <?php print t('in.'); ?></span></td>
                   </tr>
                 </tbody>
               </table>
@@ -583,7 +616,7 @@
       <!-- end weather-->
       <!--DISCLAIMER-->
       <div class="clearbg avalanche-problem-row">
-        <span class="title">Disclaimer</span>
+        <span class="title"><?php print t('Disclaimer'); ?></span>
         <div class="advisory-div">
           <div class="disc-advisory-div-text">
             <?php print_r($node->field_disclaimer['und'][0]['value']); ?>
@@ -593,7 +626,7 @@
    </div>
    <div class="social-buttons">
       <iframe src="https://www.facebook.com/plugins/like.php?href=<?php $curr_url = check_plain("https://" .$_SERVER['HTTP_HOST'] .$node_url); echo $curr_url; ?>&amp;layout=button_count&amp;show_faces=false&amp;width=200&amp;action=like&amp;font=verdana&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:130px; height:21px;" allowTransparency="true"></iframe>
-      <a class="twitter-share-button" href="https://twitter.com/share" data-related="jasoncosta" data-lang="en" data-size="small" data-count="none">Tweet</a><script type="text/javascript">// <![CDATA[
+      <a class="twitter-share-button" href="https://twitter.com/share" data-lang="en" data-size="small" data-count="none">Tweet</a><script type="text/javascript">// <![CDATA[
          !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
          // ]]>
       </script>

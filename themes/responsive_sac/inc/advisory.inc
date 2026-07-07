@@ -1,23 +1,27 @@
 <?php
 
-function _get_advisory_data($node) {
+/**
+ * @file
+ * Advisory (avalanche forecast) data preparation for the responsive_sac theme.
+ *
+ * Elevation-band labels are read from theme settings (one set per center)
+ * rather than a hardcoded per-taxonomy-term-id table — the original table
+ * here only matched Sierra Avalanche Center's own multi-zone region setup
+ * and didn't generalize. See also avalanche_modern/inc/advisory.inc, which
+ * carries the same fix.
+ */
+
+function responsive_sac_get_advisory_data($node) {
   $a = array();
   if (!is_object($node)) { return $a; }
 
-  $labels = array('No Rating', '1. Low', '2. Moderate', '3. Considerable', '4. High', '5. Extreme');
+  $labels = array(t('No Rating'), t('1. Low'), t('2. Moderate'), t('3. Considerable'), t('4. High'), t('5. Extreme'));
 
-  // These should really exist within a Drupal settings page, but this will do for now.
-  $elevations = array(
-    1 => array('Below Treeline', 'Near Treeline', 'Above Treeline'), // Central Sierra
-    2 => array('Below treeline', 'Near treeline', 'Above treeline'), // 
-    4 => array('Below 7,000 ft.', '7,000-8,500 ft.', 'Above 8,500 ft.'), // 
-    5 => array('Below 8,000 ft.', '8,000-9,500 ft.', 'Above 9,500 ft.'), // 
-    6 => array('Below 8,000 ft.', '8,000-9,500 ft.', 'Above 9,500 ft.'), // 
-    7 => array('Below treeline', 'Near treeline', 'Above treeline'), // 
-    8 => array('Below treeline', 'Near treeline', 'Above treeline'), // 
-  );
-
-  $region_id = $node->field_region_forecaster['und'][0]['tid'];
+  // Fixed: the actual field is field_forecast_region (was field_region_forecaster).
+  $region_id = 0;
+  if (!empty($node->field_forecast_region['und'][0]['tid'])) {
+    $region_id = $node->field_forecast_region['und'][0]['tid'];
+  }
   $a['region_id'] = $region_id;
   $user_fields = user_load($node->uid);
   $forecaster = '';
@@ -26,10 +30,13 @@ function _get_advisory_data($node) {
   if (empty($forecaster)) { $forecaster = $user_fields->name; }
   $a['forecaster'] = $forecaster;
 
+  $upper_band = theme_get_setting('upper_elevation_band');
+  $mid_band = theme_get_setting('middle_elevation_band');
+  $lower_band = theme_get_setting('lower_elevation_band');
   $a['elevation_labels'] = array(
-      'upper' => $elevations[$region_id][2],
-      'mid' => $elevations[$region_id][1],
-      'lower' => $elevations[$region_id][0],
+    'upper' => !empty($upper_band) ? $upper_band : t('Above Treeline'),
+    'mid' => !empty($mid_band) ? $mid_band : t('Near Treeline'),
+    'lower' => !empty($lower_band) ? $lower_band : t('Below Treeline'),
   );
 
   // Danger ratings
@@ -196,94 +203,4 @@ function _get_advisory_data($node) {
   }
 
   return $a;
-}
-
-$duration = $node->field_duration['und'][0]['value'];
-
-
-
-
-function _build_problem_html($problem, $title = '', $elevation_labels) {
-
-  $type = $problem['type'];
- if (!empty($problem['rose'])) { $rose = $problem['rose']; }
-  if (!empty($problem['likelihood'])) { $likelihood = $problem['likelihood']; }
-  else { $likelihood = 0; }
-  if (!empty($problem['distribution'])) { $distribution = $problem['distribution']; }
-  else { $distribution = 0; }
-  if (!empty($problem['size'])) { $size = $problem['size']; }
-  else { $size = 0; }
-  if (!empty($problem['trend'])) { $trend = $problem['trend']; }
-  else { $trend = 0; }
-  $a = array('','Decreasing Danger','Same Danger','Increasing Danger');
-  $trend_text = $a[$trend];
-  $description = $problem['description'];
-
-$table = <<<EOT
-<div class="clearbg avalanche-problem-row">
-  <span class="title">$title</span>
-<ul>
-    <li id="problem-type" class="border-right">
-      <div class="problem-char-label">Type
-         <span id="type-$type-info" class="info">?</span>
-      </div>
-      <div class="problem-char-wrapper problem-type">
-	  <a href="http://www.sierraavalanchecenter.org/avalanche-problems#$type" target="_blank">
-	      <img src="/themes/responsive_sac/img/api/$type.jpg">
-	  </a>
-      </div>
-    </li>
-
-    <li id="problem-rose" class="border-right">
-      <div class="problem-char-label">Aspect/Elevation
-        <span id="problem-rose-info" class="info">?</span>
-      </div>
-      <div class="problem-char-wrapper">
-	  <img id="rose" src="$rose">
-      </div>
-    </li>
-
-    <li class="border-right">
-      <div class="problem-char-label">Likelihood
-          <span id="likelihood-info" class="info">?</span>
-      </div>
-      <div class="problem-char-wrapper">
-	  <div class="top-label">likely</div>
-          <div class="middle-data">
-            <div class="middle-data-overlay middle-data-overlay-$likelihood"></div>
-          </div>
-          <div class="bottom-label">unlikely</div>
-      </div>
-    </li>
-
-    <li class="border-right">
-      <div class="problem-char-label">Size
-        <span id="size-info" class="info">?</span>
-      </div>
-      <div class="problem-char-wrapper">
-	  <div class="top-label">large</div>
-          <div class="middle-data">
-            <div class="middle-data-overlay middle-data-overlay-$size"></div>
-          </div>
-          <div class="bottom-label">small</div>
-      </div>
-    </li>
-    
-    <li id="trend">
-      <div class="problem-char-label">Trend
-        <span id="trend-info" class="info">?</span>
-      </div>
-      <div class="problem-char-wrapper">
-	  <div class="middle-data-graph"><img src="/themes/responsive_sac/img/trend/$trend.png"></div>
-          <div class="middle-data-graph-text">$trend_text</div>
-      </div>
-    </li>
-  </ul>
-<div id="problem-description">$description</div>
-
-</div>
-
-EOT;
-
-  return $table;
 }

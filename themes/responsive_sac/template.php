@@ -196,7 +196,7 @@ function responsive_sac_preprocess_node(&$variables) {
     $variables['classes_array'][] = 'node-full';
     if ($variables['node']->type == 'advisory') {
       require_once('inc/advisory.inc');
-      $variables['advisory'] = _get_advisory_data($variables['node']);
+      $variables['advisory'] = responsive_sac_get_advisory_data($variables['node']);
       $blr = array_fill(0, 24, 0);
       $a = array('problem_1', 'problem_2', 'problem_3');
       foreach ($a as $item) {
@@ -351,20 +351,6 @@ $vars['node'] = $node;
 $vars['item_elements'] = empty($item->elements) ? '' : format_xml_elements($item->elements);
 }
 
-/* old forecast form function
-function responsive_sac_theme() {
-  return array(
-    'forecast_node_form' => array(
-      'arguments' => array(
-          'form' => NULL,
-      ),
-      'template' => 'templates/forecast-node-form', // set the path here if not in root theme directory
-      'render element' => 'form',
-    ),
-  );
-}
-*/
-
 // allow responsive_sac theme to use custom input forms
 function responsive_sac_theme() {
 return array(
@@ -373,14 +359,6 @@ return array(
           'form' => NULL,
       ),
       'template' => 'templates/advisory-node-form', // set the path here if not in root theme directory
-      'render element' => 'form',
-    ),
-
-    'forecast_node_form' => array(
-      'arguments' => array(
-          'form' => NULL,
-      ),
-      'template' => 'templates/forecast-node-form', // set the path here if not in root theme directory
       'render element' => 'form',
     ),
 

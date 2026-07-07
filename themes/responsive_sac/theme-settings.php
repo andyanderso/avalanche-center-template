@@ -212,14 +212,8 @@ $form['advisory_page_settings'] = array(
     '#type' => 'textfield',
     '#title' => t('Current weather conditions text'),
     '#default_value' => theme_get_setting('current_wx_conditions_desc'),
-    '#description'   => t("Sets the descritpion for the current weather description part of the advisory. For example: 'Weather observations from along the Sierra Crest between 8200 ft. and 8800 ft.'"),
+    '#description'   => t("Sets the description for the current weather description part of the advisory. For example: 'Weather observations from along the ridgeline between 8,200 ft. and 8,800 ft.'"),
   );
-  $form['advisory_page_settings']['current_wx_conditions_desc'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Current weather conditions text'),
-    '#default_value' => theme_get_setting('current_wx_conditions_desc'),
-    '#description'   => t("Sets the descritpion for the current weather description part of the advisory. For example: 'Weather observations from along the Sierra Crest between 8200 ft. and 8800 ft.'"),
-  );  
   $form['advisory_page_settings']['wx_map_page'] = array(
     '#type' => 'textfield',
     '#title' => t('Link for the weather maps button in the weather section'),

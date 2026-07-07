@@ -1,6 +1,6 @@
 type = theme
 name = Avalanche Center Modern
-description = Modern forecast-first theme for an avalanche center, in the style of the Sierra Avalanche Center. Switchable with responsive_sac.
+description = Modern forecast-first theme for an avalanche center. Switchable with responsive_sac.
 backdrop = 1.x
 base theme = responsive_bartik
 version = 1.x-1.x

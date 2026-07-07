@@ -140,6 +140,10 @@ be sorted into two buckets:
   needs genericizing alongside `avalanche_danger_map` in Phase 3 — see §13).
   `nws_snow_observation` (Argentina-only, hardcoded to the US National
   Weather Service) is the one exception left site-specific, not shipped.
+  Re-verified during the Phase 3 double-check: the union of every
+  `node.type.*.json` across both reference sites is 24 files; excluding
+  `nws_snow_observation` and a leftover `test` type (present on Gulmarg only,
+  not a real content type) leaves exactly these 22.
 - All `field.*` storage + instances, e.g. `field_overalldanger`,
   `field_forecast_region`, `field_region_map`, `field_snowpack_avalanche_weather`
 - Taxonomy vocabularies: `region`, glossary vocabulary
@@ -207,10 +211,13 @@ and map center. Make all of that config-driven:
 
 - **Ship two presets in code:**
   - `NAC` (North American), **canonical values from the official scale**
-    (https://github.com/andyanderso/north-american-public-avalanche-danger-scale/blob/main/COLORS.md —
-    verify this URL is still current before using it as source of truth):
+    (https://github.com/NationalAvalancheCenter/north-american-public-avalanche-danger-scale/blob/main/COLORS.md
+    — re-fetched and re-verified during the Phase 3 double-check, from the
+    canonical `NationalAvalancheCenter` org rather than a fork):
     `1=#50B848, 2=#FFF200, 3=#F7941E, 4=#ED1C24, 5=#231F20`. The official
-    scale defines **only levels 1-5, no level 0**.
+    scale defines **only levels 1-5, no level 0**. Confirmed to match
+    exactly what both `avalanche_danger_map` (module) and
+    `avalanche_modern_danger_colors()` (theme) ship.
   - `SAC` (Argentine, from MapColor.php): `0=#CBCBCB, 1=#007F25, 2=#FFFD4B, 3=#FFA032, 4=#FF0013, 5=#000000`
 
 *(Correction: an earlier version of this doc listed NAC as
@@ -453,6 +460,81 @@ stripped rather than adapted. Notable findings beyond straightforward renaming:
   dereferencing `->uri`, falling back to an empty background.
 - Dropped `img/gulmarg-light.png` from `responsive_sac` — confirmed
   unreferenced anywhere in the theme, a dead asset.
+
+### Phase 2 remediation (found during a post-Phase-3 double-check)
+
+The session that did Phase 2 was interrupted (battery died) partway through;
+the interruption dropped an entire, separate body of work on the much
+larger `responsive_sac` theme's advisory-related templates that the
+original Phase 2 log above didn't cover (it only documented the smaller
+`avalanche_modern` equivalents). A later double-check (prompted by the
+user, who correctly remembered "this would take longer, there were so many
+files") found and fixed:
+
+- **`responsive_sac/inc/advisory.inc` had never been touched at all** —
+  still raw D7-style field-array code, still had the same hardcoded
+  Sierra-specific elevation-band-by-taxonomy-term-id table described in
+  §6/§13's NAC-color writeup (a different bug, same "two divergent hardcoded
+  copies" pattern), a hardcoded `sierraavalanchecenter.org` URL, and no
+  `t()` wrapping. This file is live — `template.php` `require_once`s it for
+  every `advisory` node — not dead code.
+- **The elevation-band table design flaw existed in *both* themes' inc
+  files**, including `avalanche_modern`'s already-"genericized" copy: it fixed
+  the `field_forecast_region` field-name bug but kept the same
+  per-taxonomy-term-id hardcoded table (with an English fallback). Both were
+  fixed the same way: read `upper_elevation_band`/`middle_elevation_band`/
+  `lower_elevation_band` from theme settings (already in the shared schema,
+  §8) instead of a table keyed to Sierra Avalanche Center's own specific
+  multi-zone region IDs, which doesn't generalize to any other center's
+  region setup.
+- **Vestigial `forecast` content-type templates were missed** —
+  `node--forecast.tpl.php`, `node-forecast-edit.tpl.php`,
+  `forecast-node-form.tpl.php`, and a live `forecast_node_form`
+  `hook_theme()` registration (plus a dead duplicate comment block).
+  Confirmed via `node.type.*.json` that `forecast` isn't a real content type
+  on either reference site — same category of cruft as the `avyobs`/`snowobs`
+  templates correctly dropped in the original Phase 2 pass, just missed for
+  this one. Deleted.
+- **`responsive_sac`'s two unprefixed global functions**
+  (`_get_advisory_data()`, `_build_problem_html()`) were renamed/cleaned up:
+  the first is now `responsive_sac_get_advisory_data()` (its one caller in
+  `template.php` updated); the second was confirmed dead — unused in either
+  reference site — and deleted rather than ported.
+- **A full `t()`-wrapping pass** (delegated to a background Sonnet agent,
+  independently verified after) across the 7 `responsive_sac` templates the
+  original Phase 2 pass never reached: `node--advisory.tpl.php`,
+  `advisory-node-form.tpl.php`, `node--snowpack_summary.tpl.php`,
+  `snowpack-summary-node-form.tpl.php`, and the 3
+  `views-view-row-rss--advisory-views--feed-*.tpl.php` templates. Found and
+  fixed along the way:
+  - A hardcoded personal message in `advisory-node-form.tpl.php`'s
+    confirm-navigation-away dialog ("Don't do it Brandon! ...") — replaced
+    with a generic, professional `t()`-wrapped message; the same
+    unprofessional phrasing in `snowpack-summary-node-form.tpl.php` was
+    also genericized.
+  - Un-wrapped avalanche-problem-type description paragraphs (Storm Slab,
+    Deep Slab, Wind Slab, etc.) duplicated three times in
+    `node--snowpack_summary.tpl.php` — each element now individually
+    wrapped in `t()`.
+  - A copy/paste content bug in
+    `views-view-row-rss--advisory-views--feed-1.tpl.php`: an
+    advisory-only RSS feed template's "expires in" branch said "Snowpack
+    Summary published on" — corrected to "Avalanche Advisory".
+  - A hardcoded personal Twitter handle (`data-related="jasoncosta"`) in
+    the social-share widget in both `node--snowpack_summary.tpl.php` and
+    `node.tpl.php` — removed (no theme setting exists for a center's
+    Twitter handle; dropping the optional attribute is safer than
+    inventing a new config key for it).
+- Cosmetic cleanup found in the same pass: `avalanche_modern.info`'s
+  description no longer name-drops Sierra Avalanche Center by name; a
+  duplicated form-field block in `responsive_sac/theme-settings.php` (same
+  settings key defined twice, second silently overwriting the first) was
+  collapsed to one, with its example text genericized; four SVGs under
+  `responsive_sac/img/` had Inkscape `export-filename` metadata leaking the
+  old dev server's hostname, stripped (verified still valid XML after).
+- Re-verified the full `themes/` tree afterward: only doc-comment/README
+  attributions to the original sites remain, no live code or user-facing
+  strings.
 
 ---
 

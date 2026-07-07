@@ -52,13 +52,13 @@
 <?php 
 $forecastdate = date("F j, Y", $node->created);
 if (date('Y-m-d') == date('Y-m-d', $node->created)) {
-print "Today's Avalanche Advisory:";
+print t("Today's Avalanche Advisory:");
 }
 else { 
-echo 'Avalanche Advisory published on '.$forecastdate.':';
+echo t('Avalanche Advisory published on @date:', array('@date' => $forecastdate));
 } ?>
         </th>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Issued by <?php print render($display_name[0]['name_line']);?> - <?php print render($company[0]['title']);?>
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php print t('Issued by'); ?> <?php print render($display_name[0]['name_line']);?> - <?php print render($company[0]['title']);?>
   at <?php print format_date($node->created, 'custom', 'g:ia'); ?>
         </td>
       </table>
@@ -69,7 +69,7 @@ echo 'Avalanche Advisory published on '.$forecastdate.':';
     <tr>
       <!--<td><img src="<?php print $url.$node->field_overall_danger_rose['und'][0]['img_detailed_rose']?>"/ >
       </td>--!>
-      <td><strong>Bottom Line:</strong><br /><?php print $node->field_bottom_line['und'][0]['value']; ?> 
+      <td><strong><?php print t('Bottom Line:'); ?></strong><br /><?php print $node->field_bottom_line['und'][0]['value']; ?> 
       </td>
     </table>
   </div>
@@ -79,7 +79,7 @@ echo 'Avalanche Advisory published on '.$forecastdate.':';
         <table>
         <tr>
           <td><img src="<?php print $url;?>/themes/responsive_sac/img/row/heading-awatch.jpg"></td>
-          <td><strong>Avalanche Watch:</strong><br />
+          <td><strong><?php print t('Avalanche Watch:'); ?></strong><br />
 	   <?php print $node->field_avalanche_watch['und'][0]['value']; ?></td>
         </table>
       </div>

@@ -13,26 +13,26 @@
 <title><?php print $title; ?></title>
 <link><?php print $link; ?></link>
 <description>
-Today the avalanche danger is <?php if ($node->field_overalldanger['und'][0]['value']=='1'){print 'LOW';}
+<?php print t('Today the avalanche danger is'); ?> <?php if ($node->field_overalldanger['und'][0]['value']=='1'){print t('LOW');}
 elseif ($node->field_overalldanger['und'][0]['value']=='2')
 {
-print 'MODERATE';
+print t('MODERATE');
 }
 elseif ($node->field_overalldanger['und'][0]['value']=='3')
 {
-print 'CONSIDERABLE';
+print t('CONSIDERABLE');
 }
 elseif ($node->field_overalldanger['und'][0]['value']=='4')
 {
-print 'HIGH';
+print t('HIGH');
 }
 elseif ($node->field_overalldanger['und'][0]['value']=='5')
 {
-print 'EXTREME';
+print t('EXTREME');
 }
 else {
-print 'NO RATING';
-}?> 
+print t('NO RATING');
+}?>
 
 </description>
 <?php print $item_elements; ?>

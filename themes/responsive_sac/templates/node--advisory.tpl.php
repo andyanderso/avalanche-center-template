@@ -219,7 +219,7 @@ else { $size35 = 0; }
           <a style="display:none;" class="toggle-advisory" id="advanced-link" href="#advanced">
             <div class="switch-button rose">
               <?php print render(field_view_field('node', $node, 'field_overall_danger_rose', array('label' => 'hidden'))); ?>
-              Switch to DANGER ROSE View
+              <?php print t('Switch to DANGER ROSE View'); ?>
             </div>
           </a>
         </span>
@@ -227,7 +227,7 @@ else { $size35 = 0; }
           <a style="display:none;" class="toggle-advisory" id="standard-link" href="#simple">
             <div class="switch-button mtn">
               <img src="/<?php print path_to_theme(); ?>/img/basic-view.png">
-              Switch to BASIC View
+              <?php print t('Switch to BASIC View'); ?>
             </div>
           </a>
         </span>
@@ -238,31 +238,31 @@ else { $size35 = 0; }
       <div id="advisory-published-date" class="advisory-date">
         <?php
         if ($duration >= '120') {
-          echo 'Avalanche Advisory published on '.$forecastdate;
+          echo t('Avalanche Advisory published on @date', array('@date' => $forecastdate));
         }
         elseif ($nowTimestamp <= $expdateTimestamp) {
-          echo 'Avalanche Advisory published on '.$forecastdate.'</br><span id="timeToExp">This Avalanche Advisory expires in ';
+          echo t('Avalanche Advisory published on @date', array('@date' => $forecastdate)) . '</br><span id="timeToExp">' . t('This Avalanche Advisory expires in') . ' ';
           if (($timeLeftToExpire->format("%h") < 2) && ($timeLeftToExpire->format("%d") == 0) ) {
             echo '<span style="color:red">';
-            echo $timeLeftToExpire->format("%h hours, %i minutes");
+            echo t('@hours hours, @minutes minutes', array('@hours' => $timeLeftToExpire->format('%h'), '@minutes' => $timeLeftToExpire->format('%i')));
             echo '</span></span>';
           }
           elseif (($timeLeftToExpire->format("%d") >= 1) && ($timeLeftToExpire->format("%d") < 2)) {
-            echo $timeLeftToExpire->format("%d day, %h hours, %i minutes");
+            echo t('@days day, @hours hours, @minutes minutes', array('@days' => $timeLeftToExpire->format('%d'), '@hours' => $timeLeftToExpire->format('%h'), '@minutes' => $timeLeftToExpire->format('%i')));
             echo '</span>';
           }
           elseif ($timeLeftToExpire->format("%d") > 2) {
-            echo $timeLeftToExpire->format("%d days, %h hours, %i minutes");
+            echo t('@days days, @hours hours, @minutes minutes', array('@days' => $timeLeftToExpire->format('%d'), '@hours' => $timeLeftToExpire->format('%h'), '@minutes' => $timeLeftToExpire->format('%i')));
             echo '</span>';
           }
           elseif ($timeLeftToExpire->format("%d") < 1) {
-            echo $timeLeftToExpire->format("%h hours, %i minutes");
+            echo t('@hours hours, @minutes minutes', array('@hours' => $timeLeftToExpire->format('%h'), '@minutes' => $timeLeftToExpire->format('%i')));
             echo '</span>';
           }
 
         }
         elseif ($nowTimestamp > $expdateTimestamp) {
-          echo '<span style="background:red">THIS AVALANCHE ADVISORY EXPIRED ON '.$expdate.'</span></br>'.'Avalanche Advisory published on '.$forecastdate;
+          echo '<span style="background:red">' . t('THIS AVALANCHE ADVISORY EXPIRED ON @date', array('@date' => $expdate)) . '</span></br>' . t('Avalanche Advisory published on @date', array('@date' => $forecastdate));
         }
         ?>
       </div>
@@ -271,10 +271,10 @@ else { $size35 = 0; }
         echo '';
       }
       elseif ($duration <= '120'){
-        print "<span style='font-weight:bold; text-transform:uppercase'>This advisory is valid for $duration hours</span><br>";
+        print '<span style=\'font-weight:bold; text-transform:uppercase\'>' . t('This advisory is valid for @duration hours', array('@duration' => $duration)) . '</span><br>';
       }
       ?>
-      Issued by
+      <?php print t('Issued by'); ?>
       <?php print render($display_name[0]['name_line']);?> - <?php print render($company[0]['title']);?>
     </div>
   </div>
@@ -298,11 +298,11 @@ else { $size35 = 0; }
             <?php print render(field_view_field('node', $node, 'field_overall_danger_rose', array('label' => 'hidden'))); ?>
           </div>
           <div id="bottom-line-adv" class="advisory-div-text">
-            <span class="title">bottom line</span>
+            <span class="title"><?php print t('bottom line'); ?></span>
             <br /><br />
             <?php if (isset($content['field_bottom_line'][0]['#markup'])) { print render($content['field_bottom_line'][0]['#markup']); } ?>
             <p id="how-to-read-advisory">
-              <a href="<?php print $url; ?>/how-to-read-avalanche-advisory">How to read the advisory
+              <a href="<?php print $url; ?>/how-to-read-avalanche-advisory"><?php print t('How to read the advisory'); ?>
               </a>
             </p>
           </div>
@@ -322,9 +322,9 @@ else { $size35 = 0; }
         ?>
       </h3>
     <?php elseif ($show_regions == 0):?>
-      <h3 id="simple-avalanche-danger-title">Bottom Line</h3>
+      <h3 id="simple-avalanche-danger-title"><?php print t('Bottom Line'); ?></h3>
     <?php endif;?>
-    <a id="how-to-read-advisory-simple" href="<?php print $url; ?>/how-to-read-avalanche-advisory">How to read the advisory</a>
+    <a id="how-to-read-advisory-simple" href="<?php print $url; ?>/how-to-read-avalanche-advisory"><?php print t('How to read the advisory'); ?></a>
     <?php $a = $advisory['danger_rating']; ?>
   </div>
   <div id="bottom-line">
@@ -345,7 +345,7 @@ else { $size35 = 0; }
       <div class="ta-text">
         <?php
         $dr_upper = $a['upper'];
-        $ta_upper = array('','Generally safe avalanche conditions. Watch for unstable snow on isolated terrain features.','Heightened avalanche conditions on specific terrain features. Evaluate snow and terrain carefully; identify features of concern.','Dangerous avalanche conditions. Careful snowpack evaluation, cautious route-finding and conservative decision-making essential.', 'Very dangerous avalanche conditions. Travel in avalanche terrain not recommended.', 'Avoid all avalanche terrain.');
+        $ta_upper = array('', t('Generally safe avalanche conditions. Watch for unstable snow on isolated terrain features.'), t('Heightened avalanche conditions on specific terrain features. Evaluate snow and terrain carefully; identify features of concern.'), t('Dangerous avalanche conditions. Careful snowpack evaluation, cautious route-finding and conservative decision-making essential.'), t('Very dangerous avalanche conditions. Travel in avalanche terrain not recommended.'), t('Avoid all avalanche terrain.'));
         $ta_text_upper = $ta_upper[$dr_upper];
         print $ta_text_upper; ?>
       </div>
@@ -362,7 +362,7 @@ else { $size35 = 0; }
       <div class="ta-text">
         <?php
         $dr_mid = $a['mid'];
-        $ta_mid = array('','Generally safe avalanche conditions. Watch for unstable snow on isolated terrain features.','Heightened avalanche conditions on specific terrain features. Evaluate snow and terrain carefully; identify features of concern.','Dangerous avalanche conditions. Careful snowpack evaluation, cautious route-finding and conservative decision-making essential.', 'Very dangerous avalanche conditions. Travel in avalanche terrain not recommended.', 'Avoid all avalanche terrain.');
+        $ta_mid = array('', t('Generally safe avalanche conditions. Watch for unstable snow on isolated terrain features.'), t('Heightened avalanche conditions on specific terrain features. Evaluate snow and terrain carefully; identify features of concern.'), t('Dangerous avalanche conditions. Careful snowpack evaluation, cautious route-finding and conservative decision-making essential.'), t('Very dangerous avalanche conditions. Travel in avalanche terrain not recommended.'), t('Avoid all avalanche terrain.'));
         $ta_text_mid = $ta_mid[$dr_mid];
         print $ta_text_mid; ?>
       </div>
@@ -379,7 +379,7 @@ else { $size35 = 0; }
       <div class="ta-text">
         <?php
         $dr_lower = $a['lower'];
-        $ta_lower = array('','Generally safe avalanche conditions. Watch for unstable snow on isolated terrain features.','Heightened avalanche conditions on specific terrain features. Evaluate snow and terrain carefully; identify features of concern.','Dangerous avalanche conditions. Careful snowpack evaluation, cautious route-finding and conservative decision-making essential.', 'Very dangerous avalanche conditions. Travel in avalanche terrain not recommended.', 'Avoid all avalanche terrain.');
+        $ta_lower = array('', t('Generally safe avalanche conditions. Watch for unstable snow on isolated terrain features.'), t('Heightened avalanche conditions on specific terrain features. Evaluate snow and terrain carefully; identify features of concern.'), t('Dangerous avalanche conditions. Careful snowpack evaluation, cautious route-finding and conservative decision-making essential.'), t('Very dangerous avalanche conditions. Travel in avalanche terrain not recommended.'), t('Avoid all avalanche terrain.'));
         $ta_text_lower = $ta_lower[$dr_lower];
         print $ta_text_lower; ?>
       </div>
@@ -399,7 +399,7 @@ else { $size35 = 0; }
   <div>
     <?php
     $dr = $node->field_overalldanger['und'][0]['value'];
-    $ta = array('','Generally safe avalanche conditions. Watch for unstable snow on isolated terrain features.','Heightened avalanche conditions on specific terrain features. Evaluate snow and terrain carefully; identify features of concern.','Dangerous avalanche conditions. Careful snowpack evaluation, cautious route-finding and conservative decision-making essential.', 'Very dangerous avalanche conditions. Travel in avalanche terrain not recommended.', 'Avoid all avalanche terrain.');
+    $ta = array('', t('Generally safe avalanche conditions. Watch for unstable snow on isolated terrain features.'), t('Heightened avalanche conditions on specific terrain features. Evaluate snow and terrain carefully; identify features of concern.'), t('Dangerous avalanche conditions. Careful snowpack evaluation, cautious route-finding and conservative decision-making essential.'), t('Very dangerous avalanche conditions. Travel in avalanche terrain not recommended.'), t('Avoid all avalanche terrain.'));
     $ta_text = $ta[$dr];
     print $ta_text; ?>
   </div>
@@ -408,16 +408,14 @@ else { $size35 = 0; }
 <!--<li>
 <?php
 $dr = $node->field_overalldanger['und'][0]['value'];
-$lh = array('','Natural and human-triggered avalanches unlikely.','Natural avalanches
-unlikely; human-triggered avalanches possible.','Natural avalanches possible; human-triggered avalanches
-likely.', 'Natural avalanches likely; human-triggered avalanches very likely.', 'Natural and human-triggered avalanches certain.');
+$lh = array('', t('Natural and human-triggered avalanches unlikely.'), t('Natural avalanches unlikely; human-triggered avalanches possible.'), t('Natural avalanches possible; human-triggered avalanches likely.'), t('Natural avalanches likely; human-triggered avalanches very likely.'), t('Natural and human-triggered avalanches certain.'));
 $lh_text = $lh[$dr];
 print $lh_text; ?>
 </li>
 <li>
 <?php
 $dr = $node->field_overalldanger['und'][0]['value'];
-$sd = array('','Small avalanches in isolated areas or extreme terrain.','Small avalanches in specific areas; or large avalanches in isolated areas.','Small avalanches in many areas; or large avalanches in specific areas; or very large avalanches in isolated areas.', 'Large avalanches in many areas; or very large avalanches in specific areas.', 'Large to very large avalanches in many areas');
+$sd = array('', t('Small avalanches in isolated areas or extreme terrain.'), t('Small avalanches in specific areas; or large avalanches in isolated areas.'), t('Small avalanches in many areas; or large avalanches in specific areas; or very large avalanches in isolated areas.'), t('Large avalanches in many areas; or very large avalanches in specific areas.'), t('Large to very large avalanches in many areas'));
 $sd_text = $sd[$dr];
 print $sd_text; ?>
 </li>
@@ -427,11 +425,11 @@ print $sd_text; ?>
 <div id="danger-scale-bar-container">
   <ul id="danger-scale-bar">
     <a href="http://www.avalanche.org/danger_card.php" target="_blank">
-      <li id="low-li-item" class="danger-scale-rating-item">1. Low</li>
-      <li id="mod-li-item" class="danger-scale-rating-item">2. Moderate</li>
-      <li id="cons-li-item" class="danger-scale-rating-item">3. Considerable</li>
-      <li id="high-li-item" class="danger-scale-rating-item">4. High</li>
-      <li id="extr-li-item" class="danger-scale-rating-item">5. Extreme</li>
+      <li id="low-li-item" class="danger-scale-rating-item"><?php print t('1. Low'); ?></li>
+      <li id="mod-li-item" class="danger-scale-rating-item"><?php print t('2. Moderate'); ?></li>
+      <li id="cons-li-item" class="danger-scale-rating-item"><?php print t('3. Considerable'); ?></li>
+      <li id="high-li-item" class="danger-scale-rating-item"><?php print t('4. High'); ?></li>
+      <li id="extr-li-item" class="danger-scale-rating-item"><?php print t('5. Extreme'); ?></li>
     </a>
   </ul>
 </div>
@@ -443,10 +441,10 @@ print $sd_text; ?>
 <!--Problem 1-->
 <?php if (isset($content['field_type_1']['0']['#markup'])): ?>
   <div class="clearbg avalanche-problem-row">
-    <span class="title">Avalanche Problem 1: <?php print render($content['field_type_1']['0']['#markup']);?></span>
+    <span class="title"><?php print t('Avalanche Problem 1:'); ?> <?php print render($content['field_type_1']['0']['#markup']);?></span>
     <ul>
       <li id="problem-type" class="border-right">
-        <div class="problem-char-label">Type
+        <div class="problem-char-label"><?php print t('Type'); ?>
           <span id="type-<?php print $node->field_type_1['und'][0]['value'];?>-info" class="info">?</span>
         </div>
         <div class="problem-char-wrapper problem-type">
@@ -457,7 +455,7 @@ print $sd_text; ?>
       </li>
       <?php if ($display_rose_1 == "show"):?>
         <li id="problem-rose" class="border-right">
-          <div class="problem-char-label">Aspect/Elevation
+          <div class="problem-char-label"><?php print t('Aspect/Elevation'); ?>
             <span id="problem-rose-info" class="info">?</span>
           </div>
           <div class="problem-char-wrapper">
@@ -467,30 +465,30 @@ print $sd_text; ?>
       <?php endif;?>
       <?php if (isset($node->field_likelihood_1['und'][0]['value'])): ?>
         <li class="border-right">
-          <div class="problem-char-label">Likelihood
+          <div class="problem-char-label"><?php print t('Likelihood'); ?>
             <span id="likelihood-info" class="info">?</span>
           </div>
           <div class="problem-char-wrapper">
-            <div class="likelihood-size-label top-label <?php if ($node->field_likelihood_1['und'][0]['value'] == 5) {print "label-bold";};?>">Certain</div>
-            <div class="likelihood-size-label very-likely-label <?php if ($node->field_likelihood_1['und'][0]['value'] == 4) {print "label-bold";};?>">Very Likely</div>
-            <div class="likelihood-size-label likely-label <?php if ($node->field_likelihood_1['und'][0]['value'] == 3) {print "label-bold";};?>">Likely</div>
-            <div class="likelihood-size-label possible-label <?php if ($node->field_likelihood_1['und'][0]['value'] == 2) {print "label-bold";};?>">Possible</div>
+            <div class="likelihood-size-label top-label <?php if ($node->field_likelihood_1['und'][0]['value'] == 5) {print "label-bold";};?>"><?php print t('Certain'); ?></div>
+            <div class="likelihood-size-label very-likely-label <?php if ($node->field_likelihood_1['und'][0]['value'] == 4) {print "label-bold";};?>"><?php print t('Very Likely'); ?></div>
+            <div class="likelihood-size-label likely-label <?php if ($node->field_likelihood_1['und'][0]['value'] == 3) {print "label-bold";};?>"><?php print t('Likely'); ?></div>
+            <div class="likelihood-size-label possible-label <?php if ($node->field_likelihood_1['und'][0]['value'] == 2) {print "label-bold";};?>"><?php print t('Possible'); ?></div>
             <img src="/themes/responsive_sac/img/slider/likelihood.png">
             <div class="middle-data-overlay likelihood-overlay-<?php print $node->field_likelihood_1['und'][0]['value'];?>"></div>
-            <div class="likelihood-size-label bottom-label <?php if ($node->field_likelihood_1['und'][0]['value'] == 1) {print "label-bold";};?>">Unlikely</div>
+            <div class="likelihood-size-label bottom-label <?php if ($node->field_likelihood_1['und'][0]['value'] == 1) {print "label-bold";};?>"><?php print t('Unlikely'); ?></div>
           </div>
         </li>
       <?php endif; ?>
       <?php if (isset($node->field_size_1['und'][0]['value'])): ?>
         <li class="border-right">
-          <div class="problem-char-label">Size
+          <div class="problem-char-label"><?php print t('Size'); ?>
             <span id="size-info" class="info">?</span>
           </div>
           <div class="problem-char-wrapper">
-            <div class="likelihood-size-label top-label <?php if (($size11 == 4) || ($size12 == 5)  || ($size12 == 4)) {print "label-bold";}?>">Historic</div>
-            <div class="likelihood-size-label very-large-size-label <?php if (($size11 == 3) || ($size12 == 3)) {print "label-bold";}?>">Very Large</div>
-            <div class="likelihood-size-label large-size-label  <?php if (($size11 == 2) || ($size12 == 2)) {print "label-bold";}?>">Large</div>
-            <div class="likelihood-size-label bottom-label  <?php if (($size11 == 1) || ($size12 == 1)) {print "label-bold";}?>">Small</div>
+            <div class="likelihood-size-label top-label <?php if (($size11 == 4) || ($size12 == 5)  || ($size12 == 4)) {print "label-bold";}?>"><?php print t('Historic'); ?></div>
+            <div class="likelihood-size-label very-large-size-label <?php if (($size11 == 3) || ($size12 == 3)) {print "label-bold";}?>"><?php print t('Very Large'); ?></div>
+            <div class="likelihood-size-label large-size-label  <?php if (($size11 == 2) || ($size12 == 2)) {print "label-bold";}?>"><?php print t('Large'); ?></div>
+            <div class="likelihood-size-label bottom-label  <?php if (($size11 == 1) || ($size12 == 1)) {print "label-bold";}?>"><?php print t('Small'); ?></div>
             <img src="/themes/responsive_sac/img/slider/size.png">
             <div class="size-overlay-<?php print $size11.$size12;?>"></div>
           </div>
@@ -499,7 +497,7 @@ print $sd_text; ?>
       <!-- TREND NOT USED
       <?php if (isset($content['field_trend_1'][0]['#markup'])): ?>
       <li id="trend">
-      <div class="problem-char-label">Trend
+      <div class="problem-char-label"><?php print t('Trend'); ?>
       <span id="trend-info" class="info">?</span>
     </div>
     <div class="problem-char-wrapper">
@@ -519,10 +517,10 @@ print $sd_text; ?>
 <!--Problem 2-->
 <?php if (isset($content['field_type_2']['0']['#markup'])): ?>
   <div class="clearbg avalanche-problem-row">
-    <span class="title">Avalanche Problem 2: <?php print render($content['field_type_2']['0']['#markup']);?></span>
+    <span class="title"><?php print t('Avalanche Problem 2:'); ?> <?php print render($content['field_type_2']['0']['#markup']);?></span>
     <ul>
       <li id="problem-type" class="border-right">
-        <div class="problem-char-label">Type
+        <div class="problem-char-label"><?php print t('Type'); ?>
           <span id="type-<?php print $node->field_type_2['und'][0]['value'];?>-info" class="info">?</span>
         </div>
         <div class="problem-char-wrapper problem-type">
@@ -534,7 +532,7 @@ print $sd_text; ?>
       </li>
       <?php if ($display_rose_2 == "show"):?>
         <li id="problem-rose" class="border-right">
-          <div class="problem-char-label">Aspect/Elevation
+          <div class="problem-char-label"><?php print t('Aspect/Elevation'); ?>
             <span id="problem-rose-info" class="info">?</span>
           </div>
           <div class="problem-char-wrapper">
@@ -544,30 +542,30 @@ print $sd_text; ?>
       <?php endif; ?>
       <?php if (isset($node->field_likelihood_2['und'][0]['value'])): ?>
         <li class="border-right">
-          <div class="problem-char-label">Likelihood
+          <div class="problem-char-label"><?php print t('Likelihood'); ?>
             <span id="likelihood-info" class="info">?</span>
           </div>
           <div class="problem-char-wrapper">
-            <div class="likelihood-size-label top-label <?php if ($node->field_likelihood_2['und'][0]['value'] == 5) {print "label-bold";};?>">Certain</div>
-            <div class="likelihood-size-label very-likely-label <?php if ($node->field_likelihood_2['und'][0]['value'] == 4) {print "label-bold";};?>">Very Likely</div>
-            <div class="likelihood-size-label likely-label <?php if ($node->field_likelihood_2['und'][0]['value'] == 3) {print "label-bold";};?>">Likely</div>
-            <div class="likelihood-size-label possible-label <?php if ($node->field_likelihood_2['und'][0]['value'] == 2) {print "label-bold";};?>">Possible</div>
+            <div class="likelihood-size-label top-label <?php if ($node->field_likelihood_2['und'][0]['value'] == 5) {print "label-bold";};?>"><?php print t('Certain'); ?></div>
+            <div class="likelihood-size-label very-likely-label <?php if ($node->field_likelihood_2['und'][0]['value'] == 4) {print "label-bold";};?>"><?php print t('Very Likely'); ?></div>
+            <div class="likelihood-size-label likely-label <?php if ($node->field_likelihood_2['und'][0]['value'] == 3) {print "label-bold";};?>"><?php print t('Likely'); ?></div>
+            <div class="likelihood-size-label possible-label <?php if ($node->field_likelihood_2['und'][0]['value'] == 2) {print "label-bold";};?>"><?php print t('Possible'); ?></div>
             <img src="/themes/responsive_sac/img/slider/likelihood.png">
             <div class="middle-data-overlay likelihood-overlay-<?php print $node->field_likelihood_2['und'][0]['value'];?>"></div>
-            <div class="likelihood-size-label bottom-label <?php if ($node->field_likelihood_2['und'][0]['value'] == 1) {print "label-bold";};?>">Unlikely</div>
+            <div class="likelihood-size-label bottom-label <?php if ($node->field_likelihood_2['und'][0]['value'] == 1) {print "label-bold";};?>"><?php print t('Unlikely'); ?></div>
           </div>
         </li>
       <?php endif; ?>
       <?php if (isset($node->field_size_2['und'][0]['value'])): ?>
         <li class="border-right">
-          <div class="problem-char-label">Size
+          <div class="problem-char-label"><?php print t('Size'); ?>
             <span id="size-info" class="info">?</span>
           </div>
           <div class="problem-char-wrapper">
-            <div class="likelihood-size-label top-label <?php if (($size21 == 4) || ($size22 == 5)  || ($size22 == 4)) {print "label-bold";}?>">Historic</div>
-            <div class="likelihood-size-label very-large-size-label <?php if (($size21 == 3) || ($size22 == 3)) {print "label-bold";}?>">Very Large</div>
-            <div class="likelihood-size-label large-size-label  <?php if (($size21 == 2) || ($size22 == 2)) {print "label-bold";}?>">Large</div>
-            <div class="likelihood-size-label bottom-label  <?php if (($size21 == 1) || ($size22 == 1)) {print "label-bold";}?>">Small</div>
+            <div class="likelihood-size-label top-label <?php if (($size21 == 4) || ($size22 == 5)  || ($size22 == 4)) {print "label-bold";}?>"><?php print t('Historic'); ?></div>
+            <div class="likelihood-size-label very-large-size-label <?php if (($size21 == 3) || ($size22 == 3)) {print "label-bold";}?>"><?php print t('Very Large'); ?></div>
+            <div class="likelihood-size-label large-size-label  <?php if (($size21 == 2) || ($size22 == 2)) {print "label-bold";}?>"><?php print t('Large'); ?></div>
+            <div class="likelihood-size-label bottom-label  <?php if (($size21 == 1) || ($size22 == 1)) {print "label-bold";}?>"><?php print t('Small'); ?></div>
             <img src="/themes/responsive_sac/img/slider/size.png">
             <div class="size-overlay-<?php print $size21.$size22;?>"></div>
           </div>
@@ -576,7 +574,7 @@ print $sd_text; ?>
       <!-- TREND NOT USED
       <?php if (isset($content['field_trend_2'][0]['#markup'])): ?>
       <li id="trend">
-      <div class="problem-char-label">Trend
+      <div class="problem-char-label"><?php print t('Trend'); ?>
       <span id="trend-info" class="info">?</span>
     </div>
     <div class="problem-char-wrapper">
@@ -596,10 +594,10 @@ print $sd_text; ?>
 <!--Problem 3-->
 <?php if (isset($content['field_type_3']['0']['#markup'])): ?>
   <div class="clearbg avalanche-problem-row">
-    <span class="title">Avalanche Problem 3: <?php print render($content['field_type_3']['0']['#markup']);?></span>
+    <span class="title"><?php print t('Avalanche Problem 3:'); ?> <?php print render($content['field_type_3']['0']['#markup']);?></span>
     <ul>
       <li id="problem-type" class="border-right">
-        <div class="problem-char-label">Type
+        <div class="problem-char-label"><?php print t('Type'); ?>
           <span id="type-<?php print $node->field_type_3['und'][0]['value'];?>-info" class="info">?</span>
         </div>
         <div class="problem-char-wrapper problem-type">
@@ -610,7 +608,7 @@ print $sd_text; ?>
       </li>
       <?php if ($display_rose_3 == "show"):?>
         <li id="problem-rose" class="border-right">
-          <div class="problem-char-label">Aspect/Elevation
+          <div class="problem-char-label"><?php print t('Aspect/Elevation'); ?>
             <span id="problem-rose-info" class="info">?</span>
           </div>
           <div class="problem-char-wrapper">
@@ -620,30 +618,30 @@ print $sd_text; ?>
       <?php endif; ?>
       <?php if (isset($node->field_likelihood_3['und'][0]['value'])): ?>
         <li class="border-right">
-          <div class="problem-char-label">Likelihood
+          <div class="problem-char-label"><?php print t('Likelihood'); ?>
             <span id="likelihood-info" class="info">?</span>
           </div>
           <div class="problem-char-wrapper">
-            <div class="likelihood-size-label top-label <?php if ($node->field_likelihood_3['und'][0]['value'] == 5) {print "label-bold";};?>">Certain</div>
-            <div class="likelihood-size-label very-likely-label <?php if ($node->field_likelihood_3['und'][0]['value'] == 4) {print "label-bold";};?>">Very Likely</div>
-            <div class="likelihood-size-label likely-label <?php if ($node->field_likelihood_3['und'][0]['value'] == 3) {print "label-bold";};?>">Likely</div>
-            <div class="likelihood-size-label possible-label <?php if ($node->field_likelihood_3['und'][0]['value'] == 2) {print "label-bold";};?>">Possible</div>
+            <div class="likelihood-size-label top-label <?php if ($node->field_likelihood_3['und'][0]['value'] == 5) {print "label-bold";};?>"><?php print t('Certain'); ?></div>
+            <div class="likelihood-size-label very-likely-label <?php if ($node->field_likelihood_3['und'][0]['value'] == 4) {print "label-bold";};?>"><?php print t('Very Likely'); ?></div>
+            <div class="likelihood-size-label likely-label <?php if ($node->field_likelihood_3['und'][0]['value'] == 3) {print "label-bold";};?>"><?php print t('Likely'); ?></div>
+            <div class="likelihood-size-label possible-label <?php if ($node->field_likelihood_3['und'][0]['value'] == 2) {print "label-bold";};?>"><?php print t('Possible'); ?></div>
             <img src="/themes/responsive_sac/img/slider/likelihood.png">
             <div class="middle-data-overlay likelihood-overlay-<?php print $node->field_likelihood_3['und'][0]['value'];?>"></div>
-            <div class="likelihood-size-label bottom-label <?php if ($node->field_likelihood_3['und'][0]['value'] == 1) {print "label-bold";};?>">Unlikely</div>
+            <div class="likelihood-size-label bottom-label <?php if ($node->field_likelihood_3['und'][0]['value'] == 1) {print "label-bold";};?>"><?php print t('Unlikely'); ?></div>
           </div>
         </li>
       <?php endif; ?>
       <?php if (isset($node->field_size_3['und'][0]['value'])): ?>
         <li class="border-right">
-          <div class="problem-char-label">Size
+          <div class="problem-char-label"><?php print t('Size'); ?>
             <span id="size-info" class="info">?</span>
           </div>
           <div class="problem-char-wrapper">
-            <div class="likelihood-size-label top-label <?php if (($size31 == 4) || ($size32 == 5) || ($size32 == 4)) {print "label-bold";}?>">Historic</div>
-            <div class="likelihood-size-label very-large-size-label <?php if (($size31 == 3) || ($size32 == 3)) {print "label-bold";}?>">Very Large</div>
-            <div class="likelihood-size-label large-size-label  <?php if (($size31 == 2) || ($size32 == 2)) {print "label-bold";}?>">Large</div>
-            <div class="likelihood-size-label bottom-label  <?php if (($size31 == 1) || ($size32 == 1)) {print "label-bold";}?>">Small</div>
+            <div class="likelihood-size-label top-label <?php if (($size31 == 4) || ($size32 == 5) || ($size32 == 4)) {print "label-bold";}?>"><?php print t('Historic'); ?></div>
+            <div class="likelihood-size-label very-large-size-label <?php if (($size31 == 3) || ($size32 == 3)) {print "label-bold";}?>"><?php print t('Very Large'); ?></div>
+            <div class="likelihood-size-label large-size-label  <?php if (($size31 == 2) || ($size32 == 2)) {print "label-bold";}?>"><?php print t('Large'); ?></div>
+            <div class="likelihood-size-label bottom-label  <?php if (($size31 == 1) || ($size32 == 1)) {print "label-bold";}?>"><?php print t('Small'); ?></div>
             <img src="/themes/responsive_sac/img/slider/size.png">
             <div class="size-overlay-<?php print $size31.$size32;?>"></div>
           </div>
@@ -652,7 +650,7 @@ print $sd_text; ?>
       <!-- TREND NOT USED
       <?php if (isset($content['field_trend_3'][0]['#markup'])): ?>
       <li id="trend">
-      <div class="problem-char-label">Trend
+      <div class="problem-char-label"><?php print t('Trend'); ?>
       <span id="trend-info" class="info">?</span>
     </div>
     <div class="problem-char-wrapper">
@@ -672,7 +670,7 @@ print $sd_text; ?>
 <!--AVALANCHE TEXT DISCUSSION-->
 <?php if ($node->field_text_discussion['und'][0]['value'] != ''): ?>
   <div class="clearbg avalanche-problem-row">
-    <span class="title">advisory discussion</span>
+    <span class="title"><?php print t('advisory discussion'); ?></span>
     <div class="advisory-div">
       <div class="disc-advisory-div-text">
         <?php print render($content['field_text_discussion'][0]['#markup']); ?>
@@ -687,7 +685,7 @@ print $sd_text; ?>
       <?php if (!empty($obs_page)):?>
         <a style="color:#ddd;" href="<?php print $url.$obs_page; ?>">
         <?php endif;?>
-        recent observations
+        <?php print t('recent observations'); ?>
         <?php if (!empty($obs_page)):?>
         </a>
       <?php endif;?>
@@ -696,12 +694,12 @@ print $sd_text; ?>
       <div class="advisory-div-icon">
         <?php if (!empty($submit_snowpack_obs_page)):?>
           <div class="submit-obs-button">
-            <a href="<?php print $url.$submit_snowpack_obs_page; ?>">Submit Observations</a>
+            <a href="<?php print $url.$submit_snowpack_obs_page; ?>"><?php print t('Submit Observations'); ?></a>
           </div>
         <?php endif;?>
         <?php if (!empty($submit_avalanche_obs_page)):?>
           <div class="submit-obs-button">
-            <a href="<?php print $url.$submit_avalanche_obs_page; ?>">Submit Avalanche Observations</a>
+            <a href="<?php print $url.$submit_avalanche_obs_page; ?>"><?php print t('Submit Avalanche Observations'); ?></a>
           </div>
         <?php endif;?>
       </div>
@@ -718,11 +716,11 @@ print $sd_text; ?>
 <?php endif; ?>
 
 <div class="clearbg avalanche-problem-row">
-  <span class="title">Weather and CURRENT CONDITIONS</span>
+  <span class="title"><?php print t('Weather and Current Conditions'); ?></span>
   <!--MOUNTAIN WEATHER-->
   <?php if ($node->field_mountain_weather['und'][0]['value'] != ''): ?>
     <div id="wx-summary">
-      <span class="wx-sub-title">weather summary</span>
+      <span class="wx-sub-title"><?php print t('weather summary'); ?></span>
       <div class="advisory-div">
         <div class="disc-advisory-div-text">
           <?php print render($content['field_mountain_weather'][0]['#markup']); ?>
@@ -739,44 +737,44 @@ print $sd_text; ?>
       <div class="advisory-div-icon">
         <?php if (!empty($wx_map_page)):?>
           <div class="submit-obs-button">
-            <a href="<?php print $url.$wx_map_page; ?>">Weather Station Map</a>
+            <a href="<?php print $url.$wx_map_page; ?>"><?php print t('Weather Station Map'); ?></a>
           </div>
         <?php endif;?>
         <?php if (!empty($wx_table_page)):?>
           <div class="submit-obs-button">
-            <a href="<?php print $url.$wx_table_page; ?>">Weather Station Table</a>
+            <a href="<?php print $url.$wx_table_page; ?>"><?php print t('Weather Station Table'); ?></a>
           </div>
         <?php endif;?>
       </div>
       <table id="Wx-obs" class="row-sub-table">
         <tbody>
           <tr>
-            <td >0600 temperature:</td>
-            <td ><?php print render($content['field_temp8700']['#items']['0']['value']);?> deg. F.</td>
+            <td ><?php print t('0600 temperature:'); ?></td>
+            <td ><?php print render($content['field_temp8700']['#items']['0']['value']);?> <?php print t('deg. F.'); ?></td>
           </tr>
           <tr>
-            <td >Max. temperature in the last 24 hours:</td>
-            <td ><?php print render($content['field_hr24maxtemp']['#items']['0']['value']);?> deg. F.</td>
+            <td ><?php print t('Max. temperature in the last 24 hours:'); ?></td>
+            <td ><?php print render($content['field_hr24maxtemp']['#items']['0']['value']);?> <?php print t('deg. F.'); ?></td>
           </tr>
           <tr>
-            <td >Average wind direction during the last 24 hours:</td>
+            <td ><?php print t('Average wind direction during the last 24 hours:'); ?></td>
             <td ><?php print render($content['field_hr24winddir']['#items']['0']['value']);?></td>
           </tr>
           <tr>
-            <td >Average wind speed during the last 24 hours:</td>
-            <td ><?php print render($content['field_hr24windspeed']['#items']['0']['value']);?> mph</td>
+            <td ><?php print t('Average wind speed during the last 24 hours:'); ?></td>
+            <td ><?php print render($content['field_hr24windspeed']['#items']['0']['value']);?> <?php print t('mph'); ?></td>
           </tr>
           <tr>
-            <td >Maximum wind gust in the last 24 hours:</td>
-            <td ><?php print render($content['field_hr24maxgust']['#items']['0']['value']);?> mph</td>
+            <td ><?php print t('Maximum wind gust in the last 24 hours:'); ?></td>
+            <td ><?php print render($content['field_hr24maxgust']['#items']['0']['value']);?> <?php print t('mph'); ?></td>
           </tr>
           <tr>
-            <td >New snowfall in the last 24 hours:</td>
-            <td ><?php print render($content['field_hr24snowfall']['#items']['0']['value']);?> inches</td>
+            <td ><?php print t('New snowfall in the last 24 hours:'); ?></td>
+            <td ><?php print render($content['field_hr24snowfall']['#items']['0']['value']);?> <?php print t('inches'); ?></td>
           </tr>
           <tr>
-            <td >Total snow depth:</td>
-            <td ><?php print render($content['field_totalsnowdepth']['#items']['0']['value']);?> inches</td>
+            <td ><?php print t('Total snow depth:'); ?></td>
+            <td ><?php print render($content['field_totalsnowdepth']['#items']['0']['value']);?> <?php print t('inches'); ?></td>
           </tr>
         </tbody>
       </table>
@@ -785,7 +783,7 @@ print $sd_text; ?>
   <!--TWO DAY WEATHER FORECAST-->
   <?php if (isset($content['field_today7to8weather']['#items']['0']['value'])): ?>
     <div>
-      <span class="wx-sub-title">Two-Day Mountain Weather Forecast Produced in partnership with the <a href="<?php print $nws_url;?>" target="_blank"><?php print $nws_name;?></a></span>
+      <span class="wx-sub-title"><?php print t('Two-Day Mountain Weather Forecast Produced in partnership with the'); ?> <a href="<?php print $nws_url;?>" target="_blank"><?php print $nws_name;?></a></span>
       <!-- Weather Table Responsive -->
 
       <article>
@@ -795,7 +793,7 @@ print $sd_text; ?>
             <button>
             <?php
                 if (date('Y-m-d') == date('Y-m-d', $node->created)) {
-                  print "Today";
+                  print t('Today');
                 }
                 else {
                   echo date("l", $node->created);
@@ -807,10 +805,10 @@ print $sd_text; ?>
             <button>
             <?php
                 if (date('Y-m-d') == date('Y-m-d', $node->created)) {
-                  print "Tonight";
+                  print t('Tonight');
                 }
                 else {
-                  echo date("l", $node->created)." Night";
+                  echo date("l", $node->created) . " " . t("Night");
                 }
                 ?>
            </button>
@@ -832,7 +830,7 @@ print $sd_text; ?>
               <th class="default">
                 <?php
                 if (date('Y-m-d') == date('Y-m-d', $node->created)) {
-                  print "Today";
+                  print t('Today');
                 }
                 else {
                   echo date("l", $node->created);
@@ -842,10 +840,10 @@ print $sd_text; ?>
               <th class="bg-light">
                 <?php
                 if (date('Y-m-d') == date('Y-m-d', $node->created)) {
-                  print "Tonight";
+                  print t('Tonight');
                 }
                 else {
-                  echo date("l", $node->created)." Night";
+                  echo date("l", $node->created) . " " . t("Night");
                 }
                 ?>
               </th>
@@ -859,37 +857,37 @@ print $sd_text; ?>
           </thead>
           <tbody>
             <tr class="wxmidrow">
-              <td class="wxfirstcol">Weather:</td>
+              <td class="wxfirstcol"><?php print t('Weather:'); ?></td>
               <td class="default"><span class="txt-l"><?php print render($content['field_today7to8weather']['#items']['0']['value']) ?></span></td>
               <td><span class="txt-l"><?php print render($content['field_tonight7to8weather']['#items']['0']['value']) ?></span></td>
               <td><span class="txt-l"><?php print render($content['field_tomorrow7to8weather']['#items']['0']['value']) ?></span></td>
             </tr>
             <tr class="wxmidrow">
-              <td class="wxfirstcol">Temperatures:</td>
-              <td class="default"><span class="txt-1"><?php print render($content['field_today7to8temp']['#items']['0']['value']) ?> deg. F.
+              <td class="wxfirstcol"><?php print t('Temperatures:'); ?></td>
+              <td class="default"><span class="txt-1"><?php print render($content['field_today7to8temp']['#items']['0']['value']) ?> <?php print t('deg. F.'); ?>
               </span></td>
-              <td><span class="txt-1"><?php print render($content['field_tonight7to8temp']['#items']['0']['value']) ?> deg. F.
+              <td><span class="txt-1"><?php print render($content['field_tonight7to8temp']['#items']['0']['value']) ?> <?php print t('deg. F.'); ?>
               </span></td>
-              <td><span class="txt-1"><?php print render($content['field_tomorrow7to8temp']['#items']['0']['value']) ?> deg. F.
+              <td><span class="txt-1"><?php print render($content['field_tomorrow7to8temp']['#items']['0']['value']) ?> <?php print t('deg. F.'); ?>
               </span></td>
             </tr>
             <tr class="wxmidrow">
-              <td class="wxfirstcol">Wind Direction:</td>
+              <td class="wxfirstcol"><?php print t('Wind Direction:'); ?></td>
               <td class="default"><span class="txt-1"><?php print render($content['field_today7to8winddirection']['#items']['0']['value']) ?></span></td>
               <td><span class="txt-1"><?php print render($content['field_tonight7to8winddirection']['#items']['0']['value']) ?></span></td>
               <td><span class="txt-1"><?php print render($content['field_tomorrow7to8winddirection']['#items']['0']['value']) ?></span></td>
             </tr>
             <tr class="wxmidrow">
-              <td class="wxfirstcol">Wind Speed:</td>
+              <td class="wxfirstcol"><?php print t('Wind Speed:'); ?></td>
               <td class="default"><span class="txt-1"><?php print render($content['field_today7to8windspeed']['#items']['0']['value']) ?></span></td>
               <td><span class="txt-1"><?php print render($content['field_tonight7to8windspeed']['#items']['0']['value']) ?></span></td>
               <td><span class="txt-1"><?php print render($content['field_tomorrow7to8windspeed']['#items']['0']['value']) ?></span></td>
             </tr>
             <tr class="wxbottomrow">
-              <td class="wxfirstcol">Expected snowfall:</td>
-              <td class="default"><span class="txt-1"><?php print render($content['field_today7to8snow']['#items']['0']['value']) ?> in.</span></td>
-              <td><span class="txt-1"><?php print render($content['field_tonight7to8snow']['#items']['0']['value']) ?> in.</span></td>
-              <td><span class="txt-1"><?php print render($content['field_tomorrow7to8snow']['#items']['0']['value']) ?> in.</span></td>
+              <td class="wxfirstcol"><?php print t('Expected snowfall:'); ?></td>
+              <td class="default"><span class="txt-1"><?php print render($content['field_today7to8snow']['#items']['0']['value']) ?> <?php print t('in.'); ?></span></td>
+              <td><span class="txt-1"><?php print render($content['field_tonight7to8snow']['#items']['0']['value']) ?> <?php print t('in.'); ?></span></td>
+              <td><span class="txt-1"><?php print render($content['field_tomorrow7to8snow']['#items']['0']['value']) ?> <?php print t('in.'); ?></span></td>
             </tr>
           </tbody>
         </table>
@@ -901,7 +899,7 @@ print $sd_text; ?>
                             <th class="default">
                 <?php
                 if (date('Y-m-d') == date('Y-m-d', $node->created)) {
-                  print "Today";
+                  print t('Today');
                 }
                 else {
                   echo date("l", $node->created);
@@ -911,10 +909,10 @@ print $sd_text; ?>
               <th class="bg-light">
                 <?php
                 if (date('Y-m-d') == date('Y-m-d', $node->created)) {
-                  print "Tonight";
+                  print t('Tonight');
                 }
                 else {
-                  echo date("l", $node->created)." Night";
+                  echo date("l", $node->created) . " " . t("Night");
                 }
                 ?>
               </th>
@@ -928,37 +926,37 @@ print $sd_text; ?>
           </thead>
           <tbody>
             <tr class="wxmidrow">
-              <td class="wxfirstcol">Weather:</td>
+              <td class="wxfirstcol"><?php print t('Weather:'); ?></td>
               <td class="default"><span class="txt-l"><?php print render($content['field_today8to9weather']['#items']['0']['value']) ?></span></td>
               <td><span class="txt-l"><?php print render($content['field_tonight8to9weather']['#items']['0']['value']) ?></span></td>
               <td><span class="txt-l"><?php print render($content['field_tomorrow8to9weather']['#items']['0']['value']) ?></span></td>
             </tr>
             <tr class="wxmidrow">
-              <td class="wxfirstcol">Temperatures:</td>
-              <td class="default"><span class="txt-1"><?php print render($content['field_today8to9temp']['#items']['0']['value']) ?> deg. F.
+              <td class="wxfirstcol"><?php print t('Temperatures:'); ?></td>
+              <td class="default"><span class="txt-1"><?php print render($content['field_today8to9temp']['#items']['0']['value']) ?> <?php print t('deg. F.'); ?>
               </span></td>
-              <td><span class="txt-1"><?php print render($content['field_tonight8to9temp']['#items']['0']['value']) ?> deg. F.
+              <td><span class="txt-1"><?php print render($content['field_tonight8to9temp']['#items']['0']['value']) ?> <?php print t('deg. F.'); ?>
               </span></td>
-              <td><span class="txt-1"><?php print render($content['field_tomorrow8to9temp']['#items']['0']['value']) ?> deg. F.
+              <td><span class="txt-1"><?php print render($content['field_tomorrow8to9temp']['#items']['0']['value']) ?> <?php print t('deg. F.'); ?>
               </span></td>
             </tr>
             <tr class="wxmidrow">
-              <td class="wxfirstcol">Wind Direction:</td>
+              <td class="wxfirstcol"><?php print t('Wind Direction:'); ?></td>
               <td class="default"><span class="txt-1"><?php print render($content['field_today8to9winddirection']['#items']['0']['value']) ?></span></td>
               <td><span class="txt-1"><?php print render($content['field_tonight8to9winddirection']['#items']['0']['value']) ?></span></td>
               <td><span class="txt-1"><?php print render($content['field_tomorrow8to9winddirection']['#items']['0']['value']) ?></span></td>
             </tr>
             <tr class="wxmidrow">
-              <td class="wxfirstcol">Wind Speed:</td>
+              <td class="wxfirstcol"><?php print t('Wind Speed:'); ?></td>
               <td class="default"><span class="txt-1"><?php print render($content['field_today8to9windspeed']['#items']['0']['value']) ?></span></td>
               <td><span class="txt-1"><?php print render($content['field_tonight8to9windspeed']['#items']['0']['value']) ?></span></td>
               <td><span class="txt-1"><?php print render($content['field_tomorrow8to9windspeed']['#items']['0']['value']) ?></span></td>
             </tr>
             <tr class="wxbottomrow">
-              <td class="wxfirstcol">Expected snowfall:</td>
-              <td class="default"><span class="txt-1"><?php print render($content['field_today8to9snow']['#items']['0']['value']) ?> in.</span></td>
-              <td><span class="txt-1"><?php print render($content['field_tonight8to9snow']['#items']['0']['value']) ?> in.</span></td>
-              <td><span class="txt-1"><?php print render($content['field_tomorrow8to9snow']['#items']['0']['value']) ?> in.</span></td>
+              <td class="wxfirstcol"><?php print t('Expected snowfall:'); ?></td>
+              <td class="default"><span class="txt-1"><?php print render($content['field_today8to9snow']['#items']['0']['value']) ?> <?php print t('in.'); ?></span></td>
+              <td><span class="txt-1"><?php print render($content['field_tonight8to9snow']['#items']['0']['value']) ?> <?php print t('in.'); ?></span></td>
+              <td><span class="txt-1"><?php print render($content['field_tomorrow8to9snow']['#items']['0']['value']) ?> <?php print t('in.'); ?></span></td>
             </tr>
           </tbody>
         </table>
@@ -969,7 +967,7 @@ print $sd_text; ?>
 <!-- end weather-->
 <!--DISCLAIMER-->
 <div class="clearbg avalanche-problem-row">
-  <span class="title">Disclaimer</span>
+  <span class="title"><?php print t('Disclaimer'); ?></span>
   <div class="advisory-div">
     <div class="disc-advisory-div-text">
       <?php print_r($node->field_disclaimer['und'][0]['value']); ?>
@@ -981,7 +979,7 @@ print $sd_text; ?>
 </div>
 <div class="social-buttons">
   <iframe src="https://www.facebook.com/plugins/like.php?href=<?php $curr_url = check_plain("https://" .$_SERVER['HTTP_HOST'] .$node_url); echo $curr_url; ?>&amp;layout=button_count&amp;show_faces=false&amp;width=200&amp;action=like&amp;font=verdana&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:130px; height:21px;" allowTransparency="true"></iframe>
-  <a class="twitter-share-button" href="https://twitter.com/share" data-related="jasoncosta" data-lang="en" data-size="small" data-count="none">Tweet</a><script type="text/javascript">// <![CDATA[
+  <a class="twitter-share-button" href="https://twitter.com/share" data-lang="en" data-size="small" data-count="none">Tweet</a><script type="text/javascript">// <![CDATA[
     !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
     // ]]>
     </script>
@@ -1029,7 +1027,7 @@ print $sd_text; ?>
 <table class="row-sub-table">
 <tr>
 <td class="first"><img src="/themes/responsive_sac/img/row/heading-awarning.jpg"></td>
-<td><span class="uppercase">avalanche warning</span><br /><?php print $advisory['avalanche_warning']; ?></td>
+<td><span class="uppercase"><?php print t('avalanche warning'); ?></span><br /><?php print $advisory['avalanche_warning']; ?></td>
 </table>
 </div>
 <?php endif; ?>
@@ -1041,7 +1039,7 @@ print $sd_text; ?>
 <table class="row-sub-table">
 <tr>
 <td class="first"><img src="/themes/responsive_sac/img/row/heading-asab.jpg"></td>
-<td><span class="uppercase">special avalanche bulletin</span><br /><?php print $advisory['avalanche_sab']; ?></td>
+<td><span class="uppercase"><?php print t('special avalanche bulletin'); ?></span><br /><?php print $advisory['avalanche_sab']; ?></td>
 </table>
 </div>
 <?php endif; ?>

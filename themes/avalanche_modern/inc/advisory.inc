@@ -5,7 +5,10 @@
  *
  * Ported from responsive_sac/inc/advisory.inc, fixing the field_forecast_region
  * bug and exposing the raw 24-column danger-rose values so the modern template
- * can render the rose client-side as SVG.
+ * can render the rose client-side as SVG. Elevation-band labels are read from
+ * theme settings (one set per center) rather than the original hardcoded
+ * per-taxonomy-term-id table, which only matched Sierra Avalanche Center's
+ * own multi-zone region setup.
  */
 
 /**
@@ -17,19 +20,7 @@ function avalanche_modern_get_advisory_data($node) {
     return $a;
   }
 
-  $labels = array('No Rating', 'Low', 'Moderate', 'Considerable', 'High', 'Extreme');
-
-  // Elevation-band labels keyed by forecast-region term id.
-  $elevations = array(
-    1 => array('Below Treeline', 'Near Treeline', 'Above Treeline'),
-    2 => array('Below Treeline', 'Near Treeline', 'Above Treeline'),
-    4 => array('Below 7,000 ft.', '7,000-8,500 ft.', 'Above 8,500 ft.'),
-    5 => array('Below 8,000 ft.', '8,000-9,500 ft.', 'Above 9,500 ft.'),
-    6 => array('Below 8,000 ft.', '8,000-9,500 ft.', 'Above 9,500 ft.'),
-    7 => array('Below Treeline', 'Near Treeline', 'Above Treeline'),
-    8 => array('Below Treeline', 'Near Treeline', 'Above Treeline'),
-  );
-  $default_bands = array('Below Treeline', 'Near Treeline', 'Above Treeline');
+  $labels = array(t('No Rating'), t('Low'), t('Moderate'), t('Considerable'), t('High'), t('Extreme'));
 
   // Fixed: the actual field is field_forecast_region (was field_region_forecaster).
   $region_id = 0;
@@ -49,11 +40,18 @@ function avalanche_modern_get_advisory_data($node) {
   $a['region_id'] = $region_id;
   $a['region_name'] = $region_name;
 
-  $bands = isset($elevations[$region_id]) ? $elevations[$region_id] : $default_bands;
+  // Elevation-band labels come from the theme's own settings (one set per
+  // center, already exposed on the theme settings form) rather than a
+  // hardcoded per-region table — the original per-taxonomy-term-id table
+  // here was Sierra Avalanche Center's specific multi-zone setup and doesn't
+  // generalize to other centers' region structures.
+  $upper_band = theme_get_setting('upper_elevation_band');
+  $mid_band = theme_get_setting('middle_elevation_band');
+  $lower_band = theme_get_setting('lower_elevation_band');
   $a['elevation_labels'] = array(
-    'upper' => $bands[2],
-    'mid' => $bands[1],
-    'lower' => $bands[0],
+    'upper' => !empty($upper_band) ? $upper_band : t('Above Treeline'),
+    'mid' => !empty($mid_band) ? $mid_band : t('Near Treeline'),
+    'lower' => !empty($lower_band) ? $lower_band : t('Below Treeline'),
   );
 
   // Forecaster name from the node author.
@@ -187,13 +185,13 @@ function avalanche_modern_advisory_weather_html($node) {
 
   // Current conditions table.
   $cur = array(
-    array('0600 temperature', 'field_temp8700', ' deg. F.'),
-    array('Max. temperature in the last 24 hours', 'field_hr24maxtemp', ' deg. F.'),
-    array('Average wind direction during the last 24 hours', 'field_hr24winddir', ''),
-    array('Average wind speed during the last 24 hours', 'field_hr24windspeed', ' mph'),
-    array('Maximum wind gust in the last 24 hours', 'field_hr24maxgust', ' mph'),
-    array('New snowfall in the last 24 hours', 'field_hr24snowfall', ' inches'),
-    array('Total snow depth', 'field_totalsnowdepth', ' inches'),
+    array(t('0600 temperature'), 'field_temp8700', ' deg. F.'),
+    array(t('Max. temperature in the last 24 hours'), 'field_hr24maxtemp', ' deg. F.'),
+    array(t('Average wind direction during the last 24 hours'), 'field_hr24winddir', ''),
+    array(t('Average wind speed during the last 24 hours'), 'field_hr24windspeed', ' mph'),
+    array(t('Maximum wind gust in the last 24 hours'), 'field_hr24maxgust', ' mph'),
+    array(t('New snowfall in the last 24 hours'), 'field_hr24snowfall', ' inches'),
+    array(t('Total snow depth'), 'field_totalsnowdepth', ' inches'),
   );
   $rows = '';
   foreach ($cur as $c) {
@@ -211,13 +209,13 @@ function avalanche_modern_advisory_weather_html($node) {
   }
 
   // Two-day mountain weather forecast, one table per elevation band.
-  $cols = array('today' => 'Today', 'tonight' => 'Tonight', 'tomorrow' => 'Tomorrow');
+  $cols = array('today' => t('Today'), 'tonight' => t('Tonight'), 'tomorrow' => t('Tomorrow'));
   $metrics = array(
-    array('Weather', 'weather', ''),
-    array('Temperatures', 'temp', ' deg. F.'),
-    array('Wind Direction', 'winddirection', ''),
-    array('Wind Speed', 'windspeed', ''),
-    array('Expected snowfall', 'snow', ' in.'),
+    array(t('Weather'), 'weather', ''),
+    array(t('Temperatures'), 'temp', ' deg. F.'),
+    array(t('Wind Direction'), 'winddirection', ''),
+    array(t('Wind Speed'), 'windspeed', ''),
+    array(t('Expected snowfall'), 'snow', ' in.'),
   );
   $bands = array(array($wx_low, '7to8'), array($wx_high, '8to9'));
   $forecast = '';
@@ -265,9 +263,9 @@ function avalanche_modern_advisory_weather_html($node) {
     $forecast .= '<table class="nac-wx-table nac-wx-forecast">' . $thead . '<tbody>' . $tbody . '</tbody></table>';
   }
   if ($forecast !== '') {
-    $sub = 'Two-Day Mountain Weather Forecast';
+    $sub = t('Two-Day Mountain Weather Forecast');
     if (!empty($nws_name)) {
-      $sub .= ' — produced in partnership with ' . (!empty($nws_url)
+      $sub .= ' — ' . t('produced in partnership with') . ' ' . (!empty($nws_url)
         ? '<a href="' . check_url($nws_url) . '" target="_blank" rel="noopener">' . check_plain($nws_name) . '</a>'
         : check_plain($nws_name));
     }
@@ -282,16 +280,16 @@ function avalanche_modern_advisory_weather_html($node) {
  */
 function avalanche_modern_problem_type_label($type) {
   $types = array(
-    1 => 'Storm Slab',
-    2 => 'Deep Slab',
-    3 => 'Wind Slab',
-    4 => 'Wet Slab',
-    5 => 'Persistent Slab',
-    6 => 'Loose Wet',
-    7 => 'Loose Dry',
-    8 => 'Normal Caution',
-    9 => 'Cornice',
-    10 => 'Glide',
+    1 => t('Storm Slab'),
+    2 => t('Deep Slab'),
+    3 => t('Wind Slab'),
+    4 => t('Wet Slab'),
+    5 => t('Persistent Slab'),
+    6 => t('Loose Wet'),
+    7 => t('Loose Dry'),
+    8 => t('Normal Caution'),
+    9 => t('Cornice'),
+    10 => t('Glide'),
   );
   return isset($types[$type]) ? $types[$type] : '';
 }
