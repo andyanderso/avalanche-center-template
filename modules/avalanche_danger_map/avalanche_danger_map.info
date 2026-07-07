@@ -1,0 +1,7 @@
+name = Avalanche Danger Rating Map
+description = Provides a Leaflet-based map block showing avalanche forecast zones colored by current danger rating.
+package = Avalanche Center
+type = module
+backdrop = 1.x
+dependencies[] = geofield
+dependencies[] = leaflet

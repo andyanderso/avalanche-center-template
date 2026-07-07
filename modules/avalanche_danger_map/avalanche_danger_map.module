@@ -1,0 +1,503 @@
+<?php
+/**
+ * @file
+ * Leaflet-based avalanche danger rating map block.
+ *
+ * Generic replacement for gulmarg_danger_map / argentina_danger_map. Danger
+ * scale, colors, labels, travel advice, legend link, and map center/zoom are
+ * all config-driven via avalanche_center.settings so a single module serves
+ * any center. See AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §6.
+ */
+
+/**
+ * Implements hook_menu_alter().
+ *
+ * PHP 8 compatibility fix (carried over from argentina_danger_map — the
+ * Gulmarg reference lacked it). Core's node_page_title() type-hints its
+ * argument as `Node`, but the menu system translates the `node/%` router
+ * item (for the View default local task and the node's contextual links)
+ * using the raw nid string from the URL map, not a loaded Node object.
+ * Under PHP 8 that raw string trips the strict type hint and throws a
+ * TypeError (logged on every observation view/edit). Swap in a tolerant
+ * wrapper that loads the node when needed.
+ */
+function avalanche_danger_map_menu_alter(&$items) {
+  // The menu item is keyed by its load wildcard (node/%node) at alter time;
+  // the router only normalises it to node/% when it is written to the
+  // database.
+  if (isset($items['node/%node']['title callback']) && $items['node/%node']['title callback'] === 'node_page_title') {
+    $items['node/%node']['title callback'] = 'avalanche_danger_map_node_page_title';
+  }
+}
+
+/**
+ * Title callback: tolerant replacement for node_page_title().
+ *
+ * Accepts either a loaded Node or a nid (string/int) and returns the title.
+ *
+ * @param Node|string|int $node
+ *   A loaded node, or the node ID as passed by an un-loaded menu map.
+ *
+ * @return string
+ *   The node title, or an empty string if it can't be resolved.
+ */
+function avalanche_danger_map_node_page_title($node) {
+  if (!is_object($node)) {
+    $node = node_load((int) $node);
+  }
+  return (is_object($node) && isset($node->title)) ? $node->title : '';
+}
+
+/**
+ * Implements hook_leaflet_map_info().
+ *
+ * Provides a multi-layer topo/satellite map for observations and incidents.
+ */
+function avalanche_danger_map_leaflet_map_info() {
+  $attr_esri = 'Tiles &copy; <a target="attr" href="http://esri.com">Esri</a>';
+  $attr_osm  = 'Map data &copy; <a target="attr" href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+  $attr_otm  = 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="https://viewfinderpanoramas.org/">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a>';
+
+  return array(
+    'avalanche_topo_satellite' => array(
+      'label' => 'Avalanche Center Topo + Satellite',
+      'description' => 'Multi-layer map with topo and satellite options',
+      'settings' => array(
+        'attributionControl' => TRUE,
+        'closePopupOnClick'  => TRUE,
+        'doubleClickZoom'    => TRUE,
+        'dragging'           => TRUE,
+        'fadeAnimation'      => TRUE,
+        'layerControl'       => TRUE,
+        'maxZoom'            => 19,
+        'minZoom'            => 0,
+        'scrollWheelZoom'    => TRUE,
+        'touchZoom'          => TRUE,
+        'trackResize'        => TRUE,
+        'zoomAnimation'      => TRUE,
+        'zoomControl'        => TRUE,
+      ),
+      // Order matters: the first base layer is the default selected layer.
+      'layers' => array(
+        'Street Map' => array(
+          'urlTemplate' => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          'options' => array(
+            'attribution' => $attr_osm,
+            'maxZoom'     => 19,
+          ),
+          'layer_type' => 'base',
+        ),
+        'OpenTopoMap' => array(
+          'urlTemplate' => 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+          'options' => array(
+            'attribution' => $attr_otm,
+            'maxZoom'     => 17,
+            'subdomains'  => array('a', 'b', 'c'),
+          ),
+          'layer_type' => 'base',
+        ),
+        'Satellite' => array(
+          'urlTemplate' => '//services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png',
+          'options' => array(
+            'attribution' => $attr_esri,
+            'maxZoom'     => 17,
+          ),
+          'layer_type' => 'base',
+        ),
+        'Topo Map' => array(
+          'urlTemplate' => '//services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}.png',
+          'options' => array(
+            'attribution' => $attr_esri,
+            'maxZoom'     => 19,
+          ),
+          'layer_type' => 'base',
+        ),
+      ),
+      'popupMinWidth' => 50,
+    ),
+  );
+}
+
+/**
+ * Implements hook_leaflet_widget_base_layers().
+ *
+ * Adds Esri topo and satellite as options for the location picker widget.
+ */
+function avalanche_danger_map_leaflet_widget_base_layers() {
+  return array(
+    'esri_world_topo' => array(
+      'label' => t('Esri World Topo Map'),
+      'url_template' => '//services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}.png',
+      'layer_options' => array(
+        'attribution' => 'Tiles &copy; <a target="attr" href="http://esri.com">Esri</a>',
+        'maxZoom' => 19,
+      ),
+    ),
+    'esri_world_imagery' => array(
+      'label' => t('Esri Satellite Imagery'),
+      'url_template' => '//services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png',
+      'layer_options' => array(
+        'attribution' => 'Tiles &copy; <a target="attr" href="http://esri.com">Esri</a>',
+        'maxZoom' => 17,
+      ),
+    ),
+    'opentopomap' => array(
+      'label' => t('OpenTopoMap'),
+      'url_template' => 'https://a.tile.opentopomap.org/{z}/{x}/{y}.png',
+      'layer_options' => array(
+        'attribution' => 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, SRTM | &copy; <a href="https://opentopomap.org">OpenTopoMap</a>',
+        'maxZoom' => 17,
+      ),
+    ),
+  );
+}
+
+/**
+ * Built-in danger-scale presets.
+ *
+ * Colors are levels 0-5 (0 = "no rating", a site convention layered on top
+ * of the official scales, which only define 1-5). Labels and travel advice
+ * are shipped once in English and routed through t(); non-English centers
+ * get a translation (.po), not a forked preset — see plan §10. The SAC
+ * preset only diverges on color values, not on language.
+ *
+ * @return array
+ *   Keyed by preset name ('NAC', 'SAC'), each with 'colors', 'labels',
+ *   'travel_advice', and 'legend_url' keys.
+ */
+function avalanche_danger_map_presets() {
+  return array(
+    'NAC' => array(
+      'colors' => array(
+        0 => '#939598',
+        1 => '#50B848',
+        2 => '#FFF200',
+        3 => '#F7941E',
+        4 => '#ED1C24',
+        5 => '#231F20',
+      ),
+      'labels' => array(
+        0 => t('No Rating'),
+        1 => t('1 - Low'),
+        2 => t('2 - Moderate'),
+        3 => t('3 - Considerable'),
+        4 => t('4 - High'),
+        5 => t('5 - Extreme'),
+      ),
+      'travel_advice' => array(
+        0 => '',
+        1 => t('<strong>Generally safe avalanche conditions.</strong> Watch for unstable snow on isolated terrain features.'),
+        2 => t('<strong>Heightened avalanche conditions on specific terrain features.</strong> Evaluate snow and terrain carefully; identify features of concern.'),
+        3 => t('<strong>Dangerous avalanche conditions.</strong> Careful snowpack evaluation, cautious route-finding, and conservative decision-making essential.'),
+        4 => t('<strong>Very dangerous avalanche conditions.</strong> Travel in avalanche terrain not recommended.'),
+        5 => t('<strong>Extraordinarily dangerous avalanche conditions.</strong> Avoid all avalanche terrain.'),
+      ),
+      'legend_url' => 'https://avalanche.org/avalanche-encyclopedia/#north-american-public-avalanche-danger-scale',
+    ),
+    'SAC' => array(
+      'colors' => array(
+        0 => '#CBCBCB',
+        1 => '#007F25',
+        2 => '#FFFD4B',
+        3 => '#FFA032',
+        4 => '#FF0013',
+        5 => '#000000',
+      ),
+      // Same English source strings as NAC — the Spanish site gets these
+      // via translation, not a separate hardcoded copy (plan §10).
+      'labels' => array(
+        0 => t('No Rating'),
+        1 => t('1 - Low'),
+        2 => t('2 - Moderate'),
+        3 => t('3 - Considerable'),
+        4 => t('4 - High'),
+        5 => t('5 - Extreme'),
+      ),
+      'travel_advice' => array(
+        0 => '',
+        1 => t('<strong>Generally safe avalanche conditions.</strong> Watch for unstable snow on isolated terrain features.'),
+        2 => t('<strong>Heightened avalanche conditions on specific terrain features.</strong> Evaluate snow and terrain carefully; identify features of concern.'),
+        3 => t('<strong>Dangerous avalanche conditions.</strong> Careful snowpack evaluation, cautious route-finding, and conservative decision-making essential.'),
+        4 => t('<strong>Very dangerous avalanche conditions.</strong> Travel in avalanche terrain not recommended.'),
+        5 => t('<strong>Extraordinarily dangerous avalanche conditions.</strong> Avoid all avalanche terrain.'),
+      ),
+      // No PDF/legend link is shipped structurally; centers using SAC can
+      // set 'danger_legend_url' in avalanche_center.settings to point at
+      // their own site-specific legend document.
+      'legend_url' => '',
+    ),
+  );
+}
+
+/**
+ * Resolves the active preset, applying any per-key config overrides.
+ *
+ * @return array
+ *   Array with 'colors', 'labels', 'travel_advice', 'legend_url' keys.
+ */
+function avalanche_danger_map_get_preset() {
+  $presets = avalanche_danger_map_presets();
+  $scale = config_get('avalanche_center.settings', 'danger_scale');
+  if (empty($scale) || !isset($presets[$scale])) {
+    $scale = 'NAC';
+  }
+  $preset = $presets[$scale];
+
+  foreach (array('colors', 'labels', 'travel_advice', 'legend_url') as $key) {
+    $override = config_get('avalanche_center.settings', 'danger_' . $key);
+    if (!empty($override)) {
+      $preset[$key] = is_array($preset[$key]) ? $override + $preset[$key] : $override;
+    }
+  }
+
+  return $preset;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function avalanche_danger_map_block_info() {
+  return array(
+    'danger_map' => array(
+      'info' => t('Avalanche Danger Rating Map'),
+      'cache' => BACKDROP_CACHE_PER_PAGE,
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function avalanche_danger_map_block_view($delta = '') {
+  if ($delta !== 'danger_map') {
+    return array();
+  }
+
+  $map_data = avalanche_danger_map_get_data();
+  if (empty($map_data)) {
+    return array(
+      'subject' => t('Avalanche Danger Rating'),
+      'content' => '<p>' . t('No current avalanche forecast available.') . '</p>',
+    );
+  }
+
+  // Add Leaflet library.
+  backdrop_add_library('leaflet', 'leaflet');
+
+  // Use the avalanche_topo_satellite map definition (the same one the
+  // observation and incident map Views use) as the single source of truth
+  // for base layers, so layers only need to be edited in
+  // avalanche_danger_map_leaflet_map_info().
+  $map_info = avalanche_danger_map_leaflet_map_info();
+  $base_layers = array();
+  if (isset($map_info['avalanche_topo_satellite']['layers'])) {
+    foreach ($map_info['avalanche_topo_satellite']['layers'] as $name => $layer) {
+      if (empty($layer['urlTemplate'])) {
+        continue;
+      }
+      $base_layers[] = array(
+        'name' => $name,
+        'urlTemplate' => $layer['urlTemplate'],
+        'options' => isset($layer['options']) ? $layer['options'] : array(),
+      );
+    }
+  }
+
+  $center_lat = config_get('avalanche_center.settings', 'map_center_lat');
+  $center_lng = config_get('avalanche_center.settings', 'map_center_lng');
+  $zoom = config_get('avalanche_center.settings', 'map_zoom');
+
+  $map_id = 'avalanche-danger-map';
+  backdrop_add_js(array(
+    'avalancheDangerMap' => array(
+      'mapId' => $map_id,
+      'regions' => $map_data,
+      'center' => array(
+        is_numeric($center_lat) ? (float) $center_lat : 0,
+        is_numeric($center_lng) ? (float) $center_lng : 0,
+      ),
+      'zoom' => is_numeric($zoom) ? (int) $zoom : 2,
+      // Ordered base layers; the first one is the default selected layer.
+      'layers' => $base_layers,
+    ),
+  ), 'setting');
+
+  $module_path = backdrop_get_path('module', 'avalanche_danger_map');
+  backdrop_add_js($module_path . '/avalanche_danger_map.js');
+  backdrop_add_css($module_path . '/avalanche_danger_map.css');
+
+  $content = '<div id="' . $map_id . '" class="avalanche-danger-map" style="width:100%;height:420px;"></div>';
+  $content .= avalanche_danger_map_legend();
+
+  return array(
+    'subject' => t('Avalanche Danger Rating'),
+    'content' => $content,
+  );
+}
+
+/**
+ * Picks a readable text color ('#fff' or '#333') for a given background hex.
+ *
+ * Colors are config-driven (per-preset, and overridable), so a fixed set of
+ * CSS positional rules (e.g. ":nth-child(2)") can't reliably keep text
+ * legible across presets — a color that needs light text in one preset can
+ * land in the same position as a color that needs dark text in another.
+ * Compute contrast from the actual color instead.
+ *
+ * @param string $hex
+ *   A "#rrggbb" color.
+ *
+ * @return string
+ *   '#333' for light backgrounds, '#fff' for dark ones.
+ */
+function avalanche_danger_map_contrast_color($hex) {
+  $hex = ltrim($hex, '#');
+  if (strlen($hex) !== 6) {
+    return '#fff';
+  }
+  $r = hexdec(substr($hex, 0, 2));
+  $g = hexdec(substr($hex, 2, 2));
+  $b = hexdec(substr($hex, 4, 2));
+  // Relative luminance (ITU-R BT.601).
+  $luminance = (0.299 * $r + 0.587 * $g + 0.114 * $b) / 255;
+  return $luminance > 0.6 ? '#333' : '#fff';
+}
+
+/**
+ * Returns an HTML danger rating legend using the active preset's colors.
+ */
+function avalanche_danger_map_legend() {
+  $preset = avalanche_danger_map_get_preset();
+  $colors = $preset['colors'];
+  $labels = $preset['labels'];
+
+  $items = '';
+  foreach ($labels as $level => $label) {
+    $color = isset($colors[$level]) ? $colors[$level] : $colors[0];
+    $text_color = avalanche_danger_map_contrast_color($color);
+    $items .= '<span class="legend-item" style="background:' . check_plain($color) . ';color:' . $text_color . ';">' . check_plain($label) . '</span>';
+  }
+
+  if (!empty($preset['legend_url'])) {
+    return '<a href="' . check_url($preset['legend_url']) . '" target="_blank" rel="noopener" class="danger-map-legend" title="' . t('Avalanche danger scale reference') . '">' . $items . '</a>';
+  }
+
+  return '<div class="danger-map-legend">' . $items . '</div>';
+}
+
+/**
+ * Queries the DB for region polygons and their current danger ratings.
+ *
+ * @return array
+ *   Array of region data with GeoJSON and danger rating info.
+ */
+function avalanche_danger_map_get_data() {
+  $preset = avalanche_danger_map_get_preset();
+  $colors = $preset['colors'];
+  $labels = $preset['labels'];
+  $travel_advice = $preset['travel_advice'];
+
+  // Load geoPHP.
+  module_load_include('inc', 'geofield', 'libraries/geophp/geoPHP');
+
+  // Get all region taxonomy terms with their map geometry.
+  $query = db_select('taxonomy_term_data', 't');
+  $query->join('field_data_field_region_map', 'r', 'r.entity_id = t.tid AND r.entity_type = :et', array(':et' => 'taxonomy_term'));
+  $query->fields('t', array('tid', 'name'));
+  $query->fields('r', array('field_region_map_geom'));
+  $query->condition('t.vocabulary', 'region');
+  $regions = $query->execute()->fetchAll();
+
+  if (empty($regions)) {
+    return array();
+  }
+
+  $result = array();
+  foreach ($regions as $region) {
+    if (empty($region->field_region_map_geom)) {
+      continue;
+    }
+
+    // Convert WKB to GeoJSON.
+    try {
+      $geom = geoPHP::load($region->field_region_map_geom, 'wkb');
+      if (!$geom) {
+        continue;
+      }
+      $geojson = $geom->out('json');
+    }
+    catch (Exception $e) {
+      watchdog('avalanche_danger_map', 'Failed to convert region geometry: @msg', array('@msg' => $e->getMessage()), WATCHDOG_WARNING);
+      continue;
+    }
+
+    // Get the latest advisory danger rating and URL for this region.
+    $advisory_info = avalanche_danger_map_get_advisory_info($region->tid);
+    $danger_rating = $advisory_info['rating'];
+    $advisory_url = $advisory_info['url'];
+
+    $result[] = array(
+      'tid' => $region->tid,
+      'name' => $region->name,
+      'geojson' => $geojson,
+      'danger_rating' => $danger_rating,
+      'color' => isset($colors[$danger_rating]) ? $colors[$danger_rating] : $colors[0],
+      'label' => isset($labels[$danger_rating]) ? $labels[$danger_rating] : $labels[0],
+      'travel_advice' => isset($travel_advice[$danger_rating]) ? $travel_advice[$danger_rating] : '',
+      'advisory_url' => $advisory_url,
+      'expired' => !empty($advisory_info['expired']),
+    );
+  }
+
+  return $result;
+}
+
+/**
+ * Gets the current overall danger rating and advisory URL for a forecast region.
+ *
+ * @param int $tid
+ *   The taxonomy term ID of the region.
+ *
+ * @return array
+ *   Array with keys:
+ *   - rating: int 0-5. Forced to 0 when the latest advisory has expired.
+ *   - url: absolute URL of the latest advisory, even when expired, so
+ *     callers can still link to it (e.g. "Get more information").
+ *   - expired: TRUE if the latest advisory's validity window has passed.
+ *   - nid: node ID of the latest advisory, or 0 if none exists.
+ */
+function avalanche_danger_map_get_advisory_info($tid) {
+  $query = db_select('node', 'n');
+  $query->join('field_data_field_forecast_region', 'fr', 'fr.entity_id = n.nid AND fr.entity_type = :et', array(':et' => 'node'));
+  $query->join('field_data_field_overalldanger', 'od', 'od.entity_id = n.nid AND od.entity_type = :et2', array(':et2' => 'node'));
+  $query->leftJoin('field_data_field_duration', 'du', 'du.entity_id = n.nid AND du.entity_type = :et3', array(':et3' => 'node'));
+  $query->fields('n', array('nid', 'created'));
+  $query->fields('od', array('field_overalldanger_value'));
+  $query->addField('du', 'field_duration_value');
+  $query->condition('n.type', 'advisory');
+  $query->condition('n.status', 1);
+  $query->condition('fr.field_forecast_region_tid', $tid);
+  $query->orderBy('n.created', 'DESC');
+  $query->range(0, 1);
+
+  $row = $query->execute()->fetchObject();
+  if (!$row) {
+    return array('rating' => 0, 'url' => '', 'expired' => FALSE, 'nid' => 0);
+  }
+
+  // Treat the forecast as expired once its validity window has passed,
+  // matching the original site's map logic (issue time + duration hours).
+  // An expired forecast's rating is shown the same as having no current
+  // forecast, but its URL is still returned so callers can link to it.
+  $duration_hours = !empty($row->field_duration_value) ? (int) $row->field_duration_value : 24;
+  $expires = (int) $row->created + ($duration_hours * 3600);
+  $expired = REQUEST_TIME > $expires;
+
+  $alias = backdrop_get_path_alias('node/' . $row->nid);
+  return array(
+    'rating' => $expired ? 0 : (int) $row->field_overalldanger_value,
+    'url' => url($alias, array('absolute' => TRUE)),
+    'expired' => $expired,
+    'nid' => (int) $row->nid,
+  );
+}

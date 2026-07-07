@@ -34,14 +34,18 @@ any structural work.
 ## Environment
 - DDEV for local; this repo will get its own DDEV project for the
   greenfield demo install (Phase 7).
-- Current phase: 3 (genericize modules: avalanche_danger_map,
-  avalanche_glossary, avalanche_social_meta). Phase 1 done: repo skeleton
-  scaffolded; structural node-type list corrected from 2 to 22 types; NAC
-  level-0 grey set to `#939598`. Phase 2 done: avalanche_modern merged from
-  gulmarg_modern (renamed, t()-wrapped, canonical NAC colors applied);
-  responsive_sac/responsive_bartik copied with vestigial/instance-specific
-  files stripped. See AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §13-14 for the
-  full logs.
+- Current phase: 4 (classify config; reconcile machine-name/path exceptions;
+  strip dead snowobs/avyobs entries from role/view config). Phase 1 done:
+  repo skeleton scaffolded; structural node-type list corrected from 2 to 22
+  types; NAC level-0 grey set to `#939598`. Phase 2 done: avalanche_modern
+  merged from gulmarg_modern (renamed, t()-wrapped, canonical NAC colors
+  applied); responsive_sac/responsive_bartik copied with vestigial/instance-
+  specific files stripped. Phase 3 done: avalanche_danger_map (config-driven
+  NAC/SAC presets, PHP-8 hook_menu_alter fix, luminance-based legend contrast
+  replacing fragile CSS nth-child assumptions), avalanche_glossary (single
+  /avalanche-terms path, no language fork), avalanche_social_meta (fallback
+  logo filename now config, not hardcoded) genericized under modules/. See
+  AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §13-15 for the full logs.
 
 ## Conventions
 - Machine names must match Gulmarg's existing field/vocab names.

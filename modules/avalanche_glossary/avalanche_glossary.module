@@ -1,0 +1,118 @@
+<?php
+/**
+ * @file
+ * Provides the avalanche terms glossary page, replacing the D7 Lexicon module.
+ *
+ * Generic replacement for gulmarg_glossary / argentina_glossary. The path
+ * stays the single English machine name 'avalanche-terms'; Spanish (or any
+ * other language) is a translation of the page title/strings, not a
+ * separate path or forked module — see plan §10.
+ */
+
+/**
+ * Implements hook_init().
+ */
+function avalanche_glossary_init() {
+  if (strpos(current_path(), 'avalanche-terms') === 0) {
+    backdrop_add_css(backdrop_get_path('module', 'avalanche_glossary') . '/avalanche_glossary.css');
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function avalanche_glossary_menu() {
+  $items['avalanche-terms'] = array(
+    'title' => 'Avalanche Terms Glossary',
+    'page callback' => 'avalanche_glossary_page',
+    'access arguments' => array('access content'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['avalanche-terms/%'] = array(
+    'title' => 'Avalanche Terms Glossary',
+    'page callback' => 'avalanche_glossary_page',
+    'page arguments' => array(1),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+/**
+ * Page callback: renders the avalanche terms glossary.
+ *
+ * @param string $letter
+ *   Optional single letter to filter by.
+ */
+function avalanche_glossary_page($letter = NULL) {
+  $vocabulary = 'avalanche_terms';
+
+  $query = db_select('taxonomy_term_data', 't')
+    ->fields('t', array('tid', 'name', 'description', 'format'))
+    ->condition('t.vocabulary', $vocabulary)
+    ->orderBy('t.name', 'ASC');
+
+  if ($letter && strlen($letter) === 1 && ctype_alpha($letter)) {
+    $query->condition('t.name', strtoupper($letter) . '%', 'LIKE');
+  }
+
+  $terms = $query->execute()->fetchAll();
+
+  // Group terms by first letter.
+  $grouped = array();
+  foreach ($terms as $term) {
+    $first = strtoupper(substr($term->name, 0, 1));
+    $grouped[$first][] = $term;
+  }
+  ksort($grouped);
+
+  // Build alphabet navigation.
+  $all_letters = db_select('taxonomy_term_data', 't')
+    ->fields('t', array('name'))
+    ->condition('t.vocabulary', $vocabulary)
+    ->execute()
+    ->fetchCol();
+
+  $used_letters = array();
+  foreach ($all_letters as $name) {
+    $used_letters[strtoupper(substr($name, 0, 1))] = TRUE;
+  }
+
+  $alphabet = array();
+  foreach (range('A', 'Z') as $l) {
+    if (!empty($used_letters[$l])) {
+      $alphabet[] = l($l, 'avalanche-terms/' . strtolower($l), array('attributes' => array('class' => array('glossary-letter-link'))));
+    }
+    else {
+      $alphabet[] = '<span class="glossary-letter-inactive">' . check_plain($l) . '</span>';
+    }
+  }
+  $alphabet[] = l(t('All'), 'avalanche-terms', array('attributes' => array('class' => array('glossary-letter-link'))));
+
+  $output = '<div class="glossary-alphabet">' . implode(' | ', $alphabet) . '</div>';
+
+  if (empty($terms)) {
+    $output .= '<p>' . t('No terms found.') . '</p>';
+    return $output;
+  }
+
+  foreach ($grouped as $letter_key => $letter_terms) {
+    $output .= '<div class="glossary-letter-group" id="glossary-' . strtolower($letter_key) . '">';
+    $output .= '<h2 class="glossary-letter">' . check_plain($letter_key) . '</h2>';
+    $output .= '<dl class="glossary-terms">';
+    foreach ($letter_terms as $term) {
+      // Use the actual URL alias if it exists.
+      $alias = backdrop_get_path_alias('taxonomy/term/' . $term->tid);
+      $output .= '<dt class="glossary-term">' . l(check_plain($term->name), $alias) . '</dt>';
+      $output .= '<dd class="glossary-definition">';
+      if (!empty($term->description)) {
+        $output .= check_markup($term->description, $term->format);
+      }
+      $output .= '</dd>';
+    }
+    $output .= '</dl>';
+    $output .= '</div>';
+  }
+
+  return $output;
+}

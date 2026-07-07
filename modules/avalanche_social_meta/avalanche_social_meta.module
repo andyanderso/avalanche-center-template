@@ -1,0 +1,126 @@
+<?php
+/**
+ * @file
+ * Node tokens for social sharing images on Advisory and Observation nodes.
+ *
+ * Generic replacement for gulmarg_social_meta / argentina_social_meta.
+ * Ported from the Drupal 7 site's Token Custom entries
+ * "overall-danger-icon" and "obs-image-for-social-medai", which relied on
+ * eval()'d PHP stored in the database. This reimplements the same behavior
+ * as ordinary, version-controlled node tokens.
+ */
+
+/**
+ * Implements hook_token_info().
+ */
+function avalanche_social_meta_token_info() {
+  $info['tokens']['node']['overall-danger-icon'] = array(
+    'name' => t('Overall danger icon URL'),
+    'description' => t('Absolute URL of the danger rating icon matching the "Overall Danger Rating" field, for use in social sharing metatags.'),
+  );
+  $info['tokens']['node']['obs-image-for-social-media'] = array(
+    'name' => t('Observation social media image URL'),
+    'description' => t('Absolute URL of the best available photo on an observation, for use in social sharing metatags.'),
+  );
+
+  return $info;
+}
+
+/**
+ * Implements hook_tokens().
+ */
+function avalanche_social_meta_tokens($type, $tokens, array $data = array(), array $options = array()) {
+  $replacements = array();
+
+  if ($type != 'node' || empty($data['node'])) {
+    return $replacements;
+  }
+  $node = $data['node'];
+
+  foreach ($tokens as $name => $original) {
+    switch ($name) {
+      case 'overall-danger-icon':
+        $url = avalanche_social_meta_overall_danger_icon_url($node);
+        break;
+
+      case 'obs-image-for-social-media':
+        $url = avalanche_social_meta_obs_social_image_url($node);
+        break;
+
+      default:
+        $url = NULL;
+    }
+
+    if (!empty($url)) {
+      $replacements[$original] = $url;
+    }
+  }
+
+  return $replacements;
+}
+
+/**
+ * Builds the absolute URL of the danger rating icon for a node.
+ *
+ * @param object $node
+ *   The node to inspect.
+ *
+ * @return string|null
+ *   An absolute URL, or NULL if the node has no danger rating or the icon
+ *   file doesn't exist.
+ */
+function avalanche_social_meta_overall_danger_icon_url($node) {
+  $items = field_get_items('node', $node, 'field_overalldanger');
+  if (empty($items) || !isset($items[0]['value'])) {
+    return NULL;
+  }
+
+  $rating = (int) $items[0]['value'];
+  $relative_path = backdrop_get_path('theme', 'responsive_sac') . '/img/rating-icons/200fb' . $rating . '.png';
+  if (!is_file(BACKDROP_ROOT . '/' . $relative_path)) {
+    return NULL;
+  }
+
+  return url($relative_path, array('absolute' => TRUE));
+}
+
+/**
+ * Builds the absolute URL of the best available social image for an
+ * observation node.
+ *
+ * Mirrors the Drupal 7 fallback order: snowpack/avalanche weather photo,
+ * then snowpit photo, then the site's configured logo as a last resort.
+ *
+ * @param object $node
+ *   The node to inspect.
+ *
+ * @return string|null
+ *   An absolute image URL, or NULL if nothing usable was found.
+ */
+function avalanche_social_meta_obs_social_image_url($node) {
+  if ($node->type != 'observation') {
+    return NULL;
+  }
+
+  $image_fields = array(
+    'field_snowpack_avalanche_weather',
+    'field_ob_snowpit_photo',
+  );
+
+  foreach ($image_fields as $field_name) {
+    $items = field_get_items('node', $node, $field_name);
+    if (!empty($items[0]['uri'])) {
+      return image_style_url('large', $items[0]['uri']);
+    }
+  }
+
+  // The fallback logo file is site-specific (each center uploads its own via
+  // the setup form / admin settings — plan §7); no filename is hardcoded or
+  // shipped structurally.
+  $fallback = config_get('avalanche_center.settings', 'social_fallback_logo');
+  if (!empty($fallback) && is_file(backdrop_realpath($fallback))) {
+    return file_create_url($fallback);
+  }
+
+  return NULL;
+}

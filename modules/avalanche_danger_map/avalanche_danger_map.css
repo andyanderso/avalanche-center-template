@@ -1,0 +1,65 @@
+.avalanche-danger-map {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+.danger-map-legend {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0;
+  margin-top: 6px;
+  font-size: 0.82em;
+  text-decoration: none;
+  overflow: hidden;
+  border-radius: 4px;
+  width: 100%;
+}
+.danger-map-legend .legend-item {
+  flex: 1;
+  padding: 5px 4px;
+  font-weight: bold;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.danger-map-legend:hover .legend-item {
+  opacity: 0.85;
+}
+
+/* Map popup styles */
+.danger-map-popup h4 {
+  margin: 0 0 6px 0;
+  font-size: 1em;
+  font-weight: bold;
+}
+.danger-map-popup-rating {
+  padding: 4px 8px;
+  border-radius: 3px;
+  color: #fff;
+  font-size: 0.95em;
+  margin-bottom: 8px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+.danger-map-popup-advice {
+  font-size: 0.9em;
+  line-height: 1.4;
+  margin-bottom: 8px;
+  color: #333;
+}
+.danger-map-popup-link {
+  margin-top: 6px;
+  text-align: right;
+}
+.danger-map-popup-link a {
+  font-size: 0.9em;
+  font-weight: bold;
+  color: #1a6496;
+  text-decoration: none;
+}
+.danger-map-popup-link a:hover {
+  text-decoration: underline;
+}

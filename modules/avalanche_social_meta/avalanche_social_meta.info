@@ -1,0 +1,5 @@
+name = Avalanche Social Meta Tokens
+description = Provides node tokens used by Metatag to build social sharing images for Advisory and Observation nodes.
+package = Avalanche Center
+type = module
+backdrop = 1.x

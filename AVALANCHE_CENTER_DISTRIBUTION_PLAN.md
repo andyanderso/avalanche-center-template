@@ -456,7 +456,66 @@ stripped rather than adapted. Notable findings beyond straightforward renaming:
 
 ---
 
-## 15. Reference: key files to study in the source codebases
+## 15. Phase 3 decisions log
+
+Phase 3 (genericize modules) is complete. `avalanche_danger_map`,
+`avalanche_glossary`, and `avalanche_social_meta` were merged from their
+`gulmarg_*`/`argentina_*` counterparts under `modules/`. Notable decisions
+beyond straightforward renaming:
+
+- **`avalanche_danger_map` presets are code, selection is config.** Both
+  `NAC` and `SAC` palettes (§6/§13 canonical values) ship as PHP arrays in
+  `avalanche_danger_map_presets()`; `config_get('avalanche_center.settings',
+  'danger_scale')` picks one (default `NAC`), with optional per-key
+  overrides (`danger_colors`, `danger_labels`, `danger_travel_advice`,
+  `danger_legend_url`) for centers that need to deviate. Map `center`/`zoom`
+  read from `map_center_lat`/`map_center_lng`/`map_zoom` config, falling
+  back to `(0,0)`/zoom 2 if unset.
+- **Labels and travel advice are single English source strings routed
+  through `t()`** for both presets — Argentina's copy had hardcoded Spanish
+  text directly in the module; that's now a translation-time concern (§10),
+  not a second hardcoded copy. SAC only diverges on color values.
+- **Folded in Argentina's PHP 8 `hook_menu_alter()` fix** (§6) as the
+  unconditional shared default; Gulmarg's reference lacked it.
+- **Found and fixed a real cross-preset bug while merging the legend**: both
+  references picked legend-item text color by CSS `:nth-child` position
+  (e.g. "the 2nd item is always yellow, always needs dark text"). That
+  assumption breaks under a config-driven palette — a preset or override can
+  put a light color in a position a different preset expects to be dark.
+  Replaced with `avalanche_danger_map_contrast_color()`, which computes
+  legibility from each color's actual luminance and applies it as an inline
+  style, so the legend stays readable under any preset or override.
+- **Standardized on the more complete of the two block behaviors**: Gulmarg's
+  `hook_block_view()` never rendered the legend; Argentina's did. Generic
+  module always appends the legend. Also adopted Argentina's richer map
+  interaction values (420px height, 300px popup max-width, `fitBounds`
+  padding) as the single shared behavior.
+- **Legend link is config-driven, not a shipped asset**: NAC's preset
+  defaults to the public avalanche.org scale reference URL; SAC ships no
+  legend URL (Argentina's PDF was a site-specific asset, not shipped
+  structurally) — a center can set `danger_legend_url` if it has one.
+- **JS strings wrapped in `Backdrop.t()`** (`Danger Rating:`, `Travel
+  Advice:`, `Read Full Advisory`, `Get more information`) so Backdrop's JS
+  string extraction picks them up for the `.po` translation, consistent with
+  the "route every display string through `t()`" rule extending to
+  client-side strings.
+- **`avalanche_glossary` drops Argentina's `/terminos-avalanchas` path**,
+  keeping only the single English `/avalanche-terms` machine path (with its
+  `%` callback variant) per §10 — Spanish is a translation of the page
+  title/strings, not a second URL. Also dropped an unused `$term_url`
+  variable found dead in Gulmarg's original (computed, never read).
+- **`avalanche_social_meta`'s logo fallback is config, not a hardcoded
+  filename** (§7): reads `avalanche_center.settings.social_fallback_logo`
+  instead of choosing between `gac_logo_white.jpg` / `ciap-logo-2.png` in
+  code; returns `NULL` gracefully (existing guard pattern) if unset or the
+  file doesn't exist.
+- Verified the module-layer NAC palette now matches the theme-layer palette
+  from Phase 2 (`avalanche_modern_danger_colors()`) exactly — no more of the
+  two-independent-copies divergence flagged in §6.
+
+---
+
+## 16. Reference: key files to study in the source codebases
 
 - Theme settings GUI: `themes/argentina_modern/theme-settings.php`
 - Shared settings schema: `themes/argentina_modern/argentina_modern.info`

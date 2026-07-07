@@ -1,0 +1,5 @@
+name = Avalanche Glossary
+description = Provides the avalanche terms glossary page, replacing the D7 Lexicon module.
+package = Avalanche Center
+type = module
+backdrop = 1.x
