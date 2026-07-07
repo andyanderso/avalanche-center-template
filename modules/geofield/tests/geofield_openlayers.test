@@ -1,0 +1,25 @@
+<?php
+/**
+ * @file
+ * Integration tests for geofield.module with openlayers.module
+ */
+
+class GeofieldOpenlayersTestCase extends FieldTestCase {
+
+  function setUp() {
+    parent::setUp(array('geofield', 'field_test'));
+
+    $this->admin_user = $this->backdropCreateUser(array('administer filters'));
+    $this->web_user = $this->backdropCreateUser(array('access field_test content', 'administer field_test content', 'administer modules'));
+    $this->backdropLogin($this->web_user);
+  }
+
+  // @todo Test fields.
+
+  /**
+   * Sample test.
+   */
+  function testSampletest() {
+    $this->assertTrue(1 == 1, "1 == 1");
+  }
+}

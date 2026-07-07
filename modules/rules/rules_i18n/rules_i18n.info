@@ -1,0 +1,13 @@
+name = Rules translation
+description = Allows translating rules.
+package = Multilingual - Internationalization
+backdrop = 1.x
+
+dependencies[] = rules
+dependencies[] = i18n_string
+dependencies[] = entity_plus_i18n
+
+; Added by Backdrop CMS packaging script on 2026-04-25
+project = rules
+version = 1.x-2.14.5
+timestamp = 1777121853

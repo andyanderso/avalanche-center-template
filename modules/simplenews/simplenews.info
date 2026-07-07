@@ -1,0 +1,15 @@
+name = Simplenews
+description = Send newsletters to subscribed email addresses.
+package = Mail
+backdrop = 1.x
+type = module
+configure = admin/config/services/simplenews
+dependencies[] = taxonomy
+
+test_dependencies[] = i18n_taxonomy
+
+
+; Added by Backdrop CMS packaging script on 2026-04-07
+project = simplenews
+version = 1.x-1.2.3
+timestamp = 1775578043

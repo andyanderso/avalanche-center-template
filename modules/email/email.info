@@ -1,0 +1,6 @@
+name = Email
+description = Defines an email field type.
+backdrop = 1.x
+package = Fields
+
+files[] = email.migrate.inc

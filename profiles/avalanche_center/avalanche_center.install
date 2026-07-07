@@ -6,7 +6,9 @@
  * Structural config (profiles/avalanche_center/config/) auto-imports from
  * this profile's config/ directory via Backdrop's own
  * config_install_default_config() as part of normal profile installation -
- * nothing here needs to trigger that explicitly.
+ * nothing here needs to trigger that explicitly. Exception:
+ * config_install_default_config() only ever *creates* config, never
+ * overwrites it - see avalanche_center_install() below.
  */
 
 /**
@@ -29,6 +31,63 @@ function avalanche_center_install() {
     $settings->set('map_center_lng', 0);
     $settings->set('map_zoom', 2);
     $settings->save();
+  }
+
+  avalanche_center_force_apply_config(array(
+    'user.role.anonymous',
+    'user.role.authenticated',
+  ));
+
+  // Declaring themes[] in avalanche_center.info only makes them available -
+  // Backdrop doesn't enable or default to any of them on its own, and (like
+  // roles above) our profile ships no system.core.json to set theme_default
+  // via passive config import. Without this, the site is stuck on core's
+  // bare "stark" fallback theme, and any layout whose layout_template is
+  // "responsive_sac" (layout.layout.node/default.json, matching the Gulmarg
+  // baseline) fails outright since that theme was never enabled at all.
+  // Canonical baseline (Gulmarg) runs *_modern as the default theme, basis
+  // as the admin theme, with responsive_sac enabled (not default) purely to
+  // supply that layout template - reproduced here.
+  theme_enable(array('avalanche_modern', 'responsive_sac', 'responsive_bartik', 'basis'));
+  config_set('system.core', 'theme_default', 'avalanche_modern');
+  config_set('system.core', 'admin_theme', 'basis');
+}
+
+/**
+ * Force-applies specific shipped config files, overwriting whatever's
+ * already active.
+ *
+ * config_install_default_config() (which normally imports everything in
+ * profiles/avalanche_center/config/) only ever creates new config, never
+ * overwrites existing config - by design, so it's safe to re-run. But it
+ * means any config name a *module we depend on* also ships its own default
+ * for silently keeps that module's default instead of ours, if that
+ * module gets enabled first (nearly always true for core modules, since
+ * profiles install last). Found via Phase 7's greenfield install test:
+ * `user` module ships its own empty-permission `user.role.anonymous` /
+ * `user.role.authenticated`, so our exported versions (with real
+ * permissions - "access content" etc.) were silently discarded, leaving
+ * anonymous visitors and logged-in users alike unable to view the site at
+ * all. Re-applied here, explicitly, after normal config import has run.
+ *
+ * @param array $config_names
+ *   Config object names (matching a .json filename, minus the extension)
+ *   to load from this profile's config/ directory and force-save over
+ *   whatever's currently active.
+ */
+function avalanche_center_force_apply_config($config_names) {
+  $config_dir = backdrop_get_path('profile', 'avalanche_center') . '/config';
+  foreach ($config_names as $name) {
+    $file = $config_dir . '/' . $name . '.json';
+    if (!file_exists($file)) {
+      continue;
+    }
+    $data = json_decode(file_get_contents($file), TRUE);
+    if (!is_array($data)) {
+      continue;
+    }
+    unset($data['_config_name']);
+    config($name)->setData($data)->save();
   }
 }
 
@@ -85,5 +144,27 @@ function avalanche_center_create_demo_content($lat, $lng) {
   $node->field_bottom_line[LANGUAGE_NONE][0]['value'] = t('This is a demo advisory created automatically at install so the danger map has something to show. Replace it with a real forecast, or delete it.');
   $node->field_bottom_line[LANGUAGE_NONE][0]['format'] = filter_default_format();
 
+  // field_rose_{1,2,3} (danger_rose_picker, from the danger_rose module) are
+  // not Field-API "required" on advisory, but danger_rose_field_schema()
+  // declares all 24 of its per-aspect columns NOT NULL with no fallback -
+  // saving a node that never sets any value for these fields hits a DB
+  // constraint violation, not a Field API validation error. Zero-fill them.
+  $empty_rose = array_fill(0, 24, 0);
+  foreach (array('field_rose_1', 'field_rose_2', 'field_rose_3') as $rose_field) {
+    $node->{$rose_field}[LANGUAGE_NONE][0] = $empty_rose;
+  }
+
   node_save($node);
+
+  // The danger map block (layout.layout.node.json) is only visible on
+  // <front> - matching the Gulmarg/Argentina baseline, where site_frontpage
+  // points at a specific advisory node (Gulmarg: node/5950), not core's
+  // "node" promoted-content-listing default. Without this, the map never
+  // renders anywhere: core's default front page doesn't match the node/%
+  // layout at all, and this node isn't promoted (see $node->promote above)
+  // so it wouldn't appear there regardless. Point the front page at the
+  // demo node so the map has somewhere it's actually configured to show;
+  // a real center repoints this once they have their own advisory/landing
+  // content, same as Gulmarg/Argentina did.
+  config_set('system.core', 'site_frontpage', 'node/' . $node->nid);
 }

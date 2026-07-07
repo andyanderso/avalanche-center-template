@@ -1,0 +1,10 @@
+name = Entity UI
+description = Provides a UI entity forms.
+package = Entity
+backdrop = 1.x
+type = module
+
+; Added by Backdrop CMS packaging script on 2023-12-27
+project = entity_ui
+version = 1.x-1.0.2
+timestamp = 1703716068

@@ -1,0 +1,12 @@
+type = module
+name = Custom tokens
+description = Allow users to define custom tokens to use throughout the site
+package = Core
+backdrop = 1.x
+type = module
+configure = admin/structure/token-custom
+
+; Added by Backdrop CMS packaging script on 2026-03-19
+project = token_custom
+version = 1.x-1.4.0
+timestamp = 1773943028

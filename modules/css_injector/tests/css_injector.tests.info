@@ -1,0 +1,10 @@
+[CSSInjectorTest]
+name = CSS Injector Functionality
+description = CSS Injector Functionality
+group = CSS Injector
+file = css_injector.test
+
+; Added by Backdrop CMS packaging script on 2026-05-15
+project = css_injector
+version = 1.x-1.12.2
+timestamp = 1778859725

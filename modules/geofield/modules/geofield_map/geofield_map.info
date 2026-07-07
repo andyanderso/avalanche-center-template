@@ -1,0 +1,10 @@
+type = module
+name = Geofield Map
+description = Provides a basic mapping interface for Geofields.
+backdrop = 1.x
+dependencies[] = geofield
+
+; Added by Backdrop CMS packaging script on 2026-03-17
+project = geofield
+version = 1.x-1.0.7
+timestamp = 1773738135

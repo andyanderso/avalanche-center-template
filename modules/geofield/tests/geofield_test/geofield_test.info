@@ -1,0 +1,12 @@
+name = Geofield test
+description = Support module for the Geofield tests.
+backdrop = 1.x
+hidden = TRUE
+package = Testing
+
+dependencies[] = geofield
+
+; Added by Backdrop CMS packaging script on 2026-03-17
+project = geofield
+version = 1.x-1.0.7
+timestamp = 1773738135

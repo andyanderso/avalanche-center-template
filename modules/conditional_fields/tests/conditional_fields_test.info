@@ -1,0 +1,12 @@
+name = Conditional Fields test
+description = Provides hooks for testing Conditional Fields.
+package = Fields
+backdrop = 1.x
+type = module
+dependencies[] = conditional_fields
+hidden = TRUE
+
+; Added by Backdrop CMS packaging script on 2026-01-22
+project = conditional_fields
+version = 1.x-3.0.2
+timestamp = 1769091796

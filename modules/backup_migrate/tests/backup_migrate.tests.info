@@ -1,0 +1,22 @@
+[BmTestBasics]
+name = Basic tests
+description = Run through basic scenarios and functionality.
+group = Backup and Migrate
+file = BmTestBasics.test
+
+[BmTestEmail]
+name = Email handling
+description = Confirm email handling works as intended.
+group = Backup and Migrate
+file = BmTestEmail.test
+
+[BmTestProfiles]
+name = Profiles tests
+description = Run through basic scenarios and functionality.
+group = Backup and Migrate
+file = BmTestProfiles.test
+
+; Added by Backdrop CMS packaging script on 2025-04-21
+project = backup_migrate
+version = 1.x-1.0.30
+timestamp = 1745275070

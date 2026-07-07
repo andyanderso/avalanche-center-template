@@ -1,0 +1,14 @@
+name = Leaflet More Maps
+description = Adds a swag of map styles to Leaflet, e.g Thunderforest, Esri, MapBox
+backdrop = 1.x
+type = module
+package = Leaflet
+
+dependencies[] = leaflet
+
+configure = admin/config/system/leaflet_more_maps
+
+; Added by Backdrop CMS packaging script on 2026-02-06
+project = leaflet
+version = 1.x-1.2.3
+timestamp = 1770382366

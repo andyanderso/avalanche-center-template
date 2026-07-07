@@ -1,0 +1,11 @@
+name = Geofield
+description = Stores geographic and location data (points, lines, and polygons).
+core = 7.x
+backdrop = 1.x
+type = module
+package = Fields
+
+; Added by Backdrop CMS packaging script on 2026-03-17
+project = geofield
+version = 1.x-1.0.7
+timestamp = 1773738135

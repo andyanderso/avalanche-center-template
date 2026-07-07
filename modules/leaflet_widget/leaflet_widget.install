@@ -1,0 +1,19 @@
+<?php
+/**
+ * @file
+ * leaflet_widget.install
+ */
+
+/**
+ * Implements hook_requirements().
+ *
+ * Upstream ships this function with an empty body (implicitly returning
+ * NULL), which breaks array_merge() in backdrop_check_profile() during
+ * install - every dependency's hook_requirements('install') return value
+ * gets merged into a running array, and NULL isn't a valid operand. Patched
+ * to return an empty array like every other module's hook_requirements()
+ * does when it has nothing to report.
+ */
+function leaflet_widget_requirements($phase) {
+  return array();
+}

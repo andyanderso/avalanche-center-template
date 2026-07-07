@@ -1,0 +1,339 @@
+<?php
+/**
+ * @file
+ * Allows node titles to be generated automatically based on tokens.
+ */
+
+define('AUTO_NODETITLE_DISABLED', 0);
+define('AUTO_NODETITLE_ENABLED', 1);
+define('AUTO_NODETITLE_OPTIONAL', 2);
+
+/**
+ * Implements hook_config_info().
+ */
+function auto_nodetitle_config_info() {
+  $prefixes['auto_nodetitle.settings'] = array(
+    'label' => t('Auto Nodetitle settings'),
+    'group' => t('Configuration'),
+  );
+
+  return $prefixes;
+}
+
+/**
+ * Implements hook_form_alter() for the node form.
+ */
+function auto_nodetitle_form_alter(&$form, &$form_state, $form_id) {
+  if (isset($form['#entity_type']) && $form['#entity_type'] == 'node') {
+    if (isset($form['#node']) && config_get('auto_nodetitle.settings', 'ant_' . $form['#node']->type) == AUTO_NODETITLE_ENABLED) {
+      // We will autogenerate the title later, just hide the title field in the
+      // meanwhile.
+      $form['title']['#value'] = 'ant';
+      $form['title']['#type'] = 'value';
+      $form['title']['#required'] = FALSE;
+    }
+    elseif (isset($form['#node']) && config_get('auto_nodetitle.settings', 'ant_' . $form['#node']->type) == AUTO_NODETITLE_OPTIONAL) {
+      $form['title']['#required'] = FALSE;
+    }
+  }
+}
+
+/**
+ * Implements hook_inline_entity_form_entity_form_alter().
+ */
+function auto_nodetitle_inline_entity_form_entity_form_alter(&$entity_form, &$form_state) {
+  if ($entity_form['#entity_type'] == 'node') {
+    $setting = config_get('auto_nodetitle.settings', 'ant_' . $entity_form['#entity']->type);
+    if ($setting == AUTO_NODETITLE_ENABLED) {
+      // We will autogenerate the title later, just hide the title field in the
+      // meanwhile.
+      $entity_form['title']['#value'] = 'ant';
+      $entity_form['title']['#type'] = 'value';
+      $entity_form['title']['#required'] = FALSE;
+      // Fix for title replaced field if title module is active.
+      if (module_exists('title') && isset($entity_form['title_field'])) {
+        $entity_form['title_field'][$entity_form['title_field']['#language']][0]['value']['#type'] = 'value';
+        $entity_form['title_field'][$entity_form['title_field']['#language']][0]['value']['#value'] = 'ant';
+        $entity_form['title_field'][$entity_form['title_field']['#language']][0]['value']['#required'] = FALSE;
+      }
+    }
+    elseif ($setting == AUTO_NODETITLE_OPTIONAL) {
+      $entity_form['title']['#required'] = FALSE;
+      if (module_exists('title') && isset($entity_form['title_field'])) {
+        $entity_form['title_field'][$entity_form['title_field']['#language']][0]['value']['#required'] = FALSE;
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_node_submit().
+ *
+ * Generate the node title as soon as the form has been submitted. That way
+ * the node preview is shown right too.
+ */
+function auto_nodetitle_node_submit($node, $form, &$form_state) {
+  $setting = config_get('auto_nodetitle.settings', 'ant_' . $node->type);
+  if ($setting == AUTO_NODETITLE_ENABLED || ($setting == AUTO_NODETITLE_OPTIONAL && empty($form_state['values']['title']))) {
+    $node->auto_nodetitle_applied = FALSE;
+    backdrop_register_shutdown_function('_auto_nodetitle_save_title');
+  }
+}
+
+/**
+ * Implements hook_node_presave().
+ */
+function auto_nodetitle_node_presave($node) {
+  // If not yet done, generate the title now.
+  if (auto_nodetitle_is_needed($node)) {
+    auto_nodetitle_set_title($node);
+  }
+}
+
+/**
+ * Helper function to save node title.
+ */
+function _auto_nodetitle_save_title() {
+  $nodes = auto_nodetitle_node_get_recent(1);
+  foreach ($nodes as $node) {
+    $setting = config_get('auto_nodetitle.settings', 'ant_' . $node->type);
+    if ($setting != AUTO_NODETITLE_ENABLED && $setting != AUTO_NODETITLE_OPTIONAL) {
+      return;
+    }
+    auto_nodetitle_set_title($node);
+    db_update('node')
+      ->fields(array('title' => $node->title, 'changed' => REQUEST_TIME))
+      ->condition('nid', $node->nid)
+      ->execute();
+    db_update('node_revision')
+      ->fields(array('title' => $node->title, 'timestamp' => REQUEST_TIME))
+      ->condition('vid', $node->vid)
+      ->execute();
+  }
+}
+
+/**
+ * Returns whether the auto nodetitle has to be set.
+ */
+function auto_nodetitle_is_needed($node) {
+  return (isset($node->auto_nodetitle_applied) && empty($node->auto_nodetitle_applied)) && ($setting = config_get('auto_nodetitle.settings', 'ant_' . $node->type)) && !($setting == AUTO_NODETITLE_OPTIONAL && !empty($node->title));
+}
+
+/**
+ * Helper function: sets the automatically generated nodetitle for the node.
+ *
+ * @param $node
+ *   A fully loaded node object.
+ */
+function auto_nodetitle_set_title(&$node) {
+  $types = node_type_get_types();
+  $pattern = config_get('auto_nodetitle.settings', 'ant_pattern_' . $node->type);
+  if (trim($pattern)) {
+    $node->changed = REQUEST_TIME;
+    $node->title = _auto_nodetitle_patternprocessor($pattern, $node);
+  }
+  elseif (!empty($node->nid)) {
+    $node->title = t('@type @node-id', array('@type' => $types[$node->type]->name, '@node-id' => $node->nid));
+  }
+  else {
+    $node->title = t('@type', array('@type' => $types[$node->type]->name));
+  }
+
+  // Allow other modules to alter node title.
+  backdrop_alter('auto_nodetitle', $node);
+
+  // Ensure the generated title isn't too long.
+  $node->title = truncate_utf8($node->title, 250, TRUE, TRUE);
+  // With that flag we ensure we don't apply the title two times to the same
+  // node. See auto_nodetitle_is_needed().
+  $node->auto_nodetitle_applied = TRUE;
+
+  // Clear the cache for the affected node.
+  entity_get_controller('node')->resetCache(array($node->nid));
+}
+
+/**
+ * Implements hook_action_info().
+ */
+function auto_nodetitle_action_info() {
+  $operations = array(
+    'nodetitle_update' => array(
+      'type' => 'node',
+      'label' => t('Update automatic nodetitles'),
+      'callback' => 'auto_nodetitle_operations_update',
+    ),
+  );
+  return $operations;
+}
+
+/**
+ * Callback function for updating node titles.
+ */
+function auto_nodetitle_operations_update($node) {
+  // Set the auto_nodetitle_flag to FALSE before checking if title is needed.
+  $node->auto_nodetitle_applied = FALSE;
+  if ($node && auto_nodetitle_is_needed($node)) {
+    $previous_title = $node->title;
+    auto_nodetitle_set_title($node);
+    // Only save if the title has actually changed.
+    if ($node->title != $previous_title) {
+      node_save($node);
+    }
+  }
+}
+
+/**
+ * Helper function to generate the title according to the settings.
+ *
+ * @return a title string
+ */
+function _auto_nodetitle_patternprocessor($pattern, $node) {
+  // Replace tokens.
+  global $language;
+  $output = token_replace($pattern, array('node' => $node), array(
+    'callback' => '_auto_nodetitle_nohtmlentities',
+    'sanitize' => FALSE,
+    'clear' => TRUE,
+    'langcode' => $language->langcode,
+  ));
+
+  // Strip tags.
+  $output = preg_replace('/[\t\n\r\0\x0B]/', '', $output);
+  return trim($output);
+}
+
+/**
+ * Callback function to remove HTML entities.
+ */
+function _auto_nodetitle_nohtmlentities(&$replacements, $data, $options) {
+  foreach ($replacements as $key => $value) {
+    $replacements[$key] = decode_entities($value);
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for the node type form.
+ */
+function auto_nodetitle_form_node_type_form_alter(&$form, &$form_state) {
+  $default_value = config_get('auto_nodetitle.settings', 'ant_' . $form['#node_type']->type);
+  $form['auto_nodetitle'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Automatic title generation'),
+    '#weight' => 0,
+    '#collapsible' => TRUE,
+    '#collapsed' => !$default_value,
+    '#group' => 'additional_settings',
+    '#attached' => array(
+      'js' => array(
+        'auto-nodetitle' => backdrop_get_path('module', 'auto_nodetitle') . '/auto_nodetitle.js',
+      ),
+    ),
+  );
+  $form['auto_nodetitle']['ant'] = array(
+    '#type' => 'radios',
+    '#default_value' => (int) config_get('auto_nodetitle.settings', 'ant_' . $form['#node_type']->type),
+    '#options' => array(
+      t('Disabled'),
+      t('Automatically generate the title and hide the title field'),
+      t('Automatically generate the title if the title field is left empty'),
+    ),
+  );
+  $form['auto_nodetitle']['ant_pattern'] = array(
+    '#type' => 'textfield',
+    '#size' => 80,
+    '#maxlength' => 255,
+    '#title' => t('Pattern for the title'),
+    '#description' => t('Use [token] syntax to insert a replacement pattern. Leave blank to use the default auto-generated title.'),
+    '#default_value' => config_get('auto_nodetitle.settings', 'ant_pattern_' . $form['#node_type']->type),
+  );
+
+  // Display the list of available placeholders if token module is installed.
+  $form['auto_nodetitle']['token_help'] = array(
+    '#theme' => 'token_tree_link',
+    '#token_types' => array('node'),
+  );
+
+  $form['#submit'][] = 'auto_nodetitle_node_type_form_submit';
+}
+
+/**
+ * Submit handler. Stores settings per mode type.
+ */
+function auto_nodetitle_node_type_form_submit(&$form, &$form_state) {
+  $config = config('auto_nodetitle.settings');
+  $config->set('ant_' . $form_state['values']['type'], $form_state['values']['ant']);
+  $config->set('ant_pattern_' . $form_state['values']['type'], $form_state['values']['ant_pattern']);
+  $config->save();
+}
+
+/**
+ * Implements hook_node_type_delete().
+ */
+function auto_nodetitle_node_type_delete($info) {
+  $config = config('auto_nodetitle.settings');
+  $config->clear('ant_' . $info->type);
+  $config->clear('ant_pattern_' . $info->type);
+  $config->save();
+}
+
+/**
+ * Implements hook_node_type_update().
+ */
+function auto_nodetitle_node_type_update($info) {
+  if (!empty($info->old_type) && $info->old_type != $info->type) {
+    $config = config('auto_nodetitle.settings');
+    $config->set('ant_' . $info->type, $config->get($info->old_type));
+    $config->set('ant_pattern_' . $info->type, $config->get('ant_pattern_' . $info->old_type));
+    $config->clear('ant_' . $info->old_type);
+    $config->clear('ant_pattern_' . $info->old_type);
+    $config->save();
+   }
+ }
+
+/**
+ * Finds the most recently changed nodes that are available to the current user.
+ *
+ * @param (int) $limit
+ *   (optional) The maximum number of nodes to find. Defaults to 10.
+ *
+ * @return array
+ *   An array of node entities or an empty array if there are no recent nodes
+ *   visible to the current user.
+ *
+ */
+function auto_nodetitle_node_get_recent($limit = 10) {
+  $query = db_select('node', 'n');
+
+  if (!user_access('bypass node access') && !user_access('view any unpublished content')) {
+    // If the user is able to view unpublished nodes, allow them to see these
+    // in addition to published nodes. Check that they actually have some
+    // unpublished nodes to view before adding the condition.
+    // Note: this query still ignores unpublished by type permissions.
+    // See: https://github.com/backdrop/backdrop-issues/issues/146.
+    $own_unpublished = db_query(
+      'SELECT nid FROM {node} WHERE uid = :uid AND status = :status',
+      array(':uid' => $GLOBALS['user']->uid, ':status' => NODE_NOT_PUBLISHED)
+    )->fetchCol();
+    if (user_access('view own unpublished content') && $own_unpublished) {
+      $query->condition(
+        db_or()
+          ->condition('n.status', NODE_PUBLISHED)
+          ->condition('n.nid', $own_unpublished, 'IN')
+      );
+    } else {
+      // If not, restrict the query to published nodes.
+      $query->condition('n.status', NODE_PUBLISHED);
+    }
+  }
+  $nids = $query
+    ->fields('n', array('nid'))
+    ->orderBy('n.changed', 'DESC')
+    ->range(0, $limit)
+    ->addTag('node_access')
+    ->execute()
+    ->fetchCol();
+
+  $nodes = node_load_multiple($nids);
+
+  return $nodes ? $nodes : array();
+}

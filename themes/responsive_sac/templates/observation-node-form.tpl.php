@@ -13,7 +13,7 @@
    </td>
  </tr>
  <tr>
-   <td><?php print render($form['field_name']);?>
+   <td><?php print render($form['field_observer_name']);?>
    </td>
    <td><?php print render($form['field_share_this_observation_']);?>
    </td>

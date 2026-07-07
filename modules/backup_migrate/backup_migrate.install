@@ -1,0 +1,665 @@
+<?php
+
+
+/**
+ * @file
+ * Install hooks for Backup and Migrate.
+ */
+
+
+/**
+ * Implementation of hook_requirements().
+ */
+function backup_migrate_requirements($phase) {
+  $requirements = array();
+
+  // Ensure translations don't break during installation.
+  $t = get_t();
+
+  if ($phase == 'runtime') {
+    // Get a list of all destinations, make sure none of them are publicly
+    // accessible.
+    // @todo Expand the API to add methods to specifically check this.
+    require_once dirname(__FILE__) . '/includes/destinations.inc';
+
+    foreach (backup_migrate_get_destinations() as $dest_name => $destination) {
+      if (method_exists($destination, 'get_display_location')) {
+        $dest_path = $destination->get_display_location();
+        if (!empty($dest_path) && file_valid_uri($dest_path)) {
+          $scheme = file_uri_scheme($dest_path);
+          // Support public and private storage and raw server paths.
+          if ($scheme === 'private' || $scheme === 'public' || substr($dest_path, 0, 1) == '/') {
+            // Check if the path exists.
+            $path_exists = file_prepare_directory($dest_path, FILE_CREATE_DIRECTORY);
+            if ($path_exists) {
+              $real_path = backdrop_realpath($dest_path);
+              // See if the private path is somewhere inside the main Backdrop
+              // directory structure.
+              if (strpos($real_path, BACKDROP_ROOT) === 0) {
+                // Extract the relative path from the Backdrop root path, and
+                // then add the base URL, theoretically creating a fully
+                // qualified URL to the storage directory.
+                $url = substr($real_path, strlen(BACKDROP_ROOT) + 1);
+                $url = url($url, array('absolute' => TRUE));
+                $result = backdrop_http_request($url);
+
+                // If the HTTP request comes back as a status 200 that means
+                // there is a directory listing of some sort; directory paths
+                // should return a 503 error.
+                if (!empty($result->code) && $result->code == 200) {
+                  // Get the human readable information for this destination.
+                  $dest_spec = $destination->get_list_row();
+
+                  // Display a warning message.
+                  $requirements['bmdest_' . $dest_name] = array(
+                    'severity' => REQUIREMENT_ERROR,
+                    'title' => 'Backup Migrate',
+                    'value' => $t('Backup destination "%dest" is publicly accessible!', array('%dest' => $dest_spec['name'])),
+                    'description' => $t('The backup destination, "%dest", stores its files in the "%path" directory. This directory is publicly available from the web server and urgently needs to be secured! Please see the Backdrop manual on <a href="@manual">configuring the private directory path</a> on how to fix this problem.',
+                      array(
+                        '%dest' => $dest_spec['name'],
+                        '%path'  => $real_path,
+                        '@manual' => 'https://docs.backdropcms.org/documentation/managing-file-locations-and-access',
+                      )),
+                  );
+                }
+
+                // Check an individual file.
+                else {
+                  $files = scandir($real_path);
+                  if (!empty($files)) {
+                    foreach ($files as $file) {
+                      // Skip the base field pointers.
+                      if ($file == '.' || $file == '..') {
+                        continue;
+                      }
+
+                      $result = backdrop_http_request($url . '/' . $file);
+
+                      // If the HTTP request comes back as a status 200 that
+                      // means the file is accessible.
+                      if (!empty($result->code) && $result->code == 200) {
+                        // Get the human readable information for this
+                        // destination.
+                        $dest_spec = $destination->get_list_row();
+
+                        // Display a warning message.
+                        $requirements['bmdest_' . $dest_name] = array(
+                          'severity' => REQUIREMENT_ERROR,
+                          'title' => 'Backup Migrate',
+                          'value' => $t('Files in "%dest" are publicly accessible!', array('%dest' => $dest_spec['name'])),
+                          'description' => $t('The backup destination, "%dest", stores its files in the "%path" directory. These file(s) are publicly available from the web server and urgently need to be secured! Please see the Backdrop manual on <a href="@manual">configuring the private directory path</a> on how to fix this problem.',
+                            array(
+                              '%dest' => $dest_spec['name'],
+                              '%path'  => $real_path,
+                              '@manual' => 'https://docs.backdropcms.org/documentation/managing-file-locations-and-access',
+                            )),
+                        );
+                      }
+
+                      // Only need to check one file.
+                      break;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    // Leave a note if there were no problems.
+    // @todo No point in displaying this until the API has been expanded.
+    // @code
+    // if (empty($requirements)) {
+    //   $requirements['bmdest_' . $dest_name] = array(
+    //     'severity' => REQUIREMENT_INFO,
+    //     'title' => 'Backup Migrate',
+    //     'value' => $t('Backup destinations are safe'),
+    //     'description' => $t('The backup destinations were all checked and none of them were exposing files to the public. This is a good thing.'),
+    //   );
+    // }
+    // @endcode
+
+    if (config_get('backup_migrate.settings', 'backup_migrate_disable_cron')) {
+      $requirements['bm_disable_cron'] = array(
+        'severity' => REQUIREMENT_INFO,
+        'title' => 'Backup Migrate',
+        'value' => $t('Cron tasks are disabled'),
+        'description' => $t('The cron tasks have been disabled, so scheduled backups will not run. See the Backup & Migrate module\'s README.txt file for further details.'),
+      );
+    }
+  }
+  return $requirements;
+}
+
+/**
+ * Implementation of hook_schema().
+ */
+function backup_migrate_schema() {
+  $schema['backup_migrate_profiles'] = array(
+    // The export keys was used by CTools exportables in D7. It has no effect
+    // in Backdrop. 
+    'export' => array(
+      'key' => 'machine_name',
+      'key name' => 'Profile ID',
+      'admin_title' => 'name',
+      'primary key' => 'profile_id',
+      'identifier' => 'item', // Exports will be defined as $preset
+      'default hook' => 'exportables_backup_migrate_profiles',  // Function hook name.
+      'api' => array(
+        'owner' => 'backup_migrate',
+        'api' => 'backup_migrate_exportables',  // Base name for api include files.
+        'minimum_version' => 1,
+        'current_version' => 1,
+      ),
+    ),
+    'fields' => array(
+      'profile_id' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Primary ID field for the table. Not used for anything except internal lookups.',
+        'no export' => TRUE, // Do not export database-only keys.
+      ),
+      'machine_name' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '0',
+        'description' => 'The primary identifier for a profile.',
+      ),
+      'name' => array(
+        'description' => 'The name of the profile.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE
+      ),
+      'filename' => array(
+        'description' => 'The name of the profile.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE
+      ),
+      'append_timestamp' => array(
+        'description' => 'Append a timestamp to the filename.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0
+      ),
+      'timestamp_format' => array(
+        'description' => 'The format of the timestamp.',
+        'type' => 'varchar',
+        'length' => 14,
+        'not null' => TRUE
+      ),
+      'filters' => array(
+        'description' => 'The filter settings for the profile.',
+        'type' => 'text',
+        'not null' => TRUE,
+        'serialize' => TRUE,
+        'serialized default' => 'a:0:{}',
+      ),
+    ),
+    'primary key' => array('profile_id'),
+  );
+  $schema['backup_migrate_destinations'] = array(
+    // The export keys was used by CTools exportables in D7. It has no effect
+    // in Backdrop.
+    'export' => array(
+      'key' => 'machine_name',
+      'key name' => 'Destination ID',
+      'admin_title' => 'name',
+      'primary key' => 'destination_id',
+      'identifier' => 'item', // Exports will be defined as $preset
+      'default hook' => 'exportables_backup_migrate_destinations',  // Function hook name.
+      'api' => array(
+        'owner' => 'backup_migrate',
+        'api' => 'backup_migrate_exportables',  // Base name for api include files.
+        'minimum_version' => 1,
+        'current_version' => 1,
+      ),
+    ),
+    'fields' => array(
+      'destination_id' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Primary ID field for the table. Not used for anything except internal lookups.',
+        'no export' => TRUE, // Do not export database-only keys.
+      ),
+      'machine_name' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '0',
+        'description' => 'The primary identifier for a destination.',
+      ),
+      'name' => array(
+        'description' => 'The name of the destination.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE
+      ),
+      'subtype' => array(
+        'description' => 'The type of the destination.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE
+      ),
+      'location' => array(
+        'description' => 'The the location string of the destination.',
+        'type' => 'text',
+        'not null' => TRUE
+      ),
+      'settings' => array(
+        'description' => 'Other settings for the destination.',
+        'type' => 'text',
+        'not null' => TRUE,
+        'serialize' => TRUE,
+        'serialized default' => 'a:0:{}',
+     ),
+    ),
+    'primary key' => array('destination_id'),
+  );
+  $schema['backup_migrate_sources'] = array(
+    // The export keys was used by CTools exportables in D7. It has no effect
+    // in Backdrop.
+    'export' => array(
+      'key' => 'machine_name',
+      'key name' => 'Source ID',
+      'admin_title' => 'name',
+      'primary key' => 'source_id',
+      'identifier' => 'item', // Exports will be defined as $preset
+      'default hook' => 'exportables_backup_migrate_sources',  // Function hook name.
+      'api' => array(
+        'owner' => 'backup_migrate',
+        'api' => 'backup_migrate_exportables',  // Base name for api include files.
+        'minimum_version' => 1,
+        'current_version' => 1,
+      ),
+    ),
+    'fields' => array(
+      'source_id' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Primary ID field for the table. Not used for anything except internal lookups.',
+        'no export' => TRUE, // Do not export database-only keys.
+      ),
+      'machine_name' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '0',
+        'description' => 'The primary identifier for a source.',
+      ),
+      'name' => array(
+        'description' => 'The name of the source.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE
+      ),
+      'subtype' => array(
+        'description' => 'The type of the source.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE
+      ),
+      'location' => array(
+        'description' => 'The the location string of the source.',
+        'type' => 'text',
+        'not null' => TRUE
+      ),
+      'settings' => array(
+        'description' => 'Other settings for the source.',
+        'type' => 'text',
+        'not null' => TRUE,
+        'serialize' => TRUE,
+        'serialized default' => 'a:0:{}',
+     ),
+    ),
+    'primary key' => array('source_id'),
+  );
+
+  $schema['backup_migrate_schedules'] = array(
+    // The export keys was used by CTools exportables in D7. It has no effect
+    // in Backdrop.
+    'export' => array(
+      'key' => 'machine_name',
+      'key name' => 'Source ID',
+      'admin_title' => 'name',
+      'primary key' => 'schedule_id',
+      'identifier' => 'item', // Exports will be defined as $preset
+      'default hook' => 'exportables_backup_migrate_schedules',  // Function hook name.
+      'api' => array(
+        'owner' => 'backup_migrate',
+        'api' => 'backup_migrate_exportables',  // Base name for api include files.
+        'minimum_version' => 1,
+        'current_version' => 1,
+      ),
+    ),
+    'fields' => array(
+      'schedule_id' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Primary ID field for the table. Not used for anything except internal lookups.',
+        'no export' => TRUE, // Do not export database-only keys.
+      ),
+      'machine_name' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '0',
+        'description' => 'The primary identifier for a profile.',
+      ),
+      'name' => array(
+        'description' => 'The name of the profile.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE
+      ),
+      'source_id' => array(
+        'description' => 'The {backup_migrate_destination}.destination_id of the source to backup from.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => 'db',
+        'not null' => TRUE
+      ),
+      'destination_id' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '0',
+        'description' => 'The {backup_migrate_destination}.destination_id of the destination to back up to.',
+      ),
+      'copy_destination_id' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '0',
+        'description' => 'A second {backup_migrate_destination}.destination_id of the destination to copy the backup to.',
+      ),
+      'profile_id' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '0',
+        'description' => 'The primary identifier for a profile.',
+      ),
+      'keep' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The number of backups to keep.',
+      ),
+      'period' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The number of seconds between backups.',
+      ),
+      'enabled' => array(
+        'description' => 'Whether the schedule is enabled.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0
+      ),
+      'cron' => array(
+        'description' => 'Whether the schedule should be run during cron.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => 'builtin',
+      ),
+      'cron_schedule' => array(
+        'description' => 'The cron schedule to run on.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '0 4 * * *',
+      ),
+    ),
+    'primary key' => array('schedule_id'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Remove variables on uninstall.
+ */
+function backup_migrate_uninstall() {
+  db_query("DELETE FROM {variable} WHERE name LIKE 'backup_migrate_%'");
+  db_query("DELETE FROM {variable} WHERE name LIKE 'nodesquirrel_%'");
+  cache_clear_all('variables', 'cache');
+}
+
+/**
+ * Update Backdrop to use existing variables stored in CMI
+ */
+function backup_migrate_update_1000() {
+  $config = config('backup_migrate.settings');
+
+  $config->set('backup_migrate_data_rows_per_line', update_variable_get('backup_migrate_data_rows_per_line',30));
+  $config->set('backup_migrate_data_bytes_per_line', update_variable_get('backup_migrate_data_bytes_per_line',2000));
+  $config->set('backup_migrate_max_email_size', update_variable_get( 'backup_migrate_max_email_size',20971520));
+  $config->set('backup_migrate_allow_backup_to_file', update_variable_get('backup_migrate_allow_backup_to_file',TRUE));
+  $config->set('backup_migrate_allow_backup_to_download', update_variable_get('backup_migrate_allow_backup_to_download',TRUE));
+  $config->set('debug_http_request', update_variable_get('debug_http_request',FALSE));
+  $config->set('dev_query', update_variable_get('dev_query',0));
+  $config->set('site_offline_message', update_variable_get('site_offline_message','[site_name] is currently under maintenance. We should be back shortly. Thank you for your patience.'));
+  $config->set('maintenance_mode', update_variable_get('maintenance_mode',0));
+  $config->set('maintenance_mode_message', update_variable_get('maintenance_mode_message',NULL));
+  $config->set('backup_migrate_cleanup_time', update_variable_get('backup_migrate_cleanup_time',21600));
+  $config->set('backup_migrate_cleanup_temp_files', update_variable_get('backup_migrate_cleanup_temp_files', TRUE));
+  $config->set('backup_migrate_profile_id', update_variable_get('backup_migrate_profile_id','default'));
+  $config->set('backup_migrate_smart_keep_hourly', update_variable_get('backup_migrate_smart_keep_hourly',24));
+  $config->set('backup_migrate_smart_keep_daily', update_variable_get('backup_migrate_smart_keep_daily',7));
+  $config->set('backup_migrate_smart_keep_weekly', update_variable_get('backup_migrate_smart_keep_weekly',12));
+  $config->set('backup_migrate_schedule_buffer', update_variable_get('backup_migrate_schedule_buffer',0.01));
+  $config->set('backup_migrate_data_rows_per_line', update_variable_get('backup_migrate_data_rows_per_line',30));
+  $config->set('backup_migrate_data_bytes_per_line', update_variable_get('backup_migrate_data_bytes_per_line',2000));
+  $config->set('backup_migrate_default_schedule', update_variable_get('backup_migrate_default_schedule',60*60));
+  $config->set('backup_migrate_source_id', update_variable_get('backup_migrate_source_id',NULL));
+  $config->set('backup_migrate_destination_id', update_variable_get('backup_migrate_destination_id','download'));
+  $config->set('backup_migrate_copy_destination_id', update_variable_get('backup_migrate_copy_destination_id',''));
+  $config->set('backup_migrate_backup_max_time', update_variable_get('backup_migrate_backup_max_time',1200));
+  $config->set('backup_migrate_restore_max_time', update_variable_get('backup_migrate_restore_max_time',1200));
+  $config->set('backup_migrate_timeout_buffer', update_variable_get('backup_migrate_timeout_buffer',5));
+
+  $config->save();
+  
+  // Delete variables
+  update_variable_del('backup_migrate_data_rows_per_line');
+  update_variable_del('backup_migrate_data_bytes_per_line');
+  update_variable_del('backup_migrate_max_email_size');
+  update_variable_del('backup_migrate_allow_backup_to_file');
+  update_variable_del('backup_migrate_allow_backup_to_download');
+  update_variable_del('debug_http_request');
+  update_variable_del('dev_query');
+  update_variable_del('site_offline_message');
+  update_variable_del('maintenance_mode');
+  update_variable_del('maintenance_mode_message');
+  update_variable_del('backup_migrate_cleanup_time');
+  update_variable_del('backup_migrate_cleanup_temp_files');
+  update_variable_del('backup_migrate_profile_id');
+  update_variable_del('backup_migrate_smart_keep_hourly');
+  update_variable_del('backup_migrate_smart_keep_daily');
+  update_variable_del('backup_migrate_smart_keep_weekly');
+  update_variable_del('backup_migrate_schedule_buffer');
+  update_variable_del('backup_migrate_data_rows_per_line');
+  update_variable_del('backup_migrate_data_bytes_per_line');
+  update_variable_del('backup_migrate_default_schedule');
+  update_variable_del('backup_migrate_source_id');
+  update_variable_del('backup_migrate_destination_id');
+  update_variable_del('backup_migrate_copy_destination_id');
+  update_variable_del('backup_migrate_backup_max_time');
+  update_variable_del('backup_migrate_restore_max_time');
+  update_variable_del('backup_migrate_timeout_buffer');
+}  
+
+/**
+ * Implements hook_update_last_removed().
+ */
+function backup_migrate_update_last_removed() {
+  return 7303;
+}
+
+/**
+ * Update all schedules to use the built in cron if none is specified.
+ */
+function backup_migrate_update_1004() {
+  db_query("UPDATE {backup_migrate_schedules} SET cron = 'builtin' WHERE cron = '0'");
+}
+
+/**
+ * Fix schema mismatch after upgrade.
+ */
+function backup_migrate_update_1005() {
+  foreach (array('backup_migrate_profiles', 'backup_migrate_destinations', 'backup_migrate_sources', 'backup_migrate_schedules') as $table) {
+    db_change_field($table, 'machine_name', 'machine_name', array(
+      'type' => 'varchar',
+      'length' => 255,
+      'not null' => TRUE,
+      'default' => '0',
+    ));
+  }
+  db_change_field('backup_migrate_schedules', 'cron', 'cron', array(
+    'type' => 'varchar',
+    'length' => 32,
+    'not null' => TRUE,
+    'default' => 'builtin',
+  ));
+}
+/**
+ * Store 'last run' info as state instead of config.
+ */
+function backup_migrate_update_1006() {
+  // Get schedule
+  module_load_include('module', 'backup_migrate', 'backup_migrate');
+  require_once dirname(__FILE__) . '/includes/sources.inc';
+  require_once dirname(__FILE__) . '/includes/schedules.inc';
+  require_once dirname(__FILE__) . '/includes/profiles.inc';
+  $schedules = backup_migrate_get_schedules();
+  foreach ($schedules as $schedule_id => $schedule) {
+    // Check for existing last_run variable
+    $last_run = config_get('backup_migrate.settings', 'backup_migrate_schedule_last_run_' . $schedule_id);
+    if (!empty($last_run)) {
+      // Store value as state
+      state_set('backup_migrate_schedule_last_run_' . $schedule_id, $last_run);
+      // Delete config
+      config_clear('backup_migrate.settings', 'backup_migrate_schedule_last_run_' . $schedule_id);
+    }
+  }
+}
+
+/**
+ * NodeSquirel support has been removed.
+ */
+function backup_migrate_update_1007() {
+  module_load_include('module', 'backup_migrate', 'backup_migrate');
+  require_once dirname(__FILE__) . '/includes/destinations.inc'; 
+  require_once dirname(__FILE__) . '/includes/schedules.inc'; 
+  foreach (backup_migrate_get_schedules() as $schedule) {
+    // Look for backups which use NodeSquirrel as its destination.
+    if ($schedule->destination_id == 'nodesquirrel') {
+      $name = $schedule->name;
+
+      // If this schedule had a second destination, swap the destinations.
+      if (!empty($schedule->copy_destination_id)) {
+        $destination = backup_migrate_get_destination($schedule->copy_destination_id);
+        $schedule->destination_id = $schedule->copy_destination_id;
+        $schedule->copy_destination_id = '';
+        $schedule->name = $destination->name;
+        $schedule->save();
+        backdrop_set_message(t('The backup schedule named "%backup" was renamed and now just backups to %destination.', array('%backup' => $name, '%destination' => $destination->name)));
+      }
+
+      // Just delete it.
+      else {
+        $schedule->delete();
+        backdrop_set_message(t('The backup schedule named "%backup" as been deleted.', array('%backup' => $name)));
+      }
+    }
+
+    // Backups which used NodeSquirrel as the second destination will have the
+    // second destination disabled.
+    elseif ($schedule->copy_destination_id == 'nodesquirrel') {
+      $schedule->copy_destination_id = '';
+      $schedule->save();
+      backdrop_set_message(t('The backup schedule named "%backup" no longer keeps a second backup on NodeSquirrel.', array('%backup' => $schedule->name)));
+    }
+  }
+
+  // Clear the cache so that the NodeSquirrel plugin is no longer loaded.
+  cache_clear_all('*', 'cache', TRUE);
+
+  // Rebuild the menus so that the NodeSquirrel menu item is removed.
+  state_set('menu_rebuild_needed', TRUE);
+
+  // @todo Remove the configuration later.
+  backdrop_set_message(t('<a href="!url">NodeSquirrel stopped being usable as a backup destination</a> on October 1st, 2019 and ceased operations entirely on November 1st, 2019. Because of this, the Nodesquirrel functonality as been disabled. Please switch to an alternate destination if necessary. Please note that the NodeSquirrel configuration itself has not been removed.', array('!url' => 'https://pantheon.io/nodesquirrel-service-end-life')));
+}
+
+/**
+ * Add new advanced settings.
+ */
+function backup_migrate_update_1008() {
+  $config = config('backup_migrate.settings');
+  $values = $config->get();
+  $defaults = array(
+    'backup_migrate_memory_limit' => '256M',
+    'backup_migrate_verbose' => NULL,
+    'backup_migrate_disable_cron' => FALSE,
+    'backup_migrate_data_rows_per_query' => 50000,
+  );
+  foreach ($defaults as $key => $value) {
+    if (!isset($values[$key])) {
+      $config->set($key, $value);
+    }
+  }
+  $config->save();
+}
+
+/**
+ * Add the exclude_filepaths configuration for the new "DB and active config" source to all profiles.
+ */
+function backup_migrate_update_1009() {
+  module_load_include('module', 'backup_migrate', 'backup_migrate');
+  require_once dirname(__FILE__) . '/includes/profiles.inc';
+  foreach (backup_migrate_get_profiles() as $profile) {
+    if (!isset($profile->filters['sources']['db_config']['exclude_filepaths'])) {
+      $profile->filters['sources']['db_config']['exclude_filepaths'] = '';
+      $profile->save();
+    }
+  }
+}
+
+/**
+ * Set weekly backups to be smart-deleted after 12 weeks if the original wrong
+ * "2147483647 weeks" value is found.
+ */
+function backup_migrate_update_1010() {
+  $backup_migrate_smart_keep_weekly = config_get('backup_migrate.settings', 'backup_migrate_smart_keep_weekly');
+  // This was the original setting changed in:
+  // https://github.com/backdrop-contrib/backup_migrate/issues/46
+  // The problem is that that commit never included this update hook! 
+  if ($backup_migrate_smart_keep_weekly == 2147483647) {
+    config_set('backup_migrate.settings', 'backup_migrate_smart_keep_weekly', 12);
+  }
+}
+
+/**
+ * Provide correct list of tables when site uses multiple databases.
+ */
+function backup_migrate_update_1011() {
+  // Nothing to do here, as we don't want to mess up any settings. Just show
+  // a warning.
+  backdrop_set_message(t('If your site uses multiple databases, you will need to edit and save each of your Backup and Migrate !setting_link. Inspect each of your databases\' "Backup Options" accordion settings to assure the correct tables are shown.', array('!setting_link' => l('Settings Profiles', 'admin/config/system/backup_migrate/settings/profile'))), 'warning');
+}

@@ -1,0 +1,17 @@
+{
+  "_config_name": "geocoder.settings",
+  "geocoder_apikey_yahoo": "",
+  "geocoder_apikey_yandex": "",
+  "geocoder_apikey_bing": "",
+  "geocoder_apikey_mapzen": "",
+  "geocoder_apikey_mapbox": "",
+  "geocoder_apikey_google": "",
+  "geocoder_google_auth_method": "None",
+  "geocoder_google_client_id": "",
+  "geocoder_google_private_key": "",
+  "geocoder_google_delay": 0,
+  "geocoder_cache_empty_results": true,
+  "geocoder_log_empty_results": false,
+  "geocoder_recode": false,
+  "geocoder_cache_ttl": 0
+}

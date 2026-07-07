@@ -1,0 +1,273 @@
+<?php
+/**
+ * @file
+ * Provide Leaflet API integration and field formatters.
+ */
+
+// This file ships with the field formatter code.
+require_once __DIR__ . '/leaflet.formatters.inc';
+
+/**
+ * Implements hook_theme().
+ */
+function leaflet_theme($existing, $type, $theme, $path) {
+  return array(
+    'leaflet_map' => array(
+      'arguments' => array('map_id' => NULL, 'height' => '400px'),
+      'template' => 'leaflet_map',
+    ),
+  );
+}
+
+/**
+ * Implements hook_library_info().
+ */
+function leaflet_library_info() {
+  $module_path = backdrop_get_path('module', 'leaflet');
+  $library_path = $module_path . '/libraries/leaflet/';
+  $plugins_path = $module_path . '/libraries/leaflet_plugins/';
+
+  $libraries['leaflet'] = array(
+    'title' => t('Leaflet JavaScript Library'),
+    'version' => '1.9.4',
+    'website' => 'https://leafletjs.com/',
+    'js' => array(
+      $library_path . 'leaflet.js' => array(
+        'type' => 'file',
+        'group' => JS_LIBRARY,
+      ),
+      $plugins_path . 'Leaflet.fullscreen.js' => array(
+        'type' => 'file',
+        'group' => JS_LIBRARY,
+      ),
+      $plugins_path . 'L.Control.Zoomslider.js' => array(
+        'type' => 'file',
+        'group' => JS_LIBRARY,
+      ),
+      $plugins_path . 'Control.Coordinates.js' => array(
+        'type' => 'file',
+        'group' => JS_LIBRARY,
+      ),
+      $plugins_path . 'leaflet.viewcenter.js' => array(
+        'type' => 'file',
+        'group' => JS_LIBRARY,
+      ),
+      // For AdvAgg module. See [#2294639] This runs after leaflet.js.
+      'leaflet_imagepath' => array(
+        'type' => 'inline',
+        'data' => 'L.Icon.Default.imagePath = "' . base_path() . $library_path . 'images/";',
+      ),
+      // Load integration file AFTER libraries.
+      $module_path . '/js/leaflet.backdrop.js' => array(
+        'type' => 'file',
+        'group' => JS_LIBRARY,
+      ),
+    ),
+    'css' => array(
+      $library_path . 'leaflet.css' => array(
+        'type' => 'file',
+        'media' => 'all',
+      ),
+      $plugins_path . 'leaflet.fullscreen.css' => array(
+        'type' => 'file',
+        'media' => 'all',
+      ),
+      $plugins_path . 'L.Control.Zoomslider.css' => array(
+        'type' => 'file',
+        'media' => 'all',
+      ),
+      $plugins_path . 'Control.Coordinates.css' => array(
+        'type' => 'file',
+        'media' => 'all',
+      ),
+      $plugins_path . 'leaflet.viewcenter.css' => array(
+        'type' => 'file',
+        'media' => 'all',
+      ),
+    ),
+  );
+
+  return $libraries;
+}
+
+/**
+ * Attach Leaflet-required client files and return renderable array for a map.
+ *
+ * @param array $map
+ *   Map definition as returned my leaflet_map_get_info().
+ * @param array $features
+ *   Associative array of map features.
+ * @param string $height
+ *   The height of the map.
+ *
+ * @return array
+ *   A renderable array.
+ */
+function leaflet_build_map(array $map, array $features = array(), $height = '400px') {
+  // Function backdrop_html_id() is unreliable when creating unique IDs.
+  // We attach a pseudo random number instead to make multiple maps on a page
+  // work properly with maps in blocks.
+  $map_id = 'leaflet-map-' . rand();
+  $build = array(
+    '#theme' => 'head_tag',
+    '#tag' => 'div',
+    '#value' => '',
+    '#attributes' => array(
+      'id' => $map_id,
+      'style' => 'height: ' . $height,
+    ),
+  );
+
+  // Allow map definitions to provide a default icon:
+  if (isset($map['icon']['iconUrl'])) {
+    foreach ($features as &$feature) {
+      if (!isset($feature['icon'])) {
+        $feature['icon'] = $map['icon'];
+      }
+    }
+  }
+
+  $settings = array(
+    'mapId' => $map_id,
+    'map' => $map,
+    // Also expose our additional (mostly plugin) controls to hook.
+    'mapControls' => array(
+      'ControlFullscreen' => TRUE,
+      'ControlScale' => TRUE,
+      'ControlZoomslider' => TRUE,
+      'ControlCoordinates' => TRUE,
+      'ControlViewCenter' => TRUE,
+    ),
+    'features' => $features,
+  );
+  backdrop_alter('leaflet_map_prebuild', $settings);
+
+  $build['#attached']['js'][] = array(
+    'data' => array('leaflet' => array($settings)),
+    'type' => 'setting',
+  );
+  if (module_exists('geoip_tokens')) {
+    $build['#attached']['library'][] = array('geoip_tokens', 'geoip_tokens');
+  }
+  $build['#attached']['css'][] = array(
+    'data' => backdrop_get_path('module', 'leaflet') . '/css/leaflet_extras.css',
+  );
+
+  // Load the leaflet library, which includes integration files.
+  $build['#attached']['library'][] = array('leaflet', 'leaflet');
+
+  // Let other modules properly attach libraries as well [#2567387].
+  backdrop_alter('leaflet_build_map', $build);
+
+  return $build;
+}
+
+/**
+ * DEPRECATED. Use leaflet_build_map() instead.
+ *
+ * Load all Leaflet required client files and return markup for a map.
+ *
+ * @param array $map
+ *   Map definition as returned my leaflet_map_get_info().
+ * @param array $features
+ *   Associative array of map features.
+ * @param string $height
+ *   The height of the map.
+ *
+ * @return string
+ *   map markup
+ */
+function leaflet_render_map(array $map, array $features = array(), $height = '400px') {
+  $build = leaflet_build_map($map, $features, $height);
+  return render($build);
+}
+
+/**
+ * Get all available Leaflet map definitions.
+ *
+ * @string $map
+ *   The name of the map defined in hook_leaflet_map_get_info().
+ */
+function leaflet_map_get_info($map = NULL) {
+  static $backdrop_static_fast;
+  if (!isset($backdrop_static_fast)) {
+    $backdrop_static_fast['leaflet_map_info'] = &backdrop_static(__FUNCTION__);
+  }
+  $map_info = &$backdrop_static_fast['leaflet_map_info'];
+
+  if (empty($map_info)) {
+    if ($cache = cache_get("leaflet_map_info")) {
+      $map_info = $cache->data;
+    }
+    else {
+      $map_info = module_invoke_all('leaflet_map_info');
+
+      // Let other modules alter the map info.
+      backdrop_alter('leaflet_map_info', $map_info);
+
+      cache_set("leaflet_map_info", $map_info);
+    }
+  }
+
+  if (empty($map)) {
+    return $map_info;
+  }
+  elseif (isset($map_info[$map])) {
+    return $map_info[$map];
+  }
+}
+
+/**
+ * Implements hook_leaflet_map_info().
+ *
+ * Return a default map for the module.
+ */
+function leaflet_leaflet_map_info() {
+  return array(
+    'OSM Mapnik' => array(
+      'label' => 'OSM Mapnik',
+      'description' => t('Leaflet default map.'),
+      // 'center' is used when map contains no features, or every time the map
+      // is loaded if "force" is TRUE. Otherwise, the map will center itself
+      // intelligently based on the features in the map.
+      // RdB: bad things happen when 'center' is specified and Leaflet
+      // MarkerCluster is used, see https://drupal.org/node/2144935
+      // Also, a hard-coded center is not a great idea.
+      // @code
+      // 'center' => array(
+      //   'lat' => 45.526513,
+      //   'lon' => -122.674833,
+      //   'force' => FALSE,
+      // ),
+      // @endcode
+      // @todo Create a "Default center" setting?
+      'settings' => array(
+        // Setting "zoom" forces a zoom level on every map load.
+        // 'zoom' => 17,
+        // The "zoomDefault" is only used when no features are present.
+        'zoomDefault' => 10,
+        'minZoom' => 0,
+        'maxZoom' => 19,
+        'dragging' => TRUE,
+        'touchZoom' => TRUE,
+        'scrollWheelZoom' => TRUE,
+        'doubleClickZoom' => TRUE,
+        'zoomControl' => TRUE,
+        'attributionControl' => TRUE,
+        'trackResize' => TRUE,
+        'fadeAnimation' => TRUE,
+        'zoomAnimation' => TRUE,
+        'closePopupOnClick' => TRUE,
+      ),
+      'layers' => array(
+        'earth' => array(
+          'urlTemplate' => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          'options' => array(
+            'attribution' => '<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap </a> contributors',
+            'maxZoom' => 19,
+          ),
+        ),
+      ),
+    ),
+  );
+}

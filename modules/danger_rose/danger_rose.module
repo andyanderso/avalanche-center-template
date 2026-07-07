@@ -1,0 +1,280 @@
+<?php
+
+/**
+ * @file
+ *
+ * The danger_rose module file.
+ */
+
+/**
+ * Implements hook_config_info().
+ */
+function danger_rose_config_info() {
+  $prefixes['danger_rose.settings'] = array(
+    'label' => t('Danger Rose settings'),
+    'group' => t('Configuration'),
+  );
+  return $prefixes;
+}
+
+/**
+ * Implements hook_field_info().
+ */
+function danger_rose_field_info() {
+  return array(
+    'danger_rose_picker' => array(
+      'label' => t('Danger rose'),
+      'description' => t('This field stores a danger rose in the database.'),
+      'default_widget' => 'triple_picker_widget',
+      'default_formatter' => 'danger_rose_large_visual_formatter',
+    ),
+  );
+}
+
+/**
+ * Restrict usage to single rose for each instance.
+ */
+function danger_rose_form_field_ui_field_edit_form_alter(&$form, &$form_state) {
+  if ($form['#field']['type'] == 'danger_rose_picker') {
+    $form['field']['cardinality']['#default_value'] = 1;
+    $form['field']['#access'] = FALSE;
+  }
+}
+
+/**
+ * Implements hook_field_presave().
+ */
+function danger_rose_field_presave($entity_type, $entity, $field, $instance, $langcode, &$items) {
+  require_once(backdrop_get_path('module', 'danger_rose') . '/inc/rose.inc');
+
+  // In Backdrop, the public files path is stored in system.core config.
+  $relpath = config_get('system.core', 'file_public_path');
+  if (empty($relpath)) {
+    $relpath = 'files';
+  }
+
+  if ($instance['widget']['type'] == 'dual_picker_widget') { $rose_size = 2; }
+  else { $rose_size = 3; }
+  $rose = new Rose($rose_size);
+  $rose->set_font_path(backdrop_get_path('module', 'danger_rose') . '/inc');
+  $path = backdrop_realpath(file_default_scheme() . '://') . '/forecast';
+  $rose->set_destination($path);
+  $rose->set_values($items[0]);
+  $rose->set_labels($instance['widget']['settings']['elfs']);
+  $rose->set_watermark($instance['widget']['settings']['watermark']);
+
+  $detailed_rose = $rose->generate();
+  $detailed_rose = '/' . $relpath . '/forecast/' . $detailed_rose;
+
+  $rose->set_size_small();
+  $simplified_rose = $rose->generate();
+  $simplified_rose = '/' . $relpath . '/forecast/' . $simplified_rose;
+
+  $items[0]['img_detailed_rose'] = $detailed_rose;
+  $items[0]['img_simplified_rose'] = $simplified_rose;
+}
+
+/**
+ * Implements hook_field_validate().
+ */
+function danger_rose_field_validate($entity_type, $entity, $field, $instance, $langcode, $items, &$errors) { }
+
+/**
+ * Implements hook_field_is_empty().
+ */
+function danger_rose_field_is_empty($item, $field) { return FALSE; }
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function danger_rose_field_formatter_info() {
+  return array(
+    'danger_rose_large_visual_formatter' => array(
+      'label' => t('Large rose'),
+      'field types' => array('danger_rose_picker'),
+    ),
+    'danger_rose_small_visual_formatter' => array(
+      'label' => t('Small rose'),
+      'field types' => array('danger_rose_picker'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function danger_rose_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+  switch ($display['type']) {
+    case 'danger_rose_large_visual_formatter':
+      foreach ($items as $delta => $item) {
+        $element[$delta] = array(
+          '#type' => 'html_tag',
+          '#tag' => 'img',
+          '#attributes' => array('src' => $item['img_detailed_rose']),
+        );
+      }
+      break;
+
+    case 'danger_rose_small_visual_formatter':
+      foreach ($items as $delta => $item) {
+        $element[$delta] = array(
+          '#type' => 'html_tag',
+          '#tag' => 'img',
+          '#attributes' => array('src' => $item['img_simplified_rose']),
+        );
+      }
+      break;
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_field_widget_info().
+ */
+function danger_rose_field_widget_info() {
+  return array(
+    'dual_picker_widget' => array(
+      'label' => t('Dual elevation picker - Danger'),
+      'field types' => array('danger_rose_picker'),
+    ),
+    'loc_dual_picker_widget' => array(
+      'label' => t('Dual elevation picker - Location'),
+      'field types' => array('danger_rose_picker'),
+    ),
+    'triple_picker_widget' => array(
+      'label' => t('Triple elevation picker - Danger'),
+      'field types' => array('danger_rose_picker'),
+    ),
+    'loc_triple_picker_widget' => array(
+      'label' => t('Triple elevation picker - Location'),
+      'field types' => array('danger_rose_picker'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_widget_form().
+ */
+function danger_rose_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+
+  $info = _get_max_columns($instance['widget']['type']);
+
+  $field_name = $instance['field_name'];
+  $item =& $items[$delta];
+
+  $element += array('#type' => 'fieldset');
+
+  $target_base = $field_name . '[' . $element['#language'] . '][' . $delta . ']';
+  // Walk the array and set the values for all of the rose elements.
+  for ($i = 0; $i < $info['column_count']; $i++) {
+    $element[$i] = array(
+      '#type' => 'hidden',
+      '#default_value' => isset($item[$i]) ? $item[$i] : '0',
+      '#attributes' => array('name' => $target_base . '[' . $i . ']'),
+    );
+  }
+
+  $svg_file_path = '/' . backdrop_get_path('module', 'danger_rose') . '/svg/' . $instance['widget']['type'] . '.svg';
+  $element['rose'] = array(
+    '#markup' => <<<EOT
+<object type="image/svg+xml" data="{$svg_file_path}" width="500" height="300">
+  <param id="target_base" value="{$target_base}"/>
+  <param id="column_count" value="{$info['column_count']}"/>
+  <param id="element_count" value="{$info['element_count']}"/>
+</object>
+EOT
+  );
+
+  return $element;
+}
+
+/**
+ * Implements hook_field_widget_settings_form().
+ */
+function danger_rose_field_widget_settings_form($field, $instance) {
+  $widget = $instance['widget'];
+  $settings = $widget['settings'];
+
+  $a = array(
+    'lower' => array(
+      '#type' => 'textfield',
+      '#title' => t('Lower elevation label'),
+      '#default_value' => 'Below treeline',
+      '#size' => 25,
+    ),
+    'mid' => array(
+      '#type' => 'textfield',
+      '#title' => t('Mid elevation label'),
+      '#default_value' => 'Near treeline',
+      '#size' => 25,
+    ),
+    'upper' => array(
+      '#type' => 'textfield',
+      '#title' => t('Upper elevation label'),
+      '#default_value' => 'Above treeline',
+      '#size' => 25,
+    ),
+  );
+
+  $form['elfs'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'Elevation level labels',
+    '#description' => 'Labels defined here will be displayed on the <b>Large rose</b> field format.',
+  );
+
+  if ($widget['type'] == 'dual_picker_widget') {
+    $form['elfs']['lower_elev_label'] = $a['lower'];
+    $form['elfs']['upper_elev_label'] = $a['upper'];
+  }
+  elseif ($widget['type'] == 'loc_dual_picker_widget') {
+    $form['elfs']['lower_elev_label'] = $a['lower'];
+    $form['elfs']['upper_elev_label'] = $a['upper'];
+  }
+  else {
+    $form['elfs']['lower_elev_label'] = $a['lower'];
+    $form['elfs']['mid_elev_label'] = $a['mid'];
+    $form['elfs']['upper_elev_label'] = $a['upper'];
+  }
+
+  if (array_key_exists('elfs', $settings)) {
+    foreach (array('lower_elev_label', 'mid_elev_label', 'upper_elev_label') as $key) {
+      if (array_key_exists($key, $settings['elfs'])) {
+        $form['elfs'][$key]['#default_value'] = $settings['elfs'][$key];
+      }
+    }
+  }
+
+  $url = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+  $domain = $url ? parse_url($url, PHP_URL_HOST) : '';
+  $form['watermark'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Watermark'),
+    '#default_value' => $domain ? "http://$domain" : '',
+    '#description' => 'A small watermark can be placed at the bottom of the rose.',
+    '#size' => 25,
+  );
+
+  return $form;
+}
+
+/**
+ * Returns column/element counts for a given widget type.
+ *
+ * We need two pieces of information to pass to SVG:
+ * 1. The number of columns, as described in the schema. If a smaller rose is
+ *    used, 0's are stored for missing elements.
+ * 2. The number of elements in the rose.
+ *
+ * @see hook_field_schema()
+ * @see hook_field_widget_form()
+ */
+function _get_max_columns($type = 'triple_picker_widget') {
+  $a = array('column_count' => 24);
+  if ($type == 'dual_picker_widget') { $a['element_count'] = 16; }
+  elseif ($type == 'loc_dual_picker_widget') { $a['element_count'] = 16; }
+  else { $a['element_count'] = $a['column_count']; }
+
+  return $a;
+}

@@ -31,6 +31,11 @@ dependencies[] = number
 dependencies[] = options
 dependencies[] = file
 dependencies[] = config
+; Missed by the Phase 5 system.extensions.json cross-check above (it's
+; enabled on both sites but has no content-model footprint of its own) -
+; caught by Phase 7's greenfield install: avalanche_modern's template.php
+; calls backdrop_get_form('search_form') unconditionally in the header.
+dependencies[] = search
 
 ; --- Contrib modules (verified identical across Gulmarg + Argentina, see
 ; AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §2) ---

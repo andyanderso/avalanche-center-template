@@ -8,7 +8,7 @@
      <div><?php print render($content['field_ob_loc_name']);?></div>
      <div><?php print render($content['field_region']); ?></div>
      <div><?php print render($content['field_ob_date_time']);?></div>
-     <div><?php print render($content['field_name']);?></div>
+     <div><?php print render($content['field_observer_name']);?></div>
      <div><?php print render($content['field_email']);?></div>
    </th>
  </tr>

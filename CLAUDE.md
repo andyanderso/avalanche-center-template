@@ -37,8 +37,32 @@ applying the equivalent fixes to the live Gulmarg/Argentina sites.
 ## Environment
 - DDEV for local; this repo will get its own DDEV project for the
   greenfield demo install (Phase 7).
-- Current phase: 7 (greenfield validation: fresh DDEV install of a "demo"
-  center end-to-end — the first real test of everything Phases 1-6 built).
+- Current phase: 7 done (greenfield validation: fresh DDEV install of a
+  "demo" center end-to-end — the first real test of everything Phases 1-6
+  built, against `~/Siesta_Solutions/avalanche-center-demo/`, its own
+  DDEV project, not part of this git repo). Found and fixed 10 real bugs
+  invisible to static analysis: `leaflet_widget`'s empty
+  `hook_requirements()`, `danger_rose` never actually copied, ~32 contrib
+  modules + `email` never vendored, `css_injector`'s premature directory
+  check, the unfetchable `gmap_polygon_field` dependency, a `field_name`/
+  `field_collection_item` naming collision (renamed to
+  `field_observer_name`, 7 role files' stale permission strings included),
+  `danger_rose`'s NOT-NULL rose-field columns, anonymous/authenticated
+  role permissions silently discarded by `config_install_default_config()`
+  never overwriting core's own empty defaults for those two role names, no
+  theme ever enabled/defaulted, a missing `search` module dependency
+  (`avalanche_modern` calls `backdrop_get_form('search_form')`
+  unconditionally), the `responsive_sac` layout template living somewhere
+  Backdrop's plugin scanner never looks (relocated from
+  `themes/responsive_sac/layouts/` to top-level `layouts/`), and the
+  danger map block having no front-page configuration to actually render
+  under. Full install now reproducible end-to-end: all 63 modules enable,
+  all 4 key pages (`/`, `/node/1`, `/avalanche-terms`,
+  `/node/add/observation`) return 200, danger map renders on the front
+  page with the demo forecast zone. See AVALANCHE_CENTER_DISTRIBUTION_PLAN.md
+  §20 for the full log. Not yet started: verifying `responsive_sac` as
+  the switched-to *default* theme (only confirmed enabled), Spanish/SAC
+  preset behavior.
   Phase 1 done: repo skeleton scaffolded; structural node-type list
   corrected from 2 to 22 types (independently re-verified against
   node.type.*.json on both sites); NAC level-0 grey set to `#939598`.
@@ -80,8 +104,8 @@ applying the equivalent fixes to the live Gulmarg/Argentina sites.
   can't see values that haven't been submitted yet. **Entirely unverified
   against a live install** — no DDEV environment exists yet; every fix
   came from reading Backdrop core's function signatures, not from testing.
-  Phase 7 is where this code runs for the first time. See
-  AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §13-18 for the full logs.
+  Phase 7 is where this code ran for the first time (see above). See
+  AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §13-20 for the full logs.
 
 ## Conventions
 - Machine names must match Gulmarg's existing field/vocab names.

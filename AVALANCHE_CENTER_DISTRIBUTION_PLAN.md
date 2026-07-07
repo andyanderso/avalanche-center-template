@@ -1128,3 +1128,234 @@ directly, not by testing.
 - Already-shared module: `modules/danger_rose/` (identical both sites)
 - Shared theme: `themes/responsive_sac/` (only logo/sponsors/.info differ)
 - Active config to classify: `files/config_active/*.json`
+
+---
+
+## 20. Phase 7 decisions log
+
+Phase 7 (greenfield validation: fresh DDEV install of a "demo" center
+end-to-end) is complete. This was the first time any of Phases 1-6's
+work actually ran against a live Backdrop instance — everything below was
+found by installing, not by reading source. Test webroot:
+`~/Siesta_Solutions/avalanche-center-demo/` (its own DDEV project, not
+part of this git repo — vendors Backdrop core + this profile/modules/
+themes, kept in sync throughout by re-copying as fixes landed).
+
+### Environment: Drush 8 / PHP 8.1 incompatibility, not our bug
+
+`install.php`'s batch-driven module install silently stalls partway
+through (2 of 62 modules enabled despite the UI showing "done") under
+plain sequential `curl` requests — Backdrop's batch API needs proper
+JS/AJAX-driven continuation that curl doesn't replicate. Drush 8 itself
+also broke outright under PHP 8.1 (`trim(): array given` in
+`user.entity.inc`, `fwrite(): string given` in Drush's own `output.inc`)
+— confirmed as an environment issue, not ours, by reproducing the
+identical failures against Backdrop core's own stock "standard" profile.
+Worked around both by using `curl` only for the language + profile
+selection steps (creates the ~23 base system tables), then taking over
+with a direct CLI PHP script calling `module_enable()` on the full
+dependency list directly — bypassing the batch/HTTP layer entirely while
+still exercising a real, valid install path. That script (`manual_install.php`,
+kept in the test webroot only, not shipped) needed `MAINTENANCE_MODE =
+'install'` before bootstrapping (otherwise a silent `install_goto()` exit
+on empty DB) and pre-populated `$_SERVER` keys (CLI lacks them, which
+cascades into a broken `watchdog()` error path on any PHP notice) — and,
+non-obviously, its own top-level variable named `$settings` clobbered
+Backdrop's *global* `$settings` array from `settings.php` (CLI scripts run
+in global scope), breaking `settings_get()` in a way that looked like an
+unrelated crash until traced back.
+
+### Found: `danger_rose` was never actually copied
+
+Documented as "copy as-is" since Phase 1 (identical in both reference
+sites), but the module directory only ever had a `README.md` — the actual
+copy never happened. Caught immediately by the first real install attempt
+(`required module danger_rose not found`). Copied wholesale from Gulmarg.
+
+### Found: ~32 contrib modules were never vendored either
+
+Only the 4 custom modules existed in `modules/`. Every contrib dependency
+declared in `avalanche_center.info` (addressfield, auto_nodetitle,
+backup_migrate, colorbox, conditional_fields, css_injector, elysia_cron,
+entity_plus, entity_token, entity_ui, field_collection, field_group,
+field_permissions, geocoder, geofield, geolocation, imce, job_scheduler,
+leaflet, leaflet_widget, metatag, node_clone, pathauto, rules, scheduler,
+seo_meta, simplenews, tb_megamenu, token_custom, token_filter,
+views_bulk_operations, youtube) had to be copied wholesale from Gulmarg.
+`email` (needed for `field_email` on `observation`) isn't vendored in
+either reference site at all — fetched from
+`backdrop-contrib/email` on GitHub with explicit user approval (external
+fetch), then stripped of its own `.git` directory.
+
+### Found: two real upstream module bugs, caught only by installing
+
+- `leaflet_widget_requirements($phase)` had an empty body (implicit
+  `NULL` return), which broke `array_merge()` inside
+  `backdrop_check_profile()` for the *entire* profile, not just that
+  module. Every `hook_requirements()` must return an array even when
+  there's nothing to report. Fixed with `return array();`.
+- `css_injector_requirements($phase)` checked `public://css_injector`
+  writability unconditionally, but the `public://` stream wrapper isn't
+  reliably resolvable during `backdrop_check_profile()`'s pre-flight
+  check (too early in bootstrap). Fixed by gating the real check behind
+  `if ($phase == 'runtime')`, matching the pattern already used correctly
+  by `seo_meta`, `metatag`, and `backup_migrate` in this same distribution.
+
+### Found: `gmap_polygon_field` has no Backdrop-contrib equivalent
+
+Confirmed via the GitHub API (`backdrop-contrib/gmap_polygon_field` returns
+a 404) — no fix is fetchable. Both reference sites already have this module
+disabled (dead config), consistent with Phase 5's own finding. Dropped
+just the two broken config files (`field.field.field_map.json`,
+`field.instance.node.map.field_map.json`), keeping the `map` content type
+itself intact rather than reversing the Phase 1 decision to fold it in.
+
+### Found: `field_name` collides with `field_collection_item`'s reserved property
+
+A legitimate field (label "Name" — the observer's own name on
+`observation` submissions) was machine-named literally `field_name`,
+which collides with a property name `field_collection` reserves
+internally on `field_collection_item` entities (our `fwp` content type
+depends on `field_collection`). Backdrop refused to install with `Cannot
+create a field with the name "field_name", which is reserved by entity
+type field_collection_item.` Renamed to `field_observer_name` across both
+config files (`field.field.*`/`field.instance.node.observation.*`, updating
+their internal `_config_name`/`field_name` keys), the two
+`responsive_sac` templates that reference it
+(`node--observation.tpl.php`, `observation-node-form.tpl.php`), and —
+found afterward while chasing the 403 bug below — the stale `"create/edit/
+view [own] field_name"` permission strings baked into seven different
+`user.role.*.json` files (`anonymous`, `authenticated`, `3`, `5`, `7`, `8`,
+`10`), all updated to `field_observer_name`.
+
+### Found: `danger_rose`'s NOT-NULL columns need explicit zero-filling
+
+`danger_rose_field_schema()` declares 24 integer columns per rose field
+(`field_rose_1/2/3`) as `NOT NULL DEFAULT 0` — but Backdrop's field
+storage INSERT doesn't fall back to the DB default when a field has no
+value at all; it inserts explicit `NULL`, hitting a real constraint
+violation (`EntityStorageException`), not a Field API validation error.
+The fields aren't Field-API "required" on `advisory`, so nothing else
+catches this. Fixed by zero-filling all three in
+`avalanche_center_create_demo_content()` before `node_save()`.
+
+### Found: anonymous/authenticated permissions were silently discarded — the actual 403 root cause
+
+The whole site 403'd on every page after an otherwise-successful install.
+Root cause: `config_install_default_config()` (which auto-imports a
+module's shipped `config/`) only ever *creates* config, never overwrites
+it. Core's own `user` module ships its own default `user.role.anonymous`/
+`user.role.authenticated` (both `permissions: []`), and since `user` gets
+enabled as a dependency *before* our profile's own config gets a turn,
+our exported versions — with "access content" and dozens of other real
+permissions — were silently skipped. Confirmed directly: active
+`user.role.anonymous.json` showed `permissions: []` post-install, while
+`user.role.administrator.json`/`user.role.editor.json` (names no core
+module claims) imported correctly with their full permission sets. No
+error, no log entry — just quietly wrong. Fixed with a new
+`avalanche_center_force_apply_config()` helper, called from
+`hook_install()`, that reads the two role JSON files straight from the
+profile's `config/` directory and force-saves them over whatever's
+currently active, running *after* the passive import has already had (and
+lost) its chance. This pattern is specific to config names a dependency
+also ships defaults for — worth checking for again if other silent
+"our config didn't take" symptoms turn up (filter formats and image
+styles are the other names core-bundled modules typically claim first).
+
+### Found: no theme was ever enabled, let alone made default
+
+`themes[] = avalanche_modern` etc. in `avalanche_center.info` only makes
+a theme *available* — Backdrop doesn't enable or default to any of them.
+With no `system.core.json` shipped (site-specific by nature) and no
+`hook_install()` logic to set it either, every fresh install was stuck on
+core's bare `stark` fallback, and any layout whose `layout_template` is
+`responsive_sac` (`layout.layout.node.json`, `layout.layout.default.json`
+— both matching the Gulmarg baseline) failed outright with "The layout
+plugin 'responsive_sac' could not been found", since that theme was never
+enabled at all. Gulmarg's own live config (canonical baseline) confirmed
+the intended pattern: `theme_default = gulmarg_modern` (now
+`avalanche_modern`), `admin_theme = basis`, with `responsive_sac` also
+enabled (but not default) purely to supply that layout template. Fixed by
+adding `theme_enable(array('avalanche_modern', 'responsive_sac',
+'responsive_bartik', 'basis'))` plus `config_set('system.core',
+'theme_default', 'avalanche_modern')` / `admin_theme = 'basis'` to
+`avalanche_center_install()`.
+
+### Found: missing `search` dependency
+
+Even with the theme enabled, the front page still 500'd:
+`call_user_func_array(): Argument #1 ($callback) must be a valid
+callback, function "search_form" not found`. `avalanche_modern`'s
+`template.php` calls `backdrop_get_form('search_form')` unconditionally
+in the header — confirmed Gulmarg's own `gulmarg_modern/template.php` has
+the identical call. `search` is enabled on both reference sites but has
+no content-model footprint of its own, so Phase 5's
+`system.extensions.json` cross-check missed it entirely. Added
+`dependencies[] = search` to `avalanche_center.info`.
+
+### Found: the `responsive_sac` layout template was never actually discoverable
+
+Even with `responsive_sac` enabled as a theme, the same "layout plugin
+... could not been found" error persisted. Traced to how Backdrop
+discovers layout plugins: `backdrop_system_listing()` only scans a
+`layouts/` subdirectory directly under `core/`, `profiles/$profile/`, or
+the site root — never inside an individual theme directory. Both
+reference sites keep their custom layout at a **top-level** `layouts/
+responsive_sac/` (sibling to `modules/`/`themes/`, not nested under
+either), which is where it's actually found from. This repo only had a
+copy nested at `themes/responsive_sac/layouts/responsive_sac/` — dead
+code, never scanned, left over from whichever earlier phase copied the
+theme in. That nested copy turned out to already be a genuinely more
+developed version of the layout template (per-node-type CSS classes,
+front-page-only sidebar handling, a megamenu row) than either reference
+site's raw top-level original — not a straight Gulmarg/Argentina copy, so
+it was **relocated** (not overwritten) to `layouts/responsive_sac/` at
+the repo root, matching the scan path our distribution's flat
+`modules/`/`themes/`/`profiles/` layout implies. The vestigial nested copy
+was removed.
+
+### Found: the danger map block had nowhere it was configured to render
+
+Once the site loaded, the front page still showed no map. The
+`avalanche_danger_map:danger_map` block in `layout.layout.node.json` has
+a `path` visibility condition restricting it to `<front>` only — but
+core's default `site_frontpage` value (`node`, a promoted-content
+listing) doesn't match the `node/%` layout at all, and the demo advisory
+node is explicitly not promoted (`$node->promote = 0`), so the block
+could never render under any default front-page configuration. Gulmarg's
+own live config confirmed the intended pattern: `site_frontpage` points
+at a specific node (`node/5950`), not the listing default. Fixed by
+setting `system.core`'s `site_frontpage` to the newly-created demo node's
+path at the end of `avalanche_center_create_demo_content()` — giving the
+demo install a sensible homepage where the map is actually configured to
+show; a real center repoints this via standard admin UI once they have
+their own landing content, same as both reference sites did.
+
+### Verified: full clean install is now reproducible end-to-end
+
+Repeated the full cycle (drop DB, clear `files/config_active/{active,
+staging}`, re-run the language + profile `curl` steps, run the module-
+enable script) from scratch after all fixes above. Confirmed: all 63
+modules enable, all 4 key pages return 200 (`/`, `/node/1`,
+`/avalanche-terms`, `/node/add/observation`), anonymous/authenticated
+role permissions are correctly force-applied, `avalanche_modern` is the
+active theme with `responsive_sac` supplying the node/default layout
+template, and the front page renders the danger map block with the demo
+forecast zone's polygon (GeoJSON) and the demo advisory's data. Not yet
+re-verified in this pass: theme switching to `responsive_sac` as the
+*default* theme (only confirmed it's enabled and supplies the layout
+template), and Spanish/`SAC` preset behavior (§10's language selection is
+still non-functional pending real locale support, as already noted in
+Phase 6's log).
+
+### Not committed as of this log
+
+Every fix in this phase — `leaflet_widget.install`, `css_injector.install`,
+the `danger_rose` module addition, ~32 contrib modules + `email`, the
+`field_map` config removal, the `field_name` → `field_observer_name`
+rename (config + 2 templates + 7 role files), `avalanche_center.install`'s
+rose-field/role-force-apply/theme-enable/frontpage fixes,
+`avalanche_center.info`'s new `search` dependency, and the relocated
+`layouts/responsive_sac/` — was made directly against this repo (not just
+the test webroot) but had not yet been committed to git at the time this
+log was written.

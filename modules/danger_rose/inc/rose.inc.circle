@@ -1,0 +1,289 @@
+<?php
+
+/**
+ * @file
+ * Danger rose for avalanche advisories.
+ */
+
+/*$_rose_array stores colors as follows
+0 none
+1 pkt low
+2 low
+3 pkt mod
+4 mod
+5 pkt con
+6 con
+7 pkt high
+8 high
+9 pkt ext
+10 ext
+11 pkt blue
+12 blue
+13 blue pkt ext
+array number increases clockwise
+hn = [0]
+mn =[8]
+ln = [16]
+*/
+/**
+ * Rose class
+ */
+class Rose {
+  var $_shadow;
+  var $_size = 24;
+  var $_arc_coord = array();
+  var $_dot_coord = array();
+  var $_destination = NULL;
+  var $_font_path = NULL;
+  var $_watermark = '';
+  var $_size_small = FALSE;
+  var $_rose_array = array();
+  var $_rose_width = 346;
+  var $_rose_height = 346;
+
+  function __construct($size) {
+    if ($size == 2) {
+      $this->_arc_coord = array(145, 250);
+      $this->_dot_coord = array(45, 95);
+      $this->_elev_label_x_coord = array(275, 325);
+      $this->_elev_label_y_coord = array(300, 250);
+    } else {
+      $this->_arc_coord = array(110, 180, 250);
+      $this->_dot_coord = array(35, 70, 105);
+      $this->_elev_label_x_coord = array(275, 300, 325);
+      $this->_elev_label_y_coord = array(350, 325, 300);
+    }
+    $this->_size = $size * 8;
+  }
+
+  function set_labels($a) {
+    $this->_rose_labels = array();
+    foreach ($a as $k => $v) { $this->_rose_labels[] = strtoupper($v); }
+  }
+
+  function set_values($a) { $this->_rose_array = $a; }
+  function set_width($w) { $this->_rose_width = $w; }
+  function set_destination($s) { $this->_destination = $s; }
+  function set_font_path($s) { $this->_font_path = $s; }
+  function set_watermark($s) { $this->_watermark = $s; }
+  function set_size_small() {
+    $this->_size_small = TRUE;
+    $this->_rose_width = $this->_rose_height;
+  }
+
+  // draw each element in the rose with solid and/or dots
+  function _draw_elevation_ratings(&$img, $elev_vals = array(), $color = array(), $outline = FALSE, $outline_color = array()) {
+
+    // gd uses 0 deg with starting point of 3 o'clock, so we need to offset just a bit to start with N aspect first
+    $beg_deg = 248;
+    $end_deg = 0;
+
+    // used to calculate where to draw the dots
+    $curr_deg = 270;
+    $curr_rad = deg2rad($curr_deg);
+
+    $i = $this->_size / 8;
+    while ($i > 0) {
+      foreach ($elev_vals[$i - 1] as $k => $v) {
+        $end_deg = $beg_deg + 45;
+        if ($end_deg > 360) { $end_deg = $end_deg - 360; }
+        if ($curr_deg == 360) { $curr_deg = 0; }
+        $solid_color = $dot_color = floor($v / 2);
+
+        // If odd, it's a dot value and the next highest color rating
+        if ($v % 2 !== 0) { $dot_color = $solid_color + 1; }
+
+        $x = $y = $this->_rose_height / 2;
+
+        if ($outline) {
+          // draw the overlay
+          imagefilledarc($img, $x, $y, $this->_arc_coord[$i - 1], $this->_arc_coord[$i - 1], $beg_deg, $end_deg, $outline_color, IMG_ARC_PIE|IMG_ARC_NOFILL|IMG_ARC_EDGED);
+        } else {
+          // draw the element and the dot
+          imagefilledarc($img, $x, $y, $this->_arc_coord[$i - 1], $this->_arc_coord[$i - 1], $beg_deg, $end_deg, $color[$solid_color], IMG_ARC_PIE|IMG_ARC_EDGED);
+          imagefilledellipseaa($img, $x + $this->_dot_coord[$i - 1] * cos($curr_rad), $y + $this->_dot_coord[$i - 1] * sin($curr_rad), 17, 17, $color[$dot_color]);
+        }
+
+        $beg_deg = $end_deg;
+        $curr_deg += 45;
+        $curr_rad = deg2rad($curr_deg);
+      }
+      $i--;
+    }
+  }
+
+  // XXX: add error handling for creating dirs/files
+  function _writepng($img) {
+    $date = date('Ymd-His');
+    $ym = substr($date, 0, 6);
+    $counter = 0;
+    $path = $this->_destination;
+    if (!is_dir($path .'/'. $ym)) { mkdir($path .'/'. $ym, 0755, TRUE); }
+    while (file_exists($path .'/'. $ym .'/'. $date .'-'. $counter .'.png')) { $counter += 1; }
+    $filename = $date .'-'. $counter .'.png';
+    imagepng($img, $path .'/'. $ym .'/'. $filename);
+
+    return $ym . '/' . $filename;
+  }
+
+  // draw the rose, font handling, and any overlays
+  function generate() {
+    require_once 'gdext.php';
+
+    $label_font = $this->_font_path . '/' . 'vera.ttf';
+
+    $w = $this->_rose_width;
+    $h = $this->_rose_height;
+
+    $img = imagecreatetruecolor($w, $h);
+    imageantialias($img, TRUE);
+
+    if ($img) {
+      imagesetthickness($img, 1);
+      imagealphablending($img, TRUE);
+
+      // base colors
+      $white = imagecolorallocate($img, 255, 255, 255);
+      $gray  = imagecolorallocate($img, 248, 248, 248);
+      $lgray = imagecolorallocate($img, 153, 153, 153);
+      
+      $this->_shadow = imagecolorallocate($img, 102, 102, 102);
+      $dgray = imagecolorallocate($img, 102, 102, 102);
+
+      // danger ratings
+      $black  = imagecolorallocate($img,   0,   0,  0);
+      $red    = imagecolorallocate($img, 255,   0,  0);
+      $orange = imagecolorallocate($img, 255, 153, 51);
+      $yellow = imagecolorallocate($img, 255, 255, 51);
+      $green  = imagecolorallocate($img,   0, 255,  0);
+      $blue  = imagecolorallocate($img,   77, 184, 248);
+
+      // background
+      imagefilledrectangle($img, 0, 0, $w, $h, $gray);
+
+      // base ellipse
+      imagefilledellipseaa($img, $h / 2, $h / 2, 250, 250, $lgray);
+
+      // aspect letters
+      imagettftext($img, 23, 0, 163,  34, $lgray, $label_font, "N");
+      imagettftext($img, 23, 0, 162,  33, $black, $label_font, "N");
+      imagettftext($img, 23, 0, 163, 334, $lgray, $label_font, "S");
+      imagettftext($img, 23, 0, 162, 333, $black, $label_font, "S");
+      imagettftext($img, 23, 0,   8, 185, $lgray, $label_font, "W");
+      imagettftext($img, 23, 0,   7, 184, $black, $label_font, "W");
+      imagettftext($img, 23, 0, 311, 185, $lgray, $label_font, "E");
+      imagettftext($img, 23, 0, 310, 184, $black, $label_font, "E");
+
+      if (!$this->_size_small) {
+        // minor aspect letters
+        imagettftext($img, 15, 0,  46,  66, $lgray, $label_font, "NW");
+        imagettftext($img, 15, 0,  45,  65, $dgray, $label_font, "NW");
+
+        imagettftext($img, 15, 0,  47, 295, $lgray, $label_font, "SW");
+        imagettftext($img, 15, 0,  46, 294, $dgray, $label_font, "SW");
+
+        imagettftext($img, 15, 0, 269,  66, $lgray, $label_font, "NE");
+        imagettftext($img, 15, 0, 268,  65, $dgray, $label_font, "NE");
+
+        /* legend colors
+        imagefilledrectangle($img, 375,  17, 397,  37, $dgray);
+        imagefilledrectangle($img, 376,  18, 396,  36, $black);
+
+        imagefilledrectangle($img, 375,  49, 397,  69, $dgray);
+        imagefilledrectangle($img, 376,  50, 396,  68, $red);
+
+        imagefilledrectangle($img, 375,  81, 397, 101, $dgray);
+        imagefilledrectangle($img, 376,  82, 396, 100, $orange);
+
+        imagefilledrectangle($img, 375, 113, 397, 133, $dgray);
+        imagefilledrectangle($img, 376, 114, 396, 132, $yellow);
+
+        imagefilledrectangle($img, 375, 145, 397, 165, $dgray);
+        imagefilledrectangle($img, 376, 146, 396, 164, $green);
+
+        imagefilledellipseaa($img, 386, 190,  18,  18, $dgray);
+        imagefilledellipseaa($img, 386, 190,  17,  17, $gray);
+
+        // legend text
+        imagettftext($img, 13, 0, 410,  32, $dgray, $label_font, "Extreme");
+        imagettftext($img, 13, 0, 410,  64, $dgray, $label_font, "High");
+        imagettftext($img, 13, 0, 410,  96, $dgray, $label_font, "Considerable");
+        imagettftext($img, 13, 0, 410, 128, $dgray, $label_font, "Moderate");
+        imagettftext($img, 13, 0, 410, 160, $dgray, $label_font, "Low");
+        imagettftext($img, 13, 0, 410, 192, $dgray, $label_font, "Pockets of");
+        imagettftext($img, 13, 0, 410, 210, $dgray, $label_font, "higher danger");
+*/
+      }
+
+      $color = array(
+          0 => $lgray,
+          1 => $green,
+          2 => $yellow,
+          3 => $orange,
+          4 => $red,
+          5 => $black,
+	  6 => $blue
+      );
+
+      $rose_values = $this->_rose_array;
+
+      // ratings
+      $this->_draw_elevation_ratings(&$img, array_chunk($rose_values, 8), $color);
+
+      // grid overlay
+      $this->_draw_elevation_ratings(&$img, array_chunk($rose_values, 8), $color, TRUE, $black);
+
+      if (!empty($this->_rose_labels)) {
+        if (count($this->_rose_labels) == 2) {
+          // dual picker
+          imageline($img, 200, 240, 295, 255, $black);
+          imagettftext($img, 13, 0, 305, 260, $black, $label_font, $this->_rose_array[0]);
+
+          imageline($img, 220, 288, 295, 300, $black);
+          imagettftext($img, 13, 0, 305, 305, $black, $label_font, $this->_rose_array[1]);
+        } else {
+          // assuming triple picker
+          imageline($img, 192, 223, 295, 240, $black);
+          imagettftext($img, 13, 0, 305, 245, $black, $label_font, $this->_rose_array[2]);
+
+          imageline($img, 205, 255, 295, 270, $black);
+          imagettftext($img, 13, 0, 305, 275, $black, $label_font, $this->_rose_array[3]);
+
+          imageline($img, 220, 288, 295, 300, $black);
+          imagettftext($img, 13, 0, 305, 305, $black, $label_font, $this->_rose_array[23]);
+        }
+      }
+
+      $ow = $this->_rose_width;
+      $oh = $this->_rose_height;
+      $nw = $nh = 0;
+
+      if (!$this->_size_small) {
+/*        // add the bounding box for the watermark
+        $bbox = imagettfbbox(13, 0, $label_font, $this->_watermark);
+        $bbox_h = abs($bbox[5] - $bbox[3]);
+        $bbox_w = abs($bbox[2] - $bbox[0]);
+        $bbox_x = $w - $bbox_w;
+        imagettftext($img, 13, 0, $bbox_x - 7, $oh - 7, $lgray, $label_font, $this->_watermark);
+*/
+        // seems a strange bug in gd2... odd text blur if 50% reduction in size. Adding 1 corrects it.
+        $nw = $ow / 2 + 1;
+        $nh = $oh / 2 + 1;
+
+      } else {
+        $nw = $nh = 100;
+      }
+
+      if ($this->_destination == NULL) { header("Content-type: image/png"); }
+
+      $nimg = imagecreatetruecolor($nw, $nh);
+      imageantialias($nimg, FALSE);
+      imagecopyresampled($nimg, $img, 0, 0, 0, 0, $nw, $nh, $ow, $oh);
+      $filename = $this->_writepng($nimg);
+      imagedestroy($img);
+      imagedestroy($nimg);
+
+      return $filename;
+    }
+  }
+}

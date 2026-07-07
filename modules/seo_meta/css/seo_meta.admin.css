@@ -1,0 +1,6 @@
+.seo-meta.form-checkboxes {
+  display: flex;
+}
+.seo-meta.form-checkboxes > div.form-item {
+  margin-right: 2em;
+}

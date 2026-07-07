@@ -1,0 +1,29 @@
+[SimplenewsAdminSmokeTestCase]
+name = Simplenews admin smoke
+description = Minimal admin page and category creation smoke test for Simplenews.
+group = SimplenewsSmoke
+file = tests/simplenews.test
+
+[SimplenewsSubscriptionSmokeTestCase]
+name = Simplenews subscription smoke
+description = Minimal subscription smoke test for Simplenews.
+group = SimplenewsSmoke
+file = tests/simplenews.test
+
+[SimplenewsSubscriptionHistoryTestCase]
+name = Simplenews subscription history
+description = Logs and renders subscription history for subscribers.
+group = SimplenewsHistory
+file = tests/simplenews.test
+
+[SimplenewsDisabledCategoryPruneTestCase]
+name = Simplenews disabled category pruning
+description = Disabled newsletter terms are removed from node forms.
+group = SimplenewsPrune
+file = tests/simplenews.test
+
+
+; Added by Backdrop CMS packaging script on 2026-04-07
+project = simplenews
+version = 1.x-1.2.3
+timestamp = 1775578043
