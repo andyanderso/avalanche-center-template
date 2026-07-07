@@ -1,0 +1,10 @@
+{
+    "_config_name": "field.bundle.field_collection_item.field_emergency_contact",
+    "entity_type": "field_collection_item",
+    "bundle": "field_emergency_contact",
+    "view_modes": [],
+    "extra_fields": {
+        "form": [],
+        "display": []
+    }
+}

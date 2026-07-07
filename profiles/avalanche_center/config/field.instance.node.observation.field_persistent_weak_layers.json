@@ -1,0 +1,30 @@
+{
+    "_config_name": "field.instance.node.observation.field_persistent_weak_layers",
+    "field_name": "field_persistent_weak_layers",
+    "entity_type": "node",
+    "bundle": "observation",
+    "deleted": "0",
+    "label": "Persistent Weak Layers",
+    "widget": {
+        "weight": "113",
+        "type": "options_buttons",
+        "module": "options",
+        "active": 1,
+        "settings": []
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "14",
+            "settings": []
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value_label_token": 0,
+    "default_value": null
+}

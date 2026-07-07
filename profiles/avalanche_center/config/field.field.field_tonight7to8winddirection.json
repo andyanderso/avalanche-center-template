@@ -1,0 +1,24 @@
+{
+    "_config_name": "field.field.field_tonight7to8winddirection",
+    "field_name": "field_tonight7to8winddirection",
+    "type": "text_long",
+    "module": "text",
+    "active": 1,
+    "locked": "0",
+    "cardinality": "1",
+    "translatable": "0",
+    "deleted": "0",
+    "entity_types": [],
+    "settings": {
+        "allowed_values": "",
+        "allowed_values_php": "",
+        "max_length": "",
+        "text_processing": "0"
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "module": "field_sql_storage",
+        "active": 1,
+        "settings": []
+    }
+}

@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.instance.taxonomy_term.avalanche_terms.field_synonyms",
+    "field_name": "field_synonyms",
+    "entity_type": "taxonomy_term",
+    "bundle": "avalanche_terms",
+    "deleted": "0",
+    "label": "Synonyms",
+    "widget": {
+        "weight": "2",
+        "type": "text_textfield",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "size": "60"
+        }
+    },
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "text_default",
+            "weight": "1",
+            "settings": [],
+            "module": "text"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": null
+}

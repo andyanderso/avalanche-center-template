@@ -1,0 +1,30 @@
+{
+    "_config_name": "field.instance.node.observation.field_highest_precipitation_rate",
+    "field_name": "field_highest_precipitation_rate",
+    "entity_type": "node",
+    "bundle": "observation",
+    "deleted": "0",
+    "label": "Highest Precipitation Rate",
+    "widget": {
+        "type": "options_select",
+        "weight": "245",
+        "settings": {
+            "apply_chosen": ""
+        },
+        "module": "options"
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "list_default",
+            "weight": "407",
+            "settings": [],
+            "module": "list"
+        }
+    },
+    "required": false,
+    "description": ""
+}

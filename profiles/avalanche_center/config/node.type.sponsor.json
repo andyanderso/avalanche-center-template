@@ -1,0 +1,37 @@
+{
+    "_config_name": "node.type.sponsor",
+    "type": "sponsor",
+    "name": "Sponsors",
+    "base": "node_content",
+    "module": "node",
+    "description": "<p>Use this to add sponsors to the site</p>",
+    "help": "<p>Please use the sponsor's name as the title. Put the logo linked to the sponsor's website (if applicable) in the Sponsor logo field. Choose to have the link appear in a new window (the target_blank option). MAKE&nbsp;SURE&nbsp;THAT&nbsp;THE&nbsp;SPONSOR&nbsp;LOGOS&nbsp;ARE&nbsp;NO&nbsp;WIDER&nbsp;THAN 145PX. If the sponsor is just a name just type the name.</p>",
+    "has_title": true,
+    "title_label": "SAC sponsor",
+    "modified": true,
+    "disabled": false,
+    "orig_type": "sponsor",
+    "settings": {
+        "status_default": 1,
+        "sticky_enabled": true,
+        "sticky_default": false,
+        "promote_enabled": true,
+        "promote_default": false,
+        "revision_enabled": true,
+        "revision_default": false,
+        "node_preview": "1",
+        "node_submitted": 0,
+        "node_user_picture": true,
+        "language": null,
+        "menu_default": false,
+        "menu_options": [
+            "main-menu"
+        ],
+        "menu_parent": "main-menu:0",
+        "scheduling_enabled": true,
+        "node_submitted_format": "[node:created:medium] by [node:author]",
+        "hidden_path": "0",
+        "node_permissions": true
+    },
+    "node_preview": 1
+}

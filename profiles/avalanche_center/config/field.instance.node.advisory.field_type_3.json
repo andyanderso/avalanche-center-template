@@ -1,0 +1,46 @@
+{
+    "_config_name": "field.instance.node.advisory.field_type_3",
+    "field_name": "field_type_3",
+    "entity_type": "node",
+    "bundle": "advisory",
+    "deleted": "0",
+    "default_value": null,
+    "description": "",
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "list_default",
+            "weight": "26",
+            "settings": [],
+            "module": "list"
+        },
+        "rss": {
+            "label": "inline",
+            "module": "list",
+            "settings": [],
+            "type": "list_default",
+            "weight": "26"
+        },
+        "teaser": {
+            "label": "above",
+            "settings": [],
+            "type": "hidden",
+            "weight": 0
+        }
+    },
+    "label": "Type 3",
+    "required": 0,
+    "settings": {
+        "user_register_form": false
+    },
+    "widget": {
+        "weight": "23",
+        "type": "options_select",
+        "module": "options",
+        "active": 1,
+        "settings": {
+            "apply_chosen": ""
+        }
+    },
+    "default_value_label_token": 0
+}

@@ -1,0 +1,34 @@
+{
+    "_config_name": "field.instance.node.map.field_map",
+    "field_name": "field_map",
+    "entity_type": "node",
+    "bundle": "map",
+    "deleted": "0",
+    "label": "Map",
+    "widget": {
+        "weight": "42",
+        "type": "gmap_polygon_field_widget",
+        "module": "gmap_polygon_field",
+        "active": 0,
+        "settings": []
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "gmap_polygon_field_basic",
+            "settings": [],
+            "module": "gmap_polygon_field",
+            "weight": 1
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": [
+        {
+            "polyline": "onsnEijeeMowC`kEiiAzfEtiBbyApbBeAbv@e}@ti@cyAf]or@jt@mnAf]wv@"
+        }
+    ]
+}

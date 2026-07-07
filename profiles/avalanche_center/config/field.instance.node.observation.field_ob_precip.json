@@ -1,0 +1,30 @@
+{
+    "_config_name": "field.instance.node.observation.field_ob_precip",
+    "field_name": "field_ob_precip",
+    "entity_type": "node",
+    "bundle": "observation",
+    "deleted": "0",
+    "label": "Precipitation",
+    "widget": {
+        "type": "options_select",
+        "weight": "244",
+        "settings": {
+            "apply_chosen": ""
+        },
+        "module": "options"
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "list_default",
+            "weight": "408",
+            "settings": [],
+            "module": "list"
+        }
+    },
+    "required": false,
+    "description": ""
+}

@@ -1,0 +1,38 @@
+{
+    "_config_name": "field.instance.taxonomy_term.gallery_collections.media_gallery_image_info_where",
+    "field_name": "media_gallery_image_info_where",
+    "entity_type": "taxonomy_term",
+    "bundle": "gallery_collections",
+    "deleted": "0",
+    "label": "Gallery information",
+    "required": true,
+    "default_value": [
+        {
+            "value": "hover"
+        }
+    ],
+    "widget": {
+        "type": "options_select",
+        "settings": [],
+        "weight": 33,
+        "module": "options"
+    },
+    "display": {
+        "default": {
+            "type": "hidden",
+            "label": "hidden",
+            "settings": [],
+            "weight": 2
+        },
+        "full": {
+            "type": "hidden",
+            "label": "hidden",
+            "settings": [],
+            "weight": 2
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "description": ""
+}

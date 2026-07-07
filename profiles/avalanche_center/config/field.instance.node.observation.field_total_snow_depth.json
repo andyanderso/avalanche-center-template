@@ -1,0 +1,39 @@
+{
+    "_config_name": "field.instance.node.observation.field_total_snow_depth",
+    "field_name": "field_total_snow_depth",
+    "entity_type": "node",
+    "bundle": "observation",
+    "deleted": "0",
+    "label": "Total Snow Depth",
+    "widget": {
+        "weight": "112",
+        "type": "number",
+        "module": "number",
+        "active": 0,
+        "settings": []
+    },
+    "settings": {
+        "min": "",
+        "max": "",
+        "prefix": "",
+        "suffix": "cm",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "number_integer",
+            "weight": "202",
+            "settings": {
+                "thousand_separator": "",
+                "decimal_separator": ".",
+                "scale": 0,
+                "prefix_suffix": true
+            },
+            "module": "number"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": null
+}

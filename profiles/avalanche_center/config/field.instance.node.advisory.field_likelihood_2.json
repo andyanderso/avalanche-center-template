@@ -1,0 +1,46 @@
+{
+    "_config_name": "field.instance.node.advisory.field_likelihood_2",
+    "field_name": "field_likelihood_2",
+    "entity_type": "node",
+    "bundle": "advisory",
+    "deleted": "0",
+    "default_value": null,
+    "description": "",
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "list_default",
+            "weight": "20",
+            "settings": [],
+            "module": "list"
+        },
+        "rss": {
+            "label": "inline",
+            "module": "list",
+            "settings": [],
+            "type": "list_default",
+            "weight": "20"
+        },
+        "teaser": {
+            "label": "above",
+            "settings": [],
+            "type": "hidden",
+            "weight": 0
+        }
+    },
+    "label": "Likelihood 2",
+    "required": 0,
+    "settings": {
+        "user_register_form": false
+    },
+    "widget": {
+        "weight": "19",
+        "type": "options_select",
+        "module": "options",
+        "active": 1,
+        "settings": {
+            "apply_chosen": ""
+        }
+    },
+    "default_value_label_token": 0
+}

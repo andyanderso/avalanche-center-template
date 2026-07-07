@@ -1,0 +1,39 @@
+{
+    "_config_name": "metatag.instance.node.advisory",
+    "module": "metatag",
+    "api_version": "1",
+    "instance": "node:advisory",
+    "disabled": false,
+    "config": {
+        "og:description": {
+            "value": "[node:field_bottom_line]"
+        },
+        "og:image": {
+            "value": "[node:overall-danger-icon]"
+        },
+        "og:image:url": {
+            "value": "[node:overall-danger-icon]"
+        },
+        "og:image:secure_url": {
+            "value": "[node:overall-danger-icon]"
+        },
+        "og:image:type": {
+            "value": "image/png"
+        },
+        "og:image:width": {
+            "value": "200"
+        },
+        "og:image:height": {
+            "value": "200"
+        },
+        "twitter:description": {
+            "value": "[node:field_bottom_line]"
+        },
+        "twitter:image": {
+            "value": "[node:overall-danger-icon]"
+        }
+    },
+    "storage": "custom",
+    "name": "node.advisory",
+    "label": "Node: Advisory"
+}

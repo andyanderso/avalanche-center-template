@@ -1,0 +1,52 @@
+{
+    "_config_name": "field.instance.node.media_gallery.media_gallery_allow_download",
+    "field_name": "media_gallery_allow_download",
+    "entity_type": "node",
+    "bundle": "media_gallery",
+    "deleted": "0",
+    "label": "Allow downloading of the original image",
+    "description": "Display a \"download original image\" link",
+    "default_value": [
+        {
+            "value": 1
+        }
+    ],
+    "widget": {
+        "type": "options_onoff",
+        "settings": {
+            "display_label": 0
+        },
+        "weight": 38,
+        "module": "options"
+    },
+    "display": {
+        "default": {
+            "type": "hidden",
+            "label": "hidden",
+            "settings": [],
+            "weight": 8
+        },
+        "full": {
+            "type": "hidden",
+            "label": "hidden",
+            "settings": [],
+            "weight": 8
+        },
+        "teaser": {
+            "type": "hidden",
+            "label": "hidden",
+            "settings": [],
+            "weight": 8
+        },
+        "media_gallery_block": {
+            "type": "hidden",
+            "label": "hidden",
+            "settings": [],
+            "weight": 8
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "required": false
+}

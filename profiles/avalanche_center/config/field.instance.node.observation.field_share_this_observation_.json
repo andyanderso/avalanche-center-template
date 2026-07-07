@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.instance.node.observation.field_share_this_observation_",
+    "field_name": "field_share_this_observation_",
+    "entity_type": "node",
+    "bundle": "observation",
+    "deleted": "0",
+    "label": "Share this observation on the website's social media pages, email subscriptions, and RSS feeds?",
+    "widget": {
+        "weight": "3",
+        "type": "options_select",
+        "module": "options",
+        "active": 1,
+        "settings": {
+            "apply_chosen": ""
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "list_default",
+            "weight": "5",
+            "settings": [],
+            "module": "list"
+        }
+    },
+    "required": 1,
+    "description": "Your contact info will remain anonymous.",
+    "default_value_label_token": 0,
+    "default_value": null
+}

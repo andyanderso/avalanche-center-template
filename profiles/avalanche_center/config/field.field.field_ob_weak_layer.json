@@ -1,0 +1,31 @@
+{
+    "_config_name": "field.field.field_ob_weak_layer",
+    "field_name": "field_ob_weak_layer",
+    "type": "list_text",
+    "module": "list",
+    "active": 1,
+    "locked": "0",
+    "cardinality": "1",
+    "translatable": "0",
+    "deleted": "0",
+    "entity_types": [],
+    "settings": {
+        "allowed_values": {
+            "storm": "Storm Snow",
+            "old": "Old Snow",
+            "old-new-interface": "New/old snow interface",
+            "ground": "Ground",
+            "other": "Other",
+            "unknown": "Unknown"
+        },
+        "allowed_values_function": "",
+        "allowed_values_php": "",
+        "text_processing": "0"
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "module": "field_sql_storage",
+        "active": 1,
+        "settings": []
+    }
+}

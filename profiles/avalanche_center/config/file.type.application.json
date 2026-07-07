@@ -1,0 +1,9 @@
+{
+    "_config_name": "file.type.application",
+    "module": "file",
+    "type": "application",
+    "name": "Application",
+    "description": "Multipurpose type - kept to support older sites.",
+    "mimetypes": [],
+    "storage": 1
+}

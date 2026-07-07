@@ -1,0 +1,31 @@
+{
+    "_config_name": "field.instance.node.snowpack_summary.field_forecast_region",
+    "field_name": "field_forecast_region",
+    "entity_type": "node",
+    "bundle": "snowpack_summary",
+    "deleted": "0",
+    "label": "Region",
+    "widget": {
+        "weight": "1",
+        "type": "options_select",
+        "module": "options",
+        "active": 1,
+        "settings": []
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "taxonomy_term_reference_link",
+            "settings": [],
+            "module": "taxonomy",
+            "weight": 46
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value_label_token": 0,
+    "default_value": null
+}

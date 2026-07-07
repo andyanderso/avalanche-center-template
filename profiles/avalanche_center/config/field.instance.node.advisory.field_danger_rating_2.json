@@ -1,0 +1,49 @@
+{
+    "_config_name": "field.instance.node.advisory.field_danger_rating_2",
+    "field_name": "field_danger_rating_2",
+    "entity_type": "node",
+    "bundle": "advisory",
+    "deleted": "0",
+    "default_value": [
+        {
+            "value": "0"
+        }
+    ],
+    "description": "",
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "list_key",
+            "weight": "4",
+            "settings": [],
+            "module": "list"
+        },
+        "rss": {
+            "label": "hidden",
+            "settings": [],
+            "type": "hidden",
+            "weight": "4"
+        },
+        "teaser": {
+            "label": "above",
+            "settings": [],
+            "type": "hidden",
+            "weight": 0
+        }
+    },
+    "label": "Mid Elevation Danger Rating",
+    "required": 1,
+    "settings": {
+        "user_register_form": false
+    },
+    "widget": {
+        "weight": "5",
+        "type": "options_select",
+        "module": "options",
+        "active": 1,
+        "settings": {
+            "apply_chosen": ""
+        }
+    },
+    "default_value_label_token": 0
+}

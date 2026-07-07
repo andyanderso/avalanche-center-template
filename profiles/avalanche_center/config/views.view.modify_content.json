@@ -1,0 +1,424 @@
+{
+    "_config_name": "views.view.modify_content",
+    "name": "modify_content",
+    "description": "",
+    "tag": "default",
+    "base_table": "node",
+    "human_name": "Modify Content",
+    "core": "7",
+    "display": {
+        "default": {
+            "display_title": "Master",
+            "display_plugin": "default",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "title": "Modify Content",
+                "use_more_always": false,
+                "access": {
+                    "type": "perm"
+                },
+                "cache": {
+                    "type": "none"
+                },
+                "exposed_form": {
+                    "type": "basic"
+                },
+                "pager": {
+                    "type": "none",
+                    "options": {
+                        "offset": "0"
+                    }
+                },
+                "style_plugin": "table",
+                "style_options": {
+                    "columns": {
+                        "title": "title"
+                    },
+                    "default": "-1",
+                    "info": {
+                        "title": {
+                            "sortable": 0,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        }
+                    }
+                },
+                "fields": {
+                    "views_bulk_operations": {
+                        "id": "views_bulk_operations",
+                        "table": "node",
+                        "field": "views_bulk_operations",
+                        "vbo_settings": {
+                            "display_type": "0",
+                            "enable_select_all_pages": 1,
+                            "force_single": 0,
+                            "entity_load_capacity": "10"
+                        },
+                        "vbo_operations": {
+                            "action::node_assign_owner_action": {
+                                "selected": 0,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            },
+                            "action::clone_action_clone": {
+                                "selected": 0,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            },
+                            "action::node_make_sticky_action": {
+                                "selected": 0,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            },
+                            "action::node_make_unsticky_action": {
+                                "selected": 0,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            },
+                            "action::node_promote_action": {
+                                "selected": 0,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            },
+                            "action::node_publish_action": {
+                                "selected": 0,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            },
+                            "action::node_unpromote_action": {
+                                "selected": 0,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            },
+                            "rules_component::scheduler_remove_publish_date_component": {
+                                "selected": 0,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            },
+                            "rules_component::scheduler_remove_unpublish_date_component": {
+                                "selected": 0,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            },
+                            "action::node_save_action": {
+                                "selected": 0,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            },
+                            "rules_component::scheduler_set_publish_date_component": {
+                                "selected": 0,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            },
+                            "rules_component::scheduler_set_unpublish_date_component": {
+                                "selected": 0,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            },
+                            "action::node_unpublish_action": {
+                                "selected": 0,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            },
+                            "action::views_bulk_operations_delete_item_vboaction": {
+                                "selected": 0,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            },
+                            "action::views_bulk_operations_delete_revision_vboaction": {
+                                "selected": 0,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            },
+                            "action::views_bulk_operations_script_vboaction": {
+                                "selected": 0,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            },
+                            "action::views_bulk_operations_modify_vboaction": {
+                                "selected": 1,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": "",
+                                "settings": {
+                                    "show_all_tokens": 1,
+                                    "display_values": {
+                                        "advisory::field_overalldanger": "advisory::field_overalldanger",
+                                        "advisory::field_disclaimer": "advisory::field_disclaimer"
+                                    }
+                                }
+                            },
+                            "action::views_bulk_operations_argument_selector_vboaction": {
+                                "selected": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": "",
+                                "settings": {
+                                    "url": ""
+                                }
+                            },
+                            "action::views_bulk_operations_send_email_vboaction": {
+                                "selected": 0,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            },
+                            "action::views_bulk_operations_node_unpublish_by_keyword_vboaction": {
+                                "selected": 0,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            },
+                            "action::path_node_update_action": {
+                                "selected": 0,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            }
+                        }
+                    },
+                    "title": {
+                        "id": "title",
+                        "table": "node",
+                        "field": "title",
+                        "label": "",
+                        "alter": {
+                            "word_boundary": false,
+                            "ellipsis": false
+                        }
+                    },
+                    "field_disclaimer": {
+                        "id": "field_disclaimer",
+                        "table": "field_data_field_disclaimer",
+                        "field": "field_disclaimer"
+                    },
+                    "field_overalldanger": {
+                        "id": "field_overalldanger",
+                        "table": "field_data_field_overalldanger",
+                        "field": "field_overalldanger",
+                        "type": "list_key"
+                    },
+                    "nothing": {
+                        "id": "nothing",
+                        "table": "views",
+                        "field": "nothing",
+                        "label": "Overall Danger Icon",
+                        "alter": {
+                            "text": "<a href=\"http://www.avalanche.org/danger_card.php\" target=\"_blank\"><img src='/themes/responsive_sac/img/rating-icons/[field_overalldanger].png' /></a>"
+                        }
+                    },
+                    "field_overall_danger_rose": {
+                        "id": "field_overall_danger_rose",
+                        "table": "field_data_field_overall_danger_rose",
+                        "field": "field_overall_danger_rose",
+                        "click_sort_column": "0"
+                    },
+                    "field_bottom_line": {
+                        "id": "field_bottom_line",
+                        "table": "field_data_field_bottom_line",
+                        "field": "field_bottom_line"
+                    },
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type"
+                    },
+                    "nid": {
+                        "id": "nid",
+                        "table": "node",
+                        "field": "nid",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "Nid",
+                        "exclude": 1,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": 1,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "link_to_node": 0
+                    },
+                    "php": {
+                        "id": "php",
+                        "table": "views",
+                        "field": "php",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "PHP",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": 1,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "use_php_setup": 0,
+                        "php_setup": "",
+                        "php_value": "",
+                        "php_output": "<?php\n$type=$data->node_type;\n$overdang = $data->field_field_overalldanger['0']['raw']['value'];\nif ($type == 'forecast'){\nif ($overdang == 1 ) {\n echo \"<a href='/node/\".$row->nid.\"'><img src = '/dangerrose.png?a=\".$row->nid.\"' /></a>\";\n}\n\nelseif ($overdang == 2 ) {\n echo \"<a href='/node/\".$row->nid.\"'><img src = '/dangerrose.png?a=\".$row->nid.\"' /></a>\";\n}\nelseif ($overdang == 3 ) {\n echo \"<a href='/node/\".$row->nid.\"'><img src = '/dangerrose.png?a=\".$row->nid.\"' /></a>\";\n}\nelseif ($overdang == 4 ) {\n echo \"<a href='/node/\".$row->nid.\"'><img src = '/dangerrose.png?a=\".$row->nid.\"' /></a>\";\n}\nelseif ($overdang == 5 ) {\n echo \"<a href='/node/\".$row->nid.\"'><img src = '/dangerrose.png?a=\".$row->nid.\"' /></a>\";\n}\n}\n?>",
+                        "use_php_click_sortable": "0",
+                        "php_click_sortable": ""
+                    }
+                },
+                "sorts": {
+                    "created": {
+                        "id": "created",
+                        "table": "node",
+                        "field": "created",
+                        "order": "DESC"
+                    }
+                },
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "advisory": "advisory"
+                        },
+                        "group": 1,
+                        "exposed": true,
+                        "expose": {
+                            "operator_id": "type_op",
+                            "label": "Type",
+                            "operator": "type_op",
+                            "identifier": "type",
+                            "remember_roles": {
+                                "2": "2",
+                                "3": 0,
+                                "1": 0,
+                                "7": 0,
+                                "4": 0,
+                                "5": 0,
+                                "6": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "page": {
+            "display_title": "Page",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "path": "modify"
+            }
+        }
+    }
+}

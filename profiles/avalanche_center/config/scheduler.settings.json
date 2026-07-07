@@ -1,0 +1,13 @@
+{
+    "_config_name": "scheduler.settings",
+    "allow_date_only": null,
+    "cache_clear_all": null,
+    "date_format": null,
+    "date_only_format": null,
+    "default_time": null,
+    "extra_info": null,
+    "field_type": null,
+    "lightweight_access_key": null,
+    "lightweight_log": null,
+    "time_only_format": null
+}

@@ -1,0 +1,40 @@
+{
+    "_config_name": "field.bundle.taxonomy_term.avalanche_terms",
+    "entity_type": "taxonomy_term",
+    "bundle": "avalanche_terms",
+    "view_modes": {
+        "full": {
+            "custom_settings": false
+        },
+        "ical": {
+            "custom_settings": false
+        },
+        "token": {
+            "custom_settings": false
+        }
+    },
+    "extra_fields": {
+        "form": {
+            "metatags": {
+                "weight": "6"
+            },
+            "path": {
+                "weight": "5"
+            },
+            "name": {
+                "weight": "0"
+            },
+            "description": {
+                "weight": "1"
+            }
+        },
+        "display": {
+            "description": {
+                "default": {
+                    "weight": "0",
+                    "visible": true
+                }
+            }
+        }
+    }
+}

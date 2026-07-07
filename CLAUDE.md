@@ -37,13 +37,12 @@ applying the equivalent fixes to the live Gulmarg/Argentina sites.
 ## Environment
 - DDEV for local; this repo will get its own DDEV project for the
   greenfield demo install (Phase 7).
-- Current phase: 5 (export structural config into
-  profiles/avalanche_center/config/, per Phase 4's classification).
-  Phase 1 done: repo skeleton scaffolded; structural node-type list
-  corrected from 2 to 22 types (independently re-verified against
-  node.type.*.json on both sites); NAC level-0 grey set to `#939598`.
-  Phase 2 done: avalanche_modern merged from gulmarg_modern (renamed,
-  t()-wrapped, canonical NAC colors applied); responsive_sac/
+- Current phase: 6 (build the profile + setup form + hook_install; ship
+  demo content). Phase 1 done: repo skeleton scaffolded; structural
+  node-type list corrected from 2 to 22 types (independently re-verified
+  against node.type.*.json on both sites); NAC level-0 grey set to
+  `#939598`. Phase 2 done: avalanche_modern merged from gulmarg_modern
+  (renamed, t()-wrapped, canonical NAC colors applied); responsive_sac/
   responsive_bartik copied with vestigial/instance-specific files
   stripped — a post-Phase-3 double-check found this pass had been
   interrupted mid-way (battery died) and missed a whole separate body of
@@ -62,8 +61,17 @@ applying the equivalent fixes to the live Gulmarg/Argentina sites.
   the role-permission-cleanup scope from 2 roles to 9 of 12, found dead
   config from fully-disabled Commerce/registration modules and legacy
   pre-Leaflet OpenLayers danger-map views that need excluding, and a
-  reconstructable (not just deletable) `Avalanche_LIst` view. See
-  AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §13-16 for the full logs.
+  reconstructable (not just deletable) `Avalanche_LIst` view. Phase 5
+  done: 659 structural config files exported to
+  profiles/avalanche_center/config/ — beyond the mechanical copy, found
+  and fixed stale `gulmarg_danger_map`/`gulmarg_topo_satellite` machine-name
+  references (would have silently broken a block placement + map
+  displays), several more site-specific default values/allowed-values
+  lists and view page titles Phase 4's family-level pass couldn't catch,
+  and 8 more disabled-module field/widget references beyond
+  Commerce/registration — all but one (`field_map`'s `gmap_polygon_field`
+  type, flagged unresolved) fixed with safe fallback widgets. See
+  AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §13-17 for the full logs.
 
 ## Conventions
 - Machine names must match Gulmarg's existing field/vocab names.

@@ -1,0 +1,37 @@
+{
+    "_config_name": "node.type.observation",
+    "type": "observation",
+    "name": "Observation",
+    "base": "node_content",
+    "module": "node",
+    "description": "Used for submitting snowpack, weather, and avalanche observations to the avalanche center",
+    "help": "This page is for submitting observations to the avalanche center. Please include as much information as you have. Please only submit information that you know - guessing at specifics can be misleading. If you have more specific information than the dropdown menus allow please include it in the appropriate comments section. If you would like to keep your observation private please select the \"I would like to keep this observation private\". Your email address and name will never be public or shared information. We use that to contact you for more details if we need to.",
+    "has_title": true,
+    "title_label": "Some brief title - .eg. \"Avalanche on Elephant's Back,\" \"New Wind-Loading on Tamarack,\" or \"Snowpit from Castle Peak\"",
+    "modified": true,
+    "disabled": false,
+    "orig_type": "observation",
+    "settings": {
+        "status_default": 0,
+        "sticky_enabled": true,
+        "sticky_default": false,
+        "promote_enabled": true,
+        "promote_default": false,
+        "revision_enabled": true,
+        "revision_default": false,
+        "node_preview": "0",
+        "node_submitted": 1,
+        "node_user_picture": true,
+        "language": null,
+        "menu_default": false,
+        "menu_options": [
+            "main-menu"
+        ],
+        "menu_parent": "main-menu:0",
+        "scheduling_enabled": true,
+        "node_submitted_format": "[node:created:medium] by [node:author]",
+        "hidden_path": "0",
+        "node_permissions": true
+    },
+    "node_preview": 1
+}

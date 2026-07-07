@@ -1,0 +1,30 @@
+{
+    "_config_name": "field.instance.node.avalanche_education.field__certification",
+    "field_name": "field__certification",
+    "entity_type": "node",
+    "bundle": "avalanche_education",
+    "deleted": "0",
+    "label": " Certification",
+    "widget": {
+        "weight": "-1",
+        "type": "options_buttons",
+        "module": "options",
+        "active": 1,
+        "settings": []
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "list_default",
+            "weight": "3",
+            "settings": [],
+            "module": "list"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": null
+}

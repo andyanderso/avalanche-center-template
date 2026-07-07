@@ -1,0 +1,37 @@
+{
+    "_config_name": "node.type.people",
+    "type": "people",
+    "name": "People",
+    "base": "node_content",
+    "module": "node",
+    "description": "<p>Boardmembers, Observers, Forecasters, Advisory members, etc</p>",
+    "help": "<p>Please fill out this form to upload your information to the SAC site. The images you upload will automatically be resized to about 200px X 200 px. Please remember to check you Position. If you check nothing the defualt setting is public and you will not be displayed. </p>",
+    "has_title": true,
+    "title_label": "Your firstname",
+    "modified": true,
+    "disabled": false,
+    "orig_type": "people",
+    "settings": {
+        "status_default": 1,
+        "sticky_enabled": true,
+        "sticky_default": false,
+        "promote_enabled": true,
+        "promote_default": false,
+        "revision_enabled": true,
+        "revision_default": false,
+        "node_preview": "1",
+        "node_submitted": 0,
+        "node_user_picture": true,
+        "language": null,
+        "menu_default": false,
+        "menu_options": [
+            "main-menu"
+        ],
+        "menu_parent": "main-menu:0",
+        "scheduling_enabled": true,
+        "node_submitted_format": "[node:created:medium] by [node:author]",
+        "hidden_path": "0",
+        "node_permissions": true
+    },
+    "node_preview": 1
+}

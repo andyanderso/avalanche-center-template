@@ -1,0 +1,39 @@
+{
+    "_config_name": "field.instance.node.page.field_page_category",
+    "field_name": "field_page_category",
+    "entity_type": "node",
+    "bundle": "page",
+    "deleted": "0",
+    "label": "Page Category",
+    "widget": {
+        "weight": "-2",
+        "type": "taxonomy_autocomplete",
+        "module": "taxonomy",
+        "active": 0,
+        "settings": {
+            "size": 60,
+            "autocomplete_path": "taxonomy/autocomplete"
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "taxonomy_term_reference_link",
+            "weight": "2",
+            "settings": [],
+            "module": "taxonomy"
+        },
+        "checkout_pane": {
+            "label": "above",
+            "type": "hidden",
+            "weight": "0",
+            "settings": []
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": null
+}

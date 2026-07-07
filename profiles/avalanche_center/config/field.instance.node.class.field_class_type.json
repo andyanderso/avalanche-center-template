@@ -1,0 +1,32 @@
+{
+    "_config_name": "field.instance.node.class.field_class_type",
+    "field_name": "field_class_type",
+    "entity_type": "node",
+    "bundle": "class",
+    "deleted": "0",
+    "label": "Class Type",
+    "widget": {
+        "weight": "7",
+        "type": "taxonomy_autocomplete",
+        "module": "taxonomy",
+        "active": 0,
+        "settings": {
+            "size": 60,
+            "autocomplete_path": "taxonomy/autocomplete"
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "4",
+            "settings": []
+        }
+    },
+    "required": 0,
+    "description": "Use \"snowmobile\" for snowmobile classes",
+    "default_value": null
+}

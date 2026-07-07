@@ -1,0 +1,67 @@
+{
+    "_config_name": "field.instance.field_collection_item.field_trip_members.field_clothing",
+    "field_name": "field_clothing",
+    "entity_type": "field_collection_item",
+    "bundle": "field_trip_members",
+    "deleted": "0",
+    "label": "Clothing",
+    "widget": {
+        "weight": "6",
+        "type": "text_textfield",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "size": 60
+        }
+    },
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "text_default",
+            "weight": "9",
+            "settings": [],
+            "module": "text"
+        },
+        "token": {
+            "label": "above",
+            "type": "hidden",
+            "weight": "9",
+            "settings": []
+        }
+    },
+    "required": 0,
+    "description": " Suggestions: Synthetic or Wool Base Layers / Soft Shell Snow Pants / Soft Shell Snow Jacket / Windbreaker / 2 Pairs of Gloves / High Loft Insulated Jacket / Warm Hat / Appropriate Eyewear / Appropriate Footwear / Waterproof Jacket / Waterproof Pants / Fleece Jacket / Insulated Pants.",
+    "default_value": [
+        {
+            "value": "Synthetic or Wool Base Layers"
+        },
+        {
+            "value": "Soft Shell Snow Pants"
+        },
+        {
+            "value": "Soft Shell Snow Jacket"
+        },
+        {
+            "value": "Windbreaker"
+        },
+        {
+            "value": "2 Pairs of Gloves"
+        },
+        {
+            "value": "High Loft Insulated Jacket"
+        },
+        {
+            "value": "Warm Hat"
+        },
+        {
+            "value": "Appropriate Eyewear"
+        },
+        {
+            "value": "Appropriate Footwear"
+        }
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "_config_name": "field.field.media_gallery_format",
+    "field_name": "media_gallery_format",
+    "type": "list_text",
+    "module": "list",
+    "active": 1,
+    "locked": "1",
+    "cardinality": "1",
+    "translatable": "0",
+    "deleted": "0",
+    "settings": {
+        "allowed_values_function": "_media_gallery_get_format_values",
+        "allowed_values": []
+    },
+    "entity_types": [],
+    "storage": {
+        "type": "field_sql_storage",
+        "module": "field_sql_storage",
+        "active": 1,
+        "settings": []
+    }
+}

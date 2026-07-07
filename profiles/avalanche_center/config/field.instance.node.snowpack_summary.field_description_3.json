@@ -1,0 +1,86 @@
+{
+    "_config_name": "field.instance.node.snowpack_summary.field_description_3",
+    "field_name": "field_description_3",
+    "entity_type": "node",
+    "bundle": "snowpack_summary",
+    "deleted": "0",
+    "label": "Description 3",
+    "widget": {
+        "weight": "9",
+        "type": "text_textarea",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "rows": "5"
+        }
+    },
+    "settings": {
+        "text_processing": "1",
+        "better_formats": {
+            "allowed_formats_toggle": 1,
+            "allowed_formats": {
+                "filtered_html": "filtered_html",
+                "full_html": "full_html",
+                "full_html_mark_glossary_terms": "full_html_mark_glossary_terms",
+                "plain_text": "plain_text",
+                "gmap": 0,
+                "gmap_macro_expander": 0,
+                "php_code": 0,
+                "mailchimp_campaign": 0
+            },
+            "default_order_toggle": 1,
+            "default_order_wrapper": {
+                "formats": {
+                    "filtered_html": {
+                        "weight": "-48"
+                    },
+                    "full_html": {
+                        "weight": "-49"
+                    },
+                    "full_html_mark_glossary_terms": {
+                        "weight": "-50"
+                    },
+                    "plain_text": {
+                        "weight": "-47"
+                    },
+                    "gmap": {
+                        "weight": "-46"
+                    },
+                    "gmap_macro_expander": {
+                        "weight": "-45"
+                    },
+                    "php_code": {
+                        "weight": "-44"
+                    },
+                    "mailchimp_campaign": {
+                        "weight": "-43"
+                    }
+                }
+            }
+        },
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "text_default",
+            "settings": [],
+            "module": "text",
+            "weight": 8
+        },
+        "teaser": {
+            "type": "hidden",
+            "label": "above",
+            "settings": [],
+            "weight": 0
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": [
+        {
+            "value": "",
+            "format": "filtered_html"
+        }
+    ]
+}

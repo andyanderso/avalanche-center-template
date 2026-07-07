@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.instance.node.observation.field_crown_height",
+    "field_name": "field_crown_height",
+    "entity_type": "node",
+    "bundle": "observation",
+    "deleted": "0",
+    "label": "Crown Height",
+    "widget": {
+        "weight": "240",
+        "type": "options_select",
+        "module": "options",
+        "active": 1,
+        "settings": {
+            "apply_chosen": ""
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "list_default",
+            "weight": "333",
+            "settings": [],
+            "module": "list"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value_label_token": 0,
+    "default_value": null
+}

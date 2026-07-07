@@ -1,0 +1,45 @@
+{
+    "_config_name": "field.instance.field_collection_item.field_trip_members.field_trip_member_phone_number",
+    "field_name": "field_trip_member_phone_number",
+    "entity_type": "field_collection_item",
+    "bundle": "field_trip_members",
+    "deleted": "0",
+    "label": "Trip Member Phone Number",
+    "widget": {
+        "weight": "1",
+        "type": "text_textfield",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "size": "20"
+        }
+    },
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "text_default",
+            "weight": "1",
+            "settings": [],
+            "module": "text"
+        },
+        "token": {
+            "label": "inline",
+            "type": "text_default",
+            "weight": "1",
+            "settings": [],
+            "module": "text"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": [
+        {
+            "value": "[current-user:field_first_name:phone-number]"
+        }
+    ],
+    "default_value_function": "field_default_token_default_value_function"
+}

@@ -1,0 +1,32 @@
+{
+    "_config_name": "field.field.field_highest_precipitation_rate",
+    "field_name": "field_highest_precipitation_rate",
+    "type": "list_text",
+    "module": "list",
+    "active": 1,
+    "locked": "0",
+    "cardinality": "1",
+    "translatable": "0",
+    "deleted": "0",
+    "entity_types": [],
+    "settings": {
+        "allowed_values": {
+            "S-1": "Very Light Snowfall (S-1)",
+            "S1": "Light Snowfall (S1)",
+            "S2": "Moderate Snowfall (S2)",
+            "S5": "Heavy Snowfall (S5)",
+            "S10": "Very Heavy Snowfall (S10",
+            "RV": "Very Light Rain (RV)",
+            "RL": "Light Rain (RL)",
+            "RM": "Moderate Rain (RM)",
+            "RH": "Heavy Rain (RH)"
+        },
+        "allowed_values_function": ""
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "module": "field_sql_storage",
+        "active": 1,
+        "settings": []
+    }
+}

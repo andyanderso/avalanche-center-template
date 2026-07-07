@@ -1,0 +1,37 @@
+{
+    "_config_name": "field.instance.node.fwp.field_responsible_party",
+    "field_name": "field_responsible_party",
+    "entity_type": "node",
+    "bundle": "fwp",
+    "deleted": "0",
+    "label": "Responsible Party",
+    "widget": {
+        "weight": "5",
+        "type": "field_collection_embed",
+        "module": "field_collection",
+        "active": 0,
+        "settings": []
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "field_collection_table_view",
+            "weight": "1",
+            "settings": {
+                "edit": "",
+                "delete": "",
+                "add": "",
+                "description": 0,
+                "view_mode": "full",
+                "empty": 1
+            },
+            "module": "field_collection_table"
+        }
+    },
+    "required": 0,
+    "description": "The person or office who is tracking you today and knows what your travel plan is.",
+    "default_value": null
+}

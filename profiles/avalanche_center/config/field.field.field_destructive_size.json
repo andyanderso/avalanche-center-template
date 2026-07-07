@@ -1,0 +1,31 @@
+{
+    "_config_name": "field.field.field_destructive_size",
+    "field_name": "field_destructive_size",
+    "type": "list_text",
+    "module": "list",
+    "active": 1,
+    "locked": "0",
+    "cardinality": "1",
+    "translatable": "0",
+    "deleted": "0",
+    "entity_types": [],
+    "settings": {
+        "allowed_values": {
+            "D1": "D1 Relatively harmless to people.",
+            "D2": "D2 Could bury, injure, or kill a person.",
+            "D3": "D3 Could bury and destroy a car, damage a truck, destroy a",
+            "wood frame house, or break a few trees.": "wood frame house, or break a few trees.",
+            "D4": "D4 Could destroy a railway car, large truck, several",
+            "buildings, or a substantial amount of forest.": "buildings, or a substantial amount of forest.",
+            "D5": "D5 Could gouge the landscape. Largest snow avalanche known.",
+            "unknown": "unknown"
+        },
+        "allowed_values_function": ""
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "module": "field_sql_storage",
+        "active": 1,
+        "settings": []
+    }
+}

@@ -1,0 +1,51 @@
+{
+    "_config_name": "field.instance.node.people.body",
+    "field_name": "body",
+    "entity_type": "node",
+    "bundle": "people",
+    "deleted": "0",
+    "default_value": null,
+    "description": "<p>Boardmembers, Observers, Forecasters, Advisory members, etc</p>",
+    "display": {
+        "default": {
+            "label": "hidden",
+            "module": "text",
+            "settings": [],
+            "type": "text_default",
+            "weight": 0
+        },
+        "teaser": {
+            "label": "hidden",
+            "module": "text",
+            "settings": {
+                "trim_length": 600
+            },
+            "trim_length": "200",
+            "type": "text_summary_or_trimmed",
+            "weight": 0
+        },
+        "checkout_pane": {
+            "label": "hidden",
+            "module": "text",
+            "settings": [],
+            "type": "text_default",
+            "weight": 0
+        }
+    },
+    "label": "A brief biography of yourself and your relationship to SAC",
+    "required": 0,
+    "settings": {
+        "display_summary": true,
+        "text_processing": 1,
+        "user_register_form": false
+    },
+    "widget": {
+        "module": "text",
+        "settings": {
+            "rows": 20,
+            "summary_rows": 5
+        },
+        "type": "text_textarea_with_summary",
+        "weight": "6"
+    }
+}

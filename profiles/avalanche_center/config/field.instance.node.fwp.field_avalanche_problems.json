@@ -1,0 +1,30 @@
+{
+    "_config_name": "field.instance.node.fwp.field_avalanche_problems",
+    "field_name": "field_avalanche_problems",
+    "entity_type": "node",
+    "bundle": "fwp",
+    "deleted": "0",
+    "label": "Avalanche Problems",
+    "widget": {
+        "weight": "17",
+        "type": "options_buttons",
+        "module": "options",
+        "active": 1,
+        "settings": []
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "list_default",
+            "weight": "5",
+            "settings": [],
+            "module": "list"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": null
+}

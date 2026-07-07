@@ -1,0 +1,54 @@
+{
+    "_config_name": "field.bundle.node.sponsor",
+    "entity_type": "node",
+    "bundle": "sponsor",
+    "view_modes": {
+        "teaser": {
+            "custom_settings": true
+        },
+        "full": {
+            "custom_settings": false
+        },
+        "rss": {
+            "custom_settings": false
+        },
+        "search_index": {
+            "custom_settings": false
+        },
+        "search_result": {
+            "custom_settings": false
+        },
+        "media_gallery_block": {
+            "custom_settings": false
+        },
+        "email_plain": {
+            "custom_settings": false
+        },
+        "email_html": {
+            "custom_settings": false
+        },
+        "email_textalt": {
+            "custom_settings": false
+        },
+        "token": {
+            "custom_settings": false
+        }
+    },
+    "extra_fields": {
+        "form": {
+            "locations": {
+                "weight": "6"
+            },
+            "metatags": {
+                "weight": "8"
+            },
+            "title": {
+                "weight": "0"
+            },
+            "path": {
+                "weight": "7"
+            }
+        },
+        "display": []
+    }
+}

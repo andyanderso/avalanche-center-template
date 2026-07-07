@@ -1,0 +1,31 @@
+{
+    "_config_name": "field.instance.node.observation.field_conditions_alerts_tax_term",
+    "field_name": "field_conditions_alerts_tax_term",
+    "entity_type": "node",
+    "bundle": "observation",
+    "deleted": "0",
+    "label": "Conditions Alerts",
+    "widget": {
+        "weight": "12",
+        "type": "options_select",
+        "module": "options",
+        "active": 1,
+        "settings": []
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "hs_taxonomy_term_reference_hierarchical_text",
+            "weight": "10",
+            "settings": [],
+            "module": "hs_taxonomy"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value_label_token": 0,
+    "default_value": null
+}

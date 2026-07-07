@@ -1,0 +1,32 @@
+{
+    "_config_name": "field.instance.node.observation.field_terrain_alerts",
+    "field_name": "field_terrain_alerts",
+    "entity_type": "node",
+    "bundle": "observation",
+    "deleted": "0",
+    "label": "Terrain Alerts",
+    "widget": {
+        "weight": "13",
+        "type": "options_buttons",
+        "module": "options",
+        "active": 1,
+        "settings": {
+            "apply_chosen": ""
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "13",
+            "settings": []
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value_label_token": 0,
+    "default_value": null
+}

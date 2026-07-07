@@ -1,0 +1,29 @@
+{
+    "_config_name": "field.field.field_relative_size",
+    "field_name": "field_relative_size",
+    "type": "list_text",
+    "module": "list",
+    "active": 1,
+    "locked": "0",
+    "cardinality": "1",
+    "translatable": "0",
+    "deleted": "0",
+    "entity_types": [],
+    "settings": {
+        "allowed_values": {
+            "R1": "R1 Very Small",
+            "R2": "R2 Small",
+            "R3": "R3 Medium",
+            "R4": "R4 Large",
+            "R5": "R5 Very Large",
+            "unknown": "unknown"
+        },
+        "allowed_values_function": ""
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "module": "field_sql_storage",
+        "active": 1,
+        "settings": []
+    }
+}

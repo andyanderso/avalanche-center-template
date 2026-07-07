@@ -1,0 +1,35 @@
+{
+    "_config_name": "field.field.field_crown_height",
+    "field_name": "field_crown_height",
+    "type": "list_integer",
+    "module": "list",
+    "active": 1,
+    "locked": "0",
+    "cardinality": "1",
+    "translatable": "0",
+    "deleted": "0",
+    "entity_types": [],
+    "settings": {
+        "allowed_values": {
+            "-1": "Less than 1 ft",
+            "1": "1 ft",
+            "2": "2 ft",
+            "3": "3 ft",
+            "4": "4 ft",
+            "5": "5 ft",
+            "6": "6 ft",
+            "7": "7 ft",
+            "8": "8 ft",
+            "9": "9 ft",
+            "10": "10 ft",
+            "11": "More than 10 ft"
+        },
+        "allowed_values_function": ""
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "module": "field_sql_storage",
+        "active": 1,
+        "settings": []
+    }
+}

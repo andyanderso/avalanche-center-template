@@ -1,0 +1,31 @@
+{
+    "_config_name": "field.field.field_sky_cover",
+    "field_name": "field_sky_cover",
+    "type": "list_text",
+    "module": "list",
+    "active": 1,
+    "locked": "0",
+    "cardinality": "1",
+    "translatable": "0",
+    "deleted": "0",
+    "entity_types": [],
+    "settings": {
+        "allowed_values": {
+            "CLR": "Clear",
+            "FEW": "Few - Mostly Clear - up to 2/8 covered",
+            "SCT": "Scattered - Partly Cloudy -  3/8 to 4/8 covered",
+            "BRK": "Broken - Mostly Cloudy - more than 4/8 and less than 8/8",
+            "OVC": "Overcast - Cloudy - 8/8 covered",
+            "X": "Obscured by fog, etc",
+            "increasing-clouds": "Increasing clouds",
+            "decreasing-clouds": "Decreasing Clouds"
+        },
+        "allowed_values_function": ""
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "module": "field_sql_storage",
+        "active": 1,
+        "settings": []
+    }
+}

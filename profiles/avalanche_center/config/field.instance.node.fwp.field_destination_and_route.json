@@ -1,0 +1,43 @@
+{
+    "_config_name": "field.instance.node.fwp.field_destination_and_route",
+    "field_name": "field_destination_and_route",
+    "entity_type": "node",
+    "bundle": "fwp",
+    "deleted": "0",
+    "label": "Destination and Route",
+    "widget": {
+        "weight": "11",
+        "type": "field_collection_embed",
+        "module": "field_collection",
+        "active": 1,
+        "settings": {
+            "field_as_label": "",
+            "replace_label": 0,
+            "collapsed": 0,
+            "last_item_collapsed": 0,
+            "new_item_open": 0
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "field_collection_table_view",
+            "weight": "13",
+            "settings": {
+                "edit": "",
+                "delete": "",
+                "add": "",
+                "description": 0,
+                "view_mode": "full",
+                "empty": 1
+            },
+            "module": "field_collection_table"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": null
+}

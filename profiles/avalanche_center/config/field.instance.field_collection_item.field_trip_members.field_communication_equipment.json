@@ -1,0 +1,44 @@
+{
+    "_config_name": "field.instance.field_collection_item.field_trip_members.field_communication_equipment",
+    "field_name": "field_communication_equipment",
+    "entity_type": "field_collection_item",
+    "bundle": "field_trip_members",
+    "deleted": "0",
+    "label": "Communication Equipment",
+    "widget": {
+        "weight": "5",
+        "type": "options_buttons",
+        "module": "options",
+        "active": 1,
+        "settings": []
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "list_default",
+            "weight": "5",
+            "settings": [],
+            "module": "list"
+        },
+        "token": {
+            "label": "above",
+            "type": "hidden",
+            "weight": "5",
+            "settings": []
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": [
+        {
+            "value": "Cell Phone"
+        },
+        {
+            "value": "Radio"
+        }
+    ],
+    "default_value_label_token": 0
+}

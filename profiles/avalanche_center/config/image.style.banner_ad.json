@@ -1,0 +1,16 @@
+{
+    "_config_name": "image.style.banner_ad",
+    "name": "banner_ad",
+    "label": "Banner Ad",
+    "effects": [
+        {
+            "weight": "1",
+            "name": "image_scale",
+            "data": {
+                "width": "728",
+                "height": "90",
+                "upscale": 0
+            }
+        }
+    ]
+}

@@ -1,0 +1,44 @@
+{
+    "_config_name": "field.instance.node.sponsor.field_sponsor_logo",
+    "field_name": "field_sponsor_logo",
+    "entity_type": "node",
+    "bundle": "sponsor",
+    "deleted": "0",
+    "label": "Sponsor Logo",
+    "widget": {
+        "weight": "1",
+        "type": "image_image",
+        "module": "image",
+        "active": 1,
+        "settings": {
+            "progress_indicator": "throbber",
+            "preview_image_style": "thumbnail",
+            "maxlength_js_label": "Content limited to @limit characters, remaining: <strong>@remaining</strong>"
+        }
+    },
+    "settings": {
+        "file_directory": "sponsor-logos",
+        "file_extensions": "png gif jpg jpeg",
+        "max_filesize": "",
+        "alt_field": 1,
+        "title_field": 1,
+        "default_image": 0,
+        "user_register_form": false,
+        "max_dimensions": "",
+        "min_dimensions": ""
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "image",
+            "weight": "11",
+            "settings": {
+                "image_style": "sponsor_logos",
+                "image_link": ""
+            },
+            "module": "image"
+        }
+    },
+    "required": 0,
+    "description": "Use this field to upload an image if you want the sponsor to display as a logo. If there is no logo please fill in the Sponsor Name Field to display the sponsor's name. "
+}

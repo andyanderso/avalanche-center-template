@@ -1,0 +1,36 @@
+{
+    "_config_name": "field.instance.node.fwp.field_trip_members",
+    "field_name": "field_trip_members",
+    "entity_type": "node",
+    "bundle": "fwp",
+    "deleted": "0",
+    "label": "Trip Members",
+    "widget": {
+        "weight": "6",
+        "type": "field_collection_embed",
+        "module": "field_collection",
+        "active": 0,
+        "settings": []
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "field_collection_view",
+            "weight": "2",
+            "settings": {
+                "edit": "",
+                "delete": "",
+                "add": "",
+                "description": 0,
+                "view_mode": "full"
+            },
+            "module": "field_collection"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": null
+}

@@ -1,0 +1,16 @@
+{
+    "_config_name": "image.style.small_thumb",
+    "name": "small_thumb",
+    "label": "small_thumb",
+    "effects": [
+        {
+            "weight": "1",
+            "name": "image_scale",
+            "data": {
+                "width": "92",
+                "height": "92",
+                "upscale": 1
+            }
+        }
+    ]
+}

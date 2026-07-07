@@ -1,0 +1,42 @@
+{
+    "_config_name": "field.instance.node.page.field_upload",
+    "field_name": "field_upload",
+    "entity_type": "node",
+    "bundle": "page",
+    "deleted": "0",
+    "label": "File attachments",
+    "widget": {
+        "weight": "-3",
+        "type": "file_generic",
+        "module": "file",
+        "active": 1,
+        "settings": {
+            "progress_indicator": "throbber"
+        }
+    },
+    "settings": {
+        "file_directory": "annual-reports",
+        "file_extensions": "jpg jpeg gif png txt doc xls pdf ppt pps odt ods odp xlsx docx pptx mpg mpeg m4v wmv mov avi qt ogg mkv",
+        "max_filesize": "",
+        "description_field": 0,
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "file_default",
+            "weight": "1",
+            "settings": [],
+            "module": "file"
+        },
+        "checkout_pane": {
+            "label": "above",
+            "type": "file_default",
+            "weight": "0",
+            "settings": [],
+            "module": "file"
+        }
+    },
+    "required": 0,
+    "description": ""
+}

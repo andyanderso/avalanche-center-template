@@ -1,0 +1,47 @@
+{
+    "_config_name": "field.instance.node.advisory.field_forecast_region",
+    "field_name": "field_forecast_region",
+    "entity_type": "node",
+    "bundle": "advisory",
+    "deleted": "0",
+    "default_value": [
+        {
+            "tid": "1"
+        }
+    ],
+    "description": "",
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "taxonomy_term_reference_link",
+            "weight": "36",
+            "settings": [],
+            "module": "taxonomy"
+        },
+        "rss": {
+            "label": "hidden",
+            "settings": [],
+            "type": "hidden",
+            "weight": "36"
+        },
+        "teaser": {
+            "label": "above",
+            "settings": [],
+            "type": "hidden",
+            "weight": 0
+        }
+    },
+    "label": "Region",
+    "required": 1,
+    "settings": {
+        "user_register_form": false
+    },
+    "widget": {
+        "weight": "1",
+        "type": "options_select",
+        "module": "options",
+        "active": 1,
+        "settings": []
+    },
+    "default_value_label_token": 0
+}

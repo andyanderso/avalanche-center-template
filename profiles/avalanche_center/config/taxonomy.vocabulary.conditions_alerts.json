@@ -1,0 +1,8 @@
+{
+    "_config_name": "taxonomy.vocabulary.conditions_alerts",
+    "name": "Conditions Alerts",
+    "machine_name": "conditions_alerts",
+    "description": "",
+    "hierarchy": "1",
+    "weight": "0"
+}

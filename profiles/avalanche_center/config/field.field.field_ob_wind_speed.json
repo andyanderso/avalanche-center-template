@@ -1,0 +1,30 @@
+{
+    "_config_name": "field.field.field_ob_wind_speed",
+    "field_name": "field_ob_wind_speed",
+    "type": "list_text",
+    "module": "list",
+    "active": 1,
+    "locked": "0",
+    "cardinality": "1",
+    "translatable": "0",
+    "deleted": "0",
+    "entity_types": [],
+    "settings": {
+        "allowed_values": {
+            "calm": "Calm",
+            "light": "Light",
+            "moderate": "Moderate",
+            "strong": "Strong",
+            "gale": "Gale Force"
+        },
+        "allowed_values_function": "",
+        "allowed_values_php": "",
+        "text_processing": "0"
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "module": "field_sql_storage",
+        "active": 1,
+        "settings": []
+    }
+}

@@ -1,0 +1,382 @@
+{
+    "_config_name": "views.view.Education",
+    "name": "Education",
+    "description": "The avalanche education page",
+    "tag": "Avalanche_Education",
+    "base_table": "node",
+    "human_name": "Education",
+    "core": "0",
+    "display": {
+        "default": {
+            "display_title": "Avalanche Education",
+            "display_plugin": "default",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "title": "Avalanche Education Resources",
+                "use_more_always": false,
+                "access": {
+                    "type": "none"
+                },
+                "cache": {
+                    "type": "none"
+                },
+                "exposed_form": {
+                    "type": "basic"
+                },
+                "pager": {
+                    "type": "some",
+                    "options": {
+                        "items_per_page": "20",
+                        "offset": "0"
+                    }
+                },
+                "style_plugin": "table",
+                "style_options": {
+                    "grouping": "",
+                    "columns": {
+                        "field_comp_link_url": "field_comp_link_url",
+                        "field_logo_fid": "field_comp_link_url",
+                        "field_classes_value": "field_classes_value",
+                        "field_location_value": "field_location_value"
+                    },
+                    "default": "-1",
+                    "info": {
+                        "field_comp_link_url": {
+                            "sortable": 0,
+                            "separator": "<br />"
+                        },
+                        "field_logo_fid": {
+                            "separator": ""
+                        },
+                        "field_classes_value": {
+                            "separator": ""
+                        },
+                        "field_location_value": {
+                            "separator": ""
+                        }
+                    }
+                },
+                "fields": {
+                    "field__company_link": {
+                        "id": "field__company_link",
+                        "table": "field_data_field__company_link",
+                        "field": "field__company_link",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "Education Provider",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": 1,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "click_sort_column": "url",
+                        "type": "link_default",
+                        "settings": [],
+                        "group_column": "",
+                        "group_columns": [],
+                        "group_rows": true,
+                        "delta_limit": "all",
+                        "delta_offset": 0,
+                        "delta_reversed": false,
+                        "delta_first_last": false,
+                        "multi_type": "separator",
+                        "separator": ", ",
+                        "field_api_classes": 0
+                    },
+                    "field_classes_offered": {
+                        "id": "field_classes_offered",
+                        "table": "field_data_field_classes_offered",
+                        "field": "field_classes_offered",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "Classes offered",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": 1,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 0,
+                        "empty": "",
+                        "hide_empty": 1,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "click_sort_column": "value",
+                        "type": "list_default",
+                        "settings": [],
+                        "group_column": "value",
+                        "group_columns": [],
+                        "group_rows": 1,
+                        "delta_limit": "all",
+                        "delta_offset": "0",
+                        "delta_reversed": 0,
+                        "delta_first_last": 0,
+                        "multi_type": "separator",
+                        "separator": "  |  ",
+                        "field_api_classes": 0
+                    },
+                    "field__locations": {
+                        "id": "field__locations",
+                        "table": "field_data_field__locations",
+                        "field": "field__locations",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": " Locations",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": 1,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "click_sort_column": "value",
+                        "type": "list_default",
+                        "settings": [],
+                        "group_column": "value",
+                        "group_columns": [],
+                        "group_rows": 1,
+                        "delta_limit": "all",
+                        "delta_offset": "0",
+                        "delta_reversed": 0,
+                        "delta_first_last": 0,
+                        "multi_type": "separator",
+                        "separator": "  |  ",
+                        "field_api_classes": 0
+                    }
+                },
+                "sorts": {
+                    "random": {
+                        "id": "random",
+                        "table": "views",
+                        "field": "random"
+                    }
+                },
+                "filters": {
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": 1,
+                        "group": 1,
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "in",
+                        "value": {
+                            "avalanche_education": "avalanche_education"
+                        },
+                        "group": 1,
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": false,
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "2": 2
+                            },
+                            "reduce": false
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
+                    }
+                },
+                "filter_groups": {
+                    "operator": "AND",
+                    "groups": {
+                        "1": "AND"
+                    }
+                }
+            }
+        },
+        "page_1": {
+            "display_title": "Avalanche Education",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false
+                },
+                "style_plugin": "table",
+                "style_options": {
+                    "grouping": [],
+                    "row_class": "",
+                    "default_row_class": 1,
+                    "row_class_special": 1,
+                    "override": 1,
+                    "sticky": 0,
+                    "caption": "",
+                    "summary": "",
+                    "columns": {
+                        "field_comp_link": "field_comp_link",
+                        "field_classes": "field_classes",
+                        "field_location": "field_location"
+                    },
+                    "info": {
+                        "field_comp_link": {
+                            "sortable": 1,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "field_classes": {
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "field_location": {
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        }
+                    },
+                    "default": "-1",
+                    "empty_table": 0
+                },
+                "path": "education",
+                "menu": {
+                    "type": "normal",
+                    "title": "Advisory",
+                    "weight": "0"
+                }
+            }
+        }
+    }
+}

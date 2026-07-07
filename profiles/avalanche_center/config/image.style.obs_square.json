@@ -1,0 +1,16 @@
+{
+    "_config_name": "image.style.obs_square",
+    "name": "obs_square",
+    "label": "Observation square (180px)",
+    "effects": [
+        {
+            "weight": "0",
+            "name": "image_scale_and_crop",
+            "data": {
+                "width": 180,
+                "height": 180,
+                "weight": 0
+            }
+        }
+    ]
+}

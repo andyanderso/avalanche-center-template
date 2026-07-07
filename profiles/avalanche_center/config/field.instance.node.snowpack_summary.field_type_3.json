@@ -1,0 +1,38 @@
+{
+    "_config_name": "field.instance.node.snowpack_summary.field_type_3",
+    "field_name": "field_type_3",
+    "entity_type": "node",
+    "bundle": "snowpack_summary",
+    "deleted": "0",
+    "label": "Type 3",
+    "widget": {
+        "weight": "8",
+        "type": "options_select",
+        "module": "options",
+        "active": 1,
+        "settings": {
+            "apply_chosen": ""
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "list_default",
+            "settings": [],
+            "module": "list",
+            "weight": 4
+        },
+        "teaser": {
+            "type": "hidden",
+            "label": "above",
+            "settings": [],
+            "weight": 0
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": null
+}

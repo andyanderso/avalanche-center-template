@@ -1,0 +1,25 @@
+{
+    "_config_name": "field_group.field_group.node.observation.form.group_terrain",
+    "group_name": "group_terrain",
+    "entity_type": "node",
+    "bundle": "observation",
+    "mode": "form",
+    "parent_name": "group_avalanche_det",
+    "label": "Terrain",
+    "weight": "110",
+    "children": [
+        "field_slope",
+        "field_ob_aspect",
+        "field_starting_elevation"
+    ],
+    "format_type": "fieldset",
+    "format_settings": {
+        "formatter": "collapsible",
+        "instance_settings": {
+            "description": "",
+            "classes": "group-terrain field-group-fieldset",
+            "required_fields": 1,
+            "id": ""
+        }
+    }
+}

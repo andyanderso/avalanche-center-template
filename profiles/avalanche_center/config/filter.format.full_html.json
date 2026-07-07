@@ -1,0 +1,185 @@
+{
+    "_config_name": "filter.format.full_html",
+    "format": "full_html",
+    "name": "Full HTML",
+    "cache": "1",
+    "status": "1",
+    "weight": "-9",
+    "roles": [
+        "administrator"
+    ],
+    "filters": {
+        "filter_html": {
+            "module": "filter",
+            "status": "0",
+            "weight": "-10",
+            "settings": {
+                "allowed_html": "<a> <em> <strong> <cite> <blockquote> <code> <ul> <ol> <li> <dl> <dt> <dd>",
+                "filter_html_help": 1,
+                "filter_html_nofollow": 0
+            }
+        },
+        "filter_html_escape": {
+            "module": "filter",
+            "status": "0",
+            "weight": "-10",
+            "settings": []
+        },
+        "filter_url": {
+            "module": "filter",
+            "status": "1",
+            "weight": "0",
+            "settings": {
+                "filter_url_length": "72"
+            }
+        },
+        "gmap_macro": {
+            "module": "gmap",
+            "status": "0",
+            "weight": "0",
+            "settings": []
+        },
+        "mailchimp_campaign": {
+            "module": "mailchimp_campaign",
+            "status": "1",
+            "weight": "0",
+            "settings": []
+        },
+        "php_code": {
+            "module": "php",
+            "status": "0",
+            "weight": "0",
+            "settings": []
+        },
+        "transliteration": {
+            "module": "transliteration",
+            "status": "0",
+            "weight": "0",
+            "settings": {
+                "no_known_transliteration": "?"
+            }
+        },
+        "twitter_embed": {
+            "module": "twitter",
+            "status": "0",
+            "weight": "0",
+            "settings": []
+        },
+        "twitter_hashtag": {
+            "module": "twitter",
+            "status": "0",
+            "weight": "0",
+            "settings": []
+        },
+        "twitter_links": {
+            "module": "twitter",
+            "status": "0",
+            "weight": "0",
+            "settings": []
+        },
+        "twitter_username": {
+            "module": "twitter",
+            "status": "0",
+            "weight": "0",
+            "settings": []
+        },
+        "video_embed_field": {
+            "module": "video_embed_field",
+            "status": "0",
+            "weight": "0",
+            "settings": []
+        },
+        "filter_autop": {
+            "module": "filter",
+            "status": "0",
+            "weight": "1",
+            "settings": []
+        },
+        "media_filter_paragraph_fix": {
+            "module": "media_wysiwyg",
+            "status": "0",
+            "weight": "1",
+            "settings": {
+                "replace": 0
+            }
+        },
+        "media_filter": {
+            "module": "media_wysiwyg",
+            "status": "0",
+            "weight": "2",
+            "settings": []
+        },
+        "filter_htmlcorrector": {
+            "module": "filter",
+            "status": "1",
+            "weight": "10",
+            "settings": []
+        },
+        "filter_lexicon": {
+            "module": "lexicon",
+            "status": "0",
+            "weight": "50",
+            "settings": []
+        }
+    },
+    "editor": "ckeditor5",
+    "editor_settings": {
+        "toolbar": [
+            "bold",
+            "italic",
+            "underline",
+            "strikethrough",
+            "|",
+            "heading",
+            "|",
+            "bulletedList",
+            "numberedList",
+            "|",
+            "alignment:left",
+            "alignment:center",
+            "alignment:right",
+            "alignment:justify",
+            "|",
+            "backdropLink",
+            "backdropUnlink",
+            "|",
+            "backdropImage",
+            "blockQuote",
+            "insertTable",
+            "|",
+            "horizontalLine",
+            "specialCharacters",
+            "|",
+            "sourceEditing",
+            "removeFormat",
+            "maximize"
+        ],
+        "heading_list": [
+            "p",
+            "h2",
+            "h3",
+            "h4",
+            "h5"
+        ],
+        "style_list": [],
+        "image_upload": {
+            "status": 1,
+            "orientate": 1,
+            "scheme": "public",
+            "alt_required": 0,
+            "directory": "inline-images",
+            "max_size": "20MB",
+            "max_dimensions": {
+                "width": "1200",
+                "height": "1200"
+            }
+        },
+        "file_upload": {
+            "status": 0,
+            "scheme": "public",
+            "directory": "inline-files",
+            "max_size": "10MB",
+            "file_extensions": "pdf doc docx"
+        }
+    }
+}

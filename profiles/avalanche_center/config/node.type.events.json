@@ -1,0 +1,37 @@
+{
+    "_config_name": "node.type.events",
+    "type": "events",
+    "name": "Events",
+    "base": "node_content",
+    "module": "node",
+    "description": "<p>Events for the center</p>",
+    "help": "<p>The title of the event should be consistant with other events like it. Please give a brief description of the event in the &quot;Breif description of the event&quot; field. If there are links to other sites for more information include them in the &quot;Breif description of the event&quot; field. Also include any links to tickets that can be purcahsed in this field. Put these links in close to the front because the home page display will only show the first few lines of the &quot;Breif description of the event&quot; field. Dates are required; include a price if applicable.</p>",
+    "has_title": true,
+    "title_label": "Title",
+    "modified": true,
+    "disabled": false,
+    "orig_type": "events",
+    "settings": {
+        "status_default": 1,
+        "sticky_enabled": true,
+        "sticky_default": false,
+        "promote_enabled": true,
+        "promote_default": false,
+        "revision_enabled": true,
+        "revision_default": false,
+        "node_preview": "1",
+        "node_submitted": 0,
+        "node_user_picture": true,
+        "language": null,
+        "menu_default": false,
+        "menu_options": [
+            "main-menu"
+        ],
+        "menu_parent": "main-menu:0",
+        "scheduling_enabled": true,
+        "node_submitted_format": "[node:created:medium] by [node:author]",
+        "hidden_path": "0",
+        "node_permissions": true
+    },
+    "node_preview": 1
+}

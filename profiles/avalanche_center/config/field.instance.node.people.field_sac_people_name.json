@@ -1,0 +1,77 @@
+{
+    "_config_name": "field.instance.node.people.field_sac_people_name",
+    "field_name": "field_sac_people_name",
+    "entity_type": "node",
+    "bundle": "people",
+    "deleted": "0",
+    "default_value": [
+        {
+            "value": "",
+            "_error_element": "default_value_widget][field_sac_people_name][0][value"
+        }
+    ],
+    "description": "",
+    "display": {
+        "default": {
+            "label": "above",
+            "module": "text",
+            "settings": [],
+            "type": "text_default",
+            "weight": "-4"
+        },
+        "full": {
+            "label": "above",
+            "module": "text",
+            "settings": [],
+            "type": "text_default",
+            "weight": "-4"
+        },
+        "rss": {
+            "label": "above",
+            "module": "text",
+            "settings": [],
+            "type": "text_default",
+            "weight": "-4"
+        },
+        "search_index": {
+            "label": "above",
+            "module": "text",
+            "settings": [],
+            "type": "text_default",
+            "weight": "-4"
+        },
+        "search_result": {
+            "label": "above",
+            "module": "text",
+            "settings": [],
+            "type": "text_default",
+            "weight": "-4"
+        },
+        "teaser": {
+            "label": "above",
+            "module": "text",
+            "settings": [],
+            "type": "text_default",
+            "weight": "-4"
+        }
+    },
+    "label": "Name as displayed on the website",
+    "required": false,
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": false
+    },
+    "weight": "-4",
+    "widget": {
+        "active": "0",
+        "module": "text",
+        "settings": {
+            "default_value_php": null,
+            "rows": 5,
+            "size": "60"
+        },
+        "type": "text_textfield",
+        "weight": "1"
+    },
+    "widget_type": "text_textfield"
+}

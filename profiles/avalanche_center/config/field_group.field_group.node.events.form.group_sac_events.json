@@ -1,0 +1,18 @@
+{
+    "_config_name": "field_group.field_group.node.events.form.group_sac_events",
+    "group_name": "group_sac_events",
+    "entity_type": "node",
+    "bundle": "events",
+    "mode": "form",
+    "parent_name": "",
+    "label": "sac_events",
+    "weight": "9",
+    "children": [],
+    "format_type": "fieldset",
+    "format_settings": {
+        "formatter": "collapsible",
+        "instance_settings": {
+            "classes": " group-sac-events field-group-fieldset"
+        }
+    }
+}

@@ -873,7 +873,150 @@ made for time's sake.
 
 ---
 
-## 17. Reference: key files to study in the source codebases
+## 17. Phase 5 decisions log
+
+Phase 5 (export structural config into `profiles/avalanche_center/config/`)
+is complete: 659 files exported, sourced from Gulmarg by default (Argentina
+only for `avalanche_watch`'s own bundle), per Phase 4's classification. The
+mechanical copy itself was the easy part; verifying what got copied kept
+surfacing the same category of problem Phase 4 had already found once
+(hardcoded site identity, stale module-name references) in places a
+classification pass alone couldn't have caught — only actually reading the
+exported file contents did.
+
+### Genericized site-specific default values found via a keyword sweep
+
+A sweep of the exported files for site names/domains turned up default
+values, labels, and descriptions baked into otherwise-structural fields
+that Phase 4's classification (which worked at the family/file level) had
+no way to catch:
+
+- `field.instance.node.advisory.field_disclaimer` — default value was a
+  full Gulmarg/Jammu-Kashmir-specific disclaimer paragraph. Blanked.
+- `field.instance.node.advisory.field_mountain_weather` — default value
+  was a Gulmarg-specific snow-forecast.com embed. Blanked.
+- `field.instance.node.banner_ad.body` — default value and description's
+  example both linked to `sierraavalanchecenter.org/donate`. Blanked/
+  genericized.
+- `field.instance.node.events.field_buy_tickets_link` — default value
+  pointed at the same donate URL. Blanked.
+- `field.instance.node.observation.field_published_ob` /
+  `field_share_this_observation_` — labels named "Gulmarg Avalanche
+  Center" directly. Genericized.
+- `field.instance.node.events.body` / `node.type.events` — description
+  said "Events for the Sierra Avalanche Center". Genericized.
+- `field.instance.user.user.field__company_link` — default value linked
+  to `sierraavalanchecenter.org`. Blanked.
+- **Two fields had entire site-specific *allowed-values lists* baked into
+  field storage**, not just a default: `field.field.field_region`
+  (observation) had `{Gulmarg: Gulmarg, Other: Other}` — Argentina's own
+  copy has a completely different, non-overlapping list
+  (`{Outside of the Forecast Area: ...}`), confirming this data is
+  inherently non-portable. `field.field.field__locations`
+  (avalanche_education) had a hardcoded list of Sierra-region place names
+  (Donner Summit, Mt. Rose, Lake Tahoe, etc.). Both replaced with a
+  minimal generic default (`{Other: Other}` / `{Online: Online, Other:
+  Other}`) — centers add their own real options via Field UI after
+  install, the same way any Field UI list field normally works.
+- **View page titles and embedded HTML content**, not just field
+  defaults: `views.view.advisory_views`, `observations`, `incidents`,
+  `All_Incidents`, `Education`, `forecaster_tools`, and `advisory_board`
+  all had "Gulmarg Avalanche Center" / "Sierra Avalanche Center" / "Lake
+  Tahoe" / "Central Sierra" baked directly into display titles and block
+  body text. Genericized all of them.
+- `views.view.observations`'s `page_5` display had an exposed filter
+  restricting `field_region_value` to `{all, Gulmarg, Other}` — updated to
+  match the genericized field (dropped the now-nonexistent `Gulmarg` key).
+
+### Found and fixed: a config-driven value that was fetched but ignored
+
+`views.view.advisory_views.json` has a large embedded PHP output field
+(a legacy alternate advisory renderer, likely for an RSS/newsletter
+context) that correctly fetches `$nws_name =
+theme_get_setting('local_nws_name')` — and then hardcodes `>Reno NWS<`
+in the actual link text instead of using the variable it just fetched.
+Fixed to print `$nws_name`, the same bug-shaped issue as the
+theme-settings work in Phase 2 (compute the config-driven value, then
+actually use it).
+
+### Found and fixed: stale references to pre-genericization module/machine names
+
+Phase 3 renamed `gulmarg_danger_map` → `avalanche_danger_map` and its
+Leaflet map definition `gulmarg_topo_satellite` →
+`avalanche_topo_satellite`, but those old names were still baked into
+config that Phase 3 didn't touch (it only edited the module's own PHP/JS/CSS
+files, not other config referencing it by name):
+
+- `layout.layout.node.json` placed a block via
+  `"plugin": "gulmarg_danger_map:danger_map"` — would have silently failed
+  to render (referencing a module name that no longer exists in this
+  distribution). Fixed to `avalanche_danger_map:danger_map`.
+- `field.instance.node.observation.field_location`'s map-display
+  formatter, and two views (`incidents`, `observations`) each had two
+  embedded leaflet-map blocks referencing `gulmarg_topo_satellite` by
+  name. All four updated to `avalanche_topo_satellite`.
+- The same observation field's widget also hardcoded Gulmarg's own
+  lat/lng (34.03, 74.35) as the default map center for the "where did you
+  make this observation" location picker. Neutralized to (0, 0).
+
+### Found: 8 more disabled modules beyond Commerce/registration (Phase 4 only caught those two)
+
+Cross-referencing every exported `field.field`/`field.instance`'s
+`module` key against `system.extensions.json`'s enabled/disabled state
+(the authoritative signal — DB-mirrored, unlike most config) turned up
+`gmap_polygon_field`, `emfield`, `hs_taxonomy`, `media`,
+`openlayers_geofield`, `select_or_other`, and `term_reference_tree` all
+disabled on both sites, none present in either codebase's `modules/`
+directory. Distinguished by severity:
+
+- **One field-type-level break** (the worse kind — the field can't exist
+  at all without the module): `field.field.field_map` (the `map` content
+  type's core field) is typed `gmap_polygon_field`. Left in the export
+  as-is rather than guessing a fix, and flagged prominently (config
+  `README.md`, this log) — `map` needs a real decision (convert the field
+  to `geofield`, or drop the content type) before it's usable. Not
+  resolved this phase.
+- **Ten widget-level breaks** (the field's actual storage type is fine —
+  a live, working module; only the data-entry widget referenced a
+  disabled one) — fixed by swapping to a safe, already-a-dependency
+  fallback widget: `field_forecast_region` (advisory + snowpack_summary)
+  and `field_conditions_alerts_tax_term` (observation) from
+  `hs_taxonomy`/`term_reference_tree` to `options_select`;
+  `media_gallery_file` and `field_snowpack_avalanche_wx_vids` from
+  `media`/`emfield` to the standard `file_generic` widget;
+  `custom_map`'s `field_map_region` from `openlayers_geofield` to
+  `leaflet_widget_widget` (consistent with how `field_location` already
+  does it); five `select_or_other` text fields (`field_clothing`,
+  `field_travel_method`, `field_elevation_of_observation`,
+  `field_starting_elevation`, `field_trigger`) to plain `text_textfield`,
+  preserving their curated option lists as a "Suggestions: ..." addition
+  to the field description rather than silently losing them.
+- **One enabled-but-code-missing module**: `email` (used by
+  `field_email` on `observation`) is marked enabled in both sites'
+  `system.extensions.json` but its code isn't in either codebase. Added
+  to `avalanche_center.info` dependencies with a note to source it from
+  backdropcms.org before install, rather than treating it as dead (it's
+  not disabled — someone just didn't commit the module).
+
+### Excluded
+
+- `field.instance.node.class.field_register` — widget module
+  `registration`, `active: 0`; the whole field is unusable without the
+  disabled `registration` module. Excluded from the `class` bundle's
+  export (the `class` type itself is otherwise fine).
+- `views.view.Avalanche_LIst` — **deliberately not exported this phase.**
+  Per §16, all 4 displays filter on the dead `avyobs`/`snowobs` types with
+  no live fallback, and the fix isn't a simple JSON edit — reconstructing
+  it properly means rebuilding its filter against
+  `field_is_this_an_avalanche_obser` using the Views UI, where the result
+  can actually be tested against a running site. That needs a live
+  Backdrop instance (Phase 7's greenfield DDEV install), not a hand-edited
+  JSON patch nobody can verify runs correctly. Tracked here so it isn't
+  forgotten before Phase 7.
+
+---
+
+## 18. Reference: key files to study in the source codebases
 
 - Theme settings GUI: `themes/argentina_modern/theme-settings.php`
 - Shared settings schema: `themes/argentina_modern/argentina_modern.info`

@@ -1,0 +1,30 @@
+{
+    "_config_name": "field.field.field_number_of_full_burials",
+    "field_name": "field_number_of_full_burials",
+    "type": "list_integer",
+    "module": "list",
+    "active": 1,
+    "locked": "0",
+    "cardinality": "1",
+    "translatable": "0",
+    "deleted": "0",
+    "entity_types": [],
+    "settings": {
+        "allowed_values": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "More than 5"
+        ],
+        "allowed_values_function": ""
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "module": "field_sql_storage",
+        "active": 1,
+        "settings": []
+    }
+}

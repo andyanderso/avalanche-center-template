@@ -1,0 +1,37 @@
+{
+    "_config_name": "field.instance.node.observation.field_position",
+    "field_name": "field_position",
+    "entity_type": "node",
+    "bundle": "observation",
+    "deleted": "0",
+    "label": "Observation made by",
+    "widget": {
+        "weight": "6",
+        "type": "options_select",
+        "module": "options",
+        "active": 1,
+        "settings": {
+            "apply_chosen": ""
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "list_default",
+            "weight": "6",
+            "settings": [],
+            "module": "list"
+        }
+    },
+    "required": 0,
+    "description": "<p>Use this field to describe who you are.</p>\r\n<strong>If you are a guide or educator, only use the \"Guide\" or \"Educator\" options. Using one of these options will attach a link to your company to your observation.</strong>",
+    "default_value_label_token": 0,
+    "default_value": [
+        {
+            "value": "Public"
+        }
+    ]
+}

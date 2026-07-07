@@ -1,0 +1,133 @@
+{
+    "_config_name": "filter.format.filtered_html",
+    "format": "filtered_html",
+    "name": "Filtered HTML",
+    "cache": "1",
+    "status": "1",
+    "weight": "-10",
+    "roles": [
+        "anonymous",
+        "authenticated",
+        "editor",
+        "administrator"
+    ],
+    "filters": {
+        "filter_html_escape": {
+            "module": "filter",
+            "status": "0",
+            "weight": "-50",
+            "settings": []
+        },
+        "filter_url": {
+            "module": "filter",
+            "status": "1",
+            "weight": "-49",
+            "settings": {
+                "filter_url_length": "72"
+            }
+        },
+        "gmap_macro": {
+            "module": "gmap",
+            "status": "0",
+            "weight": "-48",
+            "settings": []
+        },
+        "php_code": {
+            "module": "php",
+            "status": "0",
+            "weight": "-47",
+            "settings": []
+        },
+        "video_embed_field": {
+            "module": "video_embed_field",
+            "status": "0",
+            "weight": "-46",
+            "settings": []
+        },
+        "transliteration": {
+            "module": "transliteration",
+            "status": "0",
+            "weight": "-45",
+            "settings": {
+                "no_known_transliteration": "?"
+            }
+        },
+        "filter_html": {
+            "module": "filter",
+            "status": "1",
+            "weight": "-44",
+            "settings": {
+                "allowed_html": "<a> <em> <strong> <cite> <blockquote> <code> <ul> <ol> <li> <dl> <dt> <dd> <img> <p> <div> <embed> <iframe>",
+                "filter_html_help": 1,
+                "filter_html_nofollow": 0
+            }
+        },
+        "media_filter": {
+            "module": "media",
+            "status": "0",
+            "weight": "-43",
+            "settings": []
+        },
+        "filter_autop": {
+            "module": "filter",
+            "status": "1",
+            "weight": "-42",
+            "settings": []
+        },
+        "filter_htmlcorrector": {
+            "module": "filter",
+            "status": "1",
+            "weight": "-41",
+            "settings": []
+        },
+        "mailchimp_campaign": {
+            "module": "mailchimp_campaign",
+            "status": "1",
+            "weight": "-40",
+            "settings": []
+        },
+        "filter_lexicon": {
+            "module": "lexicon",
+            "status": "0",
+            "weight": "50",
+            "settings": []
+        }
+    },
+    "editor": "ckeditor5",
+    "editor_settings": {
+        "toolbar": [
+            "bold",
+            "italic",
+            "|",
+            "bulletedList",
+            "numberedList",
+            "|",
+            "backdropLink",
+            "backdropUnlink",
+            "|",
+            "backdropImage",
+            "blockQuote",
+            "|",
+            "removeFormat",
+            "maximize"
+        ],
+        "heading_list": [
+            "p",
+            "h3",
+            "h4"
+        ],
+        "style_list": [],
+        "image_upload": {
+            "status": 1,
+            "orientate": 1,
+            "scheme": "public",
+            "alt_required": 0,
+            "directory": "inline-images",
+            "max_size": "10MB",
+            "max_dimensions": {
+                "width": "800",
+                "height": "800"
+            }
+        }
+    }
+}

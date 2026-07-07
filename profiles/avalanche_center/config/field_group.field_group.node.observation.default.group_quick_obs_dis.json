@@ -1,0 +1,29 @@
+{
+    "_config_name": "field_group.field_group.node.observation.default.group_quick_obs_dis",
+    "group_name": "group_quick_obs_dis",
+    "entity_type": "node",
+    "bundle": "observation",
+    "mode": "default",
+    "parent_name": "group_dis_tabs",
+    "label": "Observation",
+    "weight": "103",
+    "children": [
+        "body",
+        "field_snowpack_avalanche_weather",
+        "field_snowpack_avalanche_wx_vids",
+        "field_ob_snowpit_photo",
+        "group_avalanche_det_dis",
+        "group_snowpack_det_dis",
+        "group_wx_det_dis"
+    ],
+    "format_type": "htab",
+    "format_settings": {
+        "label": "Observation",
+        "instance_settings": {
+            "id": "",
+            "classes": "group-quick-obs-dis field-group-htab",
+            "description": ""
+        },
+        "formatter": "closed"
+    }
+}

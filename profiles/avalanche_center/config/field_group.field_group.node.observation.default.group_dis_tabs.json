@@ -1,0 +1,22 @@
+{
+    "_config_name": "field_group.field_group.node.observation.default.group_dis_tabs",
+    "group_name": "group_dis_tabs",
+    "entity_type": "node",
+    "bundle": "observation",
+    "mode": "default",
+    "parent_name": "",
+    "label": "Tabs",
+    "weight": "11",
+    "children": [
+        "group_pro_assess_dis",
+        "group_quick_obs_dis"
+    ],
+    "format_type": "htabs",
+    "format_settings": {
+        "formatter": "",
+        "instance_settings": {
+            "classes": "",
+            "id": ""
+        }
+    }
+}

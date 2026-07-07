@@ -1,0 +1,16 @@
+{
+    "_config_name": "image.style.poster",
+    "name": "poster",
+    "label": "poster",
+    "effects": [
+        {
+            "weight": "1",
+            "name": "image_scale",
+            "data": {
+                "width": "800",
+                "height": "",
+                "upscale": 0
+            }
+        }
+    ]
+}

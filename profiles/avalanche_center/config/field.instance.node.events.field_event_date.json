@@ -1,0 +1,135 @@
+{
+    "_config_name": "field.instance.node.events.field_event_date",
+    "field_name": "field_event_date",
+    "entity_type": "node",
+    "bundle": "events",
+    "deleted": "0",
+    "description": "",
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "date_default",
+            "weight": "0",
+            "settings": {
+                "format_type": "short",
+                "fromto": "both",
+                "multiple_from": "",
+                "multiple_number": "",
+                "multiple_to": "",
+                "show_repeat_rule": "show"
+            },
+            "module": "date"
+        },
+        "full": {
+            "label": "inline",
+            "module": "date",
+            "settings": {
+                "format_type": "short",
+                "fromto": "both",
+                "multiple_from": "",
+                "multiple_number": "",
+                "multiple_to": "",
+                "show_repeat_rule": "show"
+            },
+            "type": "date_default",
+            "weight": "-3"
+        },
+        "rss": {
+            "label": "inline",
+            "module": "date",
+            "settings": {
+                "format_type": "short",
+                "fromto": "both",
+                "multiple_from": "",
+                "multiple_number": "",
+                "multiple_to": "",
+                "show_repeat_rule": "show"
+            },
+            "type": "date_default",
+            "weight": "-3"
+        },
+        "search_index": {
+            "label": "inline",
+            "module": "date",
+            "settings": {
+                "format_type": "short",
+                "fromto": "both",
+                "multiple_from": "",
+                "multiple_number": "",
+                "multiple_to": "",
+                "show_repeat_rule": "show"
+            },
+            "type": "date_default",
+            "weight": "-3"
+        },
+        "search_result": {
+            "label": "inline",
+            "module": "date",
+            "settings": {
+                "format_type": "short",
+                "fromto": "both",
+                "multiple_from": "",
+                "multiple_number": "",
+                "multiple_to": "",
+                "show_repeat_rule": "show"
+            },
+            "type": "date_default",
+            "weight": "-3"
+        },
+        "teaser": {
+            "label": "inline",
+            "module": "date",
+            "settings": {
+                "format_type": "short",
+                "fromto": "both",
+                "multiple_from": "",
+                "multiple_number": "",
+                "multiple_to": "",
+                "show_repeat_rule": "show"
+            },
+            "type": "date_default",
+            "weight": "-3"
+        },
+        "ical": {
+            "label": "inline",
+            "type": "date_default",
+            "weight": "0",
+            "settings": {
+                "format_type": "short",
+                "fromto": "both",
+                "multiple_from": "",
+                "multiple_number": "",
+                "multiple_to": "",
+                "show_repeat_rule": "show"
+            },
+            "module": "date"
+        }
+    },
+    "label": "Event Date",
+    "required": false,
+    "settings": {
+        "default_value": "now",
+        "default_value2": "same",
+        "default_value_code": "",
+        "default_value_code2": "",
+        "user_register_form": false
+    },
+    "weight": "-3",
+    "widget": {
+        "active": "0",
+        "module": "date",
+        "settings": {
+            "display_all_day": 0,
+            "increment": "1",
+            "input_format": "j M Y",
+            "input_format_custom": "",
+            "label_position": "above",
+            "repeat_collapsed": "",
+            "text_parts": [],
+            "year_range": "-3:+3"
+        },
+        "type": "date_popup",
+        "weight": "1"
+    },
+    "widget_type": "date_popup"
+}

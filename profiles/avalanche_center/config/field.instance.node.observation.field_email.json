@@ -1,0 +1,32 @@
+{
+    "_config_name": "field.instance.node.observation.field_email",
+    "field_name": "field_email",
+    "entity_type": "node",
+    "bundle": "observation",
+    "deleted": "0",
+    "label": "Email Address",
+    "widget": {
+        "weight": "2",
+        "type": "email_textfield",
+        "module": "email",
+        "active": 1,
+        "settings": {
+            "size": "60"
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "email_default",
+            "weight": "3",
+            "settings": [],
+            "module": "email"
+        }
+    },
+    "required": 0,
+    "description": "Your email will only be used to contact you if we need more details. It will never be shared, sold, or seen by anyone but the forecasters. ",
+    "default_value": null
+}

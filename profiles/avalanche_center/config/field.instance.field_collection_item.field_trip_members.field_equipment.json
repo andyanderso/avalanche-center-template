@@ -1,0 +1,50 @@
+{
+    "_config_name": "field.instance.field_collection_item.field_trip_members.field_equipment",
+    "field_name": "field_equipment",
+    "entity_type": "field_collection_item",
+    "bundle": "field_trip_members",
+    "deleted": "0",
+    "label": "Avalanche Safety Equipment",
+    "widget": {
+        "weight": "4",
+        "type": "options_buttons",
+        "module": "options",
+        "active": 1,
+        "settings": []
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "list_default",
+            "weight": "4",
+            "settings": [],
+            "module": "list"
+        },
+        "token": {
+            "label": "above",
+            "type": "hidden",
+            "weight": "4",
+            "settings": []
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": [
+        {
+            "value": "Beacon"
+        },
+        {
+            "value": "Shovel"
+        },
+        {
+            "value": "Probe"
+        },
+        {
+            "value": "Airbag"
+        }
+    ],
+    "default_value_label_token": 0
+}

@@ -1,0 +1,48 @@
+{
+    "_config_name": "field.instance.node.advisory.field_bulletin",
+    "field_name": "field_bulletin",
+    "entity_type": "node",
+    "bundle": "advisory",
+    "deleted": "0",
+    "default_value": [
+        {
+            "value": 0
+        }
+    ],
+    "description": "",
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "list_default",
+            "weight": "75",
+            "settings": [],
+            "module": "list"
+        },
+        "rss": {
+            "label": "above",
+            "settings": [],
+            "type": "hidden",
+            "weight": 0
+        },
+        "teaser": {
+            "label": "above",
+            "settings": [],
+            "type": "hidden",
+            "weight": 0
+        }
+    },
+    "label": " Issue Special Avalanche Bulletin",
+    "required": 0,
+    "settings": {
+        "user_register_form": false
+    },
+    "widget": {
+        "active": 1,
+        "module": "options",
+        "settings": {
+            "display_label": 1
+        },
+        "type": "options_onoff",
+        "weight": "9"
+    }
+}

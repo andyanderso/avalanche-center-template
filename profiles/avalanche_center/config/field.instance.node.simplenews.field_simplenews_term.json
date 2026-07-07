@@ -1,0 +1,52 @@
+{
+    "_config_name": "field.instance.node.simplenews.field_simplenews_term",
+    "field_name": "field_simplenews_term",
+    "entity_type": "node",
+    "bundle": "simplenews",
+    "deleted": "0",
+    "label": "Newsletter category",
+    "required": true,
+    "widget": {
+        "type": "options_buttons",
+        "settings": [],
+        "weight": 32,
+        "module": "options"
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "taxonomy_term_reference_link",
+            "settings": [],
+            "module": "taxonomy",
+            "weight": 1
+        },
+        "teaser": {
+            "label": "hidden",
+            "type": "hidden",
+            "settings": [],
+            "weight": 1
+        },
+        "email_plain": {
+            "label": "hidden",
+            "type": "hidden",
+            "settings": [],
+            "weight": 0
+        },
+        "email_html": {
+            "label": "hidden",
+            "type": "hidden",
+            "settings": [],
+            "weight": 0
+        },
+        "email_textalt": {
+            "label": "hidden",
+            "type": "hidden",
+            "settings": [],
+            "weight": 0
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "description": ""
+}

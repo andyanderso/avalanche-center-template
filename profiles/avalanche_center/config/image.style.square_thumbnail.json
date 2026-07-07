@@ -1,0 +1,16 @@
+{
+    "_config_name": "image.style.square_thumbnail",
+    "name": "square_thumbnail",
+    "label": "square_thumbnail",
+    "effects": [
+        {
+            "weight": "0",
+            "name": "image_scale_and_crop",
+            "data": {
+                "width": 100,
+                "height": 100,
+                "weight": 0
+            }
+        }
+    ]
+}

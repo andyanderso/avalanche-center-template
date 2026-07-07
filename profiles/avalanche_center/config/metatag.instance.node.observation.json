@@ -1,0 +1,24 @@
+{
+    "_config_name": "metatag.instance.node.observation",
+    "module": "metatag",
+    "api_version": "1",
+    "instance": "node:observation",
+    "disabled": false,
+    "config": {
+        "og:image": {
+            "value": "[node:obs-image-for-social-media]"
+        },
+        "og:image:url": {
+            "value": "[node:obs-image-for-social-media]"
+        },
+        "og:image:secure_url": {
+            "value": "[node:obs-image-for-social-media]"
+        },
+        "twitter:image": {
+            "value": "[node:obs-image-for-social-media]"
+        }
+    },
+    "storage": "custom",
+    "name": "node.observation",
+    "label": "Node: Observation"
+}

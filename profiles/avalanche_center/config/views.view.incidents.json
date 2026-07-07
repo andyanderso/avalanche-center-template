@@ -1,0 +1,1405 @@
+{
+    "_config_name": "views.view.incidents",
+    "name": "incidents",
+    "description": "Views to display avalanche incidents",
+    "tag": "incidents",
+    "base_table": "node",
+    "human_name": "Incidents",
+    "core": "0",
+    "display": {
+        "default": {
+            "display_title": "Defaults",
+            "display_plugin": "default",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": {
+                        "distinct": true
+                    }
+                },
+                "title": "Avalanche Incidents",
+                "use_more_always": false,
+                "access": {
+                    "type": "none"
+                },
+                "cache": {
+                    "type": "none"
+                },
+                "exposed_form": {
+                    "type": "basic"
+                },
+                "pager": {
+                    "type": "full",
+                    "options": {
+                        "items_per_page": 15
+                    }
+                },
+                "style_plugin": "table",
+                "row_plugin": "fields",
+                "header": {
+                    "area": {
+                        "id": "area",
+                        "table": "views",
+                        "field": "area",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "empty": 1,
+                        "content": "This page displays avalanche incidents reported that have occurred in the backcountry and involve a person caught, buried, and/or injuried.\n<div style=\"text-align:center\"><span style=\"display:inline-block;height:42px;\" class=\"submit-obs-button\"><a href=\"/node/add/observation\">Submit Observations</a></span></div>",
+                        "format": "full_html",
+                        "tokenize": 0
+                    }
+                },
+                "relationships": {
+                    "uid": {
+                        "id": "uid",
+                        "table": "node",
+                        "field": "uid"
+                    }
+                },
+                "fields": {
+                    "field_ob_date_time": {
+                        "id": "field_ob_date_time",
+                        "table": "field_data_field_ob_date_time",
+                        "field": "field_ob_date_time",
+                        "label": "Date and time of observation or avalanche occurrence",
+                        "settings": {
+                            "format_type": "short",
+                            "fromto": "both",
+                            "multiple_number": "",
+                            "multiple_from": "",
+                            "multiple_to": "",
+                            "show_repeat_rule": "show"
+                        }
+                    },
+                    "nid": {
+                        "id": "nid",
+                        "table": "node",
+                        "field": "nid",
+                        "label": "",
+                        "exclude": true,
+                        "element_label_colon": false,
+                        "link_to_node": true
+                    },
+                    "path": {
+                        "id": "path",
+                        "table": "node",
+                        "field": "path",
+                        "label": "",
+                        "exclude": true,
+                        "element_label_colon": false
+                    },
+                    "field_ob_loc_name": {
+                        "id": "field_ob_loc_name",
+                        "table": "field_data_field_ob_loc_name",
+                        "field": "field_ob_loc_name",
+                        "label": "Location",
+                        "alter": {
+                            "make_link": true,
+                            "path": "node/[nid]"
+                        }
+                    },
+                    "field_region": {
+                        "id": "field_region",
+                        "table": "field_data_field_region",
+                        "field": "field_region"
+                    },
+                    "field_is_this_an_avalanche_obser": {
+                        "id": "field_is_this_an_avalanche_obser",
+                        "table": "field_data_field_is_this_an_avalanche_obser",
+                        "field": "field_is_this_an_avalanche_obser",
+                        "label": "",
+                        "exclude": true,
+                        "element_label_colon": false
+                    },
+                    "field_snowpack_avalanche_weather": {
+                        "id": "field_snowpack_avalanche_weather",
+                        "table": "field_data_field_snowpack_avalanche_weather",
+                        "field": "field_snowpack_avalanche_weather",
+                        "click_sort_column": "fid",
+                        "settings": {
+                            "image_style": "small_thumb",
+                            "image_link": "content"
+                        },
+                        "delta_offset": "0"
+                    },
+                    "field_ob_snowpit_photo": {
+                        "id": "field_ob_snowpit_photo",
+                        "table": "field_data_field_ob_snowpit_photo",
+                        "field": "field_ob_snowpit_photo",
+                        "click_sort_column": "fid",
+                        "settings": {
+                            "image_style": "small_thumb",
+                            "image_link": "content"
+                        },
+                        "delta_offset": "0"
+                    },
+                    "field_snowpack_avalanche_wx_vids": {
+                        "id": "field_snowpack_avalanche_wx_vids",
+                        "table": "field_data_field_snowpack_avalanche_wx_vids",
+                        "field": "field_snowpack_avalanche_wx_vids",
+                        "click_sort_column": "fid",
+                        "type": "file_rendered",
+                        "settings": {
+                            "file_view_mode": "teaser"
+                        },
+                        "delta_offset": "0"
+                    },
+                    "field_position": {
+                        "id": "field_position",
+                        "table": "field_data_field_position",
+                        "field": "field_position"
+                    },
+                    "field__company_link": {
+                        "id": "field__company_link",
+                        "table": "field_data_field__company_link",
+                        "field": "field__company_link",
+                        "relationship": "uid",
+                        "exclude": true,
+                        "click_sort_column": "url"
+                    },
+                    "field_number_of_full_burials": {
+                        "id": "field_number_of_full_burials",
+                        "table": "field_data_field_number_of_full_burials",
+                        "field": "field_number_of_full_burials",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "Number of People Caught or Buried",
+                        "exclude": 1,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": 1,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "click_sort_column": "value",
+                        "type": "list_default",
+                        "settings": [],
+                        "group_column": "value",
+                        "group_columns": [],
+                        "group_rows": true,
+                        "delta_limit": "all",
+                        "delta_offset": 0,
+                        "delta_reversed": false,
+                        "delta_first_last": false,
+                        "delta_random": false,
+                        "multi_type": "separator",
+                        "separator": ", ",
+                        "field_api_classes": 0
+                    },
+                    "field_number_of_partial_burials": {
+                        "id": "field_number_of_partial_burials",
+                        "table": "field_data_field_number_of_partial_burials",
+                        "field": "field_number_of_partial_burials",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": 1,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "click_sort_column": "value",
+                        "type": "list_default",
+                        "settings": [],
+                        "group_column": "value",
+                        "group_columns": [],
+                        "group_rows": true,
+                        "delta_limit": "all",
+                        "delta_offset": 0,
+                        "delta_reversed": false,
+                        "delta_first_last": false,
+                        "delta_random": false,
+                        "multi_type": "separator",
+                        "separator": ", ",
+                        "field_api_classes": 0
+                    },
+                    "field_number_of_people_caught_2": {
+                        "id": "field_number_of_people_caught_2",
+                        "table": "field_data_field_number_of_people_caught_2",
+                        "field": "field_number_of_people_caught_2",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": 1,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "click_sort_column": "value",
+                        "type": "list_default",
+                        "settings": [],
+                        "group_column": "value",
+                        "group_columns": [],
+                        "group_rows": true,
+                        "delta_limit": "all",
+                        "delta_offset": 0,
+                        "delta_reversed": false,
+                        "delta_first_last": false,
+                        "delta_random": false,
+                        "multi_type": "separator",
+                        "separator": ", ",
+                        "field_api_classes": 0
+                    }
+                },
+                "sorts": {
+                    "field_ob_date_time_value": {
+                        "id": "field_ob_date_time_value",
+                        "table": "field_data_field_ob_date_time",
+                        "field": "field_ob_date_time_value",
+                        "order": "DESC"
+                    }
+                },
+                "filter_groups": {
+                    "operator": "AND",
+                    "groups": {
+                        "1": "AND",
+                        "2": "OR"
+                    }
+                },
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "in",
+                        "value": {
+                            "observation": "observation"
+                        },
+                        "group": 1,
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator_label": "",
+                            "operator": false,
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "2": 2
+                            },
+                            "reduce": false
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": "1",
+                        "group": 1,
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "field_ob_date_time_value": {
+                        "id": "field_ob_date_time_value",
+                        "table": "field_data_field_ob_date_time",
+                        "field": "field_ob_date_time_value",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": ">=",
+                        "value": {
+                            "min": null,
+                            "max": null,
+                            "value": "2017-10-01",
+                            "type": "date"
+                        },
+                        "group": 1,
+                        "exposed": true,
+                        "expose": {
+                            "operator_id": "field_ob_date_time_value_op",
+                            "label": "Date and time of observation",
+                            "description": "",
+                            "use_operator": 1,
+                            "operator_label": "",
+                            "operator": "field_ob_date_time_value_op",
+                            "identifier": "field_ob_date_time_value",
+                            "required": 0,
+                            "remember": 0,
+                            "multiple": false,
+                            "remember_roles": {
+                                "2": "2",
+                                "4": 0,
+                                "1": 0,
+                                "5": 0,
+                                "6": 0,
+                                "7": 0,
+                                "8": 0,
+                                "3": 0,
+                                "9": 0,
+                                "10": 0
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "granularity": "day",
+                        "form_type": "date_select",
+                        "default_date": "",
+                        "default_to_date": "",
+                        "year_range": "-3:+3",
+                        "add_delta": ""
+                    },
+                    "field_number_of_people_caught_2_value": {
+                        "id": "field_number_of_people_caught_2_value",
+                        "table": "field_data_field_number_of_people_caught_2",
+                        "field": "field_number_of_people_caught_2_value",
+                        "relationship": "field_avalanche_details_value",
+                        "value": {
+                            "1": "1",
+                            "2": "2",
+                            "3": "3",
+                            "4": "4",
+                            "5": "5",
+                            "6": "6"
+                        },
+                        "group": 2
+                    },
+                    "field_number_of_partial_burials_value": {
+                        "id": "field_number_of_partial_burials_value",
+                        "table": "field_data_field_number_of_partial_burials",
+                        "field": "field_number_of_partial_burials_value",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "or",
+                        "value": {
+                            "1": "1",
+                            "2": "2",
+                            "3": "3",
+                            "4": "4",
+                            "5": "5",
+                            "6": "6"
+                        },
+                        "group": 2,
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator_label": "",
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "2": 2
+                            },
+                            "reduce": false
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "reduce_duplicates": 0
+                    },
+                    "field_number_of_full_burials_value": {
+                        "id": "field_number_of_full_burials_value",
+                        "table": "field_data_field_number_of_full_burials",
+                        "field": "field_number_of_full_burials_value",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "or",
+                        "value": {
+                            "1": "1",
+                            "2": "2",
+                            "3": "3",
+                            "4": "4",
+                            "5": "5",
+                            "6": "6"
+                        },
+                        "group": 2,
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator_label": "",
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "2": 2
+                            },
+                            "reduce": false
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "reduce_duplicates": 0
+                    }
+                }
+            }
+        },
+        "page_1": {
+            "display_title": "Incidents",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false
+                },
+                "style_plugin": "table",
+                "path": "incidents"
+            }
+        },
+        "page_2": {
+            "display_title": "Incidents Map",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false,
+                    "header": false,
+                    "fields": false,
+                    "filter_groups": false,
+                    "filters": false,
+                    "pager": false
+                },
+                "style_plugin": "leaflet",
+                "style_options": {
+                    "entity_type": "node",
+                    "data_source": "field_location",
+                    "name_field": "title",
+                    "description_field": "",
+                    "view_mode": "",
+                    "map": "avalanche_topo_satellite",
+                    "height": "600",
+                    "hide_empty": false,
+                    "zoom": 12,
+                    "map_position_force": false,
+                    "scrollzoom": true,
+                    "popup": true,
+                    "reset_map": false,
+                    "fullscreen": false
+                },
+                "header": {
+                    "area": {
+                        "id": "area",
+                        "table": "views",
+                        "field": "area",
+                        "empty": true,
+                        "content": "This page displays avalanche incidents reported that have occurred in the backcountry and involve a person caught, buried, and/or injuried. The map displays 15 incidents at a time.\r\n<div style=\"text-align:center\"><span style=\"display:inline-block;height:42px;\" class=\"submit-obs-button\"><a href=\"/node/add/observation\">Submit Observations</a></span></div>",
+                        "format": "full_html"
+                    }
+                },
+                "fields": {
+                    "title": {
+                        "id": "title",
+                        "table": "node",
+                        "field": "title",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": false,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 1,
+                            "path": "[path]",
+                            "absolute": 1,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "strong",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": 0,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "link_to_node": 0
+                    },
+                    "field_ob_date_time": {
+                        "id": "field_ob_date_time",
+                        "table": "field_data_field_ob_date_time",
+                        "field": "field_ob_date_time",
+                        "label": "Date",
+                        "relationship": "none",
+                        "settings": {
+                            "format_type": "short"
+                        }
+                    },
+                    "field_location": {
+                        "id": "field_location",
+                        "table": "field_data_field_location",
+                        "field": "field_location",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "Location",
+                        "exclude": true,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": 1,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "click_sort_column": "lat",
+                        "type": "geofield_latlon",
+                        "settings": {},
+                        "group_column": "lat",
+                        "group_columns": [],
+                        "group_rows": true,
+                        "delta_limit": "all",
+                        "delta_offset": 0,
+                        "delta_reversed": false,
+                        "delta_first_last": false,
+                        "delta_random": false,
+                        "multi_type": "separator",
+                        "separator": ", ",
+                        "field_api_classes": 0
+                    },
+                    "path": {
+                        "id": "path",
+                        "table": "node",
+                        "field": "path",
+                        "label": "",
+                        "relationship": "none"
+                    }
+                },
+                "filter_groups": {
+                    "groups": {
+                        "1": "AND"
+                    }
+                },
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "avyobs": "avyobs",
+                            "observation": "observation"
+                        },
+                        "group": 1,
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": "1",
+                        "group": 1,
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "field_ob_date_time_value": {
+                        "id": "field_ob_date_time_value",
+                        "table": "field_data_field_ob_date_time",
+                        "field": "field_ob_date_time_value",
+                        "operator": ">=",
+                        "value": {
+                            "value": "2017-10-01"
+                        },
+                        "group": 1,
+                        "expose": {
+                            "operator_id": "field_ob_date_time_value_op",
+                            "label": "Date and time of observation",
+                            "use_operator": true,
+                            "operator": "field_ob_date_time_value_op",
+                            "identifier": "field_ob_date_time_value",
+                            "remember_roles": {
+                                "2": "2",
+                                "3": 0,
+                                "1": 0,
+                                "7": 0,
+                                "4": 0,
+                                "5": 0,
+                                "6": 0,
+                                "8": 0
+                            }
+                        }
+                    },
+                    "field_number_of_people_caught_2_value": {
+                        "id": "field_number_of_people_caught_2_value",
+                        "table": "field_data_field_number_of_people_caught_2",
+                        "field": "field_number_of_people_caught_2_value",
+                        "relationship": "field_avalanche_details_value",
+                        "value": {
+                            "1": "1",
+                            "2": "2",
+                            "3": "3",
+                            "4": "4",
+                            "5": "5",
+                            "6": "6"
+                        },
+                        "group": 2
+                    },
+                    "field_number_of_full_burials_value": {
+                        "id": "field_number_of_full_burials_value",
+                        "table": "field_data_field_number_of_full_burials",
+                        "field": "field_number_of_full_burials_value",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "or",
+                        "value": {
+                            "1": "1",
+                            "2": "2",
+                            "3": "3",
+                            "4": "4",
+                            "5": "5",
+                            "6": "6"
+                        },
+                        "group": 2,
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator_label": "",
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "2": 2
+                            },
+                            "reduce": false
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "reduce_duplicates": 0
+                    },
+                    "field_number_of_partial_burials_value": {
+                        "id": "field_number_of_partial_burials_value",
+                        "table": "field_data_field_number_of_partial_burials",
+                        "field": "field_number_of_partial_burials_value",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "or",
+                        "value": {
+                            "1": "1",
+                            "2": "2",
+                            "3": "3",
+                            "4": "4",
+                            "5": "5",
+                            "6": "6"
+                        },
+                        "group": 2,
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator_label": "",
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "2": 2
+                            },
+                            "reduce": false
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "reduce_duplicates": 0
+                    },
+                    "field_location_lat": {
+                        "id": "field_location_lat",
+                        "table": "field_data_field_location",
+                        "field": "field_location_lat",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "not empty",
+                        "value": "",
+                        "group": 1,
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": "",
+                            "label": "",
+                            "use_operator": false,
+                            "operator": "",
+                            "identifier": ""
+                        },
+                        "is_grouped": false
+                    }
+                },
+                "path": "incidents-map",
+                "pager": {
+                    "type": "some",
+                    "options": {
+                        "offset": 0,
+                        "items_per_page": 100
+                    }
+                }
+            }
+        },
+        "page_3": {
+            "display_title": "Incidents Map Archive",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false,
+                    "header": false,
+                    "fields": false,
+                    "filter_groups": false,
+                    "filters": false,
+                    "pager": false
+                },
+                "style_plugin": "leaflet",
+                "style_options": {
+                    "entity_type": "node",
+                    "data_source": "field_location",
+                    "name_field": "title",
+                    "description_field": "",
+                    "view_mode": "",
+                    "map": "avalanche_topo_satellite",
+                    "height": "600",
+                    "hide_empty": false,
+                    "zoom": 12,
+                    "map_position_force": false,
+                    "scrollzoom": true,
+                    "popup": true,
+                    "reset_map": false,
+                    "fullscreen": false
+                },
+                "header": {
+                    "area": {
+                        "id": "area",
+                        "table": "views",
+                        "field": "area",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "empty": 1,
+                        "content": "This page displays avalanche incidents reported that have occurred in the backcountry and involve a person caught, buried, and/or injuried. The map displays 15 incidents at a time.\n<div style=\"text-align:center\"><span style=\"display:inline-block;height:42px;\" class=\"submit-obs-button\"><a href=\"/node/add/observation\">Submit Observations</a></span></div>",
+                        "format": "full_html",
+                        "tokenize": 0
+                    }
+                },
+                "fields": {
+                    "title": {
+                        "id": "title",
+                        "table": "node",
+                        "field": "title",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": false,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 1,
+                            "path": "[path]",
+                            "absolute": 1,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "strong",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": 0,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "link_to_node": 0
+                    },
+                    "field_ob_date_time": {
+                        "id": "field_ob_date_time",
+                        "table": "field_data_field_ob_date_time",
+                        "field": "field_ob_date_time",
+                        "label": "Date",
+                        "relationship": "none",
+                        "settings": {
+                            "format_type": "short"
+                        }
+                    },
+                    "field_location": {
+                        "id": "field_location",
+                        "table": "field_data_field_location",
+                        "field": "field_location",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "Location",
+                        "exclude": true,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": 1,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "click_sort_column": "lat",
+                        "type": "geofield_latlon",
+                        "settings": {},
+                        "group_column": "lat",
+                        "group_columns": [],
+                        "group_rows": true,
+                        "delta_limit": "all",
+                        "delta_offset": 0,
+                        "delta_reversed": false,
+                        "delta_first_last": false,
+                        "delta_random": false,
+                        "multi_type": "separator",
+                        "separator": ", ",
+                        "field_api_classes": 0
+                    },
+                    "path": {
+                        "id": "path",
+                        "table": "node",
+                        "field": "path",
+                        "label": "",
+                        "relationship": "none"
+                    }
+                },
+                "filter_groups": {
+                    "groups": {
+                        "1": "AND"
+                    }
+                },
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "avyobs": "avyobs",
+                            "observation": "observation"
+                        },
+                        "group": 1,
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": "1",
+                        "group": 1,
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "field_ob_date_time_value": {
+                        "id": "field_ob_date_time_value",
+                        "table": "field_data_field_ob_date_time",
+                        "field": "field_ob_date_time_value",
+                        "operator": "<=",
+                        "group": 1,
+                        "exposed": true,
+                        "expose": {
+                            "operator_id": "field_ob_date_time_value_op",
+                            "label": "Date and time of observation",
+                            "use_operator": true,
+                            "operator": "field_ob_date_time_value_op",
+                            "identifier": "field_ob_date_time_value",
+                            "remember_roles": {
+                                "2": "2",
+                                "4": 0,
+                                "1": 0,
+                                "5": 0,
+                                "6": 0,
+                                "7": 0,
+                                "8": 0,
+                                "3": 0,
+                                "9": 0,
+                                "10": 0
+                            }
+                        },
+                        "default_date": "now"
+                    },
+                    "field_number_of_people_caught_2_value": {
+                        "id": "field_number_of_people_caught_2_value",
+                        "table": "field_data_field_number_of_people_caught_2",
+                        "field": "field_number_of_people_caught_2_value",
+                        "relationship": "field_avalanche_details_value",
+                        "value": {
+                            "1": "1",
+                            "2": "2",
+                            "3": "3",
+                            "4": "4",
+                            "5": "5",
+                            "6": "6"
+                        },
+                        "group": 2
+                    },
+                    "field_number_of_full_burials_value": {
+                        "id": "field_number_of_full_burials_value",
+                        "table": "field_data_field_number_of_full_burials",
+                        "field": "field_number_of_full_burials_value",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "or",
+                        "value": {
+                            "1": "1",
+                            "2": "2",
+                            "3": "3",
+                            "4": "4",
+                            "5": "5",
+                            "6": "6"
+                        },
+                        "group": 2,
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator_label": "",
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "2": 2
+                            },
+                            "reduce": false
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "reduce_duplicates": 0
+                    },
+                    "field_number_of_partial_burials_value": {
+                        "id": "field_number_of_partial_burials_value",
+                        "table": "field_data_field_number_of_partial_burials",
+                        "field": "field_number_of_partial_burials_value",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "or",
+                        "value": {
+                            "1": "1",
+                            "2": "2",
+                            "3": "3",
+                            "4": "4",
+                            "5": "5",
+                            "6": "6"
+                        },
+                        "group": 2,
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator_label": "",
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "2": 2
+                            },
+                            "reduce": false
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "reduce_duplicates": 0
+                    },
+                    "field_location_lat": {
+                        "id": "field_location_lat",
+                        "table": "field_data_field_location",
+                        "field": "field_location_lat",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "not empty",
+                        "value": "",
+                        "group": 1,
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": "",
+                            "label": "",
+                            "use_operator": false,
+                            "operator": "",
+                            "identifier": ""
+                        },
+                        "is_grouped": false
+                    }
+                },
+                "path": "incidents-map-archive",
+                "pager": {
+                    "type": "some",
+                    "options": {
+                        "offset": 0,
+                        "items_per_page": 100
+                    }
+                }
+            }
+        },
+        "page_6": {
+            "display_title": "Incidents Archive",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false,
+                    "filter_groups": true,
+                    "filters": true
+                },
+                "style_plugin": "table",
+                "path": "incidents-archive"
+            }
+        }
+    }
+}

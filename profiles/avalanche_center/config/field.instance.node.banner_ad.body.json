@@ -1,0 +1,93 @@
+{
+    "_config_name": "field.instance.node.banner_ad.body",
+    "field_name": "body",
+    "entity_type": "node",
+    "bundle": "banner_ad",
+    "deleted": "0",
+    "label": "Banner Ad Text",
+    "widget": {
+        "weight": "4",
+        "type": "text_textarea_with_summary",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "rows": "20",
+            "summary_rows": 5
+        }
+    },
+    "settings": {
+        "text_processing": "1",
+        "display_summary": 0,
+        "better_formats": {
+            "allowed_formats_toggle": 0,
+            "allowed_formats": {
+                "filtered_html": "filtered_html",
+                "full_html": "full_html",
+                "full_html_mark_glossary_terms": "full_html_mark_glossary_terms",
+                "plain_text": "plain_text",
+                "gmap": "gmap",
+                "gmap_macro_expander": "gmap_macro_expander",
+                "php_code": "php_code",
+                "mailchimp_campaign": "mailchimp_campaign"
+            },
+            "default_order_toggle": 0,
+            "default_order_wrapper": {
+                "formats": {
+                    "filtered_html": {
+                        "weight": "-10"
+                    },
+                    "full_html": {
+                        "weight": "-9"
+                    },
+                    "full_html_mark_glossary_terms": {
+                        "weight": "-8"
+                    },
+                    "plain_text": {
+                        "weight": "-7"
+                    },
+                    "gmap": {
+                        "weight": "-6"
+                    },
+                    "gmap_macro_expander": {
+                        "weight": "-5"
+                    },
+                    "php_code": {
+                        "weight": "-4"
+                    },
+                    "mailchimp_campaign": {
+                        "weight": "-3"
+                    }
+                }
+            }
+        },
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "text_default",
+            "weight": "0",
+            "settings": [],
+            "module": "text"
+        },
+        "teaser": {
+            "label": "hidden",
+            "type": "text_summary_or_trimmed",
+            "settings": {
+                "trim_length": 600
+            },
+            "module": "text",
+            "weight": 0
+        },
+        "checkout_pane": {
+            "label": "hidden",
+            "type": "text_default",
+            "weight": "0",
+            "settings": [],
+            "module": "text"
+        }
+    },
+    "required": 0,
+    "description": "Use this field to create text based banner ads. If you have a banner ad that is an image use the BANNER AD IMAGE and BANNER AD LINK fields. In this BANNER AD TEXT field, the best font settings are: Font size 18 in BOLD - This is a good style template: <div style=\"border:1px solid #000; padding:5px 10px;\"><p><strong><span style=\"font-size:18px\">Insert your custom text here. You can add a link below. Try to only use one word for the link. </span></strong></p><p><a class=\"other-learn-more-announce\" href=\"https://example.com/your-link\" style=\"top: -40px;\">link</a></p></div>",
+    "default_value": null
+}

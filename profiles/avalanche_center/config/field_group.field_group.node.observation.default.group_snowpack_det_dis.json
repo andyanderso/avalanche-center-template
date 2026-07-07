@@ -1,0 +1,23 @@
+{
+    "_config_name": "field_group.field_group.node.observation.default.group_snowpack_det_dis",
+    "group_name": "group_snowpack_det_dis",
+    "entity_type": "node",
+    "bundle": "observation",
+    "mode": "default",
+    "parent_name": "group_quick_obs_dis",
+    "label": "Snowpack Details",
+    "weight": "106",
+    "children": [
+        "field_total_snow_depth",
+        "group_display_terrain_snowpack"
+    ],
+    "format_type": "fieldset",
+    "format_settings": {
+        "formatter": "collapsible",
+        "instance_settings": {
+            "description": "",
+            "classes": "",
+            "id": ""
+        }
+    }
+}

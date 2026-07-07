@@ -1,0 +1,2125 @@
+{
+    "_config_name": "views.view.events_upcoming",
+    "name": "events_upcoming",
+    "description": "List of upcoming evens",
+    "tag": "fundraisers",
+    "base_table": "node",
+    "human_name": "Events",
+    "core": "0",
+    "display": {
+        "default": {
+            "display_title": "Defaults",
+            "display_plugin": "default",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "title": "Upcoming Events:",
+                "use_more": true,
+                "use_more_always": false,
+                "link_display": "page_1",
+                "access": {
+                    "type": "none"
+                },
+                "cache": {
+                    "type": "none"
+                },
+                "exposed_form": {
+                    "type": "basic"
+                },
+                "pager": {
+                    "type": "full",
+                    "options": {
+                        "items_per_page": "3",
+                        "offset": "0",
+                        "id": "0",
+                        "quantity": "9"
+                    }
+                },
+                "style_plugin": "table",
+                "style_options": {
+                    "grouping": [],
+                    "row_class": "",
+                    "default_row_class": 1,
+                    "row_class_special": 1,
+                    "override": 1,
+                    "sticky": 0,
+                    "caption": "",
+                    "summary": "",
+                    "columns": {
+                        "path": "path",
+                        "title": "title",
+                        "field_event_date": "title",
+                        "body": "title",
+                        "field_price": "field_price",
+                        "field_buy_tickets_link": "field_price",
+                        "field_register": "field_price"
+                    },
+                    "info": {
+                        "path": {
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "title": {
+                            "sortable": 0,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": " | ",
+                            "empty_column": 0
+                        },
+                        "field_event_date": {
+                            "sortable": 0,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "body": {
+                            "sortable": 0,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "field_price": {
+                            "sortable": 0,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "<br>",
+                            "empty_column": 0
+                        },
+                        "field_buy_tickets_link": {
+                            "sortable": 0,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "field_register": {
+                            "sortable": 0,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        }
+                    },
+                    "default": "-1",
+                    "empty_table": 0
+                },
+                "exposed_block": true,
+                "fields": {
+                    "path": {
+                        "id": "path",
+                        "table": "node",
+                        "field": "path",
+                        "label": "",
+                        "exclude": true,
+                        "element_label_colon": false
+                    },
+                    "title": {
+                        "id": "title",
+                        "table": "node",
+                        "field": "title",
+                        "label": ""
+                    },
+                    "field_event_date": {
+                        "id": "field_event_date",
+                        "table": "field_data_field_event_date",
+                        "field": "field_event_date",
+                        "label": "",
+                        "element_label_colon": false,
+                        "settings": {
+                            "format_type": "short",
+                            "fromto": "both",
+                            "multiple_number": "",
+                            "multiple_from": "",
+                            "multiple_to": "",
+                            "show_repeat_rule": "show"
+                        }
+                    },
+                    "body": {
+                        "id": "body",
+                        "table": "field_data_body",
+                        "field": "body",
+                        "label": "",
+                        "alter": {
+                            "max_length": "200",
+                            "more_link": true,
+                            "more_link_path": "[path]",
+                            "trim": true
+                        },
+                        "element_label_colon": false,
+                        "settings": {
+                            "trim_length": "200"
+                        }
+                    },
+                    "field_price": {
+                        "id": "field_price",
+                        "table": "field_data_field_price",
+                        "field": "field_price",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "span",
+                        "element_class": "price",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "click_sort_column": "value",
+                        "type": "number_integer",
+                        "settings": {
+                            "thousand_separator": ",",
+                            "prefix_suffix": 1
+                        },
+                        "group_column": "value",
+                        "group_columns": [],
+                        "group_rows": true,
+                        "delta_limit": "all",
+                        "delta_offset": 0,
+                        "delta_reversed": false,
+                        "delta_first_last": false,
+                        "multi_type": "separator",
+                        "separator": ", ",
+                        "field_api_classes": 0
+                    },
+                    "field_buy_tickets_link": {
+                        "id": "field_buy_tickets_link",
+                        "table": "field_data_field_buy_tickets_link",
+                        "field": "field_buy_tickets_link",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "click_sort_column": "url",
+                        "type": "link_default",
+                        "settings": [],
+                        "group_column": "",
+                        "group_columns": [],
+                        "group_rows": true,
+                        "delta_limit": "all",
+                        "delta_offset": 0,
+                        "delta_reversed": false,
+                        "delta_first_last": false,
+                        "multi_type": "separator",
+                        "separator": ", ",
+                        "field_api_classes": 0
+                    }
+                },
+                "sorts": {
+                    "field_event_date_value": {
+                        "id": "field_event_date_value",
+                        "table": "field_data_field_event_date",
+                        "field": "field_event_date_value"
+                    }
+                },
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "in",
+                        "value": {
+                            "class": "class",
+                            "events": "events"
+                        },
+                        "group": "0",
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": false,
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "2": 2
+                            },
+                            "reduce": false
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": 1,
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "field_event_date_value2": {
+                        "id": "field_event_date_value2",
+                        "table": "field_data_field_event_date",
+                        "field": "field_event_date_value2",
+                        "operator": ">=",
+                        "default_date": "now"
+                    }
+                }
+            }
+        },
+        "page_1": {
+            "display_title": "Upcoming events",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "pager": false
+                },
+                "pager": {
+                    "type": "full",
+                    "options": {
+                        "items_per_page": "10",
+                        "offset": "0",
+                        "id": "0",
+                        "quantity": "9"
+                    }
+                },
+                "path": "events",
+                "menu": {
+                    "type": "normal",
+                    "title": "Events",
+                    "weight": "0"
+                }
+            }
+        },
+        "feed_1": {
+            "display_title": "Feed",
+            "display_plugin": "feed",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "pager": {
+                    "type": "some"
+                },
+                "style_plugin": "rss",
+                "row_plugin": "node_rss",
+                "row_options": {
+                    "item_length": "full"
+                },
+                "path": "events-rss.xml",
+                "displays": {
+                    "default": "default",
+                    "page_1": "page_1",
+                    "block_1": "block_1"
+                }
+            }
+        },
+        "block_1": {
+            "display_title": "Events on Home Page",
+            "display_plugin": "block",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "use_more": false,
+                    "use_more_always": false,
+                    "use_more_text": false,
+                    "pager": false,
+                    "pager_options": false,
+                    "style_plugin": true,
+                    "style_options": true,
+                    "row_plugin": true,
+                    "row_options": true
+                },
+                "use_more": true,
+                "use_more_always": false,
+                "use_more_text": "MORE",
+                "pager": {
+                    "type": "mini",
+                    "options": {
+                        "items_per_page": "4",
+                        "offset": "0",
+                        "id": "0",
+                        "total_pages": "",
+                        "tags": {
+                            "previous": "‹ previous",
+                            "next": "next ›"
+                        },
+                        "expose": {
+                            "items_per_page": 0,
+                            "items_per_page_label": "Items per page",
+                            "items_per_page_options": "5, 10, 20, 40, 60",
+                            "items_per_page_options_all": 0,
+                            "items_per_page_options_all_label": "- All -",
+                            "offset": 0,
+                            "offset_label": "Offset"
+                        }
+                    }
+                },
+                "pager_options": null
+            }
+        },
+        "page_2": {
+            "display_title": "Event Calendar - Month",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "title": false,
+                    "pager": false,
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false,
+                    "sorts": false,
+                    "arguments": false,
+                    "filter_groups": false,
+                    "filters": false
+                },
+                "title": "Event Calendar Month",
+                "pager": {
+                    "type": "date_views_pager"
+                },
+                "style_plugin": "calendar_style",
+                "style_options": {
+                    "name_size": "3",
+                    "mini": "0",
+                    "with_weekno": "0",
+                    "multiday_theme": "1",
+                    "theme_style": "1",
+                    "max_items": "0"
+                },
+                "row_plugin": "calendar_entity",
+                "row_options": {
+                    "relationship": "none",
+                    "default_field_elements": 1,
+                    "inline": {
+                        "title": "title",
+                        "field_event_date": "field_event_date"
+                    },
+                    "separator": " | ",
+                    "hide_empty": 1,
+                    "calendar_date_link": "",
+                    "colors": {
+                        "legend": "",
+                        "calendar_colors_type": {
+                            "advisory": "#ffffff",
+                            "announcements": "#ffffff",
+                            "article": "#ffffff",
+                            "avalanche_education": "#ffffff",
+                            "avyobs": "#ffffff",
+                            "avalanche_watch": "#ffffff",
+                            "avy_education": "#ffffff",
+                            "page": "#ffffff",
+                            "class": "#ffffff",
+                            "events": "#ffffff",
+                            "feed": "#ffffff",
+                            "feed_item": "#ffffff",
+                            "forecast": "#ffffff",
+                            "people": "#ffffff",
+                            "snowobs": "#ffffff",
+                            "sponsor": "#ffffff"
+                        },
+                        "taxonomy_field": "",
+                        "calendar_colors_vocabulary": []
+                    }
+                },
+                "sorts": {
+                    "field_event_date_value": {
+                        "id": "field_event_date_value",
+                        "table": "field_data_field_event_date",
+                        "field": "field_event_date_value"
+                    }
+                },
+                "arguments": {
+                    "date_argument": {
+                        "id": "date_argument",
+                        "table": "node",
+                        "field": "date_argument",
+                        "default_action": "default",
+                        "add_delta": "yes",
+                        "date_fields": {
+                            "field_data_field_event_date.field_event_date_value": "field_data_field_event_date.field_event_date_value"
+                        }
+                    }
+                },
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "in",
+                        "value": {
+                            "class": "class",
+                            "events": "events"
+                        },
+                        "group": "0",
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": false,
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "2": 2
+                            },
+                            "reduce": false
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": 1,
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    }
+                },
+                "path": "events-calendar/month",
+                "menu": {
+                    "type": "default tab",
+                    "title": "Month",
+                    "weight": "0",
+                    "context": 0
+                },
+                "tab_options": {
+                    "type": "normal",
+                    "title": "Event Calendar",
+                    "weight": "0",
+                    "name": "main-menu"
+                }
+            }
+        },
+        "page_3": {
+            "display_title": "Event Calendar - Week",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "title": false,
+                    "pager": false,
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false,
+                    "sorts": false,
+                    "arguments": false,
+                    "filter_groups": false,
+                    "filters": false
+                },
+                "title": "Event Calendar Week",
+                "pager": {
+                    "type": "date_views_pager"
+                },
+                "style_plugin": "calendar_style",
+                "style_options": {
+                    "calendar_type": "week",
+                    "name_size": "3",
+                    "mini": "0",
+                    "with_weekno": "0",
+                    "multiday_theme": "1",
+                    "theme_style": "1",
+                    "max_items": "0",
+                    "multiday_hidden": {
+                        "field_event_date": "field_event_date",
+                        "body": "body",
+                        "field_buy_ticket_button": "field_buy_ticket_button",
+                        "field_price": "field_price"
+                    }
+                },
+                "row_plugin": "calendar_entity",
+                "row_options": {
+                    "inline": {
+                        "title": "title",
+                        "field_price": "field_price"
+                    },
+                    "colors": {
+                        "calendar_colors_type": {
+                            "advisory": "#ffffff",
+                            "announcements": "#ffffff",
+                            "avy_obs": "#ffffff",
+                            "avalanche_watch": "#ffffff",
+                            "avy_education": "#ffffff",
+                            "forecast": "#ffffff",
+                            "map": "#ffffff",
+                            "page": "#ffffff",
+                            "snowpack_obs": "#ffffff",
+                            "sponsor": "#ffffff",
+                            "story": "#ffffff",
+                            "events": "#ffffff",
+                            "people": "#ffffff",
+                            "rose_test": "#ffffff",
+                            "test_": "#ffffff"
+                        }
+                    }
+                },
+                "sorts": {
+                    "field_event_date_value": {
+                        "id": "field_event_date_value",
+                        "table": "field_data_field_event_date",
+                        "field": "field_event_date_value"
+                    }
+                },
+                "arguments": {
+                    "date_argument": {
+                        "id": "date_argument",
+                        "table": "node",
+                        "field": "date_argument",
+                        "default_action": "default",
+                        "granularity": "week",
+                        "add_delta": "yes",
+                        "date_fields": {
+                            "field_data_field_event_date.field_event_date_value": "field_data_field_event_date.field_event_date_value"
+                        }
+                    }
+                },
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "events": "events"
+                        },
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": 1,
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    }
+                },
+                "path": "events-calendar/week",
+                "menu": {
+                    "type": "tab",
+                    "title": "Week",
+                    "weight": "2",
+                    "name": "main-menu",
+                    "context": 0
+                }
+            }
+        },
+        "page_4": {
+            "display_title": "Event Calendar - Day",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "title": false,
+                    "pager": false,
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false,
+                    "sorts": false,
+                    "arguments": false,
+                    "filter_groups": false,
+                    "filters": false
+                },
+                "title": "Event Calendar Day",
+                "pager": {
+                    "type": "date_views_pager"
+                },
+                "style_plugin": "calendar_style",
+                "style_options": {
+                    "calendar_type": "day",
+                    "name_size": "3",
+                    "mini": "0",
+                    "with_weekno": "0",
+                    "multiday_theme": "1",
+                    "theme_style": "1",
+                    "max_items": "0"
+                },
+                "row_plugin": "calendar_entity",
+                "row_options": {
+                    "inline": {
+                        "title": "title",
+                        "field_event_date": "field_event_date"
+                    },
+                    "separator": " | ",
+                    "colors": {
+                        "calendar_colors_type": {
+                            "advisory": "#ffffff",
+                            "announcements": "#ffffff",
+                            "avy_obs": "#ffffff",
+                            "avalanche_watch": "#ffffff",
+                            "avy_education": "#ffffff",
+                            "forecast": "#ffffff",
+                            "map": "#ffffff",
+                            "page": "#ffffff",
+                            "snowpack_obs": "#ffffff",
+                            "sponsor": "#ffffff",
+                            "story": "#ffffff",
+                            "events": "#ffffff",
+                            "people": "#ffffff",
+                            "rose_test": "#ffffff",
+                            "test_": "#ffffff"
+                        }
+                    }
+                },
+                "sorts": {
+                    "field_event_date_value": {
+                        "id": "field_event_date_value",
+                        "table": "field_data_field_event_date",
+                        "field": "field_event_date_value"
+                    }
+                },
+                "arguments": {
+                    "date_argument": {
+                        "id": "date_argument",
+                        "table": "node",
+                        "field": "date_argument",
+                        "default_action": "default",
+                        "granularity": "day",
+                        "add_delta": "yes",
+                        "date_fields": {
+                            "field_data_field_event_date.field_event_date_value": "field_data_field_event_date.field_event_date_value"
+                        }
+                    }
+                },
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "events": "events"
+                        },
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": 1,
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    }
+                },
+                "path": "events-calendar/day",
+                "menu": {
+                    "type": "tab",
+                    "title": "Day",
+                    "weight": "3",
+                    "name": "main-menu",
+                    "context": 0
+                }
+            }
+        },
+        "page_5": {
+            "display_title": "Event Calendar - Year",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "title": false,
+                    "pager": false,
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false,
+                    "sorts": false,
+                    "arguments": false,
+                    "filter_groups": false,
+                    "filters": false
+                },
+                "title": "Event Calendar Year",
+                "pager": {
+                    "type": "date_views_pager"
+                },
+                "style_plugin": "calendar_style",
+                "style_options": {
+                    "calendar_type": "year",
+                    "name_size": "3",
+                    "mini": "0",
+                    "with_weekno": "0",
+                    "multiday_theme": "1",
+                    "theme_style": "1",
+                    "max_items": "0"
+                },
+                "row_plugin": "calendar_entity",
+                "row_options": {
+                    "inline": {
+                        "title": "title",
+                        "field_event_date": "field_event_date"
+                    },
+                    "separator": " | ",
+                    "colors": {
+                        "calendar_colors_type": {
+                            "advisory": "#ffffff",
+                            "announcements": "#ffffff",
+                            "avy_obs": "#ffffff",
+                            "avalanche_watch": "#ffffff",
+                            "avy_education": "#ffffff",
+                            "forecast": "#ffffff",
+                            "map": "#ffffff",
+                            "page": "#ffffff",
+                            "snowpack_obs": "#ffffff",
+                            "sponsor": "#ffffff",
+                            "story": "#ffffff",
+                            "events": "#ffffff",
+                            "people": "#ffffff",
+                            "rose_test": "#ffffff",
+                            "test_": "#ffffff"
+                        }
+                    }
+                },
+                "sorts": {
+                    "field_event_date_value": {
+                        "id": "field_event_date_value",
+                        "table": "field_data_field_event_date",
+                        "field": "field_event_date_value"
+                    }
+                },
+                "arguments": {
+                    "date_argument": {
+                        "id": "date_argument",
+                        "table": "node",
+                        "field": "date_argument",
+                        "default_action": "default",
+                        "granularity": "year",
+                        "add_delta": "yes",
+                        "date_fields": {
+                            "field_data_field_event_date.field_event_date_value": "field_data_field_event_date.field_event_date_value"
+                        }
+                    }
+                },
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "events": "events"
+                        },
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": 1,
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    }
+                },
+                "path": "events-calendar/year",
+                "menu": {
+                    "type": "tab",
+                    "title": "Year",
+                    "weight": "4",
+                    "name": "main-menu",
+                    "context": 0
+                }
+            }
+        },
+        "block_2": {
+            "display_title": "Event Calendar Block",
+            "display_plugin": "block",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "title": false,
+                    "pager": false,
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false,
+                    "arguments": false
+                },
+                "pager": {
+                    "type": "date_views_pager",
+                    "options": {
+                        "date_id": "mini"
+                    }
+                },
+                "style_plugin": "calendar_style",
+                "style_options": {
+                    "name_size": "3",
+                    "mini": "1",
+                    "with_weekno": "0",
+                    "multiday_theme": "1",
+                    "theme_style": "1",
+                    "max_items": "0"
+                },
+                "row_plugin": "calendar_entity",
+                "row_options": {
+                    "inline": {
+                        "title": "title",
+                        "field_event_date": "field_event_date"
+                    },
+                    "colors": {
+                        "calendar_colors_type": {
+                            "advisory": "#ffffff",
+                            "announcements": "#ffffff",
+                            "avy_obs": "#ffffff",
+                            "avalanche_watch": "#ffffff",
+                            "avy_education": "#ffffff",
+                            "forecast": "#ffffff",
+                            "map": "#ffffff",
+                            "page": "#ffffff",
+                            "snowpack_obs": "#ffffff",
+                            "sponsor": "#ffffff",
+                            "story": "#ffffff",
+                            "events": "#ffffff",
+                            "people": "#ffffff",
+                            "rose_test": "#ffffff",
+                            "test_": "#ffffff"
+                        }
+                    }
+                },
+                "arguments": {
+                    "date_argument": {
+                        "id": "date_argument",
+                        "table": "node",
+                        "field": "date_argument",
+                        "default_action": "default",
+                        "add_delta": "yes",
+                        "date_fields": {
+                            "field_data_field_event_date.field_event_date_value": "field_data_field_event_date.field_event_date_value"
+                        }
+                    }
+                }
+            }
+        },
+        "block_3": {
+            "display_title": "Upcoming Events Block",
+            "display_plugin": "block",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "pager": false,
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false,
+                    "fields": false,
+                    "pager_options": false
+                },
+                "pager": {
+                    "type": "mini",
+                    "options": {
+                        "items_per_page": "5",
+                        "offset": "0",
+                        "id": "0",
+                        "total_pages": "",
+                        "tags": {
+                            "previous": "‹ previous",
+                            "next": "next ›"
+                        },
+                        "expose": {
+                            "items_per_page": 0,
+                            "items_per_page_label": "Items per page",
+                            "items_per_page_options": "5, 10, 20, 40, 60",
+                            "items_per_page_options_all": 0,
+                            "items_per_page_options_all_label": "- All -",
+                            "offset": 0,
+                            "offset_label": "Offset"
+                        }
+                    }
+                },
+                "style_plugin": "list",
+                "row_plugin": "fields",
+                "row_options": {
+                    "inline": {
+                        "title": "title",
+                        "field_event_date": "field_event_date",
+                        "field_price": "field_price"
+                    },
+                    "separator": "<nbsp><nbsp>|<nbsp><nbsp>"
+                },
+                "fields": {
+                    "title": {
+                        "id": "title",
+                        "table": "node",
+                        "field": "title",
+                        "label": ""
+                    },
+                    "field_event_date": {
+                        "id": "field_event_date",
+                        "table": "field_data_field_event_date",
+                        "field": "field_event_date",
+                        "label": "",
+                        "element_label_colon": false,
+                        "settings": {
+                            "format_type": "short",
+                            "fromto": "both",
+                            "multiple_number": "",
+                            "multiple_from": "",
+                            "multiple_to": "",
+                            "show_repeat_rule": "show"
+                        }
+                    },
+                    "field_price": {
+                        "id": "field_price",
+                        "table": "field_data_field_price",
+                        "field": "field_price",
+                        "label": "",
+                        "element_label_colon": false,
+                        "settings": {
+                            "thousand_separator": ",",
+                            "prefix_suffix": 1
+                        }
+                    }
+                },
+                "pager_options": null
+            }
+        },
+        "block_4": {
+            "display_title": "Email Events Block",
+            "display_plugin": "block",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "fields": {
+                    "path": {
+                        "id": "path",
+                        "table": "node",
+                        "field": "path",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": 1,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "absolute": 1
+                    },
+                    "title": {
+                        "id": "title",
+                        "table": "node",
+                        "field": "title",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 1,
+                            "path": "[path]",
+                            "absolute": 1,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "link_to_node": 0
+                    },
+                    "field_event_date": {
+                        "id": "field_event_date",
+                        "table": "field_data_field_event_date",
+                        "field": "field_event_date",
+                        "label": "",
+                        "element_label_colon": false,
+                        "settings": {
+                            "format_type": "short",
+                            "fromto": "both",
+                            "multiple_number": "",
+                            "multiple_from": "",
+                            "multiple_to": "",
+                            "show_repeat_rule": "show"
+                        }
+                    },
+                    "field_price": {
+                        "id": "field_price",
+                        "table": "field_data_field_price",
+                        "field": "field_price",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "span",
+                        "element_class": "price",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "click_sort_column": "value",
+                        "type": "number_integer",
+                        "settings": {
+                            "thousand_separator": ",",
+                            "prefix_suffix": 1
+                        },
+                        "group_column": "value",
+                        "group_columns": [],
+                        "group_rows": true,
+                        "delta_limit": "all",
+                        "delta_offset": 0,
+                        "delta_reversed": false,
+                        "delta_first_last": false,
+                        "multi_type": "separator",
+                        "separator": ", ",
+                        "field_api_classes": 0
+                    },
+                    "field_buy_tickets_link": {
+                        "id": "field_buy_tickets_link",
+                        "table": "field_data_field_buy_tickets_link",
+                        "field": "field_buy_tickets_link",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "click_sort_column": "url",
+                        "type": "link_default",
+                        "settings": [],
+                        "group_column": "",
+                        "group_columns": [],
+                        "group_rows": true,
+                        "delta_limit": "all",
+                        "delta_offset": 0,
+                        "delta_reversed": false,
+                        "delta_first_last": false,
+                        "multi_type": "separator",
+                        "separator": ", ",
+                        "field_api_classes": 0
+                    },
+                    "field_register": {
+                        "id": "field_register",
+                        "table": "field_data_field_register",
+                        "field": "field_register",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 1,
+                            "text": "<div class=\"other-learn-more\">[field_register]</div>",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "click_sort_column": "registration_type",
+                        "type": "registration_link",
+                        "settings": {
+                            "label": "  Wait List"
+                        },
+                        "group_column": "registration_type",
+                        "group_columns": [],
+                        "group_rows": true,
+                        "delta_limit": "all",
+                        "delta_offset": 0,
+                        "delta_reversed": false,
+                        "delta_first_last": false,
+                        "multi_type": "separator",
+                        "separator": ", ",
+                        "field_api_classes": 0
+                    },
+                    "nothing": {
+                        "id": "nothing",
+                        "table": "views",
+                        "field": "nothing",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": true,
+                            "text": "<hr>",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 0
+                    }
+                },
+                "defaults": {
+                    "fields": false,
+                    "pager": false,
+                    "pager_options": false,
+                    "filters": false,
+                    "filter_groups": false,
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false
+                },
+                "pager": {
+                    "type": "none",
+                    "options": {
+                        "offset": "0"
+                    }
+                },
+                "pager_options": null,
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "in",
+                        "value": {
+                            "class": "class",
+                            "events": "events"
+                        },
+                        "group": "0",
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": false,
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "2": 2
+                            },
+                            "reduce": false
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": 1,
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "field_event_date_value": {
+                        "id": "field_event_date_value",
+                        "table": "field_data_field_event_date",
+                        "field": "field_event_date_value",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "between",
+                        "value": {
+                            "min": null,
+                            "max": null,
+                            "value": null,
+                            "type": "date"
+                        },
+                        "group": "1",
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator_label": "",
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "2": 2
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "granularity": "day",
+                        "form_type": "date_select",
+                        "default_date": "now",
+                        "default_to_date": "now +1 month",
+                        "year_range": "-3:+3",
+                        "add_delta": ""
+                    },
+                    "field_event_date_value2": {
+                        "id": "field_event_date_value2",
+                        "table": "field_data_field_event_date",
+                        "field": "field_event_date_value2",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "between",
+                        "value": {
+                            "min": null,
+                            "max": null,
+                            "value": null,
+                            "type": "date"
+                        },
+                        "group": "1",
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator_label": "",
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "2": 2
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "granularity": "day",
+                        "form_type": "date_select",
+                        "default_date": "now",
+                        "default_to_date": "now +1 month",
+                        "year_range": "-3:+3",
+                        "add_delta": ""
+                    }
+                },
+                "filter_groups": {
+                    "operator": "AND",
+                    "groups": {
+                        "1": "AND"
+                    }
+                },
+                "style_plugin": "default",
+                "style_options": {
+                    "grouping": [],
+                    "row_class": "",
+                    "default_row_class": 1,
+                    "row_class_special": 1
+                },
+                "row_plugin": "fields",
+                "row_options": {
+                    "default_field_elements": 1,
+                    "inline": [],
+                    "separator": "",
+                    "hide_empty": 0
+                },
+                "block_description": "emailevents",
+                "display_description": ""
+            }
+        },
+        "feed_2": {
+            "display_title": "iCal Feed",
+            "display_plugin": "feed",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "display_description": "",
+                "style_plugin": "date_ical",
+                "style_options": {
+                    "uses_fields": 0,
+                    "cal_name": "SAC Events",
+                    "no_calname": 0,
+                    "disable_webcal": 0,
+                    "exclude_dtstamp": 0,
+                    "unescape_punctuation": 0
+                },
+                "row_plugin": "date_ical_fields",
+                "row_options": {
+                    "date_field": "field_event_date",
+                    "title_field": "title",
+                    "description_field": "body",
+                    "location_field": "address",
+                    "additional_settings": {
+                        "skip_blank_dates": 0
+                    }
+                },
+                "fields": {
+                    "path": {
+                        "id": "path",
+                        "table": "node",
+                        "field": "path",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "absolute": 1
+                    },
+                    "title": {
+                        "id": "title",
+                        "table": "node",
+                        "field": "title",
+                        "label": ""
+                    },
+                    "field_event_date": {
+                        "id": "field_event_date",
+                        "table": "field_data_field_event_date",
+                        "field": "field_event_date",
+                        "label": "",
+                        "element_label_colon": false,
+                        "settings": {
+                            "format_type": "short",
+                            "fromto": "both",
+                            "multiple_number": "",
+                            "multiple_from": "",
+                            "multiple_to": "",
+                            "show_repeat_rule": "show"
+                        }
+                    },
+                    "field_price": {
+                        "id": "field_price",
+                        "table": "field_data_field_price",
+                        "field": "field_price",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "span",
+                        "element_class": "price",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "click_sort_column": "value",
+                        "type": "number_integer",
+                        "settings": {
+                            "thousand_separator": ",",
+                            "prefix_suffix": 1
+                        },
+                        "group_column": "value",
+                        "group_columns": [],
+                        "group_rows": true,
+                        "delta_limit": "all",
+                        "delta_offset": 0,
+                        "delta_reversed": false,
+                        "delta_first_last": false,
+                        "multi_type": "separator",
+                        "separator": ", ",
+                        "field_api_classes": 0
+                    },
+                    "field_buy_tickets_link": {
+                        "id": "field_buy_tickets_link",
+                        "table": "field_data_field_buy_tickets_link",
+                        "field": "field_buy_tickets_link",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "click_sort_column": "url",
+                        "type": "link_default",
+                        "settings": [],
+                        "group_column": "",
+                        "group_columns": [],
+                        "group_rows": true,
+                        "delta_limit": "all",
+                        "delta_offset": 0,
+                        "delta_reversed": false,
+                        "delta_first_last": false,
+                        "multi_type": "separator",
+                        "separator": ", ",
+                        "field_api_classes": 0
+                    },
+                    "field_register": {
+                        "id": "field_register",
+                        "table": "field_data_field_register",
+                        "field": "field_register",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 1,
+                            "text": "<div class=\"other-learn-more\">[field_register]</div>",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "click_sort_column": "registration_type",
+                        "type": "registration_link",
+                        "settings": {
+                            "label": "  Wait List"
+                        },
+                        "group_column": "registration_type",
+                        "group_columns": [],
+                        "group_rows": true,
+                        "delta_limit": "all",
+                        "delta_offset": 0,
+                        "delta_reversed": false,
+                        "delta_first_last": false,
+                        "multi_type": "separator",
+                        "separator": ", ",
+                        "field_api_classes": 0
+                    },
+                    "body": {
+                        "id": "body",
+                        "table": "field_data_body",
+                        "field": "body",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 1,
+                            "text": "[path]\n[body]\n<br>\n[field_price]\n<br>\n[field_buy_tickets_link][field_register]",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "200",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 1,
+                            "more_link_text": "",
+                            "more_link_path": "[path]",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "click_sort_column": "value",
+                        "type": "text_default",
+                        "settings": {
+                            "trim_length": "200"
+                        },
+                        "group_column": "value",
+                        "group_columns": [],
+                        "group_rows": true,
+                        "delta_limit": "all",
+                        "delta_offset": 0,
+                        "delta_reversed": false,
+                        "delta_first_last": false,
+                        "multi_type": "separator",
+                        "separator": ", ",
+                        "field_api_classes": 0
+                    },
+                    "address": {
+                        "id": "address",
+                        "table": "location",
+                        "field": "address",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "Address",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": 1,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "hide": {
+                            "country": "country",
+                            "locpick": "locpick",
+                            "province_name": "province_name",
+                            "country_name": "country_name",
+                            "coords": "coords",
+                            "name": 0,
+                            "street": 0,
+                            "additional": 0,
+                            "city": 0,
+                            "province": 0,
+                            "postal_code": 0,
+                            "map_link": 0
+                        }
+                    }
+                },
+                "defaults": {
+                    "fields": false
+                },
+                "path": "event-calendar-feed"
+            }
+        }
+    }
+}

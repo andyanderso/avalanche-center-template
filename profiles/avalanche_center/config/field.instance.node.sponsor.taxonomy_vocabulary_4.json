@@ -1,0 +1,40 @@
+{
+    "_config_name": "field.instance.node.sponsor.taxonomy_vocabulary_4",
+    "field_name": "taxonomy_vocabulary_4",
+    "entity_type": "node",
+    "bundle": "sponsor",
+    "deleted": "0",
+    "default_value": null,
+    "description": "",
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "taxonomy_term_reference_link",
+            "weight": "10",
+            "settings": [],
+            "module": "taxonomy"
+        },
+        "teaser": {
+            "label": "above",
+            "module": "taxonomy",
+            "settings": [],
+            "type": "taxonomy_term_reference_link",
+            "weight": 10
+        }
+    },
+    "label": "Sponsorship Level",
+    "required": 1,
+    "settings": {
+        "user_register_form": false
+    },
+    "widget": {
+        "weight": "5",
+        "type": "options_select",
+        "module": "options",
+        "active": 1,
+        "settings": {
+            "maxlength_js_label": "Content limited to @limit characters, remaining: <strong>@remaining</strong>",
+            "apply_chosen": ""
+        }
+    }
+}

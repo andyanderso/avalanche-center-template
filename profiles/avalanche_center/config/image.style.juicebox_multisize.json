@@ -1,0 +1,18 @@
+{
+    "_config_name": "image.style.juicebox_multisize",
+    "overridden": false,
+    "module": null,
+    "label": "Juicebox Multisize (1200px)",
+    "name": "juicebox_multisize",
+    "effects": [
+        {
+            "name": "image_scale",
+            "data": {
+                "width": 1200,
+                "height": 1200,
+                "upscale": 0
+            },
+            "weight": 1
+        }
+    ]
+}

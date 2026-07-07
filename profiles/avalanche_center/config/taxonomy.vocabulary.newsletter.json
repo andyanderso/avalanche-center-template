@@ -1,0 +1,8 @@
+{
+    "_config_name": "taxonomy.vocabulary.newsletter",
+    "name": "Newsletter",
+    "machine_name": "newsletter",
+    "description": "Simplenews newsletter categories.",
+    "hierarchy": "0",
+    "weight": "0"
+}

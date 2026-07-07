@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.instance.node.fwp.field_data_wanted",
+    "field_name": "field_data_wanted",
+    "entity_type": "node",
+    "bundle": "fwp",
+    "deleted": "0",
+    "label": "Data Wanted",
+    "widget": {
+        "weight": "17",
+        "type": "text_textarea",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "rows": "5"
+        }
+    },
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "text_default",
+            "weight": "3",
+            "settings": [],
+            "module": "text"
+        }
+    },
+    "required": 0,
+    "description": "What are you looking for and why?",
+    "default_value": null
+}

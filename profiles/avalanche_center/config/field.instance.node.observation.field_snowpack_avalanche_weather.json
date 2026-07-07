@@ -1,0 +1,82 @@
+{
+    "_config_name": "field.instance.node.observation.field_snowpack_avalanche_weather",
+    "field_name": "field_snowpack_avalanche_weather",
+    "entity_type": "node",
+    "bundle": "observation",
+    "deleted": "0",
+    "label": "Snowpack, Avalanche, Weather Images",
+    "widget": {
+        "weight": "14",
+        "type": "image_image",
+        "module": "image",
+        "active": 1,
+        "settings": {
+            "progress_indicator": "throbber",
+            "preview_image_style": "thumbnail",
+            "browser_view": "image_library"
+        }
+    },
+    "settings": {
+        "file_directory": "",
+        "file_extensions": "png gif jpg jpeg",
+        "max_filesize": "",
+        "alt_field": 1,
+        "title_field": 0,
+        "default_image": 0,
+        "filefield_paths_enabled": 1,
+        "filefield_paths": {
+            "file_path": {
+                "value": "obs-img",
+                "options": {
+                    "slashes": 0,
+                    "pathauto": 0,
+                    "transliterate": 0
+                }
+            },
+            "redirect": false,
+            "retroactive_update": 0,
+            "active_updating": 0,
+            "file_name": {
+                "value": "[current-date:custom:YmdHi]-[file:ffp-name-only-original].[file:ffp-extension-original]",
+                "options": {
+                    "slashes": 0,
+                    "pathauto": 0,
+                    "transliterate": 0
+                }
+            }
+        },
+        "user_register_form": false,
+        "max_dimensions": "",
+        "min_dimensions": "",
+        "alt_field_required": 0,
+        "orientate": 0
+    },
+    "display": {
+        "default": {
+            "type": "colorbox",
+            "module": "colorbox",
+            "weight": "103",
+            "label": "hidden",
+            "settings": {
+                "colorbox_node_style": "juicebox_square_thumbnail",
+                "colorbox_node_style_first": "",
+                "colorbox_image_style": "juicebox_multisize",
+                "colorbox_gallery": "post",
+                "colorbox_gallery_custom": "",
+                "colorbox_caption": "auto",
+                "colorbox_caption_custom": "",
+                "colorbox_multivalue_index": ""
+            }
+        },
+        "teaser": {
+            "type": "hidden",
+            "label": "hidden",
+            "settings": [],
+            "weight": 0
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": null,
+    "default_value_function": null
+}

@@ -1,0 +1,115 @@
+{
+    "_config_name": "field.instance.node.events.field_price",
+    "field_name": "field_price",
+    "entity_type": "node",
+    "bundle": "events",
+    "deleted": "0",
+    "default_value": null,
+    "description": "<p>Please enter the price of this event</p>",
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "number_integer",
+            "weight": "1",
+            "settings": {
+                "decimal_separator": ".",
+                "prefix_suffix": true,
+                "scale": 0,
+                "thousand_separator": ""
+            },
+            "module": "number"
+        },
+        "full": {
+            "label": "inline",
+            "module": "number",
+            "settings": {
+                "decimal_separator": ".",
+                "prefix_suffix": true,
+                "scale": 0,
+                "thousand_separator": ""
+            },
+            "type": "number_integer",
+            "weight": "-2"
+        },
+        "rss": {
+            "label": "inline",
+            "module": "number",
+            "settings": {
+                "decimal_separator": ".",
+                "prefix_suffix": true,
+                "scale": 0,
+                "thousand_separator": ""
+            },
+            "type": "number_integer",
+            "weight": "-2"
+        },
+        "search_index": {
+            "label": "inline",
+            "module": "number",
+            "settings": {
+                "decimal_separator": ".",
+                "prefix_suffix": true,
+                "scale": 0,
+                "thousand_separator": ""
+            },
+            "type": "number_integer",
+            "weight": "-2"
+        },
+        "search_result": {
+            "label": "inline",
+            "module": "number",
+            "settings": {
+                "decimal_separator": ".",
+                "prefix_suffix": true,
+                "scale": 0,
+                "thousand_separator": ""
+            },
+            "type": "number_integer",
+            "weight": "-2"
+        },
+        "teaser": {
+            "label": "inline",
+            "module": "number",
+            "settings": {
+                "decimal_separator": ".",
+                "prefix_suffix": true,
+                "scale": 0,
+                "thousand_separator": ""
+            },
+            "type": "number_integer",
+            "weight": "-2"
+        },
+        "ical": {
+            "label": "inline",
+            "type": "number_integer",
+            "weight": "1",
+            "settings": {
+                "decimal_separator": ".",
+                "prefix_suffix": true,
+                "scale": 0,
+                "thousand_separator": ""
+            },
+            "module": "number"
+        }
+    },
+    "label": "Price",
+    "required": 0,
+    "settings": {
+        "min": "",
+        "max": "",
+        "prefix": "$",
+        "suffix": "",
+        "user_register_form": false
+    },
+    "weight": "-2",
+    "widget": {
+        "weight": "2",
+        "type": "number",
+        "module": "number",
+        "active": 0,
+        "settings": {
+            "maxlength_js_label": "Content limited to @limit characters, remaining: <strong>@remaining</strong>"
+        }
+    },
+    "widget_type": "number"
+}

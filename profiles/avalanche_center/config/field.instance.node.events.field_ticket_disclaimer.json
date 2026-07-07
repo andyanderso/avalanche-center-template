@@ -1,0 +1,84 @@
+{
+    "_config_name": "field.instance.node.events.field_ticket_disclaimer",
+    "field_name": "field_ticket_disclaimer",
+    "entity_type": "node",
+    "bundle": "events",
+    "deleted": "0",
+    "default_value": [
+        {
+            "value": "",
+            "_error_element": "default_value_widget][field_ticket_disclaimer][0][value"
+        }
+    ],
+    "description": "",
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "text_default",
+            "weight": "7",
+            "settings": [],
+            "module": "text"
+        },
+        "full": {
+            "label": "above",
+            "module": "text",
+            "settings": [],
+            "type": "text_default",
+            "weight": "2"
+        },
+        "rss": {
+            "label": "above",
+            "module": "text",
+            "settings": [],
+            "type": "text_default",
+            "weight": "2"
+        },
+        "search_index": {
+            "label": "above",
+            "module": "text",
+            "settings": [],
+            "type": "text_default",
+            "weight": "2"
+        },
+        "search_result": {
+            "label": "above",
+            "module": "text",
+            "settings": [],
+            "type": "text_default",
+            "weight": "2"
+        },
+        "teaser": {
+            "label": "above",
+            "module": "text",
+            "settings": [],
+            "type": "text_default",
+            "weight": "2"
+        },
+        "ical": {
+            "label": "above",
+            "type": "text_default",
+            "weight": "7",
+            "settings": [],
+            "module": "text"
+        }
+    },
+    "label": "Ticket Disclaimer and Redemption Instructions",
+    "required": false,
+    "settings": {
+        "text_processing": "1",
+        "user_register_form": false
+    },
+    "weight": "2",
+    "widget": {
+        "active": "0",
+        "module": "text",
+        "settings": {
+            "default_value_php": null,
+            "rows": "5",
+            "size": 60
+        },
+        "type": "text_textarea",
+        "weight": "8"
+    },
+    "widget_type": "text_textarea"
+}

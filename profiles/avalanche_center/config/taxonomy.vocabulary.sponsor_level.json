@@ -1,0 +1,8 @@
+{
+    "_config_name": "taxonomy.vocabulary.sponsor_level",
+    "name": "Sponsorship Level",
+    "machine_name": "sponsor_level",
+    "description": "",
+    "hierarchy": "0",
+    "weight": "0"
+}

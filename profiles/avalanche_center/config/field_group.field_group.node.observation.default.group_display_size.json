@@ -1,0 +1,26 @@
+{
+    "_config_name": "field_group.field_group.node.observation.default.group_display_size",
+    "group_name": "group_display_size",
+    "entity_type": "node",
+    "bundle": "observation",
+    "mode": "default",
+    "parent_name": "group_avalanche_det_dis",
+    "label": "Size",
+    "weight": "306",
+    "children": [
+        "field_destructive_size",
+        "field_relative_size",
+        "field_avalanche_length",
+        "field_crown_height",
+        "field_avalanche_width"
+    ],
+    "format_type": "fieldset",
+    "format_settings": {
+        "formatter": "collapsible",
+        "instance_settings": {
+            "description": "",
+            "classes": "group-display-size field-group-fieldset",
+            "id": ""
+        }
+    }
+}

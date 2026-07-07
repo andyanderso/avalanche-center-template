@@ -1,0 +1,30 @@
+{
+    "_config_name": "field_group.field_group.node.observation.form.group_avalanche_det",
+    "group_name": "group_avalanche_det",
+    "entity_type": "node",
+    "bundle": "observation",
+    "mode": "form",
+    "parent_name": "group_observation",
+    "label": "Avalanche Details",
+    "weight": "18",
+    "children": [
+        "field_avalanche_type",
+        "field_ob_weak_layer",
+        "field_number_of_similar_avalanch",
+        "group_trigger",
+        "group_terrain",
+        "group_size",
+        "group_people_involved"
+    ],
+    "format_type": "fieldset",
+    "format_settings": {
+        "label": "Avalanche Details",
+        "instance_settings": {
+            "required_fields": 1,
+            "id": "",
+            "classes": "",
+            "description": ""
+        },
+        "formatter": "collapsed"
+    }
+}

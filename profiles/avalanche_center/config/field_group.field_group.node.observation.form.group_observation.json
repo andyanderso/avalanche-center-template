@@ -1,0 +1,32 @@
+{
+    "_config_name": "field_group.field_group.node.observation.form.group_observation",
+    "group_name": "group_observation",
+    "entity_type": "node",
+    "bundle": "observation",
+    "mode": "form",
+    "parent_name": "group_tabs",
+    "label": "Observation",
+    "weight": "11",
+    "children": [
+        "body",
+        "field_snowpack_avalanche_weather",
+        "field_snowpack_avalanche_wx_vids",
+        "field_terrain_alerts",
+        "field_ob_snowpit_photo",
+        "field_conditions_alerts_tax_term",
+        "field_location_coordinates",
+        "field_location",
+        "group_avalanche_det",
+        "group_snowpack",
+        "group_weather"
+    ],
+    "format_type": "htab",
+    "format_settings": {
+        "formatter": "closed",
+        "instance_settings": {
+            "description": "",
+            "classes": "group-observation field-group-htab",
+            "required_fields": 1
+        }
+    }
+}

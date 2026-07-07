@@ -1,0 +1,28 @@
+{
+    "_config_name": "field.field.field_terrain_alerts",
+    "field_name": "field_terrain_alerts",
+    "type": "list_text",
+    "module": "list",
+    "active": 1,
+    "locked": "0",
+    "cardinality": "-1",
+    "translatable": "0",
+    "deleted": "0",
+    "entity_types": [],
+    "settings": {
+        "allowed_values": {
+            "Slopes Steeper than 30 degrees": "Slopes Steeper than 30 degrees",
+            "Obvious Slide Path": "Obvious Slide Path",
+            "Trigger Points": "Trigger Points",
+            "Terrain Traps": "Terrain Traps",
+            "Terrain Matches the Advisory": "Terrain Matches the Advisory"
+        },
+        "allowed_values_function": ""
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "module": "field_sql_storage",
+        "active": 1,
+        "settings": []
+    }
+}

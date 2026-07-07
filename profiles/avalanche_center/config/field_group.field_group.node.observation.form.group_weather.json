@@ -1,0 +1,31 @@
+{
+    "_config_name": "field_group.field_group.node.observation.form.group_weather",
+    "group_name": "group_weather",
+    "entity_type": "node",
+    "bundle": "observation",
+    "mode": "form",
+    "parent_name": "group_observation",
+    "label": "Weather Details",
+    "weight": "19",
+    "children": [
+        "field_blowing_snow_detail",
+        "field_ob_wind_dir",
+        "field_ob_wind_speed",
+        "field_ob_air_temp",
+        "field_sky_cover",
+        "field_highest_precipitation_rate",
+        "field_ob_precip",
+        "field_elevation_of_observation"
+    ],
+    "format_type": "fieldset",
+    "format_settings": {
+        "label": "Weather Details",
+        "instance_settings": {
+            "required_fields": 1,
+            "id": "",
+            "classes": "",
+            "description": ""
+        },
+        "formatter": "collapsed"
+    }
+}

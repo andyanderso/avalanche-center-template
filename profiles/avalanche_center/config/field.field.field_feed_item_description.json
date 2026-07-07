@@ -1,0 +1,19 @@
+{
+    "_config_name": "field.field.field_feed_item_description",
+    "field_name": "field_feed_item_description",
+    "type": "text_with_summary",
+    "module": "text",
+    "active": 1,
+    "locked": "0",
+    "cardinality": "1",
+    "translatable": "1",
+    "deleted": "0",
+    "entity_types": [],
+    "settings": [],
+    "storage": {
+        "type": "field_sql_storage",
+        "module": "field_sql_storage",
+        "active": 1,
+        "settings": []
+    }
+}

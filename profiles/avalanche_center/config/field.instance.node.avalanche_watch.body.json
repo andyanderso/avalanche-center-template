@@ -1,0 +1,50 @@
+{
+    "_config_name": "field.instance.node.avalanche_watch.body",
+    "field_name": "body",
+    "entity_type": "node",
+    "bundle": "avalanche_watch",
+    "deleted": "0",
+    "default_value": null,
+    "description": "",
+    "display": {
+        "default": {
+            "label": "hidden",
+            "module": "text",
+            "settings": [],
+            "type": "text_default",
+            "weight": "0"
+        },
+        "teaser": {
+            "label": "hidden",
+            "module": "text",
+            "settings": {
+                "trim_length": 600
+            },
+            "type": "text_summary_or_trimmed",
+            "weight": 0
+        },
+        "checkout_pane": {
+            "label": "hidden",
+            "module": "text",
+            "settings": [],
+            "type": "text_default",
+            "weight": "0"
+        }
+    },
+    "label": "Body",
+    "required": false,
+    "settings": {
+        "display_summary": true,
+        "text_processing": 1,
+        "user_register_form": false
+    },
+    "widget": {
+        "module": "text",
+        "settings": {
+            "rows": 20,
+            "summary_rows": 5
+        },
+        "type": "text_textarea_with_summary",
+        "weight": "4"
+    }
+}

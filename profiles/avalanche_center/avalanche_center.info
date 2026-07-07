@@ -4,10 +4,15 @@ type = profile
 backdrop = 1.x
 
 ; --- Core module dependencies ---
-; TODO(Phase 6): verify against each reference site's actually-enabled module
-; list (Backdrop stores enabled state in the DB, not in config JSON, so this
-; list was inferred from node/field/view usage, not confirmed against a live
-; site). Cross-check before first install.
+; Cross-checked against system.extensions.json (both sites) during Phase 5 -
+; that file mirrors the DB-stored enabled/disabled state, unlike the rest of
+; config. Confirmed: Commerce, registration, gmap_polygon_field, emfield,
+; hs_taxonomy, media, select_or_other, and term_reference_tree are all
+; disabled on both sites (their config is dead cruft, excluded - see plan
+; §16/§18); "email" is enabled on both sites but its module code isn't
+; present in either reference codebase - needs sourcing from
+; backdropcms.org before first install (field_email on the observation type
+; depends on it structurally, not just optionally).
 dependencies[] = node
 dependencies[] = field
 dependencies[] = field_ui
@@ -35,6 +40,10 @@ dependencies[] = backup_migrate
 dependencies[] = colorbox
 dependencies[] = conditional_fields
 dependencies[] = css_injector
+; Enabled on both reference sites (system.extensions.json), but its module
+; code isn't present in either codebase - source from backdropcms.org.
+; field_email (observation) depends on it.
+dependencies[] = email
 dependencies[] = elysia_cron
 dependencies[] = entity_plus
 dependencies[] = entity_token

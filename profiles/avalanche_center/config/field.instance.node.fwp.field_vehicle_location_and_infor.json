@@ -1,0 +1,38 @@
+{
+    "_config_name": "field.instance.node.fwp.field_vehicle_location_and_infor",
+    "field_name": "field_vehicle_location_and_infor",
+    "entity_type": "node",
+    "bundle": "fwp",
+    "deleted": "0",
+    "label": "Vehicle Location and Information",
+    "widget": {
+        "weight": "10",
+        "type": "field_collection_embed",
+        "module": "field_collection",
+        "active": 0,
+        "settings": []
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "field_collection_table_view",
+            "weight": "12",
+            "settings": {
+                "edit": "",
+                "delete": "",
+                "add": "",
+                "description": 0,
+                "view_mode": "full",
+                "empty": 1,
+                "hide_empty": false
+            },
+            "module": "field_collection_table"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": null
+}

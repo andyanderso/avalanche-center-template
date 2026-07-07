@@ -1,0 +1,38 @@
+{
+    "_config_name": "node.type.avalanche_watch",
+    "type": "avalanche_watch",
+    "name": "Alerta de Avalanchas",
+    "base": "node_content",
+    "module": "node",
+    "description": "Use esto para crear alertas especiales de avalanchas los cuales serán levantados por el SMN.",
+    "help": "",
+    "has_title": true,
+    "title_label": "Title",
+    "modified": true,
+    "disabled": false,
+    "orig_type": "avalanche_watch",
+    "settings": {
+        "status_default": 1,
+        "sticky_enabled": true,
+        "sticky_default": false,
+        "promote_enabled": true,
+        "promote_default": false,
+        "revision_enabled": true,
+        "revision_default": false,
+        "node_preview": "1",
+        "node_submitted": 1,
+        "node_user_picture": true,
+        "language": "0",
+        "menu_default": false,
+        "menu_options": [
+            "main-menu"
+        ],
+        "menu_parent": "main-menu:0",
+        "scheduling_enabled": true,
+        "node_submitted_format": "[node:created:medium] by [node:author]",
+        "hidden_path": "0",
+        "node_permissions": true,
+        "translation_show_links": true
+    },
+    "node_preview": 1
+}

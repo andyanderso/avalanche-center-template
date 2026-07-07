@@ -1,0 +1,27 @@
+{
+    "_config_name": "field_group.field_group.node.observation.form.group_pro_assessment",
+    "group_name": "group_pro_assessment",
+    "entity_type": "node",
+    "bundle": "observation",
+    "mode": "form",
+    "parent_name": "group_tabs",
+    "label": "Professional Assesment",
+    "weight": "13",
+    "children": [
+        "field_today_s_assessed_hazard_be",
+        "field_today_s_assessed_hazard_ne",
+        "field_today_s_assessed_hazard_ab",
+        "field_comments_on_danger_rating_"
+    ],
+    "format_type": "htab",
+    "format_settings": {
+        "label": "Professional Assesment",
+        "instance_settings": {
+            "required_fields": 1,
+            "classes": "",
+            "description": "For stability term definitions please see the SWAG Snow Stability Rating System. You can download the <a href=\"https://static1.squarespace.com/static/59d2a0f0e9bfdf20d6d654b7/t/5a1af2a5652dea2e1a5ea055/1511715529879/AAA_SWAG_Web+2.pdf\">SWAG book here</a> or view the <a href=\"http://infoexhelp.avalancheassociation.ca/wiki/Stability_rating_definition_table\">definitions here</a>.\n<table class=\"stability-table\">\n   <tbody>\n      <tr>\n         <td class=\"stability-table-header\" rowspan=\"2\">Stability rating</td>\n         <td class=\"stability-table-header\" colspan=\"2\">Sensitivity to triggers</td>\n         <td class=\"stability-table-header\" colspan=\"2\">Stability test results</td>\n      </tr>\n      <tr>\n         <td class=\"stability-table-header\">Natural avalanches</td>\n         <td class=\"stability-table-header\">Triggered avalanches</td>\n         <td class=\"stability-table-header\">Test scores</td>\n         <td class=\"stability-table-header\">Fracture character</td>\n      </tr>\n      <tr>\n         <td class=\"stability-table-term\">Very Good (VG)</td>\n         <td class=\"stability-table-info\">No natural avalanches expected.</td>\n         <td class=\"stability-table-info\">Avalanche may be triggered by very heavy loads, such as large cornice falls, in isolated terrain features.</td>\n         <td class=\"stability-table-info\">Generally no results.</td>\n         <td class=\"stability-table-info\">No fracture or non-planar break fractures.</td>\n      </tr>\n      <tr>\n         <td class=\"stability-table-term\">Good (G)</td>\n         <td class=\"stability-table-info\">No natural avalanches expected.</td>\n         <td class=\"stability-table-info\">Avalanches may be triggered by heavy loads in areas in isolated terrain features.</td>\n         <td class=\"stability-table-info\">Generally moderate to hard results.</td>\n         <td class=\"stability-table-info\">Generally resistant or non-planar break fractures.</td>\n      </tr>\n      <tr>\n         <td class=\"stability-table-term\">Fair (F)</td>\n         <td class=\"stability-table-info\">Isolated natural avalanches are expected on specific terrain features.</td>\n         <td class=\"stability-table-info\">Avalanche may be triggered by light loads in areas with specific terrain features or certain snowpack characteristics.</td>\n         <td class=\"stability-table-info\">Generally easy to moderate results.</td>\n         <td class=\"stability-table-info\">Resistant or sudden fractures</td>\n      </tr>\n      <tr>\n         <td class=\"stability-table-term\">Poor (P)</td>\n         <td class=\"stability-table-info\">Natural avalanches are expected in areas with specific terrain features or certain snowpack characteristics.</td>\n         <td class=\"stability-table-info\">Avalanches may be triggered by light loads in many areas with sufficiently steep slopes.</td>\n         <td class=\"stability-table-info\">Generally easy results.</td>\n         <td class=\"stability-table-info\">Generally sudden fractures</td>\n      </tr>\n      <tr>\n         <td class=\"stability-table-term\">Very Poor (VP)</td>\n         <td class=\"stability-table-info\">Widespread natural avalanche expected.</td>\n         <td class=\"stability-table-info\">Widespread triggering of avalanche by light loads.</td>\n         <td class=\"stability-table-info\">Very easy to easy results.</td>\n         <td class=\"stability-table-info\">Sudden fractures.</td>\n      </tr>\n   </tbody>\n</table>\n"
+        },
+        "formatter": "closed",
+        "description": ""
+    }
+}

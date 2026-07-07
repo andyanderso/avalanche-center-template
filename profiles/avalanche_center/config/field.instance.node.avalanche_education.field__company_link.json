@@ -1,0 +1,49 @@
+{
+    "_config_name": "field.instance.node.avalanche_education.field__company_link",
+    "field_name": "field__company_link",
+    "entity_type": "node",
+    "bundle": "avalanche_education",
+    "deleted": "0",
+    "label": " Company Link",
+    "widget": {
+        "weight": "1",
+        "type": "link_field",
+        "module": "link",
+        "active": 0,
+        "settings": []
+    },
+    "settings": {
+        "validate_url": 1,
+        "url": 0,
+        "title": "optional",
+        "title_value": "",
+        "title_maxlength": "128",
+        "display": {
+            "url_cutoff": "80"
+        },
+        "attributes": {
+            "target": "_blank",
+            "rel": "",
+            "class": "",
+            "configurable_title": 0,
+            "title": ""
+        },
+        "rel_remove": "default",
+        "enable_tokens": 1,
+        "user_register_form": false,
+        "title_label_use_field_label": false,
+        "absolute_url": 1
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "link_default",
+            "weight": "5",
+            "settings": [],
+            "module": "link"
+        }
+    },
+    "required": 0,
+    "description": "<p>Please paste a link to your site in this field</p>",
+    "default_value": null
+}

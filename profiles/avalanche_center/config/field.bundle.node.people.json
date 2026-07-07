@@ -1,0 +1,14 @@
+{
+    "_config_name": "field.bundle.node.people",
+    "entity_type": "node",
+    "bundle": "people",
+    "view_modes": [],
+    "extra_fields": {
+        "form": {
+            "title": {
+                "weight": "0"
+            }
+        },
+        "display": []
+    }
+}

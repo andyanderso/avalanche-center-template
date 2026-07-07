@@ -1,0 +1,16 @@
+{
+    "_config_name": "image.style.snowpits",
+    "name": "snowpits",
+    "label": "Snowpits",
+    "effects": [
+        {
+            "weight": "1",
+            "name": "image_scale",
+            "data": {
+                "width": "800",
+                "height": "",
+                "upscale": 0
+            }
+        }
+    ]
+}

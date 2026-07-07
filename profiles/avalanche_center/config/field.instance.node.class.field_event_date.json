@@ -1,0 +1,77 @@
+{
+    "_config_name": "field.instance.node.class.field_event_date",
+    "field_name": "field_event_date",
+    "entity_type": "node",
+    "bundle": "class",
+    "deleted": "0",
+    "label": "Event Date",
+    "widget": {
+        "weight": "2",
+        "type": "date_popup",
+        "module": "date",
+        "active": 1,
+        "settings": {
+            "input_format": "m/d/Y - H:i:s",
+            "input_format_custom": "",
+            "year_range": "-3:+3",
+            "increment": "15",
+            "label_position": "above",
+            "text_parts": [],
+            "display_all_day": 0,
+            "repeat_collapsed": 0
+        }
+    },
+    "settings": {
+        "default_value": "now",
+        "default_value_code": "",
+        "default_value2": "same",
+        "default_value_code2": "",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "date_default",
+            "weight": "3",
+            "settings": {
+                "format_type": "long",
+                "multiple_number": "",
+                "multiple_from": "",
+                "multiple_to": "",
+                "fromto": "both",
+                "show_repeat_rule": "show"
+            },
+            "module": "date"
+        },
+        "teaser": {
+            "label": "hidden",
+            "type": "date_default",
+            "weight": "1",
+            "settings": {
+                "format_type": "short",
+                "fromto": "both",
+                "multiple_number": "",
+                "multiple_from": "",
+                "multiple_to": "",
+                "show_repeat_rule": "show"
+            },
+            "module": "date"
+        },
+        "ical": {
+            "label": "inline",
+            "type": "date_default",
+            "weight": "3",
+            "settings": {
+                "format_type": "long",
+                "multiple_number": "",
+                "multiple_from": "",
+                "multiple_to": "",
+                "fromto": "both",
+                "show_repeat_rule": "show"
+            },
+            "module": "date"
+        }
+    },
+    "required": 0,
+    "description": ""
+}

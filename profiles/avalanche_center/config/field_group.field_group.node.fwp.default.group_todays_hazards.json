@@ -1,0 +1,25 @@
+{
+    "_config_name": "field_group.field_group.node.fwp.default.group_todays_hazards",
+    "group_name": "group_todays_hazards",
+    "entity_type": "node",
+    "bundle": "fwp",
+    "mode": "default",
+    "parent_name": "",
+    "label": "Today's Hazards",
+    "weight": "10",
+    "children": [
+        "field_avalanche_problems",
+        "field_weather_or_snowpack",
+        "field_forecast_confidence",
+        "field_hazard_trend",
+        "field_other_environmental_hazard"
+    ],
+    "format_type": "fieldset",
+    "format_settings": {
+        "formatter": "collapsible",
+        "instance_settings": {
+            "description": "",
+            "classes": "group-todays-hazards field-group-fieldset"
+        }
+    }
+}

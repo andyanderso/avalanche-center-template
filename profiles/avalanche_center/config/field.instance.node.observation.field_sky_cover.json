@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.instance.node.observation.field_sky_cover",
+    "field_name": "field_sky_cover",
+    "entity_type": "node",
+    "bundle": "observation",
+    "deleted": "0",
+    "label": "Sky Cover",
+    "widget": {
+        "weight": "243",
+        "type": "options_select",
+        "module": "options",
+        "active": 1,
+        "settings": {
+            "apply_chosen": ""
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "list_default",
+            "weight": "406",
+            "settings": [],
+            "module": "list"
+        }
+    },
+    "required": 0,
+    "description": "Amount of cloud cover",
+    "default_value_label_token": 0,
+    "default_value": null
+}

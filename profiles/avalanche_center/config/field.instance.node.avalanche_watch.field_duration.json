@@ -1,0 +1,45 @@
+{
+    "_config_name": "field.instance.node.avalanche_watch.field_duration",
+    "field_name": "field_duration",
+    "entity_type": "node",
+    "bundle": "avalanche_watch",
+    "deleted": "0",
+    "default_value": null,
+    "description": "",
+    "display": {
+        "default": {
+            "label": "above",
+            "module": "number",
+            "settings": {
+                "decimal_separator": ".",
+                "prefix_suffix": true,
+                "scale": 0,
+                "thousand_separator": " "
+            },
+            "type": "number_integer",
+            "weight": 1
+        },
+        "teaser": {
+            "label": "above",
+            "settings": [],
+            "type": "hidden",
+            "weight": 0
+        }
+    },
+    "label": "Duration",
+    "required": 1,
+    "settings": {
+        "max": "",
+        "min": "",
+        "prefix": "",
+        "suffix": "hours",
+        "user_register_form": false
+    },
+    "widget": {
+        "active": 0,
+        "module": "number",
+        "settings": [],
+        "type": "number",
+        "weight": "3"
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "_config_name": "field_group.field_group.node.observation.default.group_display_people_involved",
+    "group_name": "group_display_people_involved",
+    "entity_type": "node",
+    "bundle": "observation",
+    "mode": "default",
+    "parent_name": "group_avalanche_det_dis",
+    "label": "People Involved",
+    "weight": "308",
+    "children": [
+        "field_number_of_full_burials",
+        "field_number_of_partial_burials",
+        "field_number_of_people_caught_2"
+    ],
+    "format_type": "fieldset",
+    "format_settings": {
+        "formatter": "collapsible",
+        "instance_settings": {
+            "description": "",
+            "classes": "group-display-people-involved field-group-fieldset",
+            "id": ""
+        }
+    }
+}
