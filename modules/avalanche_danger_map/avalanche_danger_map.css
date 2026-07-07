@@ -12,6 +12,7 @@
   text-decoration: none;
   overflow: hidden;
   border-radius: 4px;
+  border: 1px solid rgba(128,128,128,0.35);
   width: 100%;
 }
 .danger-map-legend .legend-item {
@@ -25,6 +26,10 @@
   text-overflow: ellipsis;
   cursor: pointer;
   transition: opacity 0.15s;
+  box-shadow: inset -1px 0 0 rgba(128,128,128,0.35);
+}
+.danger-map-legend .legend-item:last-child {
+  box-shadow: none;
 }
 .danger-map-legend:hover .legend-item {
   opacity: 0.85;
