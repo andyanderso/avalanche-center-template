@@ -59,6 +59,7 @@
   display: flex;
   flex-direction: column;
   line-height: 1.25;
+  border: 1px solid rgba(128,128,128,0.35);
 }
 .danger-map-popup-rating-level {
   font-weight: bold;
