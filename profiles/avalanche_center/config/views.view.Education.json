@@ -372,7 +372,7 @@
                 },
                 "path": "education",
                 "menu": {
-                    "type": "normal",
+                    "type": "none",
                     "title": "Advisory",
                     "weight": "0"
                 }

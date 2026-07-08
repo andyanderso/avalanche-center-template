@@ -36,6 +36,13 @@ function avalanche_center_install() {
   avalanche_center_force_apply_config(array(
     'user.role.anonymous',
     'user.role.authenticated',
+    // auto_nodetitle ships its own empty-default auto_nodetitle.settings
+    // when the module is enabled, so config_install_default_config() skips
+    // ours (which sets ant_advisory/ant_observation = "1", etc.). Without
+    // this the advisory/observation forms keep showing an editable title
+    // field instead of auto-generating and hiding it. Same overwrite-
+    // protection gotcha as the role configs above.
+    'auto_nodetitle.settings',
   ));
 
   // Declaring themes[] in avalanche_center.info only makes them available -

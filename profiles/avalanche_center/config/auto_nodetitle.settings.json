@@ -1,7 +1,7 @@
 {
     "_config_name": "auto_nodetitle.settings",
     "ant_advisory": "1",
-    "ant_pattern_advisory": "[node:created:custom:Y]-[node:created:custom:m]-[node:created:custom:d] [node:created:custom:h]:[node:created:custom:i]:[node:created:custom:s] - Avalanche Advisory",
+    "ant_pattern_advisory": "Avalanche Advisory - [node:created:custom:n/j/Y]",
     "ant_announcements": "0",
     "ant_pattern_announcements": "",
     "ant_avalanche_education": "0",
@@ -21,13 +21,13 @@
     "ant_feed_item": "0",
     "ant_pattern_feed_item": "",
     "ant_fwp": "1",
-    "ant_pattern_fwp": "[node:created:custom:m-d-Y]-[current-user:field_first_name:name-line]-Field Work Plan",
+    "ant_pattern_fwp": "[node:created:custom:m-d-Y] - Field Work Plan",
     "ant_map": "0",
     "ant_pattern_map": "",
     "ant_media_gallery": 0,
     "ant_pattern_media_gallery": "",
-    "ant_observation": "0",
-    "ant_pattern_observation": "",
+    "ant_observation": "1",
+    "ant_pattern_observation": "[node:field-ob-loc-name] - [node:created:custom:n/j/Y]",
     "ant_page": 0,
     "ant_pattern_page": "",
     "ant_people": "0",
@@ -41,5 +41,5 @@
     "ant_sponsor": "0",
     "ant_pattern_sponsor": "",
     "ant_week_in_review": "1",
-    "ant_pattern_week_in_review": "Week in Review for [node:field-start-of-the-week:value:custom:n/j/Y] - [node:field-start-of-the-week:value2:custom:n/j/Y]"
+    "ant_pattern_week_in_review": "Week in Review - [node:created:custom:n/j/Y]"
 }

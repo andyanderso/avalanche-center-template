@@ -378,7 +378,7 @@
                 },
                 "path": "events",
                 "menu": {
-                    "type": "normal",
+                    "type": "none",
                     "title": "Events",
                     "weight": "0"
                 }
@@ -438,8 +438,8 @@
                         "id": "0",
                         "total_pages": "",
                         "tags": {
-                            "previous": "‹ previous",
-                            "next": "next ›"
+                            "previous": "\u2039 previous",
+                            "next": "next \u203a"
                         },
                         "expose": {
                             "items_per_page": 0,
@@ -599,7 +599,7 @@
                 },
                 "path": "events-calendar/month",
                 "menu": {
-                    "type": "default tab",
+                    "type": "none",
                     "title": "Month",
                     "weight": "0",
                     "context": 0
@@ -724,7 +724,7 @@
                 },
                 "path": "events-calendar/week",
                 "menu": {
-                    "type": "tab",
+                    "type": "none",
                     "title": "Week",
                     "weight": "2",
                     "name": "main-menu",
@@ -839,7 +839,7 @@
                 },
                 "path": "events-calendar/day",
                 "menu": {
-                    "type": "tab",
+                    "type": "none",
                     "title": "Day",
                     "weight": "3",
                     "name": "main-menu",
@@ -954,7 +954,7 @@
                 },
                 "path": "events-calendar/year",
                 "menu": {
-                    "type": "tab",
+                    "type": "none",
                     "title": "Year",
                     "weight": "4",
                     "name": "main-menu",
@@ -1059,8 +1059,8 @@
                         "id": "0",
                         "total_pages": "",
                         "tags": {
-                            "previous": "‹ previous",
-                            "next": "next ›"
+                            "previous": "\u2039 previous",
+                            "next": "next \u203a"
                         },
                         "expose": {
                             "items_per_page": 0,
