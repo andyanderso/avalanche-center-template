@@ -54,6 +54,17 @@ function avalanche_center_install() {
     // themed, not just node pages.
     'layout.layout.default',
     'layout.layout.admin_default',
+    // metatag ships its own metatag.settings default when enabled, so ours
+    // is skipped - and core's default enables only the Open Graph tags, not
+    // the twitter:* Twitter Card tags or fb:* tags. avalanche_social_meta
+    // feeds twitter:image/og:image, so without ours a shared link gets a
+    // Facebook preview card but no Twitter/X card. Ours is a strict superset
+    // of core's enabled tag list (adds twitter:* + fb:*), so forcing it only
+    // turns more available tags on - found by the config-collision sweep.
+    // NOTE: deliberately NOT forcing the metatag.instance.* configs - ours
+    // ship disabled=true, but core's active copies are enabled, which is what
+    // we want (disabling them would switch metatags off entirely).
+    'metatag.settings',
   ));
 
   // Declaring themes[] in avalanche_center.info only makes them available -
