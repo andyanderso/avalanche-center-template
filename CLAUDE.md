@@ -59,10 +59,13 @@ applying the equivalent fixes to the live Gulmarg/Argentina sites.
   under. Full install now reproducible end-to-end: all 63 modules enable,
   all 4 key pages (`/`, `/node/1`, `/avalanche-terms`,
   `/node/add/observation`) return 200, danger map renders on the front
-  page with the demo forecast zone. See AVALANCHE_CENTER_DISTRIBUTION_PLAN.md
-  §20 for the full log. Not yet started: verifying `responsive_sac` as
-  the switched-to *default* theme (only confirmed enabled), Spanish/SAC
-  preset behavior.
+  page with the demo forecast zone. Also verified `responsive_sac` works
+  correctly when switched to be the *default* theme (not just enabled to
+  supply the layout template) - all 4 pages 200, no errors, assets load,
+  danger map unaffected; reverted back to `avalanche_modern` as canonical
+  default afterward. See AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §20 for the
+  full log. Not yet started: Spanish/SAC preset behavior (§10's language
+  selection doesn't functionally translate anything yet).
   Phase 1 done: repo skeleton scaffolded; structural node-type list
   corrected from 2 to 22 types (independently re-verified against
   node.type.*.json on both sites); NAC level-0 grey set to `#939598`.

@@ -1341,12 +1341,25 @@ modules enable, all 4 key pages return 200 (`/`, `/node/1`,
 role permissions are correctly force-applied, `avalanche_modern` is the
 active theme with `responsive_sac` supplying the node/default layout
 template, and the front page renders the danger map block with the demo
-forecast zone's polygon (GeoJSON) and the demo advisory's data. Not yet
-re-verified in this pass: theme switching to `responsive_sac` as the
-*default* theme (only confirmed it's enabled and supplies the layout
-template), and Spanish/`SAC` preset behavior (§10's language selection is
-still non-functional pending real locale support, as already noted in
-Phase 6's log).
+forecast zone's polygon (GeoJSON) and the demo advisory's data.
+
+### Verified: `responsive_sac` also works correctly as the default theme
+
+Switched `system.core.theme_default` to `responsive_sac` (was
+`avalanche_modern`) and flushed caches, without changing anything else.
+Re-checked all 4 key pages plus the front page: all 200, no PHP notices/
+warnings/fatal errors leaked into any response body, correct page titles
+throughout, all of `responsive_sac`'s own CSS assets loaded, and the
+front page's danger map (block, legend, demo forecast zone GeoJSON,
+Leaflet JS) rendered identically to the `avalanche_modern` case. Since
+`responsive_sac` was already the theme supplying the node/default layout
+*template* regardless of which theme is visually active (see the layout-
+plugin-discovery fix above), this mainly confirms the two themes don't
+fight over regions/markup when swapped - they don't. Reverted back to
+`avalanche_modern` as the default afterward, matching the Gulmarg
+baseline decision. Still open: Spanish/`SAC` preset behavior (§10's
+language selection is still non-functional pending real locale support,
+as already noted in Phase 6's log).
 
 ### Not committed as of this log
 
