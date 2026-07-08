@@ -34,54 +34,100 @@ sites onto this distribution).
 
 ## Installing
 
-1. **Set up a Backdrop core webroot.** If you're using DDEV in an empty
-   project directory:
+These steps assume [DDEV](https://ddev.com) and were tested exactly as
+written. `$PROJECT` is wherever you want the site to live and `$REPO` is
+wherever you've cloned/downloaded *this* repo — set them once and every
+command below is copy-paste as-is.
 
-   ```sh
-   ddev config --project-type=backdrop --docroot=. --php-version=8.1 --webserver-type=nginx-fpm
-   ddev start
-   ```
+```sh
+export PROJECT=~/sites/my-avalanche-center   # change to taste
+export REPO=/path/to/avalanche-center-template   # this repo's checkout
+```
 
-   Then place a full Backdrop core checkout at the project root (`core/`,
-   `index.php`, `.htaccess`, `robots.txt`, `LICENSE.txt`, `sites/`, and a
-   `settings.php` — Backdrop core ships a `sites/default/default.settings.php`
-   you copy and rename).
+### 1. Create an empty DDEV project
 
-2. **Add this distribution on top.** Copy this repo's `profiles/`,
-   `modules/`, `themes/`, and `layouts/` directories into the Backdrop
-   webroot, merging with (not replacing) the same top-level directories
-   Backdrop core already ships:
+```sh
+mkdir -p "$PROJECT"
+cd "$PROJECT"
+ddev config --project-type=backdrop --docroot=. --php-version=8.1 --webserver-type=nginx-fpm
+ddev start
+```
 
-   ```sh
-   cp -r profiles/avalanche_center  /path/to/backdrop/profiles/
-   cp -r modules/*                  /path/to/backdrop/modules/
-   cp -r themes/*                   /path/to/backdrop/themes/
-   cp -r layouts/*                  /path/to/backdrop/layouts/
-   ```
+This alone creates `settings.php`/`settings.ddev.php` (and a `drushrc.php`)
+for you — don't copy those from anywhere else. `$PROJECT` should now
+contain just `.ddev/` plus those files, nothing from Backdrop itself yet.
 
-3. **Run the installer** by visiting your site in a browser. Choose
-   **Avalanche Center** as the installation profile when prompted, then let
-   it run through the normal module-install steps (this needs a real
-   browser — the batch progress step is JS-driven and won't complete under
-   something like a plain `curl` request).
+### 2. Add Backdrop CMS core
 
-4. **Fill out the "Center setup" form.** This is the one custom install
-   step the profile adds, right after Backdrop's own site-configuration
-   step and before the install finishes. It asks for:
+This repo is a *profile* distribution, not a full Backdrop install — it
+has no `core/`, `index.php`, or `sites/` of its own. Clone core into a
+scratch location, copy the pieces you need into `$PROJECT`, then discard
+the scratch clone:
 
-   | Field | What it does |
-   |---|---|
-   | Avalanche center name | Becomes the site name and shows in page titles. |
-   | Language | English or Spanish. Spanish currently only records the preference — see [Known limitations](#known-limitations). |
-   | Danger-scale preset | **NAC** (North American) or **SAC** (South American) — picks the color palette and travel-advice text the danger map and legend use. |
-   | Map center latitude/longitude/zoom | Where the danger map centers by default. |
-   | Weather service name/URL *(optional)* | Shown in the theme header/footer. |
-   | Social media URLs *(optional)* | Facebook, Twitter, YouTube, Instagram, email signup — shown wherever the theme surfaces social links. |
+```sh
+git clone --depth 1 https://github.com/backdrop/backdrop.git /tmp/backdrop-core
+cp -r /tmp/backdrop-core/core        "$PROJECT/"
+cp -r /tmp/backdrop-core/sites       "$PROJECT/"
+cp    /tmp/backdrop-core/index.php   "$PROJECT/"
+cp    /tmp/backdrop-core/.htaccess   "$PROJECT/"
+cp    /tmp/backdrop-core/robots.txt  "$PROJECT/"
+rm -rf /tmp/backdrop-core
+```
 
-   Submitting this form also creates one demo forecast-zone region (centered
-   on the map coordinates you gave) and one demo advisory, and points the
-   site's front page at that demo advisory so the danger map has something
-   to show immediately. Delete both once you have real content (see below).
+### 3. Add this distribution
+
+`mkdir -p` first so every `cp` below has a real directory to land in —
+skipping this step is what silently dumps everything as loose siblings at
+the project root instead of nesting it correctly (ask us how we know):
+
+```sh
+mkdir -p "$PROJECT/modules" "$PROJECT/themes" "$PROJECT/profiles" "$PROJECT/layouts"
+cp -r "$REPO"/modules/*             "$PROJECT/modules/"
+cp -r "$REPO"/themes/*              "$PROJECT/themes/"
+cp -r "$REPO"/layouts/*             "$PROJECT/layouts/"
+cp -r "$REPO"/profiles/avalanche_center  "$PROJECT/profiles/"
+```
+
+**Checkpoint — before moving on, confirm `$PROJECT` looks like this**
+(`ls "$PROJECT"`):
+
+```
+core/  layouts/  modules/  profiles/  settings.ddev.php  sites/
+index.php  .htaccess  robots.txt  settings.php  themes/
+```
+
+`modules/`, `themes/`, `layouts/`, and `profiles/` must each be a
+*directory containing things* (`ls "$PROJECT/profiles"` should show
+`avalanche_center`, not `.info`/`.install`/`.profile` files directly at
+`$PROJECT`'s own root). If `avalanche_center.info` or a module name like
+`leaflet` shows up loose at `$PROJECT`'s top level instead of nested one
+level down, something in step 3 landed in the wrong place — delete
+`modules/ themes/ profiles/ layouts/` under `$PROJECT` and redo step 3.
+
+### 4. Run the installer
+
+Visit `https://my-avalanche-center.ddev.site` (or whatever `ddev
+describe` reports) in a real browser — the batch install step is
+JS-driven and won't complete under something like a plain `curl` request.
+Choose **Avalanche Center** as the installation profile when prompted,
+fill out Backdrop's own site-configuration step (creates your admin
+account), then you'll land on this profile's one extra step:
+
+### 5. Fill out the "Center setup" form
+
+| Field | What it does |
+|---|---|
+| Avalanche center name | Becomes the site name and shows in page titles. |
+| Language | English or Spanish. Spanish currently only records the preference — see [Known limitations](#known-limitations). |
+| Danger-scale preset | **NAC** (North American) or **SAC** (South American) — picks the color palette and travel-advice text the danger map and legend use. |
+| Map center latitude/longitude/zoom | Where the danger map centers by default. |
+| Weather service name/URL *(optional)* | Shown in the theme header/footer. |
+| Social media URLs *(optional)* | Facebook, Twitter, YouTube, Instagram, email signup — shown wherever the theme surfaces social links. |
+
+Submitting this form also creates one demo forecast-zone region (centered
+on the map coordinates you gave) and one demo advisory, and points the
+site's front page at that demo advisory so the danger map has something
+to show immediately. Delete both once you have real content (see below).
 
 That's it — the site is live. All 63 modules (4 custom + ~32 contrib +
 Backdrop core dependencies) enable automatically; nothing further needs
