@@ -1357,9 +1357,39 @@ Leaflet JS) rendered identically to the `avalanche_modern` case. Since
 plugin-discovery fix above), this mainly confirms the two themes don't
 fight over regions/markup when swapped - they don't. Reverted back to
 `avalanche_modern` as the default afterward, matching the Gulmarg
-baseline decision. Still open: Spanish/`SAC` preset behavior (§10's
-language selection is still non-functional pending real locale support,
-as already noted in Phase 6's log).
+baseline decision.
+
+### Verified: the SAC color preset works correctly end-to-end
+
+Switched `avalanche_center.settings.danger_scale` to `SAC` and flushed
+caches. `avalanche_danger_map_get_preset()` resolved the correct SAC hex
+values (`#CBCBCB, #007F25, #FFFD4B, #FFA032, #FF0013, #000000`), and —
+more importantly — those exact values (and none of NAC's) showed up in
+the actually-rendered front-page HTML, confirming the preset reaches the
+map/legend markup, not just the PHP layer. This part of §10's "Spanish/
+SAC" pairing was already solid, config-driven work from Phase 3; this
+just confirms it live. Reverted back to `NAC` afterward.
+
+### Investigated: Spanish support can't go further than Phase 6 left it, and shouldn't yet
+
+Checked whether a real `.po` translation could be sourced from the
+Argentina reference codebase rather than manufactured from scratch.
+Found: `locale` module is enabled there and `language_default` is `es`,
+but no `.po` file exists anywhere in either reference codebase (only
+Backdrop core's own test fixtures, e.g. `install.de.po` under
+`core/modules/simpletest/`). Backdrop's `locale` module stores translated
+strings in the database (`locale_string`/`locales_target` tables), not in
+config or any file this static export has access to — so Argentina's
+actual Spanish interface, whatever it says, isn't reachable from anything
+in `~/Siesta_Solutions/Argentina/backdrop/argentina-backdrop/`. Building
+a `.po` file now would mean inventing translations with no way to check
+them against what the real site actually shows. Decided not to: real
+Spanish support is Phase 8 work, done against a live DB dump of
+Argentina's actual site (where the real strings, and Argentina's own
+per-region content-model differences, both get reconciled at once) —
+not invented ahead of time here. Left as-is: `es` records a preference in
+`avalanche_center.settings.language` and does nothing further, same as
+Phase 6 shipped it.
 
 ### Not committed as of this log
 

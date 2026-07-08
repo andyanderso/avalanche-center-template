@@ -63,9 +63,17 @@ applying the equivalent fixes to the live Gulmarg/Argentina sites.
   correctly when switched to be the *default* theme (not just enabled to
   supply the layout template) - all 4 pages 200, no errors, assets load,
   danger map unaffected; reverted back to `avalanche_modern` as canonical
-  default afterward. See AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §20 for the
-  full log. Not yet started: Spanish/SAC preset behavior (§10's language
-  selection doesn't functionally translate anything yet).
+  default afterward. Also verified the SAC color preset live (switched
+  `danger_scale` to SAC, confirmed the correct hex values reached the
+  rendered map/legend HTML, reverted to NAC). Investigated Spanish support
+  and confirmed it can't go further than Phase 6 left it yet: neither
+  reference codebase ships a `.po` file (Backdrop's `locale` module stores
+  translated strings in the database, not in any file this static export
+  can see), so building one now would mean inventing unverified
+  translations — real Spanish support is deferred to Phase 8, against a
+  live DB dump of Argentina's actual site. See
+  AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §20 for the full log. Phase 7 is
+  now fully closed out.
   Phase 1 done: repo skeleton scaffolded; structural node-type list
   corrected from 2 to 22 types (independently re-verified against
   node.type.*.json on both sites); NAC level-0 grey set to `#939598`.
