@@ -149,9 +149,9 @@ function avalanche_center_create_demo_content($lat, $lng) {
     'title' => t('About Us'),
     'body' => array('value' => t('Tell visitors who your center is and what you do. Replace this placeholder page with your own About page.'), 'format' => 'filtered_html'),
   ));
-  $support_page = avalanche_center_demo_node('page', array(
-    'title' => t('Support Us'),
-    'body' => array('value' => t('Explain how visitors can support your center - donations, memberships, volunteering. Replace this placeholder with your own page.'), 'format' => 'filtered_html'),
+  $donate_page = avalanche_center_demo_node('page', array(
+    'title' => t('Donate'),
+    'body' => array('value' => avalanche_center_demo_donate_body(), 'format' => 'full_html'),
   ));
   $contact_page = avalanche_center_demo_node('page', array(
     'title' => t('Contact Us'),
@@ -339,7 +339,7 @@ function avalanche_center_create_demo_content($lat, $lng) {
     avalanche_center_patch_view_term_filter('considerable_sponsors', $display, 'tid', $tids);
   }
 
-  avalanche_center_demo_menu_links($about_page->nid, $support_page->nid, $contact_page->nid, $faq_page->nid);
+  avalanche_center_demo_menu_links($about_page->nid, $donate_page->nid, $contact_page->nid, $faq_page->nid);
 
   // Point the front page at the dedicated home page node (a bodyless "page"
   // node, created above), not at a forecast - matching the Gulmarg/Argentina
@@ -483,6 +483,83 @@ function avalanche_center_demo_node($type, array $values) {
 }
 
 /**
+ * Builds the placeholder Donate-page body.
+ *
+ * Deliberately example content, not a finished page: a center drops its own
+ * donation button/embed into the "Donate Online" box and replaces the
+ * bracketed [tokens] with its real address, tax ID, etc. The prose and the
+ * "Other Ways to Give" categories are genericized from the Gulmarg
+ * (/donate-old) and Argentina (/donate) reference pages - no center-specific
+ * names, addresses, tax IDs, or memorial funds carried over. Rendered with
+ * the full_html format so a pasted payment-provider embed works.
+ *
+ * @return string
+ *   HTML for the node body.
+ */
+function avalanche_center_demo_donate_body() {
+  $intro = t('This is a placeholder Donate page. Replace the example text below with your own donation information, and drop your real donation button or embed into the "Donate Online" box.');
+  $support_h = t('Support the Avalanche Center');
+  $support_p = t('Our avalanche center is a nonprofit organization. We rely on donations, memberships, and fundraising to keep producing daily avalanche forecasts, observations, and education for our community. Please consider making a tax-deductible gift - every contribution helps keep this service free for everyone who travels in avalanche terrain.');
+  $online_h = t('Donate Online');
+  $online_box = t('Add your donation button or embed here.');
+  $online_hint = t('Paste the embed code from your payment provider (PayPal, Stripe, Donorbox, Fundly, GoFundMe, etc.) in place of this box - for example a PayPal "Donate" button, or a simple link like the one below.');
+  $online_link = t('Donate with PayPal');
+  $other_h = t('Other Ways to Give');
+  $mail_h = t('By Mail');
+  $mail_p = t('Prefer to mail a check? Send donations to:');
+  $corp_h = t('Corporate Giving &amp; Sponsorship');
+  $corp_p = t('We rely on the generous support of individuals, corporate partners, resorts, and foundations who share our vision. Corporate contributions and sponsorships directly support our forecasting and education programs. See our current sponsors or contact us to discuss partnership opportunities.');
+  $endow_h = t('Endowment Fund');
+  $endow_p = t('An endowment fund helps ensure the long-term sustainability of avalanche forecasting and awareness in our region. Contact us to learn how you can contribute.');
+  $memorial_h = t('Memorial &amp; Tribute Gifts');
+  $memorial_p = t('Honor a friend, family member, or fellow backcountry traveler with a memorial or tribute gift supporting avalanche awareness and education.');
+  $planned_h = t('Planned Giving');
+  $planned_p = t('Have you thought of including the avalanche center in your estate planning? By naming a nonprofit as a beneficiary of your will or life insurance, you can leave behind a lasting legacy of avalanche safety. Talk to your estate-planning professional for details.');
+  $tax_h = t('Tax Information');
+  $tax_p = t('We are a 501(c)(3) nonprofit organization and donations are tax-deductible to the extent allowed by law. Our tax ID (EIN) is <strong>[your EIN here]</strong>. Recognition on our website is available for individual and corporate donors - email us for details.');
+  $thanks = t('Thank you for your support - we cannot operate without you!');
+
+  return <<<HTML
+<p><em>$intro</em></p>
+
+<h2>$support_h</h2>
+<p>$support_p</p>
+
+<h2>$online_h</h2>
+<div style="border:2px dashed #999; padding:1.5em; text-align:center; background:#f7f7f7;">
+  <p><strong>$online_box</strong></p>
+  <p>$online_hint</p>
+  <p><a href="https://www.paypal.com/donate" target="_blank" rel="noopener">$online_link</a></p>
+</div>
+
+<h2>$other_h</h2>
+
+<h3>$mail_h</h3>
+<p>$mail_p<br />
+[Your Avalanche Center]<br />
+[Street Address]<br />
+[City, State ZIP]</p>
+
+<h3>$corp_h</h3>
+<p>$corp_p</p>
+
+<h3>$endow_h</h3>
+<p>$endow_p</p>
+
+<h3>$memorial_h</h3>
+<p>$memorial_p</p>
+
+<h3>$planned_h</h3>
+<p>$planned_p</p>
+
+<h2>$tax_h</h2>
+<p>$tax_p</p>
+
+<p><em>$thanks</em></p>
+HTML;
+}
+
+/**
  * Creates a set of taxonomy terms in a vocabulary, keyed by name.
  *
  * @param string $vocabulary
@@ -543,14 +620,14 @@ function avalanche_center_patch_view_term_filter($view_name, $display, $filter_i
  *
  * @param int $about_nid
  *   The demo "About Us" page node ID.
- * @param int $support_nid
- *   The demo "Support Us" page node ID.
+ * @param int $donate_nid
+ *   The demo "Donate" page node ID.
  * @param int $contact_nid
  *   The demo "Contact Us" page node ID.
  * @param int $faq_nid
  *   The demo "Frequently Asked Questions" page node ID.
  */
-function avalanche_center_demo_menu_links($about_nid, $support_nid, $contact_nid, $faq_nid) {
+function avalanche_center_demo_menu_links($about_nid, $donate_nid, $contact_nid, $faq_nid) {
   // Main menu - mirrors Gulmarg's live main-menu structure (top-level items
   // and their nesting), pointed at this distribution's own generic paths.
   // Gulmarg's own submenu groups are Observations (-> Submit Observations
@@ -578,7 +655,7 @@ function avalanche_center_demo_menu_links($about_nid, $support_nid, $contact_nid
   avalanche_center_demo_menu_link('main-menu', t('Events'), 'events', -5);
   avalanche_center_demo_menu_link('main-menu', t('Sponsors'), 'sponsors-list', -4);
   avalanche_center_demo_menu_link('main-menu', t('About Us'), 'node/' . $about_nid, -3);
-  avalanche_center_demo_menu_link('main-menu', t('Support Us'), 'node/' . $support_nid, -2);
+  avalanche_center_demo_menu_link('main-menu', t('Donate'), 'node/' . $donate_nid, -2);
 
   avalanche_center_demo_menu_link('menu-doormat-menu', t('Observations'), 'observations', -50);
   avalanche_center_demo_menu_link('menu-doormat-menu', t('Avalanche Terms'), 'avalanche-terms', -49);
