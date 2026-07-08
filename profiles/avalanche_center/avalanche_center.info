@@ -36,6 +36,16 @@ dependencies[] = config
 ; caught by Phase 7's greenfield install: avalanche_modern's template.php
 ; calls backdrop_get_form('search_form') unconditionally in the header.
 dependencies[] = search
+; Found by directly diffing Gulmarg's live enabled-module list (system table)
+; against this file during a demo-site parity pass - all core, already
+; vendored since we ship full Backdrop core, just never declared:
+dependencies[] = admin_bar
+dependencies[] = ckeditor5
+dependencies[] = color
+dependencies[] = contextual
+dependencies[] = dashboard
+dependencies[] = dblog
+dependencies[] = entityreference
 
 ; --- Contrib modules (verified identical across Gulmarg + Argentina, see
 ; AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §2) ---
@@ -58,15 +68,33 @@ dependencies[] = field_group
 dependencies[] = field_permissions
 dependencies[] = geocoder
 dependencies[] = geofield
+; geofield_map is a submodule shipped inside geofield/modules/ - already
+; vendored, just never declared (found via the same live-module diff above).
+dependencies[] = geofield_map
 dependencies[] = geolocation
 dependencies[] = imce
 dependencies[] = job_scheduler
 dependencies[] = leaflet
 dependencies[] = leaflet_widget
+; leaflet_views/leaflet_more_maps are submodules shipped inside
+; leaflet/modules/ - already vendored, just never declared.
+dependencies[] = leaflet_views
+dependencies[] = leaflet_more_maps
 dependencies[] = metatag
+; The submodules that actually output og:/twitter: meta tags into <head> -
+; metatag alone doesn't render anything without them. Already vendored
+; inside metatag/, just never declared.
+dependencies[] = metatag_facebook
+dependencies[] = metatag_opengraph
+dependencies[] = metatag_twitter_cards
+dependencies[] = metatag_views
 dependencies[] = node_clone
 dependencies[] = pathauto
 dependencies[] = rules
+; rules_admin/rules_scheduler are submodules shipped inside rules/ - already
+; vendored, just never declared.
+dependencies[] = rules_admin
+dependencies[] = rules_scheduler
 dependencies[] = scheduler
 dependencies[] = seo_meta
 dependencies[] = simplenews
@@ -74,6 +102,9 @@ dependencies[] = tb_megamenu
 dependencies[] = token_custom
 dependencies[] = token_filter
 dependencies[] = views_bulk_operations
+; actions_permissions is a submodule shipped inside views_bulk_operations/
+; modules/ - already vendored, just never declared.
+dependencies[] = actions_permissions
 dependencies[] = youtube
 
 ; --- Custom modules ---

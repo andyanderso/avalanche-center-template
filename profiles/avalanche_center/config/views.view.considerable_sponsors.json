@@ -15,7 +15,7 @@
                     "type": "views_query",
                     "options": []
                 },
-                "title": "Considerable - Sponsors who donated between $500 and $999 to SAC",
+                "title": "Sponsors",
                 "items_per_page": 0,
                 "use_more_always": false,
                 "access": {
@@ -179,7 +179,7 @@
                     "filter_groups": false,
                     "filters": false
                 },
-                "title": "Summit - Sponsors who donated more than $10,000 to SAC",
+                "title": "Summit Sponsors",
                 "filters": {
                     "type": {
                         "id": "type",
@@ -235,7 +235,7 @@
                     "filter_groups": false,
                     "filters": false
                 },
-                "title": "Extreme - Sponsors who donated more than $5000-$9,999 to SAC",
+                "title": "Extreme Sponsors",
                 "filters": {
                     "type": {
                         "id": "type",
@@ -291,7 +291,7 @@
                     "filter_groups": false,
                     "filters": false
                 },
-                "title": "High - Sponsors who donated between $2500 and $4999 to SAC",
+                "title": "High Sponsors",
                 "filters": {
                     "type": {
                         "id": "type",
@@ -347,7 +347,7 @@
                     "filter_groups": false,
                     "filters": false
                 },
-                "title": "Considerable - Sponsors who donated between $1000 and $2499 to SAC",
+                "title": "Considerable Sponsors",
                 "filters": {
                     "type": {
                         "id": "type",
@@ -404,7 +404,7 @@
                     "filter_groups": false,
                     "filters": false
                 },
-                "title": "Moderate - Sponsors who donated between $500 and $999 to SAC",
+                "title": "Moderate Sponsors",
                 "fields": {
                     "term_node_tid": {
                         "id": "term_node_tid",
@@ -513,7 +513,7 @@
                     "filter_groups": false,
                     "filters": false
                 },
-                "title": "Low - Sponsors who donated between $20 and $499 to SAC",
+                "title": "Low Sponsors",
                 "fields": {
                     "term_node_tid": {
                         "id": "term_node_tid",
@@ -596,7 +596,7 @@
                     "filter_groups": false,
                     "filters": false
                 },
-                "title": "Extreme Sponsors:",
+                "title": "Summit Sponsors",
                 "style_plugin": "responsive_grid",
                 "style_options": {
                     "columns": "5",
@@ -673,7 +673,7 @@
                     "filter_groups": false,
                     "filters": false
                 },
-                "title": "Extreme Sponsors:",
+                "title": "Summit Sponsors",
                 "style_plugin": "slick",
                 "style_options": {
                     "grouping": [],

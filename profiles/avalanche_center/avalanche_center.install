@@ -92,10 +92,22 @@ function avalanche_center_force_apply_config($config_names) {
 }
 
 /**
- * Creates a tiny demo dataset: one forecast-zone region term (with a small
- * square polygon centered on the chosen map center) and one published
- * advisory for it, so the danger map renders something immediately after
- * install instead of the "no current forecast" empty state.
+ * Creates a full demo dataset - two forecast-zone regions with an advisory
+ * each, plus at least one node in every other content type, real menu
+ * links, and the taxonomy terms a couple of shipped Views filter on - so a
+ * fresh install actually looks like a real, populated center site (matching
+ * the Gulmarg/Argentina baseline structurally) instead of one empty page.
+ *
+ * Found via a Phase 7 parity pass against both reference sites' live
+ * databases: the homepage's block placement (layout.layout.node.json) was
+ * already correctly exported back in Phase 5 - every block Gulmarg's
+ * front page actually uses (danger map, sponsors, media gallery, events,
+ * announcements, etc.) is really there. It just had nothing to show,
+ * because (a) menu links and custom-block content are database content in
+ * Backdrop, not config, so Phase 4/5's config-only export correctly never
+ * captured them, and (b) none of the content types those blocks' Views
+ * query had a single node in a fresh install. This function is what fills
+ * that gap. See plan §21.
  *
  * @param float $lat
  *   Map center latitude, from the setup form.
@@ -103,30 +115,303 @@ function avalanche_center_force_apply_config($config_names) {
  *   Map center longitude, from the setup form.
  */
 function avalanche_center_create_demo_content($lat, $lng) {
-  // Build a small square polygon (roughly +/- 5.5km) around the map
-  // center as placeholder forecast-zone geometry.
   module_load_include('inc', 'geofield', 'libraries/geophp/geoPHP');
+
+  $page_category = avalanche_center_demo_terms('page_category', array('skiday'));
+  $class_type = avalanche_center_demo_terms('class_type', array('general', 'snowmobile'));
+  $sponsor_level = avalanche_center_demo_terms('sponsor_level', array(
+    'Summit', 'Extreme', 'High', 'Considerable', 'Moderate', 'Low',
+  ));
+
+  // Two forecast zones, offset from the map center so they don't overlap,
+  // each with its own advisory - a single-region demo undersells centers
+  // that forecast for more than one zone, which is the norm, not the
+  // exception, on both reference sites.
+  $region_a = avalanche_center_demo_region(t('North Zone'), $lat, $lng, 0.12, -0.03);
+  $region_b = avalanche_center_demo_region(t('South Zone'), $lat, $lng, -0.12, 0.03);
+  $advisory_a = avalanche_center_demo_advisory($region_a, 1, t('This is a demo advisory created automatically at install so the danger map has something to show. Replace it with a real forecast, or delete it.'));
+  avalanche_center_demo_advisory($region_b, 2, t('A second demo advisory for the second demo forecast zone. Replace it with a real forecast, or delete it.'));
+
+  // One demo "page" node per generic destination the demo menus below
+  // link to - real centers will have their own About/Contact/etc. pages,
+  // these just mean the menus aren't pointing at nothing out of the box.
+  $about_page = avalanche_center_demo_node('page', array(
+    'title' => t('About Us'),
+    'body' => array('value' => t('Tell visitors who your center is and what you do. Replace this placeholder page with your own About page.'), 'format' => 'filtered_html'),
+  ));
+  $support_page = avalanche_center_demo_node('page', array(
+    'title' => t('Support Us'),
+    'body' => array('value' => t('Explain how visitors can support your center - donations, memberships, volunteering. Replace this placeholder with your own page.'), 'format' => 'filtered_html'),
+  ));
+  $contact_page = avalanche_center_demo_node('page', array(
+    'title' => t('Contact Us'),
+    'body' => array('value' => t('Add your center\'s contact details here. Replace this placeholder with your own page.'), 'format' => 'filtered_html'),
+  ));
+  $faq_page = avalanche_center_demo_node('page', array(
+    'title' => t('Frequently Asked Questions'),
+    'body' => array('value' => t('Answer the questions your visitors ask most. Replace this placeholder with your own page.'), 'format' => 'filtered_html'),
+  ));
+
+  // The sponsor-tier home-page blocks also filter on expiration date being
+  // in the future, so give the demo sponsor one.
+  avalanche_center_demo_node('sponsor', array(
+    'title' => t('Example Sponsor'),
+    'field_sponsor_name' => array('value' => t('Example Sponsor')),
+    'field_sponsor_link' => array('url' => 'https://example.com', 'title' => t('Example Sponsor')),
+    'field_expiration_date' => array('value' => date('Y-m-d H:i:s', strtotime('+1 year'))),
+    'taxonomy_vocabulary_4' => array('tid' => $sponsor_level['Summit']),
+  ));
+
+  avalanche_center_demo_node('announcements', array(
+    'title' => t('Welcome to Our New Website'),
+    'body' => array('value' => t('This is a demo announcement. Replace it with your own site news.'), 'format' => 'filtered_html'),
+  ));
+
+  // The events_upcoming view filters on the event's *end* date (value2)
+  // being in the future, so demo events need both a start and an end date
+  // (field_event_date's todate is "optional"), or they never show as
+  // "upcoming".
+  avalanche_center_demo_node('events', array(
+    'title' => t('Community Ski Day'),
+    'body' => array('value' => t('A demo community ski day event.'), 'format' => 'filtered_html'),
+    'field_event_date' => array('value' => date('Y-m-d H:i:s', strtotime('+2 weeks')), 'value2' => date('Y-m-d H:i:s', strtotime('+2 weeks +4 hours'))),
+    'field_page_category' => array('tid' => $page_category['skiday']),
+  ));
+  avalanche_center_demo_node('events', array(
+    'title' => t('Avalanche Awareness Night'),
+    'body' => array('value' => t('A demo public awareness event.'), 'format' => 'filtered_html'),
+    'field_event_date' => array('value' => date('Y-m-d H:i:s', strtotime('+3 weeks')), 'value2' => date('Y-m-d H:i:s', strtotime('+3 weeks +2 hours'))),
+  ));
+
+  avalanche_center_demo_node('class', array(
+    'title' => t('Introduction to Avalanche Safety'),
+    'body' => array('value' => t('A demo introductory avalanche safety class.'), 'format' => 'filtered_html'),
+    'field_event_date' => array('value' => date('Y-m-d H:i:s', strtotime('+1 month')), 'value2' => date('Y-m-d H:i:s', strtotime('+1 month +3 hours'))),
+    'field_class_type' => array('tid' => $class_type['general']),
+  ));
+  avalanche_center_demo_node('class', array(
+    'title' => t('Snowmobiler Avalanche Awareness'),
+    'body' => array('value' => t('A demo avalanche safety class for snowmobilers.'), 'format' => 'filtered_html'),
+    'field_event_date' => array('value' => date('Y-m-d H:i:s', strtotime('+5 weeks')), 'value2' => date('Y-m-d H:i:s', strtotime('+5 weeks +3 hours'))),
+    'field_class_type' => array('tid' => $class_type['snowmobile']),
+  ));
+
+  avalanche_center_demo_node('week_in_review', array(
+    'title' => t('Week in Review'),
+    'body' => array('value' => t('A demo weekly summary of conditions and observations.'), 'format' => 'filtered_html'),
+  ));
+
+  avalanche_center_demo_node('observation', array(
+    'title' => t('Demo Observation'),
+    'field_is_this_an_avalanche_obser' => array('value' => 0),
+    'field_ob_date_time' => array('value' => date('Y-m-d H:i:s')),
+    'field_ob_loc_name' => array('value' => t('Near the demo forecast zone')),
+    'field_published_ob' => array('value' => 'yes'),
+    'field_share_this_observation_' => array('value' => 'yes'),
+  ));
+
+  avalanche_center_demo_node('avalanche_education', array(
+    'title' => t('Avalanche Education Program'),
+    'body' => array('value' => t('A demo overview of your education program.'), 'format' => 'filtered_html'),
+  ));
+
+  avalanche_center_demo_node('avalanche_watch', array(
+    'title' => t('Avalanche Watch'),
+    'body' => array('value' => t('A demo avalanche watch, issued ahead of a forecast when conditions may warrant one.'), 'format' => 'filtered_html'),
+    'field_duration' => array('value' => 48),
+    'field_expected_danger_rating' => array('value' => 'Considerable'),
+    'field_overalldanger' => array('value' => 3),
+  ));
+
+  avalanche_center_demo_node('banner_ad', array(
+    'title' => t('Example Sponsor Banner'),
+    'body' => array('value' => t('A demo sponsor banner ad.'), 'format' => 'filtered_html'),
+    'field_expiration_date' => array('value' => date('Y-m-d H:i:s', strtotime('+1 year'))),
+  ));
+
+  avalanche_center_demo_node('card', array(
+    'title' => t('Featured Card'),
+    'body' => array('value' => t('A demo featured content card.'), 'format' => 'filtered_html'),
+  ));
+
+  avalanche_center_demo_node('custom_map', array(
+    'title' => t('Custom Map Example'),
+    'field_map_region' => array('geom' => sprintf('POINT(%F %F)', $lng, $lat)),
+    'field_region_color' => array('value' => '#FF0000'),
+  ));
+
+  avalanche_center_demo_node('feed_item', array(
+    'title' => t('Feed Item Example'),
+    'field_feed_item_description' => array('value' => t('A demo feed item description.'), 'format' => 'filtered_html'),
+  ));
+
+  avalanche_center_demo_node('feed', array(
+    'title' => t('Feed Example'),
+  ));
+
+  avalanche_center_demo_node('fwp', array(
+    'title' => t('Field Work Plan Example'),
+    'field_terrain_choice' => array('value' => t('Demo terrain choice notes.'), 'format' => 'filtered_html'),
+    'field_field_work_date' => array('value' => date('Y-m-d H:i:s')),
+  ));
+
+  avalanche_center_demo_node('map', array(
+    'title' => t('Site Map'),
+    'body' => array('value' => t('A demo site map page.'), 'format' => 'filtered_html'),
+  ));
+
+  avalanche_center_demo_node('media_gallery', array(
+    'title' => t('Photo Gallery Example'),
+  ));
+
+  avalanche_center_demo_node('post', array(
+    'title' => t('Sample Blog Post'),
+    'body' => array('value' => t('A demo blog-style post.'), 'format' => 'filtered_html'),
+  ));
+
+  avalanche_center_demo_node('simplenews', array(
+    'title' => t('Sample Newsletter Issue'),
+    'body' => array('value' => t('A demo newsletter issue.'), 'format' => 'filtered_html'),
+  ));
+
+  avalanche_center_demo_node('snowpack_summary', array(
+    'title' => t('Snowpack Summary Example'),
+    'field_bottom_line' => array('value' => t('A demo snowpack summary bottom line.'), 'format' => 'filtered_html'),
+    'field_disclaimer' => array('value' => t('Demo disclaimer text.'), 'format' => 'filtered_html'),
+    'field_duration' => array('value' => 24),
+    'field_forecast_region' => array('tid' => $region_a),
+  ));
+
+  // People, tagged with the field_display_order values the shipped
+  // advisory_board view's "board"/"forecasters"/"non-profit-staff" page
+  // displays each filter on (see plan §21) - without these, those 3 menu-
+  // archives destinations would be empty pages.
+  avalanche_center_demo_node('people', array(
+    'title' => t('Jane Doe'),
+    'field_sac_people_name' => array('value' => t('Jane Doe')),
+    'field_display_order' => array('value' => 1),
+  ));
+  avalanche_center_demo_node('people', array(
+    'title' => t('John Smith'),
+    'field_sac_people_name' => array('value' => t('John Smith')),
+    'field_display_order' => array('value' => 9),
+  ));
+  avalanche_center_demo_node('people', array(
+    'title' => t('Alex Lee'),
+    'field_sac_people_name' => array('value' => t('Alex Lee')),
+    'field_display_order' => array('value' => 6),
+  ));
+
+  // ski_days/snowmobile_classes (profiles/avalanche_center/config/) filter
+  // on a hardcoded taxonomy term ID copied straight from Gulmarg's own
+  // database - meaningless on a fresh install, where term IDs are assigned
+  // at creation time above. Patch both views to point at the real ones.
+  avalanche_center_patch_view_term_filter('ski_days', 'default', 'field_page_category_tid', array($page_category['skiday']));
+  avalanche_center_patch_view_term_filter('snowmobile_classes', 'default', 'field_class_type_tid', array($class_type['snowmobile']));
+
+  // The considerable_sponsors view has one block display per sponsor tier,
+  // each with a hardcoded sponsor_level term ID from Gulmarg's database
+  // (block_1 = Extreme = tid 2, ... block_8 = Summit = tid 17). Repoint each
+  // at the tier term this install just created so the tier blocks on the
+  // home page actually match the demo sponsor. Same hardcoded-tid problem as
+  // ski_days above.
+  $sponsor_tier_blocks = array(
+    'block_1' => array($sponsor_level['Extreme']),
+    'block_2' => array($sponsor_level['High']),
+    'block_3' => array($sponsor_level['Considerable']),
+    'block_4' => array($sponsor_level['Moderate']),
+    'block_5' => array($sponsor_level['Low']),
+    'block_6' => array($sponsor_level['Summit']),
+    'block_7' => array($sponsor_level['Summit']),
+    'block_8' => array($sponsor_level['Summit']),
+  );
+  foreach ($sponsor_tier_blocks as $display => $tids) {
+    avalanche_center_patch_view_term_filter('considerable_sponsors', $display, 'tid', $tids);
+  }
+
+  avalanche_center_demo_menu_links($about_page->nid, $support_page->nid, $contact_page->nid, $faq_page->nid);
+
+  // The danger map block (layout.layout.node.json) is only visible on
+  // <front> - matching the Gulmarg/Argentina baseline, where site_frontpage
+  // points at a specific advisory node (Gulmarg: node/5950), not core's
+  // "node" promoted-content-listing default. Without this, the map never
+  // renders anywhere: core's default front page doesn't match the node/%
+  // layout at all, and this node isn't promoted so it wouldn't appear
+  // there regardless. Point the front page at the first demo advisory so
+  // the map has somewhere it's actually configured to show; a real center
+  // repoints this once they have their own advisory/landing content, same
+  // as Gulmarg/Argentina did.
+  config_set('system.core', 'site_frontpage', 'node/' . $advisory_a->nid);
+
+  // Many home-page blocks (media gallery, announcements, sponsor tiers,
+  // etc.) carry a path-visibility condition of "home", not "<front>" - and
+  // on both reference sites the front-page node is aliased to "home", which
+  // is what makes those conditions match. Without the alias only the
+  // handful of blocks conditioned on "<front>" render, leaving the home
+  // page half-empty. Give the front advisory the same "home" alias so the
+  // shipped layout's block visibility conditions resolve as designed.
+  $alias = array('source' => 'node/' . $advisory_a->nid, 'alias' => 'home');
+  path_save($alias);
+}
+
+/**
+ * Creates a forecast-zone region term with a small placeholder polygon.
+ *
+ * @param string $name
+ *   Term name.
+ * @param float $lat
+ *   Map center latitude.
+ * @param float $lng
+ *   Map center longitude.
+ * @param float $lat_offset
+ *   Degrees to offset the polygon's center from $lat, so multiple demo
+ *   zones don't overlap.
+ * @param float $lng_offset
+ *   Degrees to offset the polygon's center from $lng.
+ *
+ * @return int
+ *   The new term's tid.
+ */
+function avalanche_center_demo_region($name, $lat, $lng, $lat_offset, $lng_offset) {
+  $center_lat = $lat + $lat_offset;
+  $center_lng = $lng + $lng_offset;
   $delta = 0.05;
   $wkt = sprintf(
     'POLYGON((%F %F, %F %F, %F %F, %F %F, %F %F))',
-    $lng - $delta, $lat - $delta,
-    $lng + $delta, $lat - $delta,
-    $lng + $delta, $lat + $delta,
-    $lng - $delta, $lat + $delta,
-    $lng - $delta, $lat - $delta
+    $center_lng - $delta, $center_lat - $delta,
+    $center_lng + $delta, $center_lat - $delta,
+    $center_lng + $delta, $center_lat + $delta,
+    $center_lng - $delta, $center_lat + $delta,
+    $center_lng - $delta, $center_lat - $delta
   );
 
-  // taxonomy_term_save() and node_save() type-hint against the Entity API's
-  // TaxonomyTerm/Node classes, not stdClass - entity_create() returns the
-  // right class for each (TaxonomyTerm's bundle key is 'vocabulary', per
-  // taxonomy_entity_info()'s 'bundle keys').
+  // taxonomy_term_save() type-hints against the Entity API's TaxonomyTerm
+  // class, not stdClass - entity_create() returns the right class
+  // (TaxonomyTerm's bundle key is 'vocabulary', per taxonomy_entity_info()'s
+  // 'bundle keys').
   $term = entity_create('taxonomy_term', array('vocabulary' => 'region'));
-  $term->name = t('Demo Forecast Zone');
+  $term->name = $name;
   $term->description = t('Placeholder forecast zone created at install. Replace with your real forecast zones, or delete this one.');
   $term->format = filter_default_format();
   $term->field_region_map[LANGUAGE_NONE][0]['geom'] = $wkt;
   taxonomy_term_save($term);
+  return $term->tid;
+}
 
+/**
+ * Creates a demo advisory for a forecast-zone region.
+ *
+ * @param int $region_tid
+ *   The region term's tid to reference.
+ * @param int $danger_level
+ *   Overall danger level (1-5) for this demo advisory.
+ * @param string $bottom_line
+ *   Bottom-line text.
+ *
+ * @return Node
+ *   The saved advisory node.
+ */
+function avalanche_center_demo_advisory($region_tid, $danger_level, $bottom_line) {
   $node = entity_create('node', array('type' => 'advisory'));
   node_object_prepare($node);
   $node->title = t('Demo Avalanche Advisory');
@@ -135,13 +420,13 @@ function avalanche_center_create_demo_content($lat, $lng) {
   $node->promote = 0;
   $node->uid = 1;
 
-  $node->field_forecast_region[LANGUAGE_NONE][0]['tid'] = $term->tid;
-  $node->field_overalldanger[LANGUAGE_NONE][0]['value'] = 1;
+  $node->field_forecast_region[LANGUAGE_NONE][0]['tid'] = $region_tid;
+  $node->field_overalldanger[LANGUAGE_NONE][0]['value'] = $danger_level;
   $node->field_danger_rating_1[LANGUAGE_NONE][0]['value'] = 'Low';
   $node->field_danger_rating_2[LANGUAGE_NONE][0]['value'] = 'Low';
   $node->field_danger_rating_3[LANGUAGE_NONE][0]['value'] = 'Low';
   $node->field_duration[LANGUAGE_NONE][0]['value'] = 24;
-  $node->field_bottom_line[LANGUAGE_NONE][0]['value'] = t('This is a demo advisory created automatically at install so the danger map has something to show. Replace it with a real forecast, or delete it.');
+  $node->field_bottom_line[LANGUAGE_NONE][0]['value'] = $bottom_line;
   $node->field_bottom_line[LANGUAGE_NONE][0]['format'] = filter_default_format();
 
   // field_rose_{1,2,3} (danger_rose_picker, from the danger_rose module) are
@@ -155,16 +440,182 @@ function avalanche_center_create_demo_content($lat, $lng) {
   }
 
   node_save($node);
+  return $node;
+}
 
-  // The danger map block (layout.layout.node.json) is only visible on
-  // <front> - matching the Gulmarg/Argentina baseline, where site_frontpage
-  // points at a specific advisory node (Gulmarg: node/5950), not core's
-  // "node" promoted-content-listing default. Without this, the map never
-  // renders anywhere: core's default front page doesn't match the node/%
-  // layout at all, and this node isn't promoted (see $node->promote above)
-  // so it wouldn't appear there regardless. Point the front page at the
-  // demo node so the map has somewhere it's actually configured to show;
-  // a real center repoints this once they have their own advisory/landing
-  // content, same as Gulmarg/Argentina did.
-  config_set('system.core', 'site_frontpage', 'node/' . $node->nid);
+/**
+ * Creates one demo node of a given content type.
+ *
+ * @param string $type
+ *   Node type machine name.
+ * @param array $values
+ *   Field values keyed by field name (or 'title'). Each non-title value is
+ *   assigned as-is to $node->{field}[LANGUAGE_NONE][0], so pass the exact
+ *   shape that field type expects (e.g. array('value' => ...) for a text
+ *   field, array('tid' => ...) for a term reference, array('geom' => ...)
+ *   for a geofield).
+ *
+ * @return Node
+ *   The saved node.
+ */
+function avalanche_center_demo_node($type, array $values) {
+  $node = entity_create('node', array('type' => $type));
+  node_object_prepare($node);
+  $node->language = LANGUAGE_NONE;
+  $node->status = 1;
+  $node->promote = 0;
+  $node->uid = 1;
+  $node->title = $values['title'];
+  unset($values['title']);
+
+  foreach ($values as $field => $value) {
+    $node->{$field}[LANGUAGE_NONE][0] = $value;
+  }
+
+  node_save($node);
+  return $node;
+}
+
+/**
+ * Creates a set of taxonomy terms in a vocabulary, keyed by name.
+ *
+ * @param string $vocabulary
+ *   Vocabulary machine name.
+ * @param array $names
+ *   Term names to create.
+ *
+ * @return array
+ *   Map of name => new tid.
+ */
+function avalanche_center_demo_terms($vocabulary, array $names) {
+  $tids = array();
+  foreach ($names as $name) {
+    $term = entity_create('taxonomy_term', array('vocabulary' => $vocabulary));
+    $term->name = $name;
+    taxonomy_term_save($term);
+    $tids[$name] = $term->tid;
+  }
+  return $tids;
+}
+
+/**
+ * Patches a shipped view's taxonomy-term filter to a real tid.
+ *
+ * ski_days/snowmobile_classes (profiles/avalanche_center/config/) were
+ * copied from Gulmarg's own exported config with their term-ID filter
+ * values intact - meaningless on any other install, since taxonomy term
+ * IDs are assigned per-database at creation time, not portable structural
+ * data. Same force-apply pattern as avalanche_center_force_apply_config(),
+ * but editing one nested filter value instead of replacing the whole file.
+ *
+ * @param string $view_name
+ *   View machine name (e.g. 'ski_days').
+ * @param string $display
+ *   The display whose filter to patch (e.g. 'default', 'block_1').
+ * @param string $filter_id
+ *   The filter's key in that display's display_options.filters (e.g.
+ *   'field_page_category_tid').
+ * @param array $tids
+ *   The real term IDs to filter on.
+ */
+function avalanche_center_patch_view_term_filter($view_name, $display, $filter_id, array $tids) {
+  $config = config('views.view.' . $view_name);
+  $path = "display.$display.display_options.filters.$filter_id.value";
+  $config->set($path, array_map('strval', $tids));
+  $config->save();
+}
+
+/**
+ * Creates the main/footer/secondary menu links a fresh install otherwise
+ * has none of - menu links are database content in Backdrop, not config,
+ * so profiles/avalanche_center/config/'s menu.menu.*.json files only ship
+ * the empty menu containers. Structure (which menus, how many levels)
+ * mirrors Gulmarg/Argentina's actual live main-menu/footer/about/archives/
+ * contact menus; labels and destinations are generic, pointing at this
+ * distribution's own real paths and the demo pages created above - not
+ * copied verbatim from either site's site-specific link text/URLs.
+ *
+ * @param int $about_nid
+ *   The demo "About Us" page node ID.
+ * @param int $support_nid
+ *   The demo "Support Us" page node ID.
+ * @param int $contact_nid
+ *   The demo "Contact Us" page node ID.
+ * @param int $faq_nid
+ *   The demo "Frequently Asked Questions" page node ID.
+ */
+function avalanche_center_demo_menu_links($about_nid, $support_nid, $contact_nid, $faq_nid) {
+  $advisory_mlid = avalanche_center_demo_menu_link('main-menu', t('Advisory'), 'advisory', -5);
+  avalanche_center_demo_menu_link('main-menu', t('Submit Observations'), 'node/add/observation', 0, $advisory_mlid);
+
+  $events_mlid = avalanche_center_demo_menu_link('main-menu', t('Events'), 'events', -2);
+  avalanche_center_demo_menu_link('main-menu', t('Month'), 'events-calendar/month', 0, $events_mlid);
+  avalanche_center_demo_menu_link('main-menu', t('Week'), 'events-calendar/week', 1, $events_mlid);
+  avalanche_center_demo_menu_link('main-menu', t('Day'), 'events-calendar/day', 2, $events_mlid);
+  avalanche_center_demo_menu_link('main-menu', t('Year'), 'events-calendar/year', 3, $events_mlid);
+
+  avalanche_center_demo_menu_link('main-menu', t('Home'), '<front>', -10);
+  avalanche_center_demo_menu_link('main-menu', t('Observations'), 'observations', -4);
+  avalanche_center_demo_menu_link('main-menu', t('Education'), 'education', -3);
+  avalanche_center_demo_menu_link('main-menu', t('Sponsors'), 'sponsors-list', -1);
+  avalanche_center_demo_menu_link('main-menu', t('About Us'), 'node/' . $about_nid, 0);
+  avalanche_center_demo_menu_link('main-menu', t('Support Us'), 'node/' . $support_nid, 1);
+
+  avalanche_center_demo_menu_link('menu-doormat-menu', t('Observations'), 'observations', -50);
+  avalanche_center_demo_menu_link('menu-doormat-menu', t('Avalanche Terms'), 'avalanche-terms', -49);
+  avalanche_center_demo_menu_link('menu-doormat-menu', t('Events'), 'events', -48);
+  avalanche_center_demo_menu_link('menu-doormat-menu', t('RSS Feed'), 'rss.xml', -47);
+  avalanche_center_demo_menu_link('menu-doormat-menu', t('Email Subscriptions'), 'newsletter/subscriptions', -46);
+
+  avalanche_center_demo_menu_link('menu-about', t('News and Announcements'), 'news', -10);
+  avalanche_center_demo_menu_link('menu-about', t('About Us'), 'node/' . $about_nid, -9);
+  avalanche_center_demo_menu_link('menu-about', t('Contact Us'), 'node/' . $contact_nid, -8);
+
+  avalanche_center_demo_menu_link('menu-archives', t('Forecasters'), 'forecasters', -10);
+  avalanche_center_demo_menu_link('menu-archives', t('Board of Directors'), 'board', -9);
+  avalanche_center_demo_menu_link('menu-archives', t('Non Profit Staff'), 'non-profit-staff', -8);
+
+  avalanche_center_demo_menu_link('menu-contact', t('Frequently Asked Questions'), 'node/' . $faq_nid, -50);
+
+  avalanche_center_demo_menu_link('menu-responsive-links', t('Advisory'), 'advisory', 1);
+  avalanche_center_demo_menu_link('menu-responsive-links', t('Observations'), 'observations', 2);
+  avalanche_center_demo_menu_link('menu-responsive-links', t('Avalanche Terms'), 'avalanche-terms', 3);
+}
+
+/**
+ * Saves one menu link.
+ *
+ * @param string $menu_name
+ *   Menu machine name.
+ * @param string $title
+ *   Link title.
+ * @param string $path
+ *   Internal path (or an external URL, or '<front>').
+ * @param int $weight
+ *   Sort weight.
+ * @param int $plid
+ *   Parent mlid, or 0 for a top-level link.
+ *
+ * @return int
+ *   The new link's mlid.
+ */
+function avalanche_center_demo_menu_link($menu_name, $title, $path, $weight = 0, $plid = 0) {
+  $link = array(
+    'menu_name' => $menu_name,
+    'link_title' => $title,
+    'link_path' => $path,
+    'weight' => $weight,
+    'plid' => $plid,
+    // customized = 1 marks the link as human-created ("don't touch"). Without
+    // it, menu_rebuild()'s _menu_navigation_links_rebuild() cleanup pass
+    // deletes any link with customized = 0 whose router path isn't a
+    // currently-registered *visible* menu router item - which silently wiped
+    // most of these demo links on the first attempt, since view-page and
+    // module paths aren't always registered as visible at the moment the
+    // post-install cache flush rebuilds the menu. This is the same flag the
+    // menu admin UI sets on every link a person adds by hand.
+    'customized' => 1,
+  );
+  menu_link_save($link);
+  return isset($link['mlid']) ? $link['mlid'] : 0;
 }
