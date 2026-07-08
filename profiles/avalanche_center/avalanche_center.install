@@ -43,6 +43,17 @@ function avalanche_center_install() {
     // field instead of auto-generating and hiding it. Same overwrite-
     // protection gotcha as the role configs above.
     'auto_nodetitle.settings',
+    // Core's layout module ships its own layout.layout.default (the generic
+    // moscone_flipped layout) and layout.layout.admin_default, so
+    // config_install_default_config() skips ours. The result: only paths
+    // matching layout.layout.node (node/%, a name core does NOT ship, so it
+    // imports fine) get the responsive_sac theming - every other path
+    // (/advisory, /observations, /node/add/*, taxonomy pages, etc.) falls
+    // through to core's bare moscone_flipped default with no site header,
+    // mega-menu, or sidebars. Force ours into place so the whole site is
+    // themed, not just node pages.
+    'layout.layout.default',
+    'layout.layout.admin_default',
   ));
 
   // Declaring themes[] in avalanche_center.info only makes them available -
