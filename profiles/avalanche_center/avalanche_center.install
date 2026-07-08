@@ -129,8 +129,18 @@ function avalanche_center_create_demo_content($lat, $lng) {
   // exception, on both reference sites.
   $region_a = avalanche_center_demo_region(t('North Zone'), $lat, $lng, 0.12, -0.03);
   $region_b = avalanche_center_demo_region(t('South Zone'), $lat, $lng, -0.12, 0.03);
-  $advisory_a = avalanche_center_demo_advisory($region_a, 1, t('This is a demo advisory created automatically at install so the danger map has something to show. Replace it with a real forecast, or delete it.'));
+  avalanche_center_demo_advisory($region_a, 1, t('This is a demo advisory created automatically at install so the danger map has something to show. Replace it with a real forecast, or delete it.'));
   avalanche_center_demo_advisory($region_b, 2, t('A second demo advisory for the second demo forecast zone. Replace it with a real forecast, or delete it.'));
+
+  // Dedicated home page. Matching the Gulmarg/Argentina baseline, the front
+  // page is its own standalone "page" node aliased to "home", NOT a promoted
+  // forecast - the danger map (a layout block conditioned on the "home"
+  // path) is the home page's main content, and the page node itself carries
+  // no body so nothing competes with the map. The layout hides the node
+  // title on the front page, so this renders as just the map.
+  $home_page = avalanche_center_demo_node('page', array(
+    'title' => t('Home'),
+  ));
 
   // One demo "page" node per generic destination the demo menus below
   // link to - real centers will have their own About/Contact/etc. pages,
@@ -331,26 +341,22 @@ function avalanche_center_create_demo_content($lat, $lng) {
 
   avalanche_center_demo_menu_links($about_page->nid, $support_page->nid, $contact_page->nid, $faq_page->nid);
 
-  // The danger map block (layout.layout.node.json) is only visible on
-  // <front> - matching the Gulmarg/Argentina baseline, where site_frontpage
-  // points at a specific advisory node (Gulmarg: node/5950), not core's
-  // "node" promoted-content-listing default. Without this, the map never
-  // renders anywhere: core's default front page doesn't match the node/%
-  // layout at all, and this node isn't promoted so it wouldn't appear
-  // there regardless. Point the front page at the first demo advisory so
-  // the map has somewhere it's actually configured to show; a real center
-  // repoints this once they have their own advisory/landing content, same
-  // as Gulmarg/Argentina did.
-  config_set('system.core', 'site_frontpage', 'node/' . $advisory_a->nid);
+  // Point the front page at the dedicated home page node (a bodyless "page"
+  // node, created above), not at a forecast - matching the Gulmarg/Argentina
+  // baseline, where site_frontpage is a standalone "page" node aliased to
+  // "home" (Gulmarg: node/5950), not a promoted advisory. Core's default
+  // front page ("node", the promoted-content list) doesn't match the node/%
+  // layout the danger map block lives in, so without this the map renders
+  // nowhere. A real center repoints this at its own landing content later.
+  config_set('system.core', 'site_frontpage', 'node/' . $home_page->nid);
 
-  // Many home-page blocks (media gallery, announcements, sponsor tiers,
-  // etc.) carry a path-visibility condition of "home", not "<front>" - and
-  // on both reference sites the front-page node is aliased to "home", which
-  // is what makes those conditions match. Without the alias only the
-  // handful of blocks conditioned on "<front>" render, leaving the home
-  // page half-empty. Give the front advisory the same "home" alias so the
-  // shipped layout's block visibility conditions resolve as designed.
-  $alias = array('source' => 'node/' . $advisory_a->nid, 'alias' => 'home');
+  // Alias the home page node to "home". Many home-page blocks (danger map,
+  // media gallery, announcements, sponsor tiers, etc.) carry a path-
+  // visibility condition of "home" rather than "<front>", and on both
+  // reference sites it's this alias on the front-page node that makes those
+  // conditions match. Without it only the few blocks conditioned on
+  // "<front>" render, leaving the home page half-empty.
+  $alias = array('source' => 'node/' . $home_page->nid, 'alias' => 'home');
   path_save($alias);
 }
 
@@ -545,21 +551,34 @@ function avalanche_center_patch_view_term_filter($view_name, $display, $filter_i
  *   The demo "Frequently Asked Questions" page node ID.
  */
 function avalanche_center_demo_menu_links($about_nid, $support_nid, $contact_nid, $faq_nid) {
-  $advisory_mlid = avalanche_center_demo_menu_link('main-menu', t('Advisory'), 'advisory', -5);
-  avalanche_center_demo_menu_link('main-menu', t('Submit Observations'), 'node/add/observation', 0, $advisory_mlid);
-
-  $events_mlid = avalanche_center_demo_menu_link('main-menu', t('Events'), 'events', -2);
-  avalanche_center_demo_menu_link('main-menu', t('Month'), 'events-calendar/month', 0, $events_mlid);
-  avalanche_center_demo_menu_link('main-menu', t('Week'), 'events-calendar/week', 1, $events_mlid);
-  avalanche_center_demo_menu_link('main-menu', t('Day'), 'events-calendar/day', 2, $events_mlid);
-  avalanche_center_demo_menu_link('main-menu', t('Year'), 'events-calendar/year', 3, $events_mlid);
-
+  // Main menu - mirrors Gulmarg's live main-menu structure (top-level items
+  // and their nesting), pointed at this distribution's own generic paths.
+  // Gulmarg's own submenu groups are Observations (-> Submit Observations
+  // -> Submit Professional Observations, three levels deep), Education, and
+  // Event Calendar. The calendar's Month/Week/Day/Year children need the
+  // contrib "calendar" module (which neither reference site actually
+  // ships), so Events points at the working events list instead of dead
+  // calendar-style sub-pages. Site-specific Gulmarg items with no generic
+  // equivalent (the two "rescue grid map" children, the external Fundly
+  // donate link) are dropped.
   avalanche_center_demo_menu_link('main-menu', t('Home'), '<front>', -10);
-  avalanche_center_demo_menu_link('main-menu', t('Observations'), 'observations', -4);
-  avalanche_center_demo_menu_link('main-menu', t('Education'), 'education', -3);
-  avalanche_center_demo_menu_link('main-menu', t('Sponsors'), 'sponsors-list', -1);
-  avalanche_center_demo_menu_link('main-menu', t('About Us'), 'node/' . $about_nid, 0);
-  avalanche_center_demo_menu_link('main-menu', t('Support Us'), 'node/' . $support_nid, 1);
+
+  avalanche_center_demo_menu_link('main-menu', t('Advisory'), 'advisory', -9);
+
+  $obs_mlid = avalanche_center_demo_menu_link('main-menu', t('Observations'), 'observations', -8);
+  $submit_mlid = avalanche_center_demo_menu_link('main-menu', t('Submit Observations'), 'node/add/observation', 0, $obs_mlid);
+  avalanche_center_demo_menu_link('main-menu', t('Submit Professional Observations'), 'node/add/observation', 0, $submit_mlid);
+
+  avalanche_center_demo_menu_link('main-menu', t('Incidents'), 'incidents', -7);
+
+  $edu_mlid = avalanche_center_demo_menu_link('main-menu', t('Education'), 'education', -6);
+  avalanche_center_demo_menu_link('main-menu', t('Avalanche Danger Scale'), 'avalanche-terms', 0, $edu_mlid);
+  avalanche_center_demo_menu_link('main-menu', t('Know Before You Go'), 'https://kbyg.org/', 1, $edu_mlid);
+
+  avalanche_center_demo_menu_link('main-menu', t('Events'), 'events', -5);
+  avalanche_center_demo_menu_link('main-menu', t('Sponsors'), 'sponsors-list', -4);
+  avalanche_center_demo_menu_link('main-menu', t('About Us'), 'node/' . $about_nid, -3);
+  avalanche_center_demo_menu_link('main-menu', t('Support Us'), 'node/' . $support_nid, -2);
 
   avalanche_center_demo_menu_link('menu-doormat-menu', t('Observations'), 'observations', -50);
   avalanche_center_demo_menu_link('menu-doormat-menu', t('Avalanche Terms'), 'avalanche-terms', -49);
