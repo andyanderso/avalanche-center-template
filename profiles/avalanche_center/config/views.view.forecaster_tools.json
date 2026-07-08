@@ -2653,10 +2653,10 @@
                         "hide_alter_empty": 1,
                         "counter_start": "1"
                     },
-                    "field_name": {
-                        "id": "field_name",
-                        "table": "field_data_field_name",
-                        "field": "field_name",
+                    "field_observer_name": {
+                        "id": "field_observer_name",
+                        "table": "field_data_field_observer_name",
+                        "field": "field_observer_name",
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
