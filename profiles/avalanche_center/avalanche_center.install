@@ -684,16 +684,19 @@ function avalanche_center_demo_menu_links($about_nid, $donate_nid, $contact_nid,
   avalanche_center_demo_menu_link('main-menu', t('Events'), 'events', -5);
   avalanche_center_demo_menu_link('main-menu', t('Sponsors'), 'sponsors-list', -4);
   avalanche_center_demo_menu_link('main-menu', t('About Us'), 'node/' . $about_nid, -3);
-  avalanche_center_demo_menu_link('main-menu', t('Donate'), 'node/' . $donate_nid, -2);
+  $donate_mlid = avalanche_center_demo_menu_link('main-menu', t('Donate'), 'node/' . $donate_nid, -2);
 
   // Build the TB Mega Menu dropdowns, matching Gulmarg's live tb_megamenus
   // layout: Advisory/Observations/Incidents each open a 2-column dropdown of
   // custom link blocks; Education opens a normal child-item dropdown (left
-  // to tb_megamenu's own sync). See avalanche_center_build_megamenu().
+  // to tb_megamenu's own sync). The Donate item gets the "donate-menu" CSS
+  // class so the theme paints it in the accent color, as on both reference
+  // sites. See avalanche_center_build_megamenu().
   avalanche_center_build_megamenu(array(
     'advisory' => $advisory_mlid,
     'observations' => $obs_mlid,
     'incidents' => $incidents_mlid,
+    'donate' => $donate_mlid,
   ));
 
   avalanche_center_demo_menu_link('menu-doormat-menu', t('Observations'), 'observations', -50);
@@ -825,6 +828,14 @@ function avalanche_center_build_megamenu($mlids) {
       'rows_content' => array(array($block_col(6, 6), $block_col(7, 6))),
       'submenu_config' => $submenu_config,
       'item_config' => $item_config,
+    ),
+    // Donate: no dropdown, just tag the <li> with "donate-menu" so the theme
+    // paints it in the accent color (tb_megamenu copies item_config.class
+    // onto the rendered <li>). Both reference sites highlight Donate this way.
+    (string) $mlids['donate'] => array(
+      'rows_content' => array(),
+      'submenu_config' => array('width' => '', 'class' => '', 'group' => '0'),
+      'item_config' => array('class' => 'donate-menu') + $item_config,
     ),
   );
 

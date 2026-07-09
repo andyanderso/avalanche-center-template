@@ -4,7 +4,7 @@
     "info": "Incidents",
     "title": "",
     "body": {
-        "value": "<div><a href=\"/incidents\">Recent Incidents</a></div>\n",
+        "value": "<div><a href=\"/incidents\">Incidents - List View</a></div>\n<div><a href=\"/incidents-map\">Incidents - Map View</a></div>\n<div><a href=\"/incidents-archive\">Archived Incidents - List View</a></div>\n<div><a href=\"/incidents-map-archive\">Archived Incidents - Map View</a></div>\n",
         "format": "full_html"
     }
 }

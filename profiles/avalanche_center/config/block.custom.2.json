@@ -4,7 +4,7 @@
     "info": "Advisory Links",
     "title": "",
     "body": {
-        "value": "<div><a href=\"/advisory\">Today's Avalanche Advisory</a></div>\n<div><a href=\"/avalanche-terms\">Avalanche Terms &amp; Danger Scale</a></div>\n",
+        "value": "<div><a href=\"/advisory\">Today's Avalanche Advisory</a></div>\n<div><a href=\"/archive\">Advisory Archives</a></div>\n<div><a href=\"/text-advisory\">Text Advisory</a></div>\n",
         "format": "full_html"
     }
 }

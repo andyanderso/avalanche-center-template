@@ -4,7 +4,7 @@
     "info": "Advisory Resources",
     "title": "",
     "body": {
-        "value": "<div><a href=\"/education\">Avalanche Education</a></div>\n<div><a href=\"https://kbyg.org/\" target=\"_blank\" rel=\"noopener\">Know Before You Go</a></div>\n",
+        "value": "<div><a href=\"/avalanche-terms\">The Danger Scale</a></div>\n<div><a href=\"/avalanche-terms\">How to Read the Advisory</a></div>\n<div><a href=\"/avalanche-terms\">Avalanche Problem Definitions</a></div>\n",
         "format": "full_html"
     }
 }
