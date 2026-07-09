@@ -191,6 +191,15 @@ function avalanche_center_create_demo_content($lat, $lng) {
     'body' => array('value' => t('Answer the questions your visitors ask most. Replace this placeholder with your own page.'), 'format' => 'filtered_html'),
   ));
 
+  // Three ready-to-use avalanche-education reference pages (generic,
+  // industry-standard content: how to read a forecast, the North American
+  // danger scale, and the nine avalanche problem types). Given fixed
+  // aliases so the Advisory dropdown's "Advisory Resources" links resolve.
+  // A center can edit or delete them like any other page.
+  avalanche_center_demo_reference_page(t('How to Read the Avalanche Forecast'), 'how-to-read-avalanche-forecast', 'how-to-read-avalanche-forecast.html');
+  avalanche_center_demo_reference_page(t('North American Avalanche Danger Scale'), 'north-american-avalanche-danger-scale', 'north-american-avalanche-danger-scale.html');
+  avalanche_center_demo_reference_page(t('Avalanche Problems'), 'avalanche-problems', 'avalanche-problems.html');
+
   // The sponsor-tier home-page blocks also filter on expiration date being
   // in the future, so give the demo sponsor one.
   avalanche_center_demo_node('sponsor', array(
@@ -508,6 +517,45 @@ function avalanche_center_demo_node($type, array $values) {
   }
 
   node_save($node);
+  return $node;
+}
+
+/**
+ * Creates a reference "page" node from a shipped HTML content file, at a
+ * fixed URL alias.
+ *
+ * Used for the generic avalanche-education pages (how to read a forecast,
+ * the danger scale, avalanche problems) whose bodies live in this profile's
+ * content/ directory. A fixed alias is forced (replacing pathauto's
+ * auto-generated one) so the Advisory-dropdown links to these pages resolve
+ * on every install regardless of node ID.
+ *
+ * @param string $title
+ *   Page title.
+ * @param string $alias
+ *   The URL alias to force (e.g. 'avalanche-problems').
+ * @param string $filename
+ *   Filename within profiles/avalanche_center/content/.
+ *
+ * @return Node
+ *   The saved node.
+ */
+function avalanche_center_demo_reference_page($title, $alias, $filename) {
+  $file = backdrop_get_path('profile', 'avalanche_center') . '/content/' . $filename;
+  $body = file_exists($file) ? file_get_contents($file) : '';
+
+  $node = avalanche_center_demo_node('page', array(
+    'title' => $title,
+    'body' => array('value' => $body, 'format' => 'full_html'),
+  ));
+
+  // Force our own alias: node_save() above already let pathauto assign one
+  // (basic-page/<title>), so clear any existing alias for this node before
+  // saving the fixed one the menu links depend on.
+  path_delete(array('source' => 'node/' . $node->nid));
+  $path = array('source' => 'node/' . $node->nid, 'alias' => $alias);
+  path_save($path);
+
   return $node;
 }
 
