@@ -152,7 +152,7 @@
                         "order": "DESC"
                     }
                 },
-                "path": "advisory"
+                "path": "advisory-list"
             }
         },
         "page_2": {
@@ -186,10 +186,10 @@
                         "total_pages": "",
                         "quantity": "9",
                         "tags": {
-                            "first": "« first",
-                            "previous": "‹ previous",
-                            "next": "next ›",
-                            "last": "last »"
+                            "first": "\u00ab first",
+                            "previous": "\u2039 previous",
+                            "next": "next \u203a",
+                            "last": "last \u00bb"
                         },
                         "expose": {
                             "items_per_page": 1,

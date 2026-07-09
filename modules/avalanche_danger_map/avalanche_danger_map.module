@@ -49,6 +49,168 @@ function avalanche_danger_map_node_page_title($node) {
 }
 
 /**
+ * Implements hook_menu().
+ *
+ * Registers the smart "Avalanche Advisory" page at /advisory (the
+ * advisory_views view's list display is moved off this path to
+ * /advisory-list in the shipped config). Single-zone centers get the one
+ * current advisory rendered in full here; multi-zone centers get a summary
+ * of every zone (danger icon + bottom line + a link to each zone's full
+ * advisory), the pattern larger centers like Bridger-Teton use.
+ */
+function avalanche_danger_map_menu() {
+  $items['advisory'] = array(
+    'title' => 'Avalanche Advisory',
+    'title callback' => 'avalanche_danger_map_advisory_page_title',
+    'page callback' => 'avalanche_danger_map_advisory_page',
+    'access arguments' => array('access content'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+}
+
+/**
+ * Title callback for the advisory page: plural for multi-zone centers.
+ */
+function avalanche_danger_map_advisory_page_title() {
+  $zones = avalanche_danger_map_get_zone_summaries();
+  return count($zones) > 1 ? t('Avalanche Advisories') : t('Avalanche Advisory');
+}
+
+/**
+ * Page callback for /advisory.
+ *
+ * One forecast zone: render that zone's current advisory node in full, so
+ * /advisory is simply "the forecast". More than one zone: render a summary
+ * card per zone - danger icon, danger label, bottom line, and a "Read the
+ * Full Forecast" button linking to that zone's advisory - so visitors can
+ * scan every zone at a glance and drill into any one.
+ */
+function avalanche_danger_map_advisory_page() {
+  $zones = avalanche_danger_map_get_zone_summaries();
+
+  // Single-zone center: /advisory is just the current forecast, in full.
+  if (count($zones) <= 1) {
+    $zone = reset($zones);
+    if ($zone && !empty($zone['nid']) && ($node = node_load($zone['nid']))) {
+      return node_view($node, 'full');
+    }
+    return array('#markup' => '<p class="am-advisory-empty">' . t('No current avalanche advisory is available. Please check back soon.') . '</p>');
+  }
+
+  // Multi-zone center: one summary card per zone.
+  $module_path = backdrop_get_path('module', 'avalanche_danger_map');
+  backdrop_add_css($module_path . '/avalanche_danger_map.css');
+
+  $cards = '';
+  foreach ($zones as $zone) {
+    $icon = $zone['icon_url']
+      ? '<img class="am-advisory-card-icon" src="' . check_url($zone['icon_url']) . '" alt="' . check_plain($zone['label']) . '" />'
+      : '';
+    $bottom = $zone['bottom_line']
+      ? '<div class="am-advisory-card-bottomline"><h5>' . t('The Bottom Line') . '</h5><div class="am-advisory-card-bottomline-text">' . $zone['bottom_line'] . '</div></div>'
+      : '<div class="am-advisory-card-bottomline"><p><em>' . t('No current forecast for this zone.') . '</em></p></div>';
+    $more = !empty($zone['nid'])
+      ? '<a class="am-advisory-card-more" href="' . check_url($zone['url']) . '">' . t('Read the Full Forecast') . '</a>'
+      : '';
+
+    $cards .= '<article class="am-advisory-card">'
+      . '<div class="am-advisory-card-head">' . $icon
+      . '<div class="am-advisory-card-heading"><h2 class="am-advisory-card-zone">' . check_plain($zone['name']) . '</h2>'
+      . '<div class="am-advisory-card-danger">' . check_plain($zone['label']) . '</div></div></div>'
+      . $bottom . $more . '</article>';
+  }
+
+  return array('#markup' => '<div class="am-advisory-summary">' . $cards . '</div>');
+}
+
+/**
+ * Builds a per-zone advisory summary for the advisory page and dropdown.
+ *
+ * One entry per forecast-region term (in term weight/name order), each with
+ * the current advisory's danger rating, label, icon, bottom line, node ID,
+ * and URL - reusing avalanche_danger_map_get_advisory_info() for the
+ * rating/URL/expiry logic so the map, the advisory page, and the menu all
+ * agree on what "current" means.
+ *
+ * @return array
+ *   List of associative arrays: tid, name, nid, rating, label, icon_url,
+ *   bottom_line (rendered HTML, may be ''), url, expired.
+ */
+function avalanche_danger_map_get_zone_summaries() {
+  $preset = avalanche_danger_map_get_preset();
+  $labels = $preset['labels'];
+
+  $regions = db_select('taxonomy_term_data', 't')
+    ->fields('t', array('tid', 'name'))
+    ->condition('t.vocabulary', 'region')
+    ->orderBy('t.weight')
+    ->orderBy('t.name')
+    ->execute()
+    ->fetchAll();
+
+  $summaries = array();
+  foreach ($regions as $region) {
+    $info = avalanche_danger_map_get_advisory_info($region->tid);
+    $rating = (int) $info['rating'];
+
+    $bottom_line = '';
+    if (!empty($info['nid']) && ($node = node_load($info['nid']))) {
+      $items = field_get_items('node', $node, 'field_bottom_line');
+      if ($items && !empty($items[0]['value'])) {
+        $bottom_line = check_markup($items[0]['value'], isset($items[0]['format']) ? $items[0]['format'] : NULL);
+      }
+    }
+
+    $summaries[] = array(
+      'tid' => (int) $region->tid,
+      'name' => $region->name,
+      'nid' => (int) $info['nid'],
+      'rating' => $rating,
+      'label' => isset($labels[$rating]) ? $labels[$rating] : $labels[0],
+      'icon_url' => avalanche_danger_map_icon_url($rating),
+      'bottom_line' => $bottom_line,
+      'url' => $info['url'],
+      'expired' => !empty($info['expired']),
+    );
+  }
+  return $summaries;
+}
+
+/**
+ * Builds the Advisory mega-menu dropdown link list.
+ *
+ * Zone-count aware, matching the /advisory page: one forecast zone gives a
+ * single "Today's Avalanche Advisory" link; more than one gives an "All
+ * Advisories" link (to the summary page) followed by a direct link to each
+ * zone's full forecast. Advisory Archives / Text Advisory follow in both
+ * cases. Rendered as a block so the menu can be static config while the
+ * links stay dynamic (see avalanche_danger_map_block_view()).
+ *
+ * @return string
+ *   HTML markup for the dropdown column.
+ */
+function avalanche_danger_map_advisory_links() {
+  $zones = avalanche_danger_map_get_zone_summaries();
+  $out = '';
+
+  if (count($zones) <= 1) {
+    $out .= '<div><a href="' . url('advisory') . '">' . t("Today's Avalanche Advisory") . '</a></div>';
+  }
+  else {
+    $out .= '<div><a href="' . url('advisory') . '">' . t('All Advisories') . '</a></div>';
+    foreach ($zones as $zone) {
+      $target = !empty($zone['nid']) ? $zone['url'] : url('advisory');
+      $out .= '<div class="am-advisory-zone-link"><a href="' . check_url($target) . '">' . check_plain($zone['name']) . '</a></div>';
+    }
+  }
+
+  $out .= '<div><a href="' . url('archive') . '">' . t('Advisory Archives') . '</a></div>';
+  $out .= '<div><a href="' . url('text-advisory') . '">' . t('Text Advisory') . '</a></div>';
+  return $out;
+}
+
+/**
  * Implements hook_leaflet_map_info().
  *
  * Provides a multi-layer topo/satellite map for observations and incidents.
@@ -262,6 +424,11 @@ function avalanche_danger_map_block_info() {
       'info' => t('Avalanche Danger Rating Map'),
       'cache' => BACKDROP_CACHE_PER_PAGE,
     ),
+    'advisory_links' => array(
+      'info' => t('Advisory menu links (zone-aware)'),
+      // Depends on the current advisories, which change; don't cache.
+      'cache' => BACKDROP_NO_CACHE,
+    ),
   );
 }
 
@@ -269,6 +436,13 @@ function avalanche_danger_map_block_info() {
  * Implements hook_block_view().
  */
 function avalanche_danger_map_block_view($delta = '') {
+  if ($delta === 'advisory_links') {
+    return array(
+      'subject' => NULL,
+      'content' => avalanche_danger_map_advisory_links(),
+    );
+  }
+
   if ($delta !== 'danger_map') {
     return array();
   }

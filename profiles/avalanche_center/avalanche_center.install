@@ -796,11 +796,11 @@ function avalanche_center_build_megamenu($mlids) {
   );
   $submenu_config = array('width' => '500', 'class' => '', 'group' => '0');
 
-  // Helper: one column holding a single custom block.
-  $block_col = function ($delta, $width) {
+  // Helper: one column holding a single block, by full "module--delta" key.
+  $block_col = function ($block_key, $width) {
     return array(
       'col_content' => array(array(
-        'block_key' => 'block--' . $delta,
+        'block_key' => $block_key,
         'type' => 'block',
         'tb_item_config' => array(),
       )),
@@ -810,22 +810,28 @@ function avalanche_center_build_megamenu($mlids) {
     );
   };
 
-  // Advisory: 2 cols (6/6) - Advisory Links | Advisory Resources.
+  // Advisory: 2 cols (6/6) - the zone-aware Advisory Links block (a module
+  //   block, not a static custom block, so its links change with the number
+  //   of forecast zones - see avalanche_danger_map_advisory_links()) |
+  //   Advisory Resources (block.custom.4).
   // Observations: 2 cols (7/5) - Observations | Submit Observations.
   // Incidents: 2 cols (6/6) - Incidents | Submit Observations.
   $menu_config = array(
     (string) $mlids['advisory'] => array(
-      'rows_content' => array(array($block_col(2, 6), $block_col(4, 6))),
+      'rows_content' => array(array(
+        $block_col('avalanche_danger_map--advisory_links', 6),
+        $block_col('block--4', 6),
+      )),
       'submenu_config' => $submenu_config,
       'item_config' => $item_config,
     ),
     (string) $mlids['observations'] => array(
-      'rows_content' => array(array($block_col(5, 7), $block_col(7, 5))),
+      'rows_content' => array(array($block_col('block--5', 7), $block_col('block--7', 5))),
       'submenu_config' => $submenu_config,
       'item_config' => $item_config,
     ),
     (string) $mlids['incidents'] => array(
-      'rows_content' => array(array($block_col(6, 6), $block_col(7, 6))),
+      'rows_content' => array(array($block_col('block--6', 6), $block_col('block--7', 6))),
       'submenu_config' => $submenu_config,
       'item_config' => $item_config,
     ),
