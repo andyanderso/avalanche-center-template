@@ -133,13 +133,19 @@ function avalanche_danger_map_advisory_page() {
       ? '<a class="am-advisory-card-more" href="' . check_url($zone['url']) . '">' . t('Read the Full Forecast') . '</a>'
       : '';
 
+    // Colored stripe across the top of the card, in this zone's danger color.
+    $stripe = '<div class="am-advisory-card-stripe" style="background-color:' . check_plain($zone['color']) . ';"></div>';
+
     $cards .= '<article class="am-advisory-card">'
+      . $stripe
+      . '<div class="am-advisory-card-body">'
       . '<div class="am-advisory-card-head">' . $icon
       . '<div class="am-advisory-card-heading">'
       . '<h2 class="am-advisory-card-zone">' . check_plain($zone['name']) . '</h2>'
       . '<div class="am-advisory-card-danger">' . check_plain($zone['label']) . '</div>'
       . '</div></div>'
-      . $meta . $bottom . $more . '</article>';
+      . $meta . $bottom . $more
+      . '</div></article>';
   }
 
   return array('#markup' => '<div class="am-advisory-summary">' . $cards . '</div>');
@@ -161,6 +167,7 @@ function avalanche_danger_map_advisory_page() {
 function avalanche_danger_map_get_zone_summaries() {
   $preset = avalanche_danger_map_get_preset();
   $labels = $preset['labels'];
+  $colors = $preset['colors'];
 
   $regions = db_select('taxonomy_term_data', 't')
     ->fields('t', array('tid', 'name'))
@@ -201,6 +208,7 @@ function avalanche_danger_map_get_zone_summaries() {
       'nid' => (int) $info['nid'],
       'rating' => $rating,
       'label' => isset($labels[$rating]) ? $labels[$rating] : $labels[0],
+      'color' => isset($colors[$rating]) ? $colors[$rating] : $colors[0],
       'icon_url' => avalanche_danger_map_icon_url($rating),
       'bottom_line' => $bottom_line,
       'created' => $created,
