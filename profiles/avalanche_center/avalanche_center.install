@@ -669,13 +669,13 @@ function avalanche_center_demo_menu_links($about_nid, $donate_nid, $contact_nid,
   // donate link) are dropped.
   avalanche_center_demo_menu_link('main-menu', t('Home'), '<front>', -10);
 
-  avalanche_center_demo_menu_link('main-menu', t('Advisory'), 'advisory', -9);
+  $advisory_mlid = avalanche_center_demo_menu_link('main-menu', t('Advisory'), 'advisory', -9);
 
   $obs_mlid = avalanche_center_demo_menu_link('main-menu', t('Observations'), 'observations', -8);
   $submit_mlid = avalanche_center_demo_menu_link('main-menu', t('Submit Observations'), 'node/add/observation', 0, $obs_mlid);
   avalanche_center_demo_menu_link('main-menu', t('Submit Professional Observations'), 'node/add/observation', 0, $submit_mlid);
 
-  avalanche_center_demo_menu_link('main-menu', t('Incidents'), 'incidents', -7);
+  $incidents_mlid = avalanche_center_demo_menu_link('main-menu', t('Incidents'), 'incidents', -7);
 
   $edu_mlid = avalanche_center_demo_menu_link('main-menu', t('Education'), 'education', -6);
   avalanche_center_demo_menu_link('main-menu', t('Avalanche Danger Scale'), 'avalanche-terms', 0, $edu_mlid);
@@ -685,6 +685,16 @@ function avalanche_center_demo_menu_links($about_nid, $donate_nid, $contact_nid,
   avalanche_center_demo_menu_link('main-menu', t('Sponsors'), 'sponsors-list', -4);
   avalanche_center_demo_menu_link('main-menu', t('About Us'), 'node/' . $about_nid, -3);
   avalanche_center_demo_menu_link('main-menu', t('Donate'), 'node/' . $donate_nid, -2);
+
+  // Build the TB Mega Menu dropdowns, matching Gulmarg's live tb_megamenus
+  // layout: Advisory/Observations/Incidents each open a 2-column dropdown of
+  // custom link blocks; Education opens a normal child-item dropdown (left
+  // to tb_megamenu's own sync). See avalanche_center_build_megamenu().
+  avalanche_center_build_megamenu(array(
+    'advisory' => $advisory_mlid,
+    'observations' => $obs_mlid,
+    'incidents' => $incidents_mlid,
+  ));
 
   avalanche_center_demo_menu_link('menu-doormat-menu', t('Observations'), 'observations', -50);
   avalanche_center_demo_menu_link('menu-doormat-menu', t('Avalanche Terms'), 'avalanche-terms', -49);
@@ -743,4 +753,86 @@ function avalanche_center_demo_menu_link($menu_name, $title, $path, $weight = 0,
   );
   menu_link_save($link);
   return isset($link['mlid']) ? $link['mlid'] : 0;
+}
+
+/**
+ * Writes the TB Mega Menu configuration for the main menu.
+ *
+ * tb_megamenu stores its per-menu layout in the tb_megamenus DB table (not
+ * config), keyed by menu_name+language, as two JSON blobs: block_config
+ * (animation/behaviour) and menu_config (per-top-level-item column layout,
+ * keyed by mlid). Reproduces Gulmarg's live mega-menu: Advisory,
+ * Observations, and Incidents each open a 2-column dropdown of custom link
+ * blocks (block.custom.2/4/5/6/7, shipped in this profile's config), with
+ * the same column widths, submenu width, animation, and item styling.
+ * Education and the rest are left out of menu_config so tb_megamenu's own
+ * sync renders them as ordinary child-item dropdowns.
+ *
+ * The mlid keys can't be shipped as static config (mlids are assigned per
+ * database when the links are created), so this runs at install time with
+ * the real mlids captured in avalanche_center_demo_menu_links().
+ *
+ * @param array $mlids
+ *   Map with 'advisory', 'observations', 'incidents' => top-level mlid.
+ */
+function avalanche_center_build_megamenu($mlids) {
+  // Behaviour block - copied verbatim from Gulmarg's tb_megamenus row.
+  $block_config = array(
+    'animation' => 'none',
+    'duration' => 400,
+    'delay' => 200,
+    'style' => '',
+    'auto-arrow' => '1',
+    'always-show-submenu' => '0',
+  );
+
+  // Shared styling for every configured top-level item, matching Gulmarg.
+  $item_config = array(
+    'class' => '', 'xicon' => '', 'caption' => '', 'alignsub' => 'left',
+    'group' => '0', 'hidewcol' => '0', 'hidesub' => '0',
+  );
+  $submenu_config = array('width' => '500', 'class' => '', 'group' => '0');
+
+  // Helper: one column holding a single custom block.
+  $block_col = function ($delta, $width) {
+    return array(
+      'col_content' => array(array(
+        'block_key' => 'block--' . $delta,
+        'type' => 'block',
+        'tb_item_config' => array(),
+      )),
+      'col_config' => array(
+        'width' => (string) $width, 'class' => '', 'hidewcol' => '', 'showblocktitle' => '1',
+      ),
+    );
+  };
+
+  // Advisory: 2 cols (6/6) - Advisory Links | Advisory Resources.
+  // Observations: 2 cols (7/5) - Observations | Submit Observations.
+  // Incidents: 2 cols (6/6) - Incidents | Submit Observations.
+  $menu_config = array(
+    (string) $mlids['advisory'] => array(
+      'rows_content' => array(array($block_col(2, 6), $block_col(4, 6))),
+      'submenu_config' => $submenu_config,
+      'item_config' => $item_config,
+    ),
+    (string) $mlids['observations'] => array(
+      'rows_content' => array(array($block_col(5, 7), $block_col(7, 5))),
+      'submenu_config' => $submenu_config,
+      'item_config' => $item_config,
+    ),
+    (string) $mlids['incidents'] => array(
+      'rows_content' => array(array($block_col(6, 6), $block_col(7, 6))),
+      'submenu_config' => $submenu_config,
+      'item_config' => $item_config,
+    ),
+  );
+
+  db_merge('tb_megamenus')
+    ->key(array('menu_name' => 'main-menu', 'language' => 'en'))
+    ->fields(array(
+      'block_config' => json_encode($block_config),
+      'menu_config' => json_encode($menu_config),
+    ))
+    ->execute();
 }

@@ -1,0 +1,10 @@
+{
+    "_config_name": "block.custom.4",
+    "delta": "4",
+    "info": "Advisory Resources",
+    "title": "",
+    "body": {
+        "value": "<div><a href=\"/education\">Avalanche Education</a></div>\n<div><a href=\"https://kbyg.org/\" target=\"_blank\" rel=\"noopener\">Know Before You Go</a></div>\n",
+        "format": "full_html"
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "_config_name": "block.custom.2",
+    "delta": "2",
+    "info": "Advisory Links",
+    "title": "",
+    "body": {
+        "value": "<div><a href=\"/advisory\">Today's Avalanche Advisory</a></div>\n<div><a href=\"/avalanche-terms\">Avalanche Terms &amp; Danger Scale</a></div>\n",
+        "format": "full_html"
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "_config_name": "block.custom.5",
+    "delta": "5",
+    "info": "Observations",
+    "title": "",
+    "body": {
+        "value": "<div><a href=\"/observations\">Recent Observations</a></div>\n",
+        "format": "full_html"
+    }
+}
