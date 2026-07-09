@@ -88,71 +88,107 @@
   text-decoration: underline;
 }
 
-/* Multi-zone advisory summary page (/advisory when a center has >1 zone). */
+/* Multi-zone advisory summary (/advisory when a center has >1 zone).
+   Mirrors the NAC / Bridger-Teton forecast card. */
 .am-advisory-summary {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 20px;
-  margin: 20px 0;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 24px;
+  margin: 24px 0;
 }
 .am-advisory-card {
-  border: 1px solid #d9dde1;
-  border-radius: 8px;
+  border: 1px solid #e0e3e6;
+  border-radius: 10px;
   background: #fff;
-  padding: 20px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.07);
 }
 .am-advisory-card-head {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 14px;
+  gap: 16px;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #edf0f2;
 }
 .am-advisory-card-icon {
-  width: 64px;
-  height: 64px;
+  width: 72px;
+  height: 72px;
   flex: 0 0 auto;
+  max-width: none;
 }
 .am-advisory-card-zone {
-  margin: 0;
-  font-size: 1.35em;
-  line-height: 1.15;
+  margin: 0 0 2px;
+  font-size: 1.5rem;
+  line-height: 1.1;
+  color: #515558;
 }
 .am-advisory-card-danger {
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
-  color: #444;
-  font-size: 0.95em;
+  letter-spacing: 0.03em;
+  color: #6a6f73;
+  font-size: 0.9rem;
+}
+.am-advisory-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.am-advisory-card-meta-item {
+  padding: 0 16px;
+  border-left: 1px solid #e0e3e6;
+  font-size: 0.9rem;
+  color: #333;
+  line-height: 1.4;
+}
+.am-advisory-card-meta-item:first-child {
+  border-left: 0;
+  padding-left: 0;
+}
+.am-advisory-card-meta-label {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #8a8f93;
 }
 .am-advisory-card-bottomline {
   flex: 1 1 auto;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
-.am-advisory-card-bottomline h5 {
+.am-advisory-card-bottomline-title {
   margin: 0 0 6px;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
-  font-size: 0.8em;
-  color: #666;
+  letter-spacing: 0.04em;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #767b7f;
 }
 .am-advisory-card-bottomline-text {
-  font-size: 1em;
+  font-size: 1.15rem;
   line-height: 1.5;
+  color: #222;
+}
+.am-advisory-card-bottomline-text p:last-child {
+  margin-bottom: 0;
 }
 .am-advisory-card-more {
   align-self: flex-start;
   display: inline-block;
-  padding: 9px 18px;
+  padding: 11px 22px;
   background: #1a6496;
   color: #fff;
-  border-radius: 4px;
+  border-radius: 5px;
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.01em;
 }
-.am-advisory-card-more:hover {
+.am-advisory-card-more:hover,
+.am-advisory-card-more:focus {
   background: #14507a;
   color: #fff;
 }

@@ -98,27 +98,48 @@ function avalanche_danger_map_advisory_page() {
     return array('#markup' => '<p class="am-advisory-empty">' . t('No current avalanche advisory is available. Please check back soon.') . '</p>');
   }
 
-  // Multi-zone center: one summary card per zone.
+  // Multi-zone center: one summary card per zone. Markup mirrors the NAC /
+  // Bridger-Teton forecast card - zone name, issued/expires/author meta,
+  // the NAC danger icon, the bottom line, and a read-more button.
   $module_path = backdrop_get_path('module', 'avalanche_danger_map');
   backdrop_add_css($module_path . '/avalanche_danger_map.css');
+  $date_fmt = 'l, F j, Y - g:iA';
 
   $cards = '';
   foreach ($zones as $zone) {
     $icon = $zone['icon_url']
       ? '<img class="am-advisory-card-icon" src="' . check_url($zone['icon_url']) . '" alt="' . check_plain($zone['label']) . '" />'
       : '';
+
+    // Issued / Expires / Author meta row (only when there's an advisory).
+    $meta = '';
+    if (!empty($zone['nid'])) {
+      $meta = '<div class="am-advisory-card-meta">';
+      $meta .= '<div class="am-advisory-card-meta-item"><span class="am-advisory-card-meta-label">' . t('Issued') . '</span>' . check_plain(format_date($zone['created'], 'custom', $date_fmt)) . '</div>';
+      if ($zone['expires'] > $zone['created']) {
+        $meta .= '<div class="am-advisory-card-meta-item"><span class="am-advisory-card-meta-label">' . t('Expires') . '</span>' . check_plain(format_date($zone['expires'], 'custom', $date_fmt)) . '</div>';
+      }
+      if ($zone['forecaster'] !== '') {
+        $meta .= '<div class="am-advisory-card-meta-item"><span class="am-advisory-card-meta-label">' . t('Author') . '</span>' . check_plain($zone['forecaster']) . '</div>';
+      }
+      $meta .= '</div>';
+    }
+
     $bottom = $zone['bottom_line']
-      ? '<div class="am-advisory-card-bottomline"><h5>' . t('The Bottom Line') . '</h5><div class="am-advisory-card-bottomline-text">' . $zone['bottom_line'] . '</div></div>'
-      : '<div class="am-advisory-card-bottomline"><p><em>' . t('No current forecast for this zone.') . '</em></p></div>';
+      ? '<div class="am-advisory-card-bottomline"><h5 class="am-advisory-card-bottomline-title">' . t('The Bottom Line') . '</h5><div class="am-advisory-card-bottomline-text">' . $zone['bottom_line'] . '</div></div>'
+      : '<div class="am-advisory-card-bottomline"><p class="am-advisory-card-noforecast"><em>' . t('No current forecast for this zone.') . '</em></p></div>';
+
     $more = !empty($zone['nid'])
       ? '<a class="am-advisory-card-more" href="' . check_url($zone['url']) . '">' . t('Read the Full Forecast') . '</a>'
       : '';
 
     $cards .= '<article class="am-advisory-card">'
       . '<div class="am-advisory-card-head">' . $icon
-      . '<div class="am-advisory-card-heading"><h2 class="am-advisory-card-zone">' . check_plain($zone['name']) . '</h2>'
-      . '<div class="am-advisory-card-danger">' . check_plain($zone['label']) . '</div></div></div>'
-      . $bottom . $more . '</article>';
+      . '<div class="am-advisory-card-heading">'
+      . '<h2 class="am-advisory-card-zone">' . check_plain($zone['name']) . '</h2>'
+      . '<div class="am-advisory-card-danger">' . check_plain($zone['label']) . '</div>'
+      . '</div></div>'
+      . $meta . $bottom . $more . '</article>';
   }
 
   return array('#markup' => '<div class="am-advisory-summary">' . $cards . '</div>');
@@ -155,11 +176,23 @@ function avalanche_danger_map_get_zone_summaries() {
     $rating = (int) $info['rating'];
 
     $bottom_line = '';
+    $created = 0;
+    $expires = 0;
+    $forecaster = '';
     if (!empty($info['nid']) && ($node = node_load($info['nid']))) {
       $items = field_get_items('node', $node, 'field_bottom_line');
       if ($items && !empty($items[0]['value'])) {
         $bottom_line = check_markup($items[0]['value'], isset($items[0]['format']) ? $items[0]['format'] : NULL);
       }
+      // Issued / expires, mirroring the full advisory template: issue time is
+      // node created, expiry is created + duration hours (default 24).
+      $created = (int) $node->created;
+      $duration = field_get_items('node', $node, 'field_duration');
+      $duration_hours = ($duration && !empty($duration[0]['value'])) ? (int) $duration[0]['value'] : 24;
+      $expires = $created + ($duration_hours * 3600);
+      // Author: forecaster's first/last name if present, else the username -
+      // same resolution order as inc/advisory.inc.
+      $forecaster = avalanche_danger_map_forecaster_name($node->uid);
     }
 
     $summaries[] = array(
@@ -170,11 +203,46 @@ function avalanche_danger_map_get_zone_summaries() {
       'label' => isset($labels[$rating]) ? $labels[$rating] : $labels[0],
       'icon_url' => avalanche_danger_map_icon_url($rating),
       'bottom_line' => $bottom_line,
+      'created' => $created,
+      'expires' => $expires,
+      'forecaster' => $forecaster,
       'url' => $info['url'],
       'expired' => !empty($info['expired']),
     );
   }
   return $summaries;
+}
+
+/**
+ * Resolves an advisory author's display name.
+ *
+ * Prefers the forecaster's first + last name fields (as used on the full
+ * advisory), falling back to the account username.
+ *
+ * @param int $uid
+ *   The author's user ID.
+ *
+ * @return string
+ *   The forecaster's name, or '' if the user can't be loaded.
+ */
+function avalanche_danger_map_forecaster_name($uid) {
+  $account = user_load($uid);
+  if (!$account) {
+    return '';
+  }
+  $name = '';
+  $first = field_get_items('user', $account, 'field_first_name');
+  if ($first && !empty($first[0]['value'])) {
+    $name = $first[0]['value'];
+    $last = field_get_items('user', $account, 'field_last_name');
+    if ($last && !empty($last[0]['value'])) {
+      $name .= ' ' . $last[0]['value'];
+    }
+  }
+  if ($name === '' && !empty($account->name)) {
+    $name = $account->name;
+  }
+  return trim($name);
 }
 
 /**
@@ -529,8 +597,11 @@ function avalanche_danger_map_icon_url($level) {
   if ($level < 0 || $level > 5) {
     return '';
   }
+  // Use base_path() + the file path directly, not url(): these SVGs are
+  // static assets, and url() would route them through Backdrop's front
+  // controller ("?q=modules/...") when clean URLs are off, 404ing the file.
   $module_path = backdrop_get_path('module', 'avalanche_danger_map');
-  return url($module_path . '/icons/level-' . $level . '.svg');
+  return base_path() . $module_path . '/icons/level-' . $level . '.svg';
 }
 
 /**
