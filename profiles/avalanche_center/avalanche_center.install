@@ -724,7 +724,10 @@ function avalanche_center_import_avalanche_terms() {
     }
     $term = entity_create('taxonomy_term', array('vocabulary' => 'avalanche_terms'));
     $term->name = $entry['name'];
-    $term->description = isset($entry['description']) ? $entry['description'] : '';
+    // Strip any trailing whitespace or leftover \r\n escape sequences so the
+    // rendered definition doesn't end with a stray blank line.
+    $description = isset($entry['description']) ? $entry['description'] : '';
+    $term->description = preg_replace('/(\\\\r|\\\\n|\s)+$/', '', $description);
     $term->format = 'full_html';
     if (!empty($entry['synonyms']) && is_array($entry['synonyms'])) {
       $delta = 0;
