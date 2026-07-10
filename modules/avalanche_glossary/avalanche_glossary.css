@@ -53,3 +53,14 @@ dd.glossary-definition {
 dd.glossary-definition p {
   margin: 0.25em 0;
 }
+
+/* Glossary terms auto-linked in content by the "Mark glossary terms" filter. */
+.lexicon-term {
+  border-bottom: 1px dotted currentColor;
+  text-decoration: none;
+  cursor: help;
+}
+.lexicon-term:hover,
+.lexicon-term:focus {
+  border-bottom-style: solid;
+}

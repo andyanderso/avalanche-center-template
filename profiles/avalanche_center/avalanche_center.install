@@ -80,6 +80,40 @@ function avalanche_center_install() {
   theme_enable(array('avalanche_modern', 'responsive_sac', 'responsive_bartik', 'basis'));
   config_set('system.core', 'theme_default', 'avalanche_modern');
   config_set('system.core', 'admin_theme', 'basis');
+
+  avalanche_center_enable_glossary_filter();
+}
+
+/**
+ * Turns on the avalanche_glossary "Mark glossary terms" filter for the
+ * full_html format.
+ *
+ * Mirrors the live Gulmarg site, where the Lexicon filter runs on the same
+ * full-HTML WYSIWYG profile advisories are authored in - so glossary terms
+ * typed into an advisory (or any full_html content) auto-link to their
+ * definition. full_html is core-shipped config, so config_install_default_config()
+ * skips any version we ship; enable the filter on the active format here.
+ */
+function avalanche_center_enable_glossary_filter() {
+  $config = config('filter.format.full_html');
+  if ($config->isNew()) {
+    return;
+  }
+  $filters = $config->get('filters');
+  if (!is_array($filters)) {
+    $filters = array();
+  }
+  if (!isset($filters['avalanche_glossary_mark'])) {
+    $filters['avalanche_glossary_mark'] = array(
+      'module' => 'avalanche_glossary',
+      'status' => 1,
+      // After the other filters have produced their HTML.
+      'weight' => 20,
+      'settings' => array(),
+    );
+    $config->set('filters', $filters);
+    $config->save();
+  }
 }
 
 /**
@@ -158,8 +192,8 @@ function avalanche_center_create_demo_content($lat, $lng) {
   // exception, on both reference sites.
   $region_a = avalanche_center_demo_region(t('North Zone'), $lat, $lng, 0.12, -0.03);
   $region_b = avalanche_center_demo_region(t('South Zone'), $lat, $lng, -0.12, 0.03);
-  avalanche_center_demo_advisory($region_a, 1, t('This is a demo advisory created automatically at install so the danger map has something to show. Replace it with a real forecast, or delete it.'));
-  avalanche_center_demo_advisory($region_b, 2, t('A second demo advisory for the second demo forecast zone. Replace it with a real forecast, or delete it.'));
+  avalanche_center_demo_advisory($region_a, 1, t('This is a demo avalanche advisory created automatically at install so the danger map has something to show. Watch for wind slab and cornice hazards on steep, wind-loaded slopes. Replace it with a real forecast, or delete it.'));
+  avalanche_center_demo_advisory($region_b, 2, t('A second demo avalanche advisory for the second demo forecast zone. Evaluate the snowpack carefully for persistent slab instabilities before entering avalanche terrain. Replace it with a real forecast, or delete it.'));
 
   // Dedicated home page. Matching the Gulmarg/Argentina baseline, the front
   // page is its own standalone "page" node aliased to "home", NOT a promoted
@@ -199,6 +233,11 @@ function avalanche_center_create_demo_content($lat, $lng) {
   avalanche_center_demo_reference_page(t('How to Read the Avalanche Forecast'), 'how-to-read-avalanche-forecast', 'how-to-read-avalanche-forecast.html');
   avalanche_center_demo_reference_page(t('North American Avalanche Danger Scale'), 'north-american-avalanche-danger-scale', 'north-american-avalanche-danger-scale.html');
   avalanche_center_demo_reference_page(t('Avalanche Problems'), 'avalanche-problems', 'avalanche-problems.html');
+
+  // Populate the Avalanche Terms glossary (names, definitions, and synonyms).
+  // The "Mark glossary terms" filter (avalanche_glossary) then auto-links
+  // these terms wherever they appear in full_html content, e.g. advisories.
+  avalanche_center_import_avalanche_terms();
 
   // The sponsor-tier home-page blocks also filter on expiration date being
   // in the future, so give the demo sponsor one.
@@ -471,7 +510,10 @@ function avalanche_center_demo_advisory($region_tid, $danger_level, $bottom_line
   $node->field_danger_rating_3[LANGUAGE_NONE][0]['value'] = 'Low';
   $node->field_duration[LANGUAGE_NONE][0]['value'] = 24;
   $node->field_bottom_line[LANGUAGE_NONE][0]['value'] = $bottom_line;
-  $node->field_bottom_line[LANGUAGE_NONE][0]['format'] = filter_default_format();
+  // full_html to match how advisories are authored on the live sites (the
+  // "full html + mark glossary terms" WYSIWYG profile), so the glossary
+  // auto-link filter marks terms in the bottom line.
+  $node->field_bottom_line[LANGUAGE_NONE][0]['format'] = 'full_html';
 
   // field_rose_{1,2,3} (danger_rose_picker, from the danger_rose module) are
   // not Field-API "required" on advisory, but danger_rose_field_schema()
@@ -656,6 +698,47 @@ function avalanche_center_demo_terms($vocabulary, array $names) {
     $tids[$name] = $term->tid;
   }
   return $tids;
+}
+
+/**
+ * Imports the Avalanche Terms glossary from the shipped JSON data file.
+ *
+ * Creates one taxonomy term per entry in content/avalanche-terms.json, in the
+ * "avalanche_terms" vocabulary, with its definition (HTML, full_html format)
+ * and any synonyms (field_synonyms). These feed both the glossary page and
+ * the "Mark glossary terms" content filter.
+ */
+function avalanche_center_import_avalanche_terms() {
+  $file = backdrop_get_path('profile', 'avalanche_center') . '/content/avalanche-terms.json';
+  if (!file_exists($file)) {
+    return;
+  }
+  $entries = json_decode(file_get_contents($file), TRUE);
+  if (!is_array($entries)) {
+    return;
+  }
+
+  foreach ($entries as $entry) {
+    if (empty($entry['name'])) {
+      continue;
+    }
+    $term = entity_create('taxonomy_term', array('vocabulary' => 'avalanche_terms'));
+    $term->name = $entry['name'];
+    $term->description = isset($entry['description']) ? $entry['description'] : '';
+    $term->format = 'full_html';
+    if (!empty($entry['synonyms']) && is_array($entry['synonyms'])) {
+      $delta = 0;
+      foreach ($entry['synonyms'] as $synonym) {
+        $synonym = trim($synonym);
+        if ($synonym === '') {
+          continue;
+        }
+        $term->field_synonyms[LANGUAGE_NONE][$delta]['value'] = $synonym;
+        $delta++;
+      }
+    }
+    taxonomy_term_save($term);
+  }
 }
 
 /**

@@ -1,0 +1,473 @@
+[
+  {
+    "name": "Anchors",
+    "description": "<p>Trees, bushes or rocks protruding though the slab that may help hold it in place.</p>\\r\\n",
+    "synonyms": [
+      "anchor",
+      "anchored",
+      "anchoring"
+    ]
+  },
+  {
+    "name": "Aspect",
+    "description": "<p>The compass direction a slope faces (i.e. North, South, East, or West.)</p>\\r\\n",
+    "synonyms": [
+      "aspects"
+    ]
+  },
+  {
+    "name": "Avalanche",
+    "description": "<p>A mass of snow sliding, tumbling, or flowing down an inclined surface.</p>\\r\\n",
+    "synonyms": [
+      "avalanches",
+      "slide",
+      "slides"
+    ]
+  },
+  {
+    "name": "Avalanche Path",
+    "description": "<p>A terrain feature where an avalanche occurs. Composed of a Starting Zone, Track, and Runout Zone.</p>\\r\\n"
+  },
+  {
+    "name": "Avalanche Transceiver",
+    "description": "<p>An electronic device worn on the body to aide in quickly finding buried avalanche victims. Also called an avalanche beacon, it has the ability to send and receive a 457khz radio signal.</p>\\r\\n",
+    "synonyms": [
+      "beacon"
+    ]
+  },
+  {
+    "name": "Bed Surface",
+    "description": "<p>The surface over which a fracture and subsequent avalanche release occurs. Can be either the ground or a snow surface.</p>\\r\\n"
+  },
+  {
+    "name": "Collapse",
+    "description": "<p>When the fracture of a lower snow layer causes an upper layer to fall. Also called a whumpf, this is an obvious sign of instability.</p>\\r\\n",
+    "synonyms": [
+      "collapsed",
+      "collapses",
+      "collapsing"
+    ]
+  },
+  {
+    "name": "Concave Slopes",
+    "description": "<p>A terrain feature that is rounded inward like the inside of a bowl, i.e. goes from more steep to less steep.</p>\\r\\n",
+    "synonyms": [
+      "concave"
+    ]
+  },
+  {
+    "name": "Considerable Danger",
+    "description": "<p>Dangerous avalanche conditions. Careful snowpack evaluation, cautious route finding and conservative decision making essential. Natural avalanches possible; human triggered avalanches likely. Small avalanches in many areas; or large avalanches in specific areas; or very large avalanches in isolated areas.</p>\\r\\n",
+    "synonyms": [
+      "considerable"
+    ]
+  },
+  {
+    "name": "Convex Slopes",
+    "description": "<p>A terrain feature that is curved or rounded like the exterior of a sphere or circle, i.e. goes from less steep to more steep. Convex slopes tend to be less safe than concave slopes.</p>\\r\\n",
+    "synonyms": [
+      "convex"
+    ]
+  },
+  {
+    "name": "Corn Snow",
+    "description": "<p>Large-grained, rounded crystals formed from repeated melting and freezing of the snow.</p>\\r\\n",
+    "synonyms": [
+      "corn"
+    ]
+  },
+  {
+    "name": "Cornice",
+    "description": "<p>A mass of snow deposited by the wind, often overhanging, and usually near a sharp terrain break such as a ridge. Cornices can break off unexpectedly and should be approached with caution.</p>\\r\\n"
+  },
+  {
+    "name": "Couloir",
+    "description": "<p>A steep gully in alpine terrain. In winter, a couloir is usually filled with snow bound by rocks on either side.</p>\\r\\n",
+    "synonyms": [
+      "chute"
+    ]
+  },
+  {
+    "name": "Cross Loading",
+    "description": "<p>Wind blowing across a slope, depositing drifts on the sides of gullies or other terrain features.</p>\\r\\n"
+  },
+  {
+    "name": "Crown Face",
+    "description": "<p>The top fracture surface of a slab avalanche. Usually smooth, clean cut, and angled 90 degrees to the bed surface.</p>\\r\\n",
+    "synonyms": [
+      "crown"
+    ]
+  },
+  {
+    "name": "Danger Ratings",
+    "description": "<p>In the U.S., a five-category estimation of the avalanche danger: Low, Moderate, Considerable, High and Extreme.</p>\\r\\n",
+    "synonyms": [
+      "danger rating"
+    ]
+  },
+  {
+    "name": "Deep Slab Avalanche",
+    "description": "<p>Avalanches that break deeply into old weak layers of snow that formed some time ago.</p>\\r\\n",
+    "synonyms": [
+      "deep slab"
+    ]
+  },
+  {
+    "name": "Depth Hoar",
+    "description": "<p>Large-grained, faceted, cup-shaped crystals near the ground. Depth hoar forms because of large temperature gradients within the snowpack.</p>\\r\\n"
+  },
+  {
+    "name": "Dry Snow Avalanche",
+    "description": "<p>An avalanche that occurs in snow below freezing temperatures.</p>\\r\\n"
+  },
+  {
+    "name": "Extreme Danger",
+    "description": "<p>Avoid all avalanche terrain. Natural and human triggered avalanches certain. Large to very large avalanches in many areas.</p>\\r\\n",
+    "synonyms": [
+      "extreme avalanche danger",
+      "extreme avalanche hazard",
+      "danger is extreme"
+    ]
+  },
+  {
+    "name": "Faceted Snow",
+    "description": "<p>Angular snow with poor bonding created from large temperature gradients within the snowpack.</p>\\r\\n",
+    "synonyms": [
+      "facet",
+      "facets",
+      "faceted"
+    ]
+  },
+  {
+    "name": "Fracture",
+    "description": "<p>The physical separation of the slab from the bed surface and surrounding snow during the initiation of a slab avalanche.</p>\\r\\n",
+    "synonyms": [
+      "fractured"
+    ]
+  },
+  {
+    "name": "Glide",
+    "description": "<p>When the entire snowpack slowly moves as a unit on the ground, similar to a glacier.</p>\\r\\n"
+  },
+  {
+    "name": "Graupel",
+    "description": "<p>Heavily rimed new snow, often shaped like little Styrofoam balls.</p>\\r\\n"
+  },
+  {
+    "name": "Hard Slab Avalanche",
+    "description": "<p>A slab avalanche of hard, dense snow.</p>\\r\\n",
+    "synonyms": [
+      "hard slab"
+    ]
+  },
+  {
+    "name": "High Danger",
+    "description": "<p>Very dangerous avalanche conditions. Travel in avalanche terrain not recommended. Natural avalanches likely; human triggered avalanches very likely. Large avalanches in many areas; or very large avalanches in specific areas.</p>\\r\\n",
+    "synonyms": [
+      "high avalanche danger",
+      "high avalanche hazard",
+      "danger is high"
+    ]
+  },
+  {
+    "name": "High Marking",
+    "description": "<p>When a snowmobiler ascends a slope to the highest point they can reach. Also known as hill climbing.</p>\\r\\n",
+    "synonyms": [
+      "hill climbing"
+    ]
+  },
+  {
+    "name": "Isothermal",
+    "description": "<p>When all layers of the snowpack are at the same temperature, usually the freezing point. Often refers to a snowpack that is wet throughout its depth.</p>\\r\\n"
+  },
+  {
+    "name": "Leeward",
+    "description": "<p>The downwind side of an obstacle such as a ridge.</p>\\r\\n"
+  },
+  {
+    "name": "Loading",
+    "description": "<p>The addition of weight on top of a snowpack, usually from precipitation, wind drifting, or a person.</p>\\r\\n",
+    "synonyms": [
+      "loaded"
+    ]
+  },
+  {
+    "name": "Loose Snow Avalanche",
+    "description": "<p>An avalanche that releases from a point and spreads downhill collecting more snow - different from a slab avalanche. Also called a point-release or sluff.</p>\\r\\n",
+    "synonyms": [
+      "sluff",
+      "point release",
+      "wet loose avalanche",
+      "loose dry avalanche"
+    ]
+  },
+  {
+    "name": "Low Avalanche Hazard",
+    "description": "<p>Generally safe avalanche conditions. Watch for unstable snow on isolated terrain features. Natural and human triggered avalanches unlikely. Small avalanches in isolated areas or extreme terrain.</p>\\r\\n",
+    "synonyms": [
+      "low danger",
+      "low avalanche danger",
+      "danger is low"
+    ]
+  },
+  {
+    "name": "Melt freeze snow",
+    "description": "<p>Snow grains that have partially melted and then frozen again.</p>\\r\\n",
+    "synonyms": [
+      "melt-freeze"
+    ]
+  },
+  {
+    "name": "Moderate danger",
+    "description": "<p>Heightened avalanche conditions on specific terrain features. Evaluate snow and terrain carefully; identify features of concern. Natural avalanches unlikely; human triggered avalanches possible. Small avalanches in specific areas; or large avalanches in isolated areas.</p>\\r\\n",
+    "synonyms": [
+      "moderate avalanche danger",
+      "moderate avalanche hazard",
+      "danger is moderate"
+    ]
+  },
+  {
+    "name": "Persistent weak layer",
+    "description": "<p>Weak layers that continue to produce avalanches for several days or weeks after a storm.</p>\\r\\n",
+    "synonyms": [
+      "pwl"
+    ]
+  },
+  {
+    "name": "Probe",
+    "description": "<p>A metal rod used to probe through avalanche debris for buried victims.</p>\\r\\n"
+  },
+  {
+    "name": "Propagation",
+    "description": "<p>The spreading of a fracture or crack within the snowpack.</p>\\r\\n",
+    "synonyms": [
+      "propagating",
+      "propagate",
+      "propagated"
+    ]
+  },
+  {
+    "name": "Rain Crust",
+    "description": "<p>A clear layer of ice formed when rain falls on the snow surface then freezes.</p>\\r\\n"
+  },
+  {
+    "name": "Remote Trigger",
+    "description": "<p>When the trigger point is outside of the boundary of the releasing slab.</p>\\r\\n"
+  },
+  {
+    "name": "Rime",
+    "description": "<p>Supercooled water droplets that freeze to objects in exposed terrain, forming icy deposits on the windward side. Rime can also form on snowflakes as they fall through the sky, giving them a fuzzy appearence.</p>\\r\\n",
+    "synonyms": [
+      "rimed"
+    ]
+  },
+  {
+    "name": "Runout Zone",
+    "description": "<p>The portion of an avalanche path where the debris typically comes to rest.</p>\\r\\n",
+    "synonyms": [
+      "runout"
+    ]
+  },
+  {
+    "name": "Sastrugi",
+    "description": "<p>Wind eroded snow, which often looks rough like frozen waves. Usually found on windward slopes.</p>\\r\\n"
+  },
+  {
+    "name": "Settlement",
+    "description": "<p>The slow, deformation and densification of snow under the influence of gravity. Not to be confused with collasping</p>\\r\\n"
+  },
+  {
+    "name": "Ski cut",
+    "description": "<p>A stability test where a skier, rider or snowmobiler rapidly crosses an avalanche starting zone to see if an avalanche initiates. Slope cuts can be dangerous and should only be performed by experienced people on small avalanche paths or test slopes.</p>\\r\\n",
+    "synonyms": [
+      "slope cut",
+      "snowmobile cut",
+      "snowboard cut"
+    ]
+  },
+  {
+    "name": "Skin track",
+    "description": "<p>Backcountry skiers and some snowboarders ascend slopes using climbing skins attached to the bottom of their skis.</p>\\r\\n",
+    "synonyms": [
+      "skinning"
+    ]
+  },
+  {
+    "name": "Slab",
+    "description": "<p>A relatively cohesive snowpack layer.</p>\\r\\n",
+    "synonyms": [
+      "slabs"
+    ]
+  },
+  {
+    "name": "Snow density",
+    "description": "<p>The mass of snow per unit volume, but often expressed as a percent water content. New fallen powder has a low density (3-10%), while heavy or wet snow is more dense (10-20%).</p>\\r\\n",
+    "synonyms": [
+      "density",
+      "% snow"
+    ]
+  },
+  {
+    "name": "Snow layer",
+    "description": "<p>A snowpack stratum differentiated from others by weather, metamorphism, or other processes.</p>\\r\\n",
+    "synonyms": [
+      "layer",
+      "snowpack layer",
+      "layer, snow"
+    ]
+  },
+  {
+    "name": "Snow Metamorphism",
+    "description": "<p>The physical change of snow grains within the snowpack due to differences in temperature and pressure.</p>\\r\\n",
+    "synonyms": [
+      "metamorphism"
+    ]
+  },
+  {
+    "name": "Snowpit",
+    "description": "<p>A pit dug vertically into the snowpack where snow layering is observed and stability tests may be performed. Also called a snow profile.</p>\\r\\n",
+    "synonyms": [
+      "pit",
+      "snow profile",
+      "profile"
+    ]
+  },
+  {
+    "name": "Soft slab avalanche",
+    "description": "<p>A slab avalanche of soft or low density snow.</p>\\r\\n",
+    "synonyms": [
+      "soft slab"
+    ]
+  },
+  {
+    "name": "Stability",
+    "description": "<p>The chance that an avalanche will not occur, relative to a given trigger (usually the weight of a human).</p>\\r\\n",
+    "synonyms": [
+      "stable"
+    ]
+  },
+  {
+    "name": "Stability Test",
+    "description": "<p>A procedure used to estimate the stability of the snowpack, often done in a snowpit. Common tests include the Rutschblock, compression or tap test, cornice drop, and slope cut</p>\\r\\n",
+    "synonyms": [
+      "snowpit test"
+    ]
+  },
+  {
+    "name": "Starting Zone",
+    "description": "<p>The portion of an avalanche path where an avalanche releases.</p>\\r\\n",
+    "synonyms": [
+      "start zone"
+    ]
+  },
+  {
+    "name": "Stepping down",
+    "description": "<p>When a slab avalanche slides a short distance and breaks down into deeper weak layers forming a stair-step pattern on the bed surface.</p>\\r\\n",
+    "synonyms": [
+      "step down",
+      "stepped down"
+    ]
+  },
+  {
+    "name": "Sun Crust",
+    "description": "<p>A snow layer melted by radiation from the sun and subsequently refrozen.</p>\\r\\n"
+  },
+  {
+    "name": "Surface Hoar",
+    "description": "<p>Featherly crystals that form on the snow surface during clear and calm conditions - essentially frozen dew. Forms a persistent weak layer once buried.</p>\\r\\n"
+  },
+  {
+    "name": "Sympathetic Trigger",
+    "description": "<p>When one avalanche triggers another avalanche some distance away.</p>\\r\\n"
+  },
+  {
+    "name": "Temperature Gradient",
+    "description": "<p>The change in temperature over snowpack depth.</p>\\r\\n"
+  },
+  {
+    "name": "Terrain Trap",
+    "description": "<p>Terrain in which the consequences of an avalanche are especially hazardous, such as a gully, an abrupt transition, an avalanche path that terminates in trees, a crevasse field or a cliff.</p>\\r\\n",
+    "synonyms": [
+      "terrain traps"
+    ]
+  },
+  {
+    "name": "Track",
+    "description": "<p>The portion of an avalanche path between the starting zone and the runout zone.</p>\\r\\n"
+  },
+  {
+    "name": "Trigger",
+    "description": "<p>A disturbance that initiates fracture within the weak layer causing an avalanche. In 90 percent of avalanche accidents, the victim or someone in the victims party triggers the avalanche.</p>\\r\\n",
+    "synonyms": [
+      "triggers",
+      "triggered"
+    ]
+  },
+  {
+    "name": "Trigger Point",
+    "description": "<p>The area where a trigger initiates an avalanche.</p>\\r\\n",
+    "synonyms": [
+      "trigger points"
+    ]
+  },
+  {
+    "name": "Upside-Down Storm",
+    "description": "<p>When a snowstorm deposits denser snow over less dense snow, creating a slab/weak layer combination.</p>\\r\\n",
+    "synonyms": [
+      "upside down",
+      "upside down storm",
+      "upside-down"
+    ]
+  },
+  {
+    "name": "Weak Interface",
+    "description": "<p>A poor bond between two adjacent layers of snow.</p>\\r\\n"
+  },
+  {
+    "name": "Weak Layer",
+    "description": "<p>A snowpack layer with less strength than adjacent layers. Often the layer in the snowpack where an avalanche fractures.</p>\\r\\n",
+    "synonyms": [
+      "weak layers"
+    ]
+  },
+  {
+    "name": "Wet Snow Avalanche",
+    "description": "<p>An avalanche caused by snow losing its strength after becoming damp, moist or saturated with water.</p>\\r\\n",
+    "synonyms": [
+      "wet slab"
+    ]
+  },
+  {
+    "name": "Whumpf",
+    "description": "<p>When the fracture of a lower snow layer causes an upper layer to fall or collapse, making a whumpfing sound. This an obvious sign of instability. See Collapse.</p>\\r\\n",
+    "synonyms": [
+      "whumpfing",
+      "whumpfs",
+      "whumph",
+      "whumphs",
+      "whumphing",
+      "whumf",
+      "whumfing",
+      "whumfs"
+    ]
+  },
+  {
+    "name": "Wind Loading",
+    "description": "<p>The added weight of wind drifted snow.</p>\\r\\n",
+    "synonyms": [
+      "wind loaded",
+      "wind load"
+    ]
+  },
+  {
+    "name": "Wind Slab",
+    "description": "<p>A cohesive layer of snow formed when wind deposits snow onto leeward terrain. Wind slabs are often smooth and rounded and sometimes sound hollow.</p>\\r\\n",
+    "synonyms": [
+      "wind slabs"
+    ]
+  },
+  {
+    "name": "Windward",
+    "description": "<p>The upwind side of an obstacle such as a ridge. Usually snow is eroded from windward slopes making them relatively safer.</p>\\r\\n"
+  }
+]

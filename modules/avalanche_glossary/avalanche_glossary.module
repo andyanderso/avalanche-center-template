@@ -13,9 +13,10 @@
  * Implements hook_init().
  */
 function avalanche_glossary_init() {
-  if (strpos(current_path(), 'avalanche-terms') === 0) {
-    backdrop_add_css(backdrop_get_path('module', 'avalanche_glossary') . '/avalanche_glossary.css');
-  }
+  // Load on every page: the glossary page uses it, and the "Mark glossary
+  // terms" filter can place .lexicon-term links in content anywhere on the
+  // site. The stylesheet is tiny.
+  backdrop_add_css(backdrop_get_path('module', 'avalanche_glossary') . '/avalanche_glossary.css');
 }
 
 /**
@@ -103,7 +104,9 @@ function avalanche_glossary_page($letter = NULL) {
     foreach ($letter_terms as $term) {
       // Use the actual URL alias if it exists.
       $alias = backdrop_get_path_alias('taxonomy/term/' . $term->tid);
-      $output .= '<dt class="glossary-term">' . l(check_plain($term->name), $alias) . '</dt>';
+      // Per-term anchor so the "mark glossary terms" filter can link a term
+      // in body content straight to its definition here.
+      $output .= '<dt class="glossary-term" id="term-' . (int) $term->tid . '">' . l(check_plain($term->name), $alias) . '</dt>';
       $output .= '<dd class="glossary-definition">';
       if (!empty($term->description)) {
         $output .= check_markup($term->description, $term->format);
@@ -115,4 +118,263 @@ function avalanche_glossary_page($letter = NULL) {
   }
 
   return $output;
+}
+
+/**
+ * Implements hook_filter_info().
+ *
+ * Provides a "Mark glossary terms" text filter that turns avalanche glossary
+ * terms (and their synonyms) found in content into links to their definition
+ * on the glossary page, with the definition shown as a hover tooltip. This is
+ * the native Backdrop replacement for the D7 Lexicon module's term-marking
+ * behaviour used on the live Gulmarg site (case-insensitive, whole-word, all
+ * occurrences, class "lexicon-term", linking to the glossary rather than a
+ * per-term page).
+ */
+function avalanche_glossary_filter_info() {
+  return array(
+    'avalanche_glossary_mark' => array(
+      'title' => t('Mark glossary terms'),
+      'description' => t('Link avalanche glossary terms and their synonyms to the glossary, with the definition shown on hover.'),
+      'process callback' => 'avalanche_glossary_filter_mark',
+      // Definitions/terms change rarely; the filtered output is safe to cache.
+      'cache' => TRUE,
+      // Run late, after other filters have produced their HTML.
+      'weight' => 20,
+    ),
+  );
+}
+
+/**
+ * Process callback for the "Mark glossary terms" filter.
+ *
+ * Walks the text's HTML, and inside ordinary text (never inside links,
+ * headings, abbr/acronym, or code) links every occurrence of a glossary term
+ * or synonym to its definition on the glossary page.
+ */
+function avalanche_glossary_filter_mark($text, $filter = NULL, $format = NULL, $langcode = NULL, $cache = FALSE, $cache_id = '') {
+  // Re-entrancy guard: never let this filter run inside its own output (e.g.
+  // if a format that includes this filter is ever run while it's already
+  // marking text).
+  static $processing = FALSE;
+  if ($processing) {
+    return $text;
+  }
+
+  $map = avalanche_glossary_term_map();
+  if (empty($map['terms']) || empty($map['regex']) || $text === '') {
+    return $text;
+  }
+  // Nothing to do if none of the terms appear at all.
+  if (!preg_match($map['regex'], $text)) {
+    return $text;
+  }
+
+  $dom = new DOMDocument();
+  libxml_use_internal_errors(TRUE);
+  // Force UTF-8 handling; loadHTML() wraps the fragment in <html><body>.
+  $ok = $dom->loadHTML('<?xml encoding="UTF-8">' . $text, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+  libxml_clear_errors();
+  if (!$ok) {
+    return $text;
+  }
+
+  $processing = TRUE;
+  avalanche_glossary_filter_walk($dom, $dom, $map);
+  $processing = FALSE;
+
+  $out = '';
+  foreach ($dom->childNodes as $child) {
+    // Skip the XML processing instruction we prepended.
+    if ($child->nodeType === XML_PI_NODE) {
+      continue;
+    }
+    $out .= $dom->saveHTML($child);
+  }
+  return $out !== '' ? $out : $text;
+}
+
+/**
+ * Recursively marks glossary terms in the text nodes under $node.
+ */
+function avalanche_glossary_filter_walk($node, DOMDocument $dom, array $map) {
+  // Never mark terms inside these elements (existing links, headings, code,
+  // and the abbr/acronym tags Lexicon also treats as blocking).
+  static $blocked = array(
+    'a' => 1, 'h1' => 1, 'h2' => 1, 'h3' => 1, 'h4' => 1, 'h5' => 1, 'h6' => 1,
+    'abbr' => 1, 'acronym' => 1, 'code' => 1, 'pre' => 1, 'script' => 1,
+    'style' => 1, 'dfn' => 1, 'button' => 1, 'textarea' => 1,
+  );
+
+  // Copy the child list first: we replace text nodes as we go.
+  $children = array();
+  foreach ($node->childNodes as $child) {
+    $children[] = $child;
+  }
+  foreach ($children as $child) {
+    if ($child->nodeType === XML_ELEMENT_NODE) {
+      if (isset($blocked[strtolower($child->nodeName)])) {
+        continue;
+      }
+      avalanche_glossary_filter_walk($child, $dom, $map);
+    }
+    elseif ($child->nodeType === XML_TEXT_NODE) {
+      avalanche_glossary_filter_mark_textnode($child, $dom, $map);
+    }
+  }
+}
+
+/**
+ * Replaces glossary-term occurrences within a single text node with links.
+ */
+function avalanche_glossary_filter_mark_textnode(DOMNode $textnode, DOMDocument $dom, array $map) {
+  $text = $textnode->nodeValue;
+  if (trim($text) === '' || !preg_match($map['regex'], $text)) {
+    return;
+  }
+
+  $parts = preg_split($map['regex'], $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+  if (count($parts) < 2) {
+    return;
+  }
+
+  $fragment = $dom->createDocumentFragment();
+  foreach ($parts as $i => $piece) {
+    if ($piece === '') {
+      continue;
+    }
+    // Odd indices are the captured term matches.
+    if ($i % 2 === 1) {
+      $key = backdrop_strtolower($piece);
+      if (isset($map['terms'][$key])) {
+        $info = $map['terms'][$key];
+        $link = $dom->createElement('a');
+        $link->setAttribute('href', url('avalanche-terms', array('fragment' => 'term-' . $info['tid'])));
+        $link->setAttribute('class', 'lexicon-term');
+        if ($info['desc'] !== '') {
+          $link->setAttribute('title', $info['desc']);
+        }
+        $link->appendChild($dom->createTextNode($piece));
+        $fragment->appendChild($link);
+        continue;
+      }
+    }
+    $fragment->appendChild($dom->createTextNode($piece));
+  }
+  $textnode->parentNode->replaceChild($fragment, $textnode);
+}
+
+/**
+ * Builds (and caches) the glossary term lookup used by the filter.
+ *
+ * @return array
+ *   Array with:
+ *   - 'terms': map of lower-cased term/synonym => array(tid, name, desc),
+ *     where desc is a plain-text, length-limited definition for the tooltip.
+ *   - 'regex': a single case-insensitive, whole-word alternation matching
+ *     every term and synonym, longest first.
+ */
+function avalanche_glossary_term_map() {
+  $map = &backdrop_static(__FUNCTION__);
+  if (isset($map)) {
+    return $map;
+  }
+  if ($cache = cache_get('avalanche_glossary_term_map')) {
+    if (!empty($cache->data)) {
+      $map = $cache->data;
+      return $map;
+    }
+  }
+
+  $terms = array();
+  $phrases = array();
+  $rows = db_select('taxonomy_term_data', 't')
+    ->fields('t', array('tid', 'name', 'description', 'format'))
+    ->condition('t.vocabulary', 'avalanche_terms')
+    ->execute();
+  foreach ($rows as $row) {
+    // Plain-text tooltip: strip tags directly off the stored description.
+    // Deliberately NOT check_markup() - the descriptions are full_html, and
+    // running them back through the format would re-invoke this very filter.
+    $desc = trim(preg_replace('/\s+/', ' ', decode_entities(strip_tags($row->description))));
+    $desc = truncate_utf8($desc, 300, TRUE, TRUE);
+    $info = array('tid' => (int) $row->tid, 'name' => $row->name, 'desc' => $desc);
+
+    $terms[backdrop_strtolower($row->name)] = $info;
+    $phrases[] = $row->name;
+
+    $synonyms = db_select('field_data_field_synonyms', 's')
+      ->fields('s', array('field_synonyms_value'))
+      ->condition('s.entity_type', 'taxonomy_term')
+      ->condition('s.bundle', 'avalanche_terms')
+      ->condition('s.entity_id', $row->tid)
+      ->execute()
+      ->fetchCol();
+    foreach ($synonyms as $syn) {
+      $syn = trim($syn);
+      if ($syn === '') {
+        continue;
+      }
+      // Don't let a synonym override a real term name of the same spelling.
+      $skey = backdrop_strtolower($syn);
+      if (!isset($terms[$skey])) {
+        $terms[$skey] = $info;
+      }
+      $phrases[] = $syn;
+    }
+  }
+
+  if (empty($phrases)) {
+    $map = array('terms' => array(), 'regex' => '');
+    cache_set('avalanche_glossary_term_map', $map);
+    return $map;
+  }
+
+  // Longest phrases first so multi-word terms win over their component words.
+  $phrases = array_unique($phrases);
+  usort($phrases, function ($a, $b) {
+    return backdrop_strlen($b) - backdrop_strlen($a);
+  });
+  $quoted = array();
+  foreach ($phrases as $phrase) {
+    $quoted[] = preg_quote($phrase, '/');
+  }
+  // \b word boundaries, case-insensitive, Unicode.
+  $regex = '/\b(' . implode('|', $quoted) . ')\b/iu';
+
+  $map = array('terms' => $terms, 'regex' => $regex);
+  cache_set('avalanche_glossary_term_map', $map);
+  return $map;
+}
+
+/**
+ * Implements hook_taxonomy_term_insert().
+ */
+function avalanche_glossary_taxonomy_term_insert($term) {
+  avalanche_glossary_clear_term_cache($term);
+}
+
+/**
+ * Implements hook_taxonomy_term_update().
+ */
+function avalanche_glossary_taxonomy_term_update($term) {
+  avalanche_glossary_clear_term_cache($term);
+}
+
+/**
+ * Implements hook_taxonomy_term_delete().
+ */
+function avalanche_glossary_taxonomy_term_delete($term) {
+  avalanche_glossary_clear_term_cache($term);
+}
+
+/**
+ * Clears the cached term map (and rendered filter cache) when a glossary term
+ * changes, so newly added or edited terms start linking right away.
+ */
+function avalanche_glossary_clear_term_cache($term) {
+  if (isset($term->vocabulary) && $term->vocabulary === 'avalanche_terms') {
+    cache_clear_all('avalanche_glossary_term_map', 'cache');
+    cache_clear_all('*', 'cache_filter', TRUE);
+  }
 }
