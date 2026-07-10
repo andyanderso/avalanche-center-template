@@ -24,13 +24,13 @@ function avalanche_glossary_init() {
  */
 function avalanche_glossary_menu() {
   $items['avalanche-terms'] = array(
-    'title' => 'Avalanche Terms Glossary',
+    'title' => 'Avalanche Terms',
     'page callback' => 'avalanche_glossary_page',
     'access arguments' => array('access content'),
     'type' => MENU_NORMAL_ITEM,
   );
   $items['avalanche-terms/%'] = array(
-    'title' => 'Avalanche Terms Glossary',
+    'title' => 'Avalanche Terms',
     'page callback' => 'avalanche_glossary_page',
     'page arguments' => array(1),
     'access arguments' => array('access content'),

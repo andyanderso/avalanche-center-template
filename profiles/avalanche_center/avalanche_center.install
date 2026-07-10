@@ -809,7 +809,7 @@ function avalanche_center_demo_menu_links($about_nid, $donate_nid, $contact_nid,
   $incidents_mlid = avalanche_center_demo_menu_link('main-menu', t('Incidents'), 'incidents', -7);
 
   $edu_mlid = avalanche_center_demo_menu_link('main-menu', t('Education'), 'education', -6);
-  avalanche_center_demo_menu_link('main-menu', t('Avalanche Danger Scale'), 'avalanche-terms', 0, $edu_mlid);
+  avalanche_center_demo_menu_link('main-menu', t('Avalanche Terms'), 'avalanche-terms', 0, $edu_mlid);
   avalanche_center_demo_menu_link('main-menu', t('Know Before You Go'), 'https://kbyg.org/', 1, $edu_mlid);
 
   avalanche_center_demo_menu_link('main-menu', t('Events'), 'events', -5);
