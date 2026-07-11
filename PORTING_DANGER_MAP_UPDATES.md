@@ -36,7 +36,7 @@ structure as-is.
 | 5 | Popup redesign (two-line label, fixed black/white text, no shadow) | Yes | Yes (needs a Spanish caption — suggested text below, please confirm wording) |
 | 6 | Legend: fixed black/white text, drop `:nth-child` rules + shadow, add defensive border | Yes | Yes |
 | 7 | Level 0 ("No Rating"/"Sin pronóstico") gets real travel-advice text + link | Yes | Yes (Spanish text below, please confirm wording) |
-| 8 | Theme bug: `field__taxonomy_term_reference` prints attribute arrays as `Array` | **Yes** — `gulmarg_modern` | **Yes** — `argentina_modern` |
+| 8 | Theme bug: `field__taxonomy_term_reference` prints class/attribute arrays as `Array` | **Yes** — `gulmarg_modern` | **Yes** — `argentina_modern` |
 
 ---
 
@@ -511,15 +511,24 @@ sites, so it belongs on the port list.
 
 `gulmarg_modern_field__taxonomy_term_reference()` (and Argentina's
 `argentina_modern_field__taxonomy_term_reference()`) concatenate
-`$variables['item_attributes'][$delta]` and `$variables['attributes']`
-directly into the markup string. Under Backdrop those are **arrays**, not
-pre-rendered attribute strings, so PHP emits an `Array to string conversion`
-warning and drops a literal `Array` into the `<li>`/`<div>` tag:
+`$variables['classes']`, `$variables['item_attributes'][$delta]` and
+`$variables['attributes']` directly into the markup string. Under Backdrop
+**all three are arrays** (see `template_preprocess_field()` in
+`core/modules/field/field.theme.inc` — `classes` is an array of class names,
+`attributes`/`item_attributes` are attribute arrays; Backdrop has no
+`classes_array` and no process step that stringifies them). Concatenating
+them emits `Array to string conversion` warnings and drops the literal
+`Array` into both the class list and the tag:
 
 ```html
 <li class="taxonomy-term-reference-0"Array>
-<div class="field ... clearfix"Array>
+<div class="Array clearfix"Array>
 ```
+
+(The original code reads `$variables['classes_array']`, which doesn't exist
+in Backdrop, so its clearfix branch was already dead — `classes` needs to be
+imploded, exactly like the core `field.tpl.php` does with
+`implode(' ', $classes)`.)
 
 This fires for **every** taxonomy-term-reference field this theme renders
 (tags, region references, conditions alerts, etc.), so it's likely already
@@ -529,8 +538,7 @@ in readable text. The `responsive_sac` and `responsive_bartik` copies on
 each site carry the same function and same bug if they're ever made active.
 
 **File**: `themes/gulmarg_modern/template.php` (Argentina:
-`themes/argentina_modern/template.php`) — same line numbers (~196, ~203) on
-both sites.
+`themes/argentina_modern/template.php`) — same code on both sites.
 
 ```php
 // Before:
@@ -555,13 +563,18 @@ both sites.
   }
   $output .= '</ul>';
 
-  $classes_array = isset($variables['classes_array']) && is_array($variables['classes_array']) ? $variables['classes_array'] : array();
-  $clearfix = in_array('clearfix', $classes_array) ? '' : ' clearfix';
+  // Backdrop passes $classes and $attributes as arrays (see
+  // template_preprocess_field()), so build the wrapper the same way the core
+  // field.tpl.php does rather than concatenating the arrays as strings.
+  $classes = isset($variables['classes']) && is_array($variables['classes']) ? $variables['classes'] : array();
+  if (!in_array('clearfix', $classes)) {
+    $classes[] = 'clearfix';
+  }
   $attributes = isset($variables['attributes']) ? $variables['attributes'] : '';
   if (is_array($attributes)) {
     $attributes = backdrop_attributes($attributes);
   }
-  $output = '<div class="' . $variables['classes'] . $clearfix . '"' . $attributes . '>' . $output . '</div>';
+  $output = '<div class="' . implode(' ', $classes) . '"' . $attributes . '>' . $output . '</div>';
 ```
 
 (Use each site's own function-name prefix; the body is identical.)

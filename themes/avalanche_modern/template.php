@@ -202,13 +202,18 @@ function avalanche_modern_field__taxonomy_term_reference($variables) {
   }
   $output .= '</ul>';
 
-  $classes_array = isset($variables['classes_array']) && is_array($variables['classes_array']) ? $variables['classes_array'] : array();
-  $clearfix = in_array('clearfix', $classes_array) ? '' : ' clearfix';
+  // Backdrop passes $classes and $attributes as arrays (see
+  // template_preprocess_field()), so build the wrapper the same way the core
+  // field.tpl.php does rather than concatenating the arrays as strings.
+  $classes = isset($variables['classes']) && is_array($variables['classes']) ? $variables['classes'] : array();
+  if (!in_array('clearfix', $classes)) {
+    $classes[] = 'clearfix';
+  }
   $attributes = isset($variables['attributes']) ? $variables['attributes'] : '';
   if (is_array($attributes)) {
     $attributes = backdrop_attributes($attributes);
   }
-  $output = '<div class="' . $variables['classes'] . $clearfix . '"' . $attributes . '>' . $output . '</div>';
+  $output = '<div class="' . implode(' ', $classes) . '"' . $attributes . '>' . $output . '</div>';
 
   return $output;
 }
