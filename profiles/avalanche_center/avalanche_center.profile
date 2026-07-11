@@ -198,4 +198,21 @@ function avalanche_center_form_observation_node_form_alter(&$form, &$form_state,
   if (isset($form['field_region'])) {
     $form['field_region']['#access'] = FALSE;
   }
+
+  // Conditions Alerts is a hierarchical checkbox list: checking a child term
+  // should auto-check its parent. Ship the child => parent tid map to the JS
+  // behavior that enforces it.
+  if (isset($form['field_conditions_alerts_tax_term'])) {
+    $parents = array();
+    $rows = db_query("SELECT h.tid, h.parent FROM {taxonomy_term_hierarchy} h INNER JOIN {taxonomy_term_data} t ON t.tid = h.tid WHERE t.vocabulary = :v AND h.parent <> 0", array(':v' => 'conditions_alerts'));
+    foreach ($rows as $r) {
+      $parents[(int) $r->tid] = (int) $r->parent;
+    }
+    $path = backdrop_get_path('profile', 'avalanche_center');
+    $form['field_conditions_alerts_tax_term']['#attached']['js'][] = $path . '/js/conditions-alerts.js';
+    $form['field_conditions_alerts_tax_term']['#attached']['js'][] = array(
+      'type' => 'setting',
+      'data' => array('avalancheConditionsAlerts' => array('parents' => $parents)),
+    );
+  }
 }
