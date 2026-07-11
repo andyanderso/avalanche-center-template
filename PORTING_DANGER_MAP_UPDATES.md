@@ -12,6 +12,11 @@ Those two codebases are **not** touched by this repo or this guide — per
 checklist for whoever applies the equivalent changes directly to the live
 sites.
 
+§1-7 are the danger-map/popup changes. §8 is a separate theme bug (unrelated
+to the danger map) that surfaced while building the distribution's Conditions
+Alerts display — it's parked here because this file is already the "apply
+these fixes to the live sites too" checklist.
+
 **Scope note**: this only ports the concrete UI/UX changes and bug fixes
 below. It does *not* port the config-driven preset architecture
 (`avalanche_danger_map_presets()`, `avalanche_center.settings` overrides,
@@ -31,6 +36,7 @@ structure as-is.
 | 5 | Popup redesign (two-line label, fixed black/white text, no shadow) | Yes | Yes (needs a Spanish caption — suggested text below, please confirm wording) |
 | 6 | Legend: fixed black/white text, drop `:nth-child` rules + shadow, add defensive border | Yes | Yes |
 | 7 | Level 0 ("No Rating"/"Sin pronóstico") gets real travel-advice text + link | Yes | Yes (Spanish text below, please confirm wording) |
+| 8 | Theme bug: `field__taxonomy_term_reference` prints attribute arrays as `Array` | **Yes** — `gulmarg_modern` | **Yes** — `argentina_modern` |
 
 ---
 
@@ -497,6 +503,83 @@ addition to the `if`.)
 
 ---
 
+## 8. Theme bug: taxonomy-term-reference fields print `Array` (both sites)
+
+Not a danger-map change — this surfaced while wiring up the distribution's
+Conditions Alerts display, but it's a real, pre-existing bug on both live
+sites, so it belongs on the port list.
+
+`gulmarg_modern_field__taxonomy_term_reference()` (and Argentina's
+`argentina_modern_field__taxonomy_term_reference()`) concatenate
+`$variables['item_attributes'][$delta]` and `$variables['attributes']`
+directly into the markup string. Under Backdrop those are **arrays**, not
+pre-rendered attribute strings, so PHP emits an `Array to string conversion`
+warning and drops a literal `Array` into the `<li>`/`<div>` tag:
+
+```html
+<li class="taxonomy-term-reference-0"Array>
+<div class="field ... clearfix"Array>
+```
+
+This fires for **every** taxonomy-term-reference field this theme renders
+(tags, region references, conditions alerts, etc.), so it's likely already
+logging warnings in production wherever such a field is displayed. It just
+isn't very visible because the stray `Array` lands inside a tag rather than
+in readable text. The `responsive_sac` and `responsive_bartik` copies on
+each site carry the same function and same bug if they're ever made active.
+
+**File**: `themes/gulmarg_modern/template.php` (Argentina:
+`themes/argentina_modern/template.php`) — same line numbers (~196, ~203) on
+both sites.
+
+```php
+// Before:
+  foreach ($variables['items'] as $delta => $item) {
+    $item_attr = isset($variables['item_attributes'][$delta]) ? $variables['item_attributes'][$delta] : '';
+    $output .= '<li class="taxonomy-term-reference-' . $delta . '"' . $item_attr . '>' . backdrop_render($item) . '</li>';
+  }
+  $output .= '</ul>';
+
+  $classes_array = isset($variables['classes_array']) && is_array($variables['classes_array']) ? $variables['classes_array'] : array();
+  $clearfix = in_array('clearfix', $classes_array) ? '' : ' clearfix';
+  $output = '<div class="' . $variables['classes'] . $clearfix . '"' . $variables['attributes'] . '>' . $output . '</div>';
+
+// After:
+  foreach ($variables['items'] as $delta => $item) {
+    $item_attr = isset($variables['item_attributes'][$delta]) ? $variables['item_attributes'][$delta] : '';
+    // Backdrop passes attributes as arrays; coerce to an attribute string.
+    if (is_array($item_attr)) {
+      $item_attr = backdrop_attributes($item_attr);
+    }
+    $output .= '<li class="taxonomy-term-reference-' . $delta . '"' . $item_attr . '>' . backdrop_render($item) . '</li>';
+  }
+  $output .= '</ul>';
+
+  $classes_array = isset($variables['classes_array']) && is_array($variables['classes_array']) ? $variables['classes_array'] : array();
+  $clearfix = in_array('clearfix', $classes_array) ? '' : ' clearfix';
+  $attributes = isset($variables['attributes']) ? $variables['attributes'] : '';
+  if (is_array($attributes)) {
+    $attributes = backdrop_attributes($attributes);
+  }
+  $output = '<div class="' . $variables['classes'] . $clearfix . '"' . $attributes . '>' . $output . '</div>';
+```
+
+(Use each site's own function-name prefix; the body is identical.)
+
+### Not a port item: the Conditions Alerts formatter
+
+For the record, so nobody "ports" it by mistake: this distribution also
+swapped the Conditions Alerts field's display formatter from
+`hs_taxonomy_term_reference_hierarchical_text` to a small custom
+grouped-plain-text formatter. That was **only** necessary because the
+distribution doesn't vendor the `hierarchical_select` module, so its
+formatter didn't exist and the field fell back to linked term output. The
+**live sites do have `hierarchical_select` installed**, so their Conditions
+Alerts display already works — no change needed there unless you ever remove
+that module.
+
+---
+
 ## Suggested order of operations
 
 1. Colors + PHP8 fix + missing legend call (Gulmarg-only, §1-3) — small,
@@ -508,6 +591,8 @@ addition to the `if`.)
 4. Legend fix (§6) — JS-free, CSS + one PHP loop per site.
 5. No-Rating advice (§7) — needs a native Spanish speaker to confirm the
    Argentina wording before it ships.
+6. Theme attribute-array fix (§8) — independent of everything above; a
+   two-spot edit in each site's `*_modern/template.php`.
 
 Each step is independently testable and revertable — no need to do all
-seven in one sitting per site.
+eight in one sitting per site.
