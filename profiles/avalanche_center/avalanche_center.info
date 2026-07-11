@@ -19,6 +19,11 @@ dependencies[] = field_ui
 dependencies[] = image
 dependencies[] = taxonomy
 dependencies[] = path
+; language + locale are enabled for every install so that source strings are
+; registered from the start; the "Center setup" task only imports the bundled
+; Spanish .po and switches the default language when Spanish is chosen.
+dependencies[] = language
+dependencies[] = locale
 dependencies[] = views
 dependencies[] = views_ui
 dependencies[] = block

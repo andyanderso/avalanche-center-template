@@ -52,7 +52,7 @@ function avalanche_center_setup_form($form, &$form_state) {
       'es' => t('Spanish (Español)'),
     ),
     '#default_value' => 'en',
-    '#description' => t('Sets the default text direction/locale preference. Full Spanish translation coverage ships separately as a .po file (see plan §10) - selecting Spanish here without one imported yet leaves interface text in English.'),
+    '#description' => t('Choosing Spanish makes Español the default site language and imports the bundled interface translations. English stays available as a secondary language.'),
   );
 
   $form['danger_scale'] = array(
@@ -164,6 +164,13 @@ function avalanche_center_setup_form_submit($form, &$form_state) {
   $settings->set('map_zoom', (int) $values['map_zoom']);
   $settings->set('language', $values['language']);
   $settings->save();
+
+  // When Spanish is chosen, make it the default language and import the
+  // bundled UI translations before any demo content is created, so the whole
+  // site (including that content's surrounding chrome) comes up in Spanish.
+  if ($values['language'] === 'es') {
+    avalanche_center_enable_spanish();
+  }
 
   // Populate both shipped themes' settings, not just whichever is
   // currently the default - a center may switch between them later and

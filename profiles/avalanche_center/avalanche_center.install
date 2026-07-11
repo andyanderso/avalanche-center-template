@@ -117,6 +117,55 @@ function avalanche_center_enable_glossary_filter() {
 }
 
 /**
+ * Enables Spanish as the default site language and imports the bundled
+ * interface translations.
+ *
+ * Called from the "Center setup" install task when the operator picks Spanish.
+ * The es.po shipped in this profile's translations/ directory was extracted
+ * from the reference Spanish-language avalanche center (real, human-verified
+ * strings) and is center-agnostic, so it is reusable by any Spanish install
+ * (e.g. a future Chilean center). English is left enabled as a secondary
+ * language so any untranslated string falls back to it.
+ */
+function avalanche_center_enable_spanish() {
+  // language + locale are profile dependencies, but be defensive if this
+  // helper is ever reused outside the standard install.
+  $needed = array();
+  if (!module_exists('language')) {
+    $needed[] = 'language';
+  }
+  if (!module_exists('locale')) {
+    $needed[] = 'locale';
+  }
+  if ($needed) {
+    module_enable($needed);
+  }
+
+  // Add Spanish and make it the default language. language_save() fills in the
+  // name/native/direction from the standard language list and updates the
+  // system.core language_default + language_count config.
+  language_save((object) array(
+    'langcode' => 'es',
+    'default' => TRUE,
+  ));
+
+  // Import the bundled UI translations against the strings registered so far.
+  require_once BACKDROP_ROOT . '/core/includes/gettext.inc';
+  require_once BACKDROP_ROOT . '/core/includes/locale.inc';
+  $path = backdrop_get_path('profile', 'avalanche_center') . '/translations/es.po';
+  if (is_file($path)) {
+    $file = (object) array(
+      'uri' => $path,
+      'filename' => 'es.po',
+    );
+    _locale_import_po($file, 'es', LOCALE_IMPORT_KEEP);
+  }
+  else {
+    watchdog('avalanche_center', 'Spanish translation file not found at %path; interface will stay in English.', array('%path' => $path), WATCHDOG_WARNING);
+  }
+}
+
+/**
  * Force-applies specific shipped config files, overwriting whatever's
  * already active.
  *
