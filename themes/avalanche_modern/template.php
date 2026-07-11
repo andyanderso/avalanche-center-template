@@ -194,13 +194,21 @@ function avalanche_modern_field__taxonomy_term_reference($variables) {
   $output .= ($variables['element']['#label_display'] == 'inline') ? '<ul class="links inline">' : '<ul class="links">';
   foreach ($variables['items'] as $delta => $item) {
     $item_attr = isset($variables['item_attributes'][$delta]) ? $variables['item_attributes'][$delta] : '';
+    // Backdrop passes attributes as arrays; coerce to an attribute string.
+    if (is_array($item_attr)) {
+      $item_attr = backdrop_attributes($item_attr);
+    }
     $output .= '<li class="taxonomy-term-reference-' . $delta . '"' . $item_attr . '>' . backdrop_render($item) . '</li>';
   }
   $output .= '</ul>';
 
   $classes_array = isset($variables['classes_array']) && is_array($variables['classes_array']) ? $variables['classes_array'] : array();
   $clearfix = in_array('clearfix', $classes_array) ? '' : ' clearfix';
-  $output = '<div class="' . $variables['classes'] . $clearfix . '"' . $variables['attributes'] . '>' . $output . '</div>';
+  $attributes = isset($variables['attributes']) ? $variables['attributes'] : '';
+  if (is_array($attributes)) {
+    $attributes = backdrop_attributes($attributes);
+  }
+  $output = '<div class="' . $variables['classes'] . $clearfix . '"' . $attributes . '>' . $output . '</div>';
 
   return $output;
 }

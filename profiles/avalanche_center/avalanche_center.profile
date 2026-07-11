@@ -216,3 +216,90 @@ function avalanche_center_form_observation_node_form_alter(&$form, &$form_state,
     );
   }
 }
+
+/**
+ * Implements hook_field_formatter_info().
+ *
+ * A plain-text (non-linked) formatter for taxonomy term reference fields that
+ * groups selected child terms underneath their parent term. Used for the
+ * observation Conditions Alerts field, whose original Drupal site relied on the
+ * hierarchical_select module's formatter (not part of this distribution).
+ */
+function avalanche_center_field_formatter_info() {
+  return array(
+    'avalanche_conditions_grouped' => array(
+      'label' => t('Grouped hierarchical text'),
+      'field types' => array('taxonomy_term_reference'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function avalanche_center_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+  if ($display['type'] !== 'avalanche_conditions_grouped') {
+    return $element;
+  }
+
+  $tids = array();
+  foreach ($items as $item) {
+    if (!empty($item['tid'])) {
+      $tids[] = $item['tid'];
+    }
+  }
+  if (empty($tids)) {
+    return $element;
+  }
+  $terms = taxonomy_term_load_multiple($tids);
+
+  // Group selected terms under their top-level parent, preserving first-seen
+  // (field delta) order for both groups and their children.
+  $groups = array();
+  $order = array();
+  foreach ($tids as $tid) {
+    if (!isset($terms[$tid])) {
+      continue;
+    }
+    $term = $terms[$tid];
+    $parents = taxonomy_get_parents($tid);
+    if (empty($parents)) {
+      // Top-level term: it heads its own group.
+      if (!isset($groups[$tid])) {
+        $groups[$tid] = array('name' => $term->name, 'children' => array());
+        $order[] = $tid;
+      }
+      else {
+        $groups[$tid]['name'] = $term->name;
+      }
+    }
+    else {
+      $parent = reset($parents);
+      if (!isset($groups[$parent->tid])) {
+        $groups[$parent->tid] = array('name' => $parent->name, 'children' => array());
+        $order[] = $parent->tid;
+      }
+      $groups[$parent->tid]['children'][] = $term->name;
+    }
+  }
+
+  $rows = array();
+  foreach ($order as $ptid) {
+    $group = $groups[$ptid];
+    $row = '<div class="ca-parent">' . check_plain($group['name']) . '</div>';
+    if (!empty($group['children'])) {
+      $items_markup = '';
+      foreach ($group['children'] as $child_name) {
+        $items_markup .= '<li>' . check_plain($child_name) . '</li>';
+      }
+      $row .= '<ul class="ca-children">' . $items_markup . '</ul>';
+    }
+    $rows[] = '<div class="ca-group">' . $row . '</div>';
+  }
+
+  $element[0] = array(
+    '#markup' => '<div class="conditions-alerts-grouped">' . implode('', $rows) . '</div>',
+  );
+  return $element;
+}

@@ -18,7 +18,7 @@
     "display": {
         "default": {
             "label": "above",
-            "type": "hs_taxonomy_term_reference_hierarchical_text",
+            "type": "avalanche_conditions_grouped",
             "weight": "10",
             "settings": [],
             "module": "hs_taxonomy"
