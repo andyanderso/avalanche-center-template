@@ -1,0 +1,204 @@
+# Spanish (es) translation for the Avalanche Center distribution's own strings.
+# These cover the strings this profile itself emits through t() - demo content,
+# navigation labels, and reference page titles - which the core/contrib UI
+# extract in es.po does not include. Kept center-agnostic so any Spanish
+# install (e.g. a future Chilean center) reuses them.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: avalanche_center 1.x\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+# --- Navigation / page titles ---
+msgid "Advisory"
+msgstr "Pronóstico"
+
+msgid "Observations"
+msgstr "Observaciones"
+
+msgid "Submit Observations"
+msgstr "Enviar Observaciones"
+
+msgid "Submit Professional Observations"
+msgstr "Enviar Observaciones Profesionales"
+
+msgid "Incidents"
+msgstr "Incidentes"
+
+msgid "Education"
+msgstr "Educación"
+
+msgid "Avalanche Terms"
+msgstr "Términos de Avalancha"
+
+msgid "Events"
+msgstr "Eventos"
+
+msgid "Sponsors"
+msgstr "Auspiciantes"
+
+msgid "About Us"
+msgstr "Quiénes Somos"
+
+msgid "Donate"
+msgstr "Donar"
+
+msgid "Contact Us"
+msgstr "Contacto"
+
+msgid "Frequently Asked Questions"
+msgstr "Preguntas Frecuentes"
+
+msgid "News and Announcements"
+msgstr "Noticias y Anuncios"
+
+msgid "Forecasters"
+msgstr "Pronosticadores"
+
+msgid "Board of Directors"
+msgstr "Comisión Directiva"
+
+msgid "Non Profit Staff"
+msgstr "Equipo"
+
+msgid "RSS Feed"
+msgstr "Fuente RSS"
+
+msgid "Email Subscriptions"
+msgstr "Suscripciones por Correo Electrónico"
+
+# --- Forecast zones ---
+msgid "North Zone"
+msgstr "Zona Norte"
+
+msgid "South Zone"
+msgstr "Zona Sur"
+
+# --- Demo advisory ---
+msgid "Demo Avalanche Advisory"
+msgstr "Pronóstico de Avalancha de Demostración"
+
+msgid "This is a demo avalanche advisory created automatically at install so the danger map has something to show. Watch for wind slab and cornice hazards on steep, wind-loaded slopes. Replace it with a real forecast, or delete it."
+msgstr "Este es un pronóstico de avalancha de demostración creado automáticamente durante la instalación para que el mapa de peligro tenga algo que mostrar. Preste atención a los peligros de placas de viento y cornisas en laderas empinadas cargadas por el viento. Reemplácelo con un pronóstico real, o elimínelo."
+
+msgid "A second demo avalanche advisory for the second demo forecast zone. Evaluate the snowpack carefully for persistent slab instabilities before entering avalanche terrain. Replace it with a real forecast, or delete it."
+msgstr "Un segundo pronóstico de avalancha de demostración para la segunda zona de pronóstico. Evalúe cuidadosamente el manto nivoso en busca de inestabilidades de placa persistente antes de ingresar a terreno de avalanchas. Reemplácelo con un pronóstico real, o elimínelo."
+
+# --- Demo pages ---
+msgid "Tell visitors who your center is and what you do. Replace this placeholder page with your own About page."
+msgstr "Cuénteles a los visitantes quién es su centro y qué hace. Reemplace esta página de ejemplo con su propia página institucional."
+
+msgid "Add your center's contact details here. Replace this placeholder with your own page."
+msgstr "Agregue aquí los datos de contacto de su centro. Reemplace esta página de ejemplo con la suya."
+
+msgid "Answer the questions your visitors ask most. Replace this placeholder with your own page."
+msgstr "Responda las preguntas más frecuentes de sus visitantes. Reemplace esta página de ejemplo con la suya."
+
+msgid "Welcome to Our New Website"
+msgstr "Bienvenidos a Nuestro Nuevo Sitio Web"
+
+msgid "This is a demo announcement. Replace it with your own site news."
+msgstr "Este es un anuncio de demostración. Reemplácelo con las novedades de su propio sitio."
+
+# --- Reference page titles ---
+msgid "How to Read the Avalanche Forecast"
+msgstr "Cómo Leer el Pronóstico de Avalanchas"
+
+msgid "North American Avalanche Danger Scale"
+msgstr "Escala Norteamericana de Peligro de Avalanchas"
+
+msgid "Avalanche Problems"
+msgstr "Problemas de Avalancha"
+
+# --- Danger scale labels (shared NAC/SAC source strings) ---
+msgid "No Rating"
+msgstr "Sin Clasificación"
+
+msgid "1 - Low"
+msgstr "1 - Bajo"
+
+msgid "2 - Moderate"
+msgstr "2 - Moderado"
+
+msgid "3 - Considerable"
+msgstr "3 - Considerable"
+
+msgid "4 - High"
+msgstr "4 - Alto"
+
+msgid "5 - Extreme"
+msgstr "5 - Extremo"
+
+# --- Danger scale travel advice ---
+msgid "<strong>Generally safe avalanche conditions.</strong> Watch for unstable snow on isolated terrain features."
+msgstr "<strong>Condiciones de avalancha generalmente seguras.</strong> Preste atención a la nieve inestable en sectores aislados del terreno."
+
+msgid "<strong>Heightened avalanche conditions on specific terrain features.</strong> Evaluate snow and terrain carefully; identify features of concern."
+msgstr "<strong>Condiciones de avalancha elevadas en sectores específicos del terreno.</strong> Evalúe la nieve y el terreno cuidadosamente; identifique los sectores de riesgo."
+
+msgid "<strong>Dangerous avalanche conditions.</strong> Careful snowpack evaluation, cautious route-finding, and conservative decision-making essential."
+msgstr "<strong>Condiciones de avalancha peligrosas.</strong> Es esencial una evaluación cuidadosa del manto nivoso, una elección de ruta prudente y una toma de decisiones conservadora."
+
+msgid "<strong>Very dangerous avalanche conditions.</strong> Travel in avalanche terrain not recommended."
+msgstr "<strong>Condiciones de avalancha muy peligrosas.</strong> No se recomienda transitar por terreno de avalanchas."
+
+msgid "<strong>Extraordinarily dangerous avalanche conditions.</strong> Avoid all avalanche terrain."
+msgstr "<strong>Condiciones de avalancha extraordinariamente peligrosas.</strong> Evite todo terreno de avalanchas."
+
+# --- Danger map / advisory page UI ---
+msgid "Avalanche Danger"
+msgstr "Peligro de Avalancha"
+
+msgid "Avalanche Danger Rating"
+msgstr "Grado de Peligro de Avalancha"
+
+msgid "Avalanche Danger Rating Map"
+msgstr "Mapa de Grado de Peligro de Avalancha"
+
+msgid "Avalanche Advisory"
+msgstr "Pronóstico de Avalancha"
+
+msgid "Avalanche Advisories"
+msgstr "Pronósticos de Avalancha"
+
+msgid "All Advisories"
+msgstr "Todos los Pronósticos"
+
+msgid "Advisory Archives"
+msgstr "Archivo de Pronósticos"
+
+msgid "Author"
+msgstr "Autor"
+
+msgid "Issued"
+msgstr "Emitido"
+
+msgid "Expires"
+msgstr "Vence"
+
+msgid "Get more information"
+msgstr "Más información"
+
+msgid "Read Full Advisory"
+msgstr "Leer Pronóstico Completo"
+
+msgid "Travel Advice:"
+msgstr "Recomendación para el Terreno:"
+
+msgid "Insufficient data exists to issue a danger rating."
+msgstr "No existen datos suficientes para emitir una clasificación de peligro."
+
+msgid "No current avalanche advisory is available. Please check back soon."
+msgstr "No hay ningún pronóstico de avalancha vigente. Vuelva a consultar pronto."
+
+msgid "No current avalanche forecast available."
+msgstr "No hay ningún pronóstico de avalancha vigente."
+
+msgid "No current forecast for this zone."
+msgstr "No hay pronóstico vigente para esta zona."
+
+msgid "Avalanche danger scale reference"
+msgstr "Referencia de la escala de peligro de avalanchas"

@@ -149,19 +149,42 @@ function avalanche_center_enable_spanish() {
     'default' => TRUE,
   ));
 
-  // Import the bundled UI translations against the strings registered so far.
+  // Enabling locale turns on locale-url negotiation (path-prefix based), which
+  // makes an un-prefixed URL resolve inconsistently between es and en. This
+  // is a single-language Spanish site (English is only a string-level
+  // fallback, not a switchable second UI), so pin interface negotiation to the
+  // default language - es everywhere.
+  config_set('language.settings', 'language_negotiation', array(
+    'language' => array('language-default'),
+  ));
+
+  // Import the bundled translations against the strings registered so far.
+  // es.po is the core/contrib UI extract; avalanche_center.es.po carries this
+  // profile's own strings (navigation labels, demo content, reference page
+  // titles).
   require_once BACKDROP_ROOT . '/core/includes/gettext.inc';
   require_once BACKDROP_ROOT . '/core/includes/locale.inc';
-  $path = backdrop_get_path('profile', 'avalanche_center') . '/translations/es.po';
-  if (is_file($path)) {
-    $file = (object) array(
-      'uri' => $path,
-      'filename' => 'es.po',
-    );
-    _locale_import_po($file, 'es', LOCALE_IMPORT_KEEP);
+  $base = backdrop_get_path('profile', 'avalanche_center') . '/translations';
+  foreach (array('es.po', 'avalanche_center.es.po') as $filename) {
+    $path = $base . '/' . $filename;
+    if (is_file($path)) {
+      $file = (object) array('uri' => $path, 'filename' => $filename);
+      _locale_import_po($file, 'es', LOCALE_IMPORT_KEEP);
+    }
+    else {
+      watchdog('avalanche_center', 'Spanish translation file not found at %path.', array('%path' => $path), WATCHDOG_WARNING);
+    }
   }
-  else {
-    watchdog('avalanche_center', 'Spanish translation file not found at %path; interface will stay in English.', array('%path' => $path), WATCHDOG_WARNING);
+
+  // Switch the active interface language to Spanish for the rest of the
+  // install request, so the t()-wrapped demo content created next comes out in
+  // Spanish (wherever a translation exists; untranslated strings fall back to
+  // English). Without this, content creation would run in the installer's own
+  // language (English).
+  $languages = language_list();
+  if (isset($languages['es'])) {
+    $GLOBALS['language'] = $languages['es'];
+    $GLOBALS['language_content'] = $languages['es'];
   }
 }
 
