@@ -2,7 +2,9 @@
 
 function tb_megamenu_check_library($module, $name) {
   $files = array();
-  if ($library = libraries_detect($name)) {
+  // The contributed Libraries API module is optional; only use it if present.
+  // Without it, fall through to Backdrop's own library registry below.
+  if (function_exists('libraries_detect') && ($library = libraries_detect($name))) {
     if (!empty($library['files']['css'])) {
       $files['css'] = libraries_get_path($name) . '/' . key($library['files']['css']);
     }
