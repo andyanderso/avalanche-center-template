@@ -185,3 +185,17 @@ function avalanche_center_setup_form_submit($form, &$form_state) {
     (float) $values['map_center_lng']
   );
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter() for the observation node form.
+ *
+ * Removes the vestigial single-value "Region" field (field_region, whose only
+ * allowed value is "Other") from the observation submission form. The field
+ * is left in place for the several views that still reference it - only its
+ * form widget is hidden.
+ */
+function avalanche_center_form_observation_node_form_alter(&$form, &$form_state, $form_id) {
+  if (isset($form['field_region'])) {
+    $form['field_region']['#access'] = FALSE;
+  }
+}

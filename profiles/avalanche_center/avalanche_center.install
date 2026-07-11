@@ -239,6 +239,10 @@ function avalanche_center_create_demo_content($lat, $lng) {
   // these terms wherever they appear in full_html content, e.g. advisories.
   avalanche_center_import_avalanche_terms();
 
+  // Populate the hierarchical Conditions Alerts vocabulary (the observation
+  // form's "Conditions Alerts" field references it).
+  avalanche_center_import_conditions_alerts();
+
   // The sponsor-tier home-page blocks also filter on expiration date being
   // in the future, so give the demo sponsor one.
   avalanche_center_demo_node('sponsor', array(
@@ -741,6 +745,57 @@ function avalanche_center_import_avalanche_terms() {
       }
     }
     taxonomy_term_save($term);
+  }
+}
+
+/**
+ * Imports the hierarchical Conditions Alerts vocabulary from the shipped
+ * content/conditions-alerts.json file.
+ *
+ * Each top-level entry becomes a term in the "conditions_alerts" vocabulary;
+ * its "children" become child terms (parent set to the top-level term), so
+ * the observation form's multi-select "Conditions Alerts" field shows the
+ * same grouped hierarchy as the reference site. Order is preserved as term
+ * weight. Duplicate child names under different parents (e.g. "Rain on Snow"
+ * appears under two groups) are created as distinct terms, matching the
+ * source.
+ */
+function avalanche_center_import_conditions_alerts() {
+  $file = backdrop_get_path('profile', 'avalanche_center') . '/content/conditions-alerts.json';
+  if (!file_exists($file)) {
+    return;
+  }
+  $entries = json_decode(file_get_contents($file), TRUE);
+  if (!is_array($entries)) {
+    return;
+  }
+
+  $weight = 0;
+  foreach ($entries as $entry) {
+    if (empty($entry['name'])) {
+      continue;
+    }
+    $parent = entity_create('taxonomy_term', array('vocabulary' => 'conditions_alerts'));
+    $parent->name = $entry['name'];
+    // parent must be an array - taxonomy's postSave() iterates over it.
+    $parent->parent = array(0);
+    $parent->weight = $weight++;
+    taxonomy_term_save($parent);
+
+    if (!empty($entry['children']) && is_array($entry['children'])) {
+      $child_weight = 0;
+      foreach ($entry['children'] as $child_name) {
+        $child_name = trim($child_name);
+        if ($child_name === '') {
+          continue;
+        }
+        $child = entity_create('taxonomy_term', array('vocabulary' => 'conditions_alerts'));
+        $child->name = $child_name;
+        $child->parent = array($parent->tid);
+        $child->weight = $child_weight++;
+        taxonomy_term_save($child);
+      }
+    }
   }
 }
 
