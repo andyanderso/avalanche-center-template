@@ -211,8 +211,18 @@ $article_attributes = is_array($attributes) ? backdrop_attributes($attributes) :
                             <div style="bottom: <?php print $pct; ?>%;" class="nac-step<?php print ($idx % 2 == 1) ? ' nac-d-none' : ''; ?>"></div>
                           <?php endforeach; ?>
                           <?php
-                          $size_rows = array(0 => t('Small (D1)'), 33.3333 => t('Large (D2)'), 66.6667 => t('Very Large (D3)'), 100 => t('Historic (D4-5)'));
-                          foreach ($size_rows as $pct => $l):
+                          // [percent, label] pairs - NOT a float-keyed map:
+                          // PHP truncates float array keys to int (33.3333 -> 33),
+                          // which broke the "active" comparison so a two-value size
+                          // range only bolded one label. Keep the percent as a value.
+                          $size_rows = array(
+                            array(0, t('Small (D1)')),
+                            array(33.3333, t('Large (D2)')),
+                            array(66.6667, t('Very Large (D3)')),
+                            array(100, t('Historic (D4-5)')),
+                          );
+                          foreach ($size_rows as $size_row):
+                            list($pct, $l) = $size_row;
                             $active = ($pos_min !== '' && $pct >= $pos_min - 0.01 && $pct <= $pos_max + 0.01);
                           ?>
                             <div style="bottom: <?php print $pct; ?>%;" class="<?php print $active ? 'active ' : ''; ?>nac-label"><?php print $l; ?></div>
