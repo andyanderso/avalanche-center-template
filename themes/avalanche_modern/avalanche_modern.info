@@ -45,18 +45,18 @@ regions[footer] = Footer
 ; All defaults below are neutral English/NAC placeholders — every center overrides
 ; them via theme settings or the install-profile "Center setup" form.
 settings[email_url] = /email-subscriptions
-settings[facebook_url] =
-settings[twitter_url] =
-settings[youtube_url] =
-settings[instagram_url] =
+settings[facebook_url] = ""
+settings[twitter_url] = ""
+settings[youtube_url] = ""
+settings[instagram_url] = ""
 settings[upper_elevation_band] = Above Treeline
 settings[middle_elevation_band] = Near Treeline
 settings[lower_elevation_band] = Below Treeline
 settings[enable_danger_rose_view] = 0
-settings[local_nws_name] =
-settings[local_nws_url] =
-settings[wx_elevation_low] =
-settings[wx_elevation_high] =
+settings[local_nws_name] = ""
+settings[local_nws_url] = ""
+settings[wx_elevation_low] = Lower Elevation
+settings[wx_elevation_high] = Upper Elevation
 settings[current_wx_conditions_desc] = Weather observations from local stations.
 settings[show_forecast_region] = 1
 settings[wx_map_page] = /weather-station-map
