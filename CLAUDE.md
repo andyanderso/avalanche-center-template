@@ -74,6 +74,24 @@ applying the equivalent fixes to the live Gulmarg/Argentina sites.
   live DB dump of Argentina's actual site. See
   AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §20 for the full log. Phase 7 is
   now fully closed out.
+  Phase 8 done (Spanish install option): the running `argentina-backdrop`
+  DDEV site turned out to have the real `es` translations in its DB after
+  all, so they were extracted with Backdrop's own PO exporter (not
+  invented). Two POs ship in `profiles/avalanche_center/translations/`:
+  `es.po` (~4,671 core/contrib UI strings from Argentina) and
+  `avalanche_center.es.po` (this profile's own nav/demo/danger-scale
+  strings, hand-authored). `avalanche_center_enable_spanish()` (called from
+  the Center-setup form when Spanish is picked) adds `es` as default via
+  `language_save`, imports both POs, pins interface negotiation to
+  `language-default`, and switches the active language so t()-wrapped demo
+  content renders in Spanish. Verified end-to-end in a NEW, separate DDEV
+  project `~/Siesta_Solutions/avalanche-center-spanish-demo/` (the English
+  `avalanche-center-demo` left untouched): default language es, <html
+  lang="es"> site-wide, Spanish nav/zones/advisories/danger-labels, all key
+  pages 200. Note learned: Argentina's taxonomy (glossary, conditions
+  alerts) is stored in English — only region names and node content are
+  Spanish. Reusability goal: this option is center-agnostic; the eventual
+  end goal is standing up a Chilean center from it.
   Phase 1 done: repo skeleton scaffolded; structural node-type list
   corrected from 2 to 22 types (independently re-verified against
   node.type.*.json on both sites); NAC level-0 grey set to `#939598`.
