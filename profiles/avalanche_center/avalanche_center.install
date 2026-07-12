@@ -1106,8 +1106,18 @@ function avalanche_center_build_megamenu($mlids) {
     ),
   );
 
+  // tb_megamenu stores (and looks up) its config per language: at render time
+  // it reads the row for the current interface language and, if missing,
+  // auto-syncs a blank default - which drops the dropdowns and the Donate
+  // highlight. Key the row to the site's default language so a Spanish install
+  // (es) finds it, not just an English one. (Interface negotiation is pinned
+  // to language-default, so the render language equals this.)
+  $langcode = config_get('system.core', 'language_default');
+  if (empty($langcode)) {
+    $langcode = 'en';
+  }
   db_merge('tb_megamenus')
-    ->key(array('menu_name' => 'main-menu', 'language' => 'en'))
+    ->key(array('menu_name' => 'main-menu', 'language' => $langcode))
     ->fields(array(
       'block_config' => json_encode($block_config),
       'menu_config' => json_encode($menu_config),
