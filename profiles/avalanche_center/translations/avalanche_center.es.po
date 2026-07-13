@@ -202,3 +202,67 @@ msgstr "No hay pronóstico vigente para esta zona."
 
 msgid "Avalanche danger scale reference"
 msgstr "Referencia de la escala de peligro de avalanchas"
+
+# --- Donate page (avalanche_center_demo_donate_body) ---
+msgid "This is a placeholder Donate page. Replace the example text below with your own donation information, and drop your real donation button or embed into the \"Donate Online\" box."
+msgstr "Esta es una página de donación de ejemplo. Reemplace el texto de ejemplo a continuación con su propia información de donación, y coloque su botón o código de donación real en el recuadro \"Donar en Línea\"."
+
+msgid "Support the Avalanche Center"
+msgstr "Apoye al Centro de Avalanchas"
+
+msgid "Our avalanche center is a nonprofit organization. We rely on donations, memberships, and fundraising to keep producing daily avalanche forecasts, observations, and education for our community. Please consider making a tax-deductible gift - every contribution helps keep this service free for everyone who travels in avalanche terrain."
+msgstr "Nuestro centro de avalanchas es una organización sin fines de lucro. Dependemos de donaciones, membresías y recaudación de fondos para seguir produciendo pronósticos de avalanchas diarios, observaciones y educación para nuestra comunidad. Por favor considere hacer una donación deducible de impuestos - cada contribución ayuda a mantener este servicio gratuito para todos quienes se desplazan por terreno de avalanchas."
+
+msgid "Donate Online"
+msgstr "Donar en Línea"
+
+msgid "Add your donation button or embed here."
+msgstr "Agregue aquí su botón o código de donación."
+
+msgid "Paste the embed code from your payment provider (PayPal, Stripe, Donorbox, Fundly, GoFundMe, etc.) in place of this box - for example a PayPal \"Donate\" button, or a simple link like the one below."
+msgstr "Pegue el código de inserción de su proveedor de pagos (PayPal, Stripe, Donorbox, Fundly, GoFundMe, etc.) en lugar de este recuadro - por ejemplo un botón \"Donar\" de PayPal, o un simple enlace como el de abajo."
+
+msgid "Donate with PayPal"
+msgstr "Donar con PayPal"
+
+msgid "Other Ways to Give"
+msgstr "Otras Formas de Donar"
+
+msgid "By Mail"
+msgstr "Por Correo Postal"
+
+msgid "Prefer to mail a check? Send donations to:"
+msgstr "¿Prefiere enviar un cheque por correo? Envíe las donaciones a:"
+
+msgid "Corporate Giving &amp; Sponsorship"
+msgstr "Donaciones Corporativas y Auspicios"
+
+msgid "We rely on the generous support of individuals, corporate partners, resorts, and foundations who share our vision. Corporate contributions and sponsorships directly support our forecasting and education programs. See our current sponsors or contact us to discuss partnership opportunities."
+msgstr "Dependemos del generoso apoyo de individuos, socios corporativos, centros de esquí y fundaciones que comparten nuestra visión. Las contribuciones corporativas y los auspicios apoyan directamente nuestros programas de pronóstico y educación. Vea nuestros auspiciantes actuales o contáctenos para conversar sobre oportunidades de colaboración."
+
+msgid "Endowment Fund"
+msgstr "Fondo Patrimonial"
+
+msgid "An endowment fund helps ensure the long-term sustainability of avalanche forecasting and awareness in our region. Contact us to learn how you can contribute."
+msgstr "Un fondo patrimonial ayuda a asegurar la sostenibilidad a largo plazo del pronóstico y la concientización sobre avalanchas en nuestra región. Contáctenos para saber cómo puede contribuir."
+
+msgid "Memorial &amp; Tribute Gifts"
+msgstr "Donaciones en Memoria y Homenaje"
+
+msgid "Honor a friend, family member, or fellow backcountry traveler with a memorial or tribute gift supporting avalanche awareness and education."
+msgstr "Honre a un amigo, familiar o compañero de backcountry con una donación en memoria u homenaje que apoye la concientización y educación sobre avalanchas."
+
+msgid "Planned Giving"
+msgstr "Donaciones Planificadas"
+
+msgid "Have you thought of including the avalanche center in your estate planning? By naming a nonprofit as a beneficiary of your will or life insurance, you can leave behind a lasting legacy of avalanche safety. Talk to your estate-planning professional for details."
+msgstr "¿Ha pensado en incluir al centro de avalanchas en su planificación patrimonial? Al nombrar a una organización sin fines de lucro como beneficiaria de su testamento o seguro de vida, puede dejar un legado duradero de seguridad ante avalanchas. Consulte a su asesor de planificación patrimonial para más detalles."
+
+msgid "Tax Information"
+msgstr "Información Impositiva"
+
+msgid "We are a 501(c)(3) nonprofit organization and donations are tax-deductible to the extent allowed by law. Our tax ID (EIN) is <strong>[your EIN here]</strong>. Recognition on our website is available for individual and corporate donors - email us for details."
+msgstr "Somos una organización sin fines de lucro y las donaciones son deducibles de impuestos en la medida permitida por la ley. Nuestro número de identificación fiscal es <strong>[su identificación fiscal aquí]</strong>. Ofrecemos reconocimiento en nuestro sitio web para donantes individuales y corporativos - escríbanos para más detalles."
+
+msgid "Thank you for your support - we cannot operate without you!"
+msgstr "¡Gracias por su apoyo - no podemos operar sin usted!"
