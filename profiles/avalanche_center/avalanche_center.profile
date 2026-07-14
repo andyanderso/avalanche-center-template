@@ -36,6 +36,10 @@ function avalanche_center_install_tasks(&$install_state) {
  * danger-scale preset, map center/zoom, NWS name/URL, social URLs.
  */
 function avalanche_center_setup_form($form, &$form_state) {
+  // Default the danger-scale preset from the language choice (es => SAC,
+  // en => NAC), still overridable. See js/setup-danger-scale.js.
+  $form['#attached']['js'][] = backdrop_get_path('profile', 'avalanche_center') . '/js/setup-danger-scale.js';
+
   $form['center_name'] = array(
     '#type' => 'textfield',
     '#title' => t('Avalanche center name'),
@@ -52,7 +56,7 @@ function avalanche_center_setup_form($form, &$form_state) {
       'es' => t('Spanish (Español)'),
     ),
     '#default_value' => 'en',
-    '#description' => t('Choosing Spanish makes Español the default site language and imports the bundled interface translations. English stays available as a secondary language.'),
+    '#description' => t('Choosing Spanish makes Español the default site language, imports the bundled interface translations, and selects the South American (SAC) danger-scale preset below. English stays available as a secondary language.'),
   );
 
   $form['danger_scale'] = array(
@@ -64,7 +68,7 @@ function avalanche_center_setup_form($form, &$form_state) {
     ),
     '#default_value' => 'NAC',
     '#required' => TRUE,
-    '#description' => t('Selects the danger-rating color palette and travel-advice text used by the danger map and legend. Individual colors/labels can be overridden later in the danger map settings.'),
+    '#description' => t('Selects the danger-rating color palette and travel-advice text used by the danger map and legend, and which danger-scale reference page is published. Defaults from the language above (Spanish selects SAC); individual colors/labels can be overridden later in the danger map settings.'),
   );
 
   $form['map'] = array(

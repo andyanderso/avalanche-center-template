@@ -216,7 +216,7 @@ function avalanche_center_localize_menu_blocks($langcode) {
         . '<div><a href="/archive">Archivo de Pronósticos</a></div>' . "\n"
         . '<div><a href="/text-advisory">Pronóstico en Texto</a></div>' . "\n",
       4 => '<div><a href="/how-to-read-avalanche-forecast">Cómo Leer el Pronóstico</a></div>' . "\n"
-        . '<div><a href="/north-american-avalanche-danger-scale">La Escala de Peligro</a></div>' . "\n"
+        . '<div><a href="/avalanche-danger-scale">La Escala de Peligro</a></div>' . "\n"
         . '<div><a href="/avalanche-problems">Problemas de Avalancha</a></div>' . "\n",
       5 => '<div><a href="/observations">Observaciones - Vista de Lista</a></div>' . "\n"
         . '<div><a href="/observations-map">Observaciones - Vista de Mapa</a></div>' . "\n"
@@ -352,12 +352,23 @@ function avalanche_center_create_demo_content($lat, $lng) {
   ));
 
   // Three ready-to-use avalanche-education reference pages (generic,
-  // industry-standard content: how to read a forecast, the North American
-  // danger scale, and the nine avalanche problem types). Given fixed
-  // aliases so the Advisory dropdown's "Advisory Resources" links resolve.
-  // A center can edit or delete them like any other page.
+  // industry-standard content: how to read a forecast, the danger scale, and
+  // the nine avalanche problem types). Given fixed aliases so the Advisory
+  // dropdown's "Advisory Resources" links resolve. A center can edit or
+  // delete them like any other page.
   avalanche_center_demo_reference_page(t('How to Read the Avalanche Forecast'), 'how-to-read-avalanche-forecast', 'how-to-read-avalanche-forecast.html');
-  avalanche_center_demo_reference_page(t('North American Avalanche Danger Scale'), 'north-american-avalanche-danger-scale', 'north-american-avalanche-danger-scale.html');
+
+  // The danger-scale page follows the chosen preset: SAC gets the South
+  // American scale (title + body), NAC the North American one. The alias is
+  // deliberately preset-independent so the Advisory-dropdown and how-to-read
+  // links resolve either way.
+  if (config_get('avalanche_center.settings', 'danger_scale') === 'SAC') {
+    avalanche_center_demo_reference_page(t('South American Avalanche Danger Scale'), 'avalanche-danger-scale', 'south-american-avalanche-danger-scale.html');
+  }
+  else {
+    avalanche_center_demo_reference_page(t('North American Avalanche Danger Scale'), 'avalanche-danger-scale', 'north-american-avalanche-danger-scale.html');
+  }
+
   avalanche_center_demo_reference_page(t('Avalanche Problems'), 'avalanche-problems', 'avalanche-problems.html');
 
   // Populate the Avalanche Terms glossary (names, definitions, and synonyms).

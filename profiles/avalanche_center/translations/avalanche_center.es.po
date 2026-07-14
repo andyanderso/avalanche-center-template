@@ -110,6 +110,9 @@ msgstr "Cómo Leer el Pronóstico de Avalanchas"
 msgid "North American Avalanche Danger Scale"
 msgstr "Escala Norteamericana de Peligro de Avalanchas"
 
+msgid "South American Avalanche Danger Scale"
+msgstr "Escala Sudamericana de Peligro de Avalanchas"
+
 msgid "Avalanche Problems"
 msgstr "Problemas de Avalancha"
 
