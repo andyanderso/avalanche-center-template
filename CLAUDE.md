@@ -92,6 +92,32 @@ applying the equivalent fixes to the live Gulmarg/Argentina sites.
   alerts) is stored in English — only region names and node content are
   Spanish. Reusability goal: this option is center-agnostic; the eventual
   end goal is standing up a Chilean center from it.
+  Phase 8 follow-ups done (Spanish content parity + SAC pairing): the
+  remaining English on a Spanish install came from content the PO import
+  can't reach — raw HTML rendered verbatim, never through t(). Three fixes:
+  (a) reference-page bodies (how-to-read, danger scale, avalanche problems)
+  are loaded verbatim from content/*.html, so ship Spanish companions
+  *.es.html (authored from the REAL Argentina sources under
+  ~/Siesta_Solutions/Argentina/: `Escala de Peligro -Spanish.pdf`,
+  `AVALANCHE PROBLEMS WEB.docx`, `COMO LEER EL BOLETIN.docx` — genericized)
+  and have avalanche_center_demo_reference_page() prefer
+  <name>.<langcode>.html when language_default != en; (b) the mega-menu
+  dropdown + sidebar link blocks (block.custom.2/4/5/6/7/18) store link text
+  as stored-HTML config the block system outputs as-is —
+  avalanche_center_localize_menu_blocks('es'), called from enable_spanish(),
+  rewrites their body.value; (c) the Donate page is t()-wrapped but its ~24
+  strings weren't in the PO — added them. Then wired the SAC preset to the
+  Spanish choice: js/setup-danger-scale.js couples the setup form's
+  danger-scale radio to language (es→SAC, en→NAC, overridable); the
+  danger-scale reference page is now preset-driven (SAC → "South American
+  Avalanche Danger Scale" + SAC body/palette, from the PDF; NAC → the North
+  American one) at a preset-neutral alias /avalanche-danger-scale (old
+  /north-american-avalanche-danger-scale retired; block.custom.4 + how-to-read
+  links repointed). Both paths verified live against
+  avalanche-center-spanish-demo (es/SAC by fresh reinstall; en/NAC by a
+  throwaway reinstall then restored to es/SAC) — reference pages, mega-menu,
+  Donate, map colors/labels all correct, key pages 200, old alias 404. The
+  real `avalanche-center-demo` was never touched.
   Phase 1 done: repo skeleton scaffolded; structural node-type list
   corrected from 2 to 22 types (independently re-verified against
   node.type.*.json on both sites); NAC level-0 grey set to `#939598`.
