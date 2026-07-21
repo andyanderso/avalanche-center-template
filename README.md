@@ -13,6 +13,11 @@ and `CLAUDE.md` for working conventions. Both are written for people working
 on this codebase, not for someone just installing a site — this file is that
 second thing.
 
+> **Handing a ready-to-install site to a non-technical center owner?** Share
+> [`SETUP-GUIDE.md`](SETUP-GUIDE.md) instead of this file. It's a standalone,
+> email-friendly walkthrough that starts at the installer (this README's steps
+> 4–5) and covers configuring the center — no developer/hosting steps.
+
 ## Status
 
 Phases 1-8 complete: the profile, its 4 custom modules, ~32 vendored contrib
