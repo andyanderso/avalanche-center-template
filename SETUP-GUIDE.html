@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Setting Up Your Avalanche Center Website</title>
+<style>
+  :root {
+    --ink: #1c2733;
+    --muted: #5b6b7a;
+    --alpine: #12496b;
+    --alpine-dark: #0d3a56;
+    --line: #dce4ea;
+    --bg: #eef2f5;
+    --card: #ffffff;
+    --amber-bg: #fff6e2;
+    --amber-line: #e8b54a;
+    --amber-ink: #7a531a;
+    --blue-bg: #e9f2f8;
+    --blue-line: #3f8fbf;
+    --blue-ink: #124e70;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  .sheet {
+    max-width: 760px;
+    margin: 32px auto;
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 18px rgba(20, 40, 60, 0.08);
+  }
+  /* Masthead */
+  .masthead {
+    background: linear-gradient(160deg, #0d3a56 0%, #12496b 55%, #1b5c85 100%);
+    color: #fff;
+    padding: 34px 40px 28px;
+  }
+  .masthead .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 12px;
+    font-weight: 600;
+    opacity: 0.82;
+    margin: 0 0 8px;
+  }
+  .masthead h1 {
+    margin: 0;
+    font-size: 27px;
+    line-height: 1.2;
+    font-weight: 700;
+  }
+  .masthead p {
+    margin: 12px 0 0;
+    font-size: 15px;
+    max-width: 52ch;
+    opacity: 0.95;
+  }
+  /* Danger-scale ribbon — an on-theme nod to the avalanche danger scale */
+  .ribbon { display: flex; height: 8px; }
+  .ribbon span { flex: 1; }
+  .ribbon .r1 { background: #52ba4a; }
+  .ribbon .r2 { background: #fff200; }
+  .ribbon .r3 { background: #f7941e; }
+  .ribbon .r4 { background: #ed1c24; }
+  .ribbon .r5 { background: #1a1a1a; }
+
+  .body { padding: 8px 40px 40px; }
+
+  h2 {
+    font-size: 20px;
+    margin: 34px 0 10px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    color: var(--alpine);
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  h2:first-of-type { border-top: none; padding-top: 6px; }
+  h2 .num {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px; height: 30px;
+    background: var(--alpine);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 15px;
+    font-weight: 700;
+    transform: translateY(2px);
+  }
+  h3 {
+    font-size: 16px;
+    margin: 22px 0 6px;
+    color: var(--alpine);
+  }
+  p { margin: 10px 0; }
+  a { color: var(--alpine); }
+  strong { color: var(--ink); }
+  .lead { font-size: 16.5px; }
+  .muted { color: var(--muted); }
+
+  ul { margin: 10px 0; padding-left: 22px; }
+  li { margin: 6px 0; }
+
+  /* Fill-in box */
+  .fillin {
+    background: #f5f8fa;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 18px 0;
+    font-size: 15px;
+  }
+  .fillin .blank {
+    display: inline-block;
+    min-width: 240px;
+    border-bottom: 1.5px solid #9aabb8;
+    margin-left: 6px;
+  }
+
+  /* Callouts */
+  .callout {
+    border-radius: 8px;
+    padding: 14px 16px 14px 44px;
+    margin: 16px 0;
+    position: relative;
+    font-size: 15px;
+  }
+  .callout .ico {
+    position: absolute; left: 14px; top: 13px;
+    font-size: 18px; line-height: 1;
+  }
+  .callout p { margin: 6px 0; }
+  .callout p:first-child { margin-top: 0; }
+  .callout p:last-child { margin-bottom: 0; }
+  .warn { background: var(--amber-bg); border: 1px solid var(--amber-line); color: var(--amber-ink); }
+  .warn strong { color: var(--amber-ink); }
+  .info { background: var(--blue-bg); border: 1px solid var(--blue-line); color: var(--blue-ink); }
+  .info strong { color: var(--blue-ink); }
+
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 14.5px;
+  }
+  caption { text-align: left; color: var(--muted); font-size: 13px; margin-bottom: 6px; }
+  th, td {
+    text-align: left;
+    vertical-align: top;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  thead th {
+    background: var(--alpine);
+    color: #fff;
+    font-weight: 600;
+    border-bottom: none;
+  }
+  tbody tr:nth-child(even) { background: #f6f9fb; }
+  td:first-child { white-space: nowrap; font-weight: 600; color: var(--alpine); width: 34%; }
+  @media (max-width: 560px) {
+    td:first-child { white-space: normal; }
+  }
+
+  .live {
+    background: #eef7ee;
+    border: 1px solid #b8ddb5;
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin: 18px 0;
+  }
+  .live h2 { border: none; padding-top: 0; margin-top: 0; color: #24692a; }
+
+  code {
+    background: #eef2f5;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.9em;
+  }
+  .footer {
+    margin-top: 30px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  /* ---- Print / PDF ---- */
+  @media print {
+    html, body { background: #fff; }
+    body { font-size: 11pt; line-height: 1.5; }
+    .sheet { max-width: none; margin: 0; box-shadow: none; border-radius: 0; }
+    .masthead { border-radius: 0; }
+    .body { padding: 0 4px; }
+    h2, h3 { break-after: avoid; }
+    table, .callout, .fillin, .live { break-inside: avoid; }
+    a { color: var(--alpine); text-decoration: none; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+  @page { margin: 16mm 14mm; }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <header class="masthead">
+    <p class="kicker">Website Setup Guide</p>
+    <h1>Setting Up Your Avalanche Center Website</h1>
+    <p>Your site is prepared and ready to install. This guide walks you through it from start to finish — no coding or technical background required. It takes about 10–15 minutes.</p>
+  </header>
+  <div class="ribbon" aria-hidden="true">
+    <span class="r1"></span><span class="r2"></span><span class="r3"></span><span class="r4"></span><span class="r5"></span>
+  </div>
+
+  <main class="body">
+    <p class="lead"><strong>Before you begin, you'll need two things</strong> (whoever sent you this guide can provide them):</p>
+    <ul>
+      <li><strong>Your site's web address</strong> — the URL where the setup wizard is waiting, e.g. <code>https://your-site.example.com</code>.</li>
+      <li>The go-ahead to <strong>create the main administrator account</strong> (you'll do this in Step 3).</li>
+    </ul>
+    <div class="fillin">
+      Fill this in for your reference —<br>
+      <strong>My site address:</strong><span class="blank"></span>
+    </div>
+
+    <h2><span class="num">1</span> Open the installer and choose a language</h2>
+    <p>Open your site's web address in a normal web browser (Chrome, Firefox, Safari, or Edge). The first time the site is visited, it shows a setup wizard. The first screen is <strong>Choose language</strong>.</p>
+    <div class="callout warn">
+      <span class="ico">⚠️</span>
+      <p><strong>Pick <em>English</em> here — even if you want a Spanish website.</strong> This screen only sets the language of the <em>setup wizard itself</em>. You'll choose your <strong>site's</strong> language a couple of steps from now (Step 4), and that's what actually makes the finished website Spanish.</p>
+      <p>Choosing Spanish on this first screen isn't harmful, but it can show a couple of harmless technical warnings — so English is the smooth path.</p>
+    </div>
+    <p>Click <strong>Save and continue</strong>.</p>
+
+    <h2><span class="num">2</span> Choose the installation profile</h2>
+    <p>If you're asked which profile to install, choose <strong>Avalanche Center</strong>, then continue. (If the wizard skips straight ahead, that's fine — it was already selected for you.)</p>
+    <p>The installer will churn for a minute or two while it builds the site. Let it finish.</p>
+
+    <h2><span class="num">3</span> Configure the site and create your account</h2>
+    <p>This is the standard site-configuration screen. You'll enter:</p>
+    <ul>
+      <li>A <strong>site name</strong> (your center's name — you can confirm or change it in the next step).</li>
+      <li>The <strong>administrator account</strong>: a username, email address, and password.</li>
+      <li>Site email / time zone settings (the defaults are usually fine).</li>
+    </ul>
+    <div class="callout info">
+      <span class="ico">🔑</span>
+      <p><strong>The administrator account is the main login for your whole site — keep it somewhere safe.</strong> If the screen ever asks for <em>database details</em>, don't guess: the person who set up the site has those, and most setups fill this in automatically so you won't see it at all.</p>
+    </div>
+    <p>Click to continue and you'll land on the one screen that's specific to avalanche centers.</p>
+
+    <h2><span class="num">4</span> The “Center setup” screen</h2>
+    <p>This is where you make the site yours. Here's what each field does:</p>
+    <table>
+      <thead>
+        <tr><th>Field</th><th>What it does</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Avalanche center name</td>
+          <td>Becomes your site name and appears in page titles. It's pre-filled from Step 3 — leave it or edit it.</td>
+        </tr>
+        <tr>
+          <td>Logo <span class="muted">(optional)</span></td>
+          <td>Upload your center's logo (PNG, JPG, GIF, or SVG). Leave it empty to use the built-in default; you can add or change it any time later.</td>
+        </tr>
+        <tr>
+          <td>Language</td>
+          <td><strong>English</strong> or <strong>Spanish</strong>. Choosing Spanish makes the entire site — menus, danger scale, help pages, and starter content — come out in Spanish, and automatically pairs it with the South American danger scale.</td>
+        </tr>
+        <tr>
+          <td>Danger-scale preset</td>
+          <td><strong>NAC</strong> (North American) or <strong>SAC</strong> (South American). Sets the colors, wording, and danger-scale page used on your forecasts. It follows your language choice by default (English → NAC, Spanish → SAC), but you can pick either one.</td>
+        </tr>
+        <tr>
+          <td>Map center <span class="muted">(lat / long / zoom)</span></td>
+          <td>Where your avalanche danger map is centered. Put the latitude and longitude in their <strong>own separate boxes</strong>.</td>
+        </tr>
+        <tr>
+          <td>Weather service <span class="muted">(optional)</span></td>
+          <td>The name and link of your local weather office, shown in the site header/footer.</td>
+        </tr>
+        <tr>
+          <td>Social media <span class="muted">(optional)</span></td>
+          <td>Facebook, Twitter/X, YouTube, Instagram, and email-signup links, shown wherever the site displays social links.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Click <strong>Save and continue</strong>.</p>
+    <p><strong>What this creates for you:</strong> a starter setup so the site isn't empty — one sample forecast zone, one sample advisory (which the front page points at so the danger map has something to show), and three ready-made reference pages linked in the menu:</p>
+    <ul>
+      <li><strong>How to Read the Avalanche Forecast</strong></li>
+      <li><strong>The Avalanche Danger Scale</strong> (North or South American, matching your choice)</li>
+      <li><strong>Avalanche Problems</strong></li>
+    </ul>
+    <p>On a Spanish site these all appear in Spanish. Keep and edit the reference pages; replace the sample advisory and zone with your own real content (see below).</p>
+
+    <div class="live">
+      <h2>You're live! 🎉</h2>
+      <p style="margin-bottom:0">The website is now installed and running at your address. Log in any time at <code>your-site-address/user</code> with the administrator account you created in Step 3.</p>
+    </div>
+
+    <h2 style="border-top-color:var(--line)">Making it your own</h2>
+    <p>Once you're logged in, here's how to turn the starter site into your real one. Everything below is done by clicking around the admin area — no code.</p>
+
+    <h3>Replace the sample content</h3>
+    <p>Under <strong>Content</strong>, delete the “Demo Avalanche Advisory” and its “Demo Forecast Zone” once you've created your real ones (below) — otherwise visitors land on the sample.</p>
+
+    <h3>Add your forecast zones</h3>
+    <p>Go to <strong>Structure → Taxonomy → Forecast Region</strong>. Each zone is an entry there, with a map tool to draw that zone's boundary (or paste boundary data if you already have it). Your advisories will point at one of these zones.</p>
+
+    <h3>Publish your first advisory</h3>
+    <p>Go to <strong>Content → Add content → Advisory</strong>. This is the forecast itself — danger ratings by elevation, the bottom-line summary, and which forecast zone it's for. This is what the danger map and front page display.</p>
+
+    <h3>Set your home page</h3>
+    <p>The danger map appears on the front page. To make a real advisory (or something else) your home page instead of the sample, go to <strong>Configuration → System → Basic site settings → Front page</strong>.</p>
+
+    <h3>Adjust your branding and theme</h3>
+    <p>Under <strong>Appearance</strong> you can switch between the two included designs and open a theme's <strong>Settings</strong> to change the logo, name/slogan, weather-service info, social links, and elevation-band labels. Your Step 4 choices are already filled in here.</p>
+
+    <h3>Edit the avalanche glossary</h3>
+    <p>The glossary lives at <code>your-site-address/avalanche-terms</code> and is managed under <strong>Structure → Taxonomy → Avalanche Terms</strong>.</p>
+
+    <h3>Give your staff access</h3>
+    <p>Under <strong>People</strong>, create accounts for your forecasters and assign them the <strong>Editor</strong> role — that lets them publish advisories and content without full administrator control.</p>
+
+    <div class="footer">
+      <strong>Getting help.</strong> If anything looks off or you get stuck, reply to the email that sent you this guide and include the site address and a screenshot — that's the fastest way to get it sorted.
+    </div>
+  </main>
+</div>
+</body>
+</html>
