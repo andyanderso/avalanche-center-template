@@ -131,6 +131,41 @@ advisories and content without full administrator control.
 
 ---
 
+## Moving to your own server later
+
+If you're using a shared demo now, it's a great place to build out your real
+content. When you're ready to run the site on your own hosting, **you don't have
+to start over** — your content and setup can come with you. The site has two
+built-in exporters for exactly this, both in the admin area:
+
+- **Your content** — advisories, forecast zones, glossary, and user accounts.
+  Go to **Configuration → Development → Backup and Migrate**, create a backup,
+  and **download** the file. (It's a snapshot of your whole database.)
+- **Your structure and settings** — content types, fields, your danger-scale
+  choice, branding. Go to **Configuration → Development → Configuration
+  management → Export** and download that archive too.
+
+Then, on your new site:
+
+1. Have whoever sets up your new hosting install the **Avalanche Center**
+   distribution first — the same one you installed here (point them at the
+   project's `README`).
+2. Give them the two files you downloaded. They'll restore the Backup and Migrate
+   file, import the configuration archive, and copy over any images you uploaded.
+
+Your new site then comes up with your zones, advisories, glossary, and branding
+intact.
+
+> **Note for your developer / host.** Backdrop keeps *content* in the database
+> and *structure* in `files/config_<hash>/active`, where `<hash>` is
+> `md5(serialize($database))` — it changes with the new database credentials, so
+> place the imported config into the new hash directory (or pin
+> `$config_directories` explicitly in `settings.php`). The new server's
+> `settings.php` also needs `$settings['backdrop_drupal_compatibility'] = TRUE;`,
+> and uploaded files live under `files/`.
+
+---
+
 ## Getting help
 
 If anything looks off or you get stuck, reply to the email that sent you this

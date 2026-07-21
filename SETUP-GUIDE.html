@@ -337,6 +337,23 @@
     <h3>Give your staff access</h3>
     <p>Under <strong>People</strong>, create accounts for your forecasters and assign them the <strong>Editor</strong> role — that lets them publish advisories and content without full administrator control.</p>
 
+    <h2 style="border-top-color:var(--line)">Moving to your own server later</h2>
+    <p>If you're using a shared demo now, it's a great place to build out your real content. When you're ready to run the site on your own hosting, <strong>you don't have to start over</strong> — your content and setup can come with you. The site has two built-in exporters for exactly this, both in the admin area:</p>
+    <ul>
+      <li><strong>Your content</strong> — advisories, forecast zones, glossary, and user accounts. Go to <strong>Configuration → Development → Backup and Migrate</strong>, create a backup, and <strong>download</strong> the file. (It's a snapshot of your whole database.)</li>
+      <li><strong>Your structure and settings</strong> — content types, fields, your danger-scale choice, branding. Go to <strong>Configuration → Development → Configuration management → Export</strong> and download that archive too.</li>
+    </ul>
+    <p>Then, on your new site:</p>
+    <ol>
+      <li>Have whoever sets up your new hosting install the <strong>Avalanche Center</strong> distribution first — the same one you installed here (point them at the project's <code>README</code>).</li>
+      <li>Give them the two files you downloaded. They'll restore the Backup and Migrate file, import the configuration archive, and copy over any images you uploaded.</li>
+    </ol>
+    <p>Your new site then comes up with your zones, advisories, glossary, and branding intact.</p>
+    <div class="callout info">
+      <span class="ico">🛠️</span>
+      <p><strong>Note for your developer / host.</strong> Backdrop keeps <em>content</em> in the database and <em>structure</em> in <code>files/config_&lt;hash&gt;/active</code>, where <code>&lt;hash&gt;</code> is <code>md5(serialize($database))</code> — it changes with the new database credentials, so place the imported config into the new hash directory (or pin <code>$config_directories</code> explicitly in <code>settings.php</code>). The new server's <code>settings.php</code> also needs <code>$settings['backdrop_drupal_compatibility'] = TRUE;</code>, and uploaded files live under <code>files/</code>.</p>
+    </div>
+
     <div class="footer">
       <strong>Getting help.</strong> If anything looks off or you get stuck, reply to the email that sent you this guide and include the site address and a screenshot — that's the fastest way to get it sorted.
     </div>
