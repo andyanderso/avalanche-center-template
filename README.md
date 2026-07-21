@@ -119,6 +119,16 @@ level down, something in step 3 landed in the wrong place — delete
 Visit `https://my-avalanche-center.ddev.site` (or whatever `ddev
 describe` reports) in a real browser — the batch install step is
 JS-driven and won't complete under something like a plain `curl` request.
+
+> **On the first "Choose language" screen, pick English** — even if you
+> want a Spanish site. That screen sets only the *installer's own* UI
+> language; picking a non-English language there makes Backdrop core try to
+> download a matching installer translation and emits harmless
+> `Attempt to read property "langcode" on bool` warnings. **The site's
+> language is chosen later, in the "Center setup" form (step 5)** — that's
+> what actually produces a Spanish site. If you already picked Español here,
+> just reload at `.../core/install.php?langcode=en` to switch back.
+
 Choose **Avalanche Center** as the installation profile when prompted,
 fill out Backdrop's own site-configuration step (creates your admin
 account), then you'll land on this profile's one extra step:
