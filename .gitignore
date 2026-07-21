@@ -13,3 +13,6 @@ sites/*/settings.ddev.php
 .DS_Store
 Thumbs.db
 .idea/
+
+# --- Session scratch (never commit) ---
+chat-*.txt
