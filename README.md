@@ -13,24 +13,27 @@ second thing.
 
 ## Status
 
-Phases 1-7 complete: the profile, its 4 custom modules, ~32 vendored contrib
+Phases 1-8 complete: the profile, its 4 custom modules, ~32 vendored contrib
 modules, and 3 themes are genericized, exported, and verified end-to-end
 against a real Backdrop install (fresh database through a rendered front
-page with a live danger map). See the plan's phased implementation table
-(§11) for what's next (Phase 8: migrating the original Gulmarg/Argentina
-sites onto this distribution).
+page with a live danger map). Both danger-scale presets (NAC and SAC) are
+verified live, and the **Spanish install option is fully functional** —
+choosing Spanish at setup produces a Spanish-language site end-to-end
+(interface strings, navigation, reference pages, danger scale, and demo
+content), sourced from the real Argentina site's translations rather than
+invented. See the plan's phased implementation table (§11) for the full
+history.
 
 ## What you need before you start
 
-- A **Backdrop CMS 1.x core** checkout — this repo is a *profile*
-  distribution, not a full Backdrop install. It does not include
-  `core/`, `index.php`, or `settings.php`. Download core separately from
-  [backdropcms.org/download](https://backdropcms.org/download) or clone
-  [backdrop/backdrop](https://github.com/backdrop/backdrop).
 - PHP 8.1, and a MySQL/MariaDB database.
 - [DDEV](https://ddev.com) is the easiest way to get both of those locally
   and is what this distribution has been tested with. Any standard
   Backdrop-compatible LAMP/LEMP stack works too.
+
+You don't need to download Backdrop core ahead of time — this repo is a
+*profile* distribution, not a full Backdrop install, and the install steps
+below fetch core for you (step 2).
 
 ## Installing
 
@@ -118,20 +121,56 @@ account), then you'll land on this profile's one extra step:
 | Field | What it does |
 |---|---|
 | Avalanche center name | Becomes the site name and shows in page titles. |
-| Language | English or Spanish. Spanish currently only records the preference — see [Known limitations](#known-limitations). |
-| Danger-scale preset | **NAC** (North American) or **SAC** (South American) — picks the color palette and travel-advice text the danger map and legend use. |
+| Language | English or Spanish. Spanish produces a fully translated site (interface, navigation, reference pages, danger scale, demo content) and — unless you override it — also switches the danger-scale preset to **SAC**, the pairing typical of a South American center. |
+| Danger-scale preset | **NAC** (North American) or **SAC** (South American) — picks the color palette, travel-advice text, and danger-scale reference page the danger map and legend use. Defaults follow the language choice (English → NAC, Spanish → SAC) but you can set either independently. |
 | Map center latitude/longitude/zoom | Where the danger map centers by default. |
 | Weather service name/URL *(optional)* | Shown in the theme header/footer. |
 | Social media URLs *(optional)* | Facebook, Twitter, YouTube, Instagram, email signup — shown wherever the theme surfaces social links. |
 
 Submitting this form also creates one demo forecast-zone region (centered
-on the map coordinates you gave) and one demo advisory, and points the
-site's front page at that demo advisory so the danger map has something
-to show immediately. Delete both once you have real content (see below).
+on the map coordinates you gave) and one demo advisory, points the site's
+front page at that demo advisory so the danger map has something to show
+immediately, and publishes three reference pages wired into the menu —
+*How to Read the Avalanche Forecast* (`/how-to-read-avalanche-forecast`),
+the danger scale (`/avalanche-danger-scale`, North or South American to
+match your preset), and *Avalanche Problems* (`/avalanche-problems`). On a
+Spanish install all of these come out in Spanish. Delete the demo advisory
+and forecast zone once you have real content (see below); the reference
+pages are usually worth keeping and editing.
 
 That's it — the site is live. All 63 modules (4 custom + ~32 contrib +
 Backdrop core dependencies) enable automatically; nothing further needs
 installing by hand.
+
+## Hosting on a server (production)
+
+The steps above use DDEV for a local install. For a public site on a VPS
+(AWS EC2 / Lightsail, Linode, DigitalOcean, etc.), the only distribution-
+specific part is the same "add core, add this distribution, run the
+installer" flow — everything else is standard Backdrop hosting, so we don't
+reproduce a full server tutorial here (it would go stale faster than it
+helps). What the server needs:
+
+- A **LAMP/LEMP stack**: Apache *or* nginx, **PHP 8.1** with the extensions
+  Backdrop requires (`pdo_mysql`, `gd`, `curl`, `xml`, `mbstring`, `json`,
+  `openssl`, `zip`), and **MySQL 5.7+ / MariaDB 10.3+**.
+- Document root pointed at the site directory (the one containing `index.php`
+  and `core/`), with clean-URL rewrites enabled — Backdrop ships the
+  `.htaccess` for Apache; nginx needs the equivalent `try_files`/rewrite
+  block from Backdrop's docs.
+- HTTPS (Let's Encrypt / Certbot is the usual free option).
+
+Then follow the same **steps 2-5** above on the server (skip step 1 — that's
+DDEV-only), pointing `$PROJECT` at your web root. Provider one-click images
+and Backdrop's own guides cover the OS-level setup:
+
+- DigitalOcean: their "LAMP" or "LEMP on Ubuntu" tutorials, or the
+  Marketplace LAMP droplet.
+- Linode: the "LAMP/LEMP stack" guides in Linode Docs.
+- AWS: Lightsail's LAMP blueprint (simplest) or EC2 + Ubuntu with the stack
+  installed manually.
+- Backdrop core: [System requirements](https://docs.backdropcms.org/documentation/system-requirements)
+  and [Installation instructions](https://docs.backdropcms.org/documentation/installation-instructions).
 
 ## Configuring your new center
 
@@ -184,14 +223,17 @@ management*).
 
 ## Known limitations
 
-- **Spanish isn't functional yet.** Selecting Spanish in the setup form
-  only records the preference (`avalanche_center.settings.language`) — no
-  `.po` translation ships, and `locale` isn't a profile dependency, so the
-  interface stays in English regardless. Real Spanish support is planned
-  for Phase 8, sourced from the actual Argentina site's live translations
-  rather than invented ahead of time (see plan §20 for why).
-- **No settings page for the danger-scale preset / map defaults** — see
-  above, use `drush config-set` or config import/export instead.
+- **Spanish is chosen once, at install.** Selecting Spanish in the setup
+  form installs the `es` translations, sets `es` as the default language,
+  and switches demo/reference content to Spanish. There's no in-place
+  English↔Spanish toggle after install; switching an existing site's
+  language is a manual Backdrop `locale`/`language` operation. Note also
+  that some source data on the Argentina site (glossary and conditions-alert
+  taxonomy terms) is stored in English, so those specific strings fall back
+  to English unless you translate them yourself.
+- **No settings page for the danger-scale preset / map defaults** — the
+  "Center setup" form only runs once, at install. Change them afterward
+  with `drush config-set` or config import/export (see below).
 
 ## Layout
 
