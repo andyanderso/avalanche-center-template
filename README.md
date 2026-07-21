@@ -94,12 +94,17 @@ cp -r "$REPO"/profiles/avalanche_center  "$PROJECT/profiles/"
 ```
 
 **Checkpoint — before moving on, confirm `$PROJECT` looks like this**
-(`ls "$PROJECT"`):
+(use `ls -a "$PROJECT"` so hidden files show):
 
 ```
 core/  layouts/  modules/  profiles/  settings.ddev.php  sites/
 index.php  .htaccess  robots.txt  settings.php  themes/
 ```
+
+The trailing `/` just marks directories — it's not part of the name. Two
+things you may also see that are fine: `.htaccess` is hidden from a plain
+`ls` (that's why the checkpoint uses `ls -a`), and DDEV leaves a
+`drushrc.php` here from step 1 — neither is a problem.
 
 `modules/`, `themes/`, `layouts/`, and `profiles/` must each be a
 *directory containing things* (`ls "$PROJECT/profiles"` should show
