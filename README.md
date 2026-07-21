@@ -1,5 +1,7 @@
 # Avalanche Center
 
+[![Repo: andyanderso/avalanche-center-template](https://img.shields.io/badge/GitHub-avalanche--center--template-181717?logo=github)](https://github.com/andyanderso/avalanche-center-template)
+
 Installable [Backdrop CMS](https://backdropcms.org) distribution for
 avalanche forecast center websites — danger maps, observations, advisories,
 and glossary content, genericized from two production sites (Gulmarg and
