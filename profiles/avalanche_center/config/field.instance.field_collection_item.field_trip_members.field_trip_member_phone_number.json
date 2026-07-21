@@ -36,10 +36,5 @@
     },
     "required": 0,
     "description": "",
-    "default_value": [
-        {
-            "value": "[current-user:field_first_name:phone-number]"
-        }
-    ],
-    "default_value_function": "field_default_token_default_value_function"
+    "default_value": null
 }
