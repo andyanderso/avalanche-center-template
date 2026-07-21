@@ -137,10 +137,11 @@ account), then you'll land on this profile's one extra step:
 
 | Field | What it does |
 |---|---|
-| Avalanche center name | Becomes the site name and shows in page titles. |
+| Avalanche center name | Becomes the site name and shows in page titles. **Pre-filled from the site name you entered on Backdrop's "Configure site" step** — leave it or edit it, either way this value wins. |
+| Logo *(optional)* | Upload your center's logo (PNG/JPG/GIF/SVG); it's installed as the site logo. Leave empty to use the theme default. Changeable later under *Appearance*. |
 | Language | English or Spanish. Spanish produces a fully translated site (interface, navigation, reference pages, danger scale, demo content) and — unless you override it — also switches the danger-scale preset to **SAC**, the pairing typical of a South American center. |
 | Danger-scale preset | **NAC** (North American) or **SAC** (South American) — picks the color palette, travel-advice text, and danger-scale reference page the danger map and legend use. Defaults follow the language choice (English → NAC, Spanish → SAC) but you can set either independently. |
-| Map center latitude/longitude/zoom | Where the danger map centers by default. |
+| Map center latitude/longitude/zoom | Where the danger map centers by default. Enter latitude and longitude in **separate** boxes (a stray comma from a pasted "lat, lng" is trimmed automatically). |
 | Weather service name/URL *(optional)* | Shown in the theme header/footer. |
 | Social media URLs *(optional)* | Facebook, Twitter, YouTube, Instagram, email signup — shown wherever the theme surfaces social links. |
 

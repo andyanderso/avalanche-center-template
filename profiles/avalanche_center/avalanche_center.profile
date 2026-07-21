@@ -43,9 +43,18 @@ function avalanche_center_setup_form($form, &$form_state) {
   $form['center_name'] = array(
     '#type' => 'textfield',
     '#title' => t('Avalanche center name'),
-    '#description' => t('Used as the site name and in page titles, e.g. "Example Avalanche Center".'),
+    '#description' => t('Used as the site name and in page titles, e.g. "Example Avalanche Center". Pre-filled from the site name you entered on the previous step — edit it here if you want it different.'),
     '#required' => TRUE,
-    '#default_value' => 'Avalanche Center',
+    // Default to whatever was set on Backdrop's own "Configure site" step
+    // (which runs before this one) so leaving this field untouched preserves
+    // that name instead of silently overwriting it with a placeholder.
+    '#default_value' => config_get('system.core', 'site_name') ?: 'Avalanche Center',
+  );
+
+  $form['logo_upload'] = array(
+    '#type' => 'file',
+    '#title' => t('Logo (optional)'),
+    '#description' => t('Upload your center\'s logo — PNG, JPG, GIF, or SVG. You can change or remove it later under Appearance. Leave empty to use the theme default.'),
   );
 
   $form['language'] = array(
@@ -150,6 +159,33 @@ function avalanche_center_setup_form($form, &$form_state) {
 }
 
 /**
+ * Validate handler for avalanche_center_setup_form().
+ *
+ * Cleans up the map coordinate fields (a pasted "lat, lng" leaves a trailing
+ * comma/space) and captures any uploaded logo into a validated file object for
+ * the submit handler.
+ */
+function avalanche_center_setup_form_validate($form, &$form_state) {
+  // Strip stray commas/whitespace so a pasted "lat, lng" doesn't leave the
+  // latitude stored as e.g. "-32.8367, ".
+  foreach (array('map_center_lat', 'map_center_lng') as $key) {
+    if (isset($form_state['values'][$key])) {
+      $form_state['values'][$key] = trim($form_state['values'][$key], " ,\t\n\r");
+    }
+  }
+
+  // Validate + stage any uploaded logo. file_save_upload() returns NULL when
+  // no file was submitted (the field is optional), FALSE on a rejected upload
+  // (it sets the form error itself), or the temporary file object on success.
+  $file = file_save_upload('logo_upload', array(
+    'file_validate_extensions' => array('png jpg jpeg gif svg'),
+  ));
+  if ($file) {
+    $form_state['values']['logo_file'] = $file;
+  }
+}
+
+/**
  * Submit handler for avalanche_center_setup_form().
  *
  * Writes the collected values into avalanche_center.settings + the two
@@ -160,6 +196,27 @@ function avalanche_center_setup_form_submit($form, &$form_state) {
   $values = $form_state['values'];
 
   config_set('system.core', 'site_name', $values['center_name']);
+
+  // Install an uploaded logo as the site-wide custom logo, mirroring core's
+  // own system_site_information_settings_submit() handling: copy the temporary
+  // upload to a permanent public location, point system.core at it, and drop
+  // the temporary managed-file record.
+  if (!empty($values['logo_file'])) {
+    $file = $values['logo_file'];
+    $logo_path = file_unmanaged_copy($file->uri, 'public://', FILE_EXISTS_RENAME);
+    if ($logo_path) {
+      config_set('system.core', 'site_logo_theme', 0);
+      config_set('system.core', 'site_logo_path', $logo_path);
+      // SVGs have no raster dimensions; getimagesize() simply returns FALSE.
+      if ($dimensions = @getimagesize($logo_path)) {
+        config_set('system.core', 'site_logo_attributes', array(
+          'width' => $dimensions[0],
+          'height' => $dimensions[1],
+        ));
+      }
+    }
+    $file->delete();
+  }
 
   $settings = config('avalanche_center.settings');
   $settings->set('danger_scale', $values['danger_scale']);
