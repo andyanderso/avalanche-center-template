@@ -182,6 +182,14 @@ helps). What the server needs:
   `.htaccess` for Apache; nginx needs the equivalent `try_files`/rewrite
   block from Backdrop's docs.
 - HTTPS (Let's Encrypt / Certbot is the usual free option).
+- A `settings.php` **based on Backdrop's own `settings.php` template** (in the
+  core download), not hand-written from scratch. In particular it must keep
+  **`$settings['backdrop_drupal_compatibility'] = TRUE;`** — Backdrop's default
+  enables it, and several bundled contrib modules/themes (`tb_megamenu`,
+  `views_bulk_operations`, `geolocation`, `responsive_bartik`/`responsive_sac`)
+  call `drupal_*()` helpers that live in core's compatibility layer, which only
+  loads when that flag is set. Omit it and every page white-screens with
+  `Call to undefined function drupal_attributes()`.
 
 Then follow the same **steps 2-5** above on the server (skip step 1 — that's
 DDEV-only), pointing `$PROJECT` at your web root. Provider one-click images
