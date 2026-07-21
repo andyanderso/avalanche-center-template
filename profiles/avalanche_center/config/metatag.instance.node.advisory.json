@@ -6,7 +6,7 @@
     "disabled": false,
     "config": {
         "og:description": {
-            "value": "[node:field_bottom_line]"
+            "value": "[node:overall-danger-advice]"
         },
         "og:image": {
             "value": "[node:overall-danger-icon]"
@@ -27,7 +27,7 @@
             "value": "200"
         },
         "twitter:description": {
-            "value": "[node:field_bottom_line]"
+            "value": "[node:overall-danger-advice]"
         },
         "twitter:image": {
             "value": "[node:overall-danger-icon]"

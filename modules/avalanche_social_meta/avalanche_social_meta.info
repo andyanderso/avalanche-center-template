@@ -3,3 +3,4 @@ description = Provides node tokens used by Metatag to build social sharing image
 package = Avalanche Center
 type = module
 backdrop = 1.x
+dependencies[] = avalanche_danger_map

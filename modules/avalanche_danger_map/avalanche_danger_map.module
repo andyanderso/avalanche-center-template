@@ -492,6 +492,30 @@ function avalanche_danger_map_get_preset() {
 }
 
 /**
+ * Returns the danger-scale travel-advice text for a rating, active preset.
+ *
+ * Levels 1-5 come from the active preset's 'travel_advice' (NAC/SAC plus any
+ * config overrides); level 0 ("No Rating") returns a standard message — the
+ * danger map appends an advisory link to it, other callers may not. The text
+ * may contain inline HTML (`<strong>`); callers needing plain text (e.g. meta
+ * descriptions) should strip tags.
+ *
+ * @param int $rating
+ *   Danger rating 0-5.
+ *
+ * @return string
+ *   Travel-advice text, possibly empty.
+ */
+function avalanche_danger_map_travel_advice($rating) {
+  $rating = (int) $rating;
+  if ($rating === 0) {
+    return t('Insufficient data exists to issue a danger rating.');
+  }
+  $preset = avalanche_danger_map_get_preset();
+  return isset($preset['travel_advice'][$rating]) ? $preset['travel_advice'][$rating] : '';
+}
+
+/**
  * Implements hook_block_info().
  */
 function avalanche_danger_map_block_info() {
@@ -647,7 +671,6 @@ function avalanche_danger_map_get_data() {
   $preset = avalanche_danger_map_get_preset();
   $colors = $preset['colors'];
   $labels = $preset['labels'];
-  $travel_advice = $preset['travel_advice'];
 
   // Load geoPHP.
   module_load_include('inc', 'geofield', 'libraries/geophp/geoPHP');
@@ -691,13 +714,15 @@ function avalanche_danger_map_get_data() {
     // Level 0 ("No Rating") gets its own travel advice pointing back to
     // whatever advisory is available, rather than the presets' blank string.
     if ($danger_rating === 0) {
-      $region_travel_advice = t('Insufficient data exists to issue a danger rating.');
+      // Level 0 gets the standard message plus a link back to whatever
+      // advisory is available, rather than the presets' blank string.
+      $region_travel_advice = avalanche_danger_map_travel_advice(0);
       if (!empty($advisory_url)) {
         $region_travel_advice .= ' <a href="' . check_url($advisory_url) . '">' . t('Get more information') . '</a>.';
       }
     }
     else {
-      $region_travel_advice = isset($travel_advice[$danger_rating]) ? $travel_advice[$danger_rating] : '';
+      $region_travel_advice = avalanche_danger_map_travel_advice($danger_rating);
     }
 
     $result[] = array(
