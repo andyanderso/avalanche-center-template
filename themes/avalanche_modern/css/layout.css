@@ -421,28 +421,33 @@ html.admin-bar .am-header .tb-megamenu .nav-collapse {
 /* Mobile / tablet header: hamburger + quick links, full menu in a drawer.
    979px matches the mega menu's own Bootstrap collapse breakpoint. */
 @media (max-width: 979px) {
-  /* Logo row: stack as block; keep logo + brand centred */
-  .am-logo-row { display: block; padding: 10px 16px; min-height: 60px; }
-  .am-brand { display: flex; justify-content: center; width: 100%; flex: 1 1 auto; }
-  .am-brand .block-system-header { display: flex; justify-content: center; }
+  /* The whole header lives in one region (.am-brand). On mobile lay it out as
+     two rows: the logo/site-name is a full-width first row; the hamburger (left)
+     and the quick-link buttons (right) share the second row — like
+     archive.sierraavalanchecenter.org. Position relative so the full-width menu
+     drawer can drop below. */
+  .am-logo-row { display: block; padding: 8px 14px; min-height: 0; }
+  .am-brand { display: block; width: 100%; }
+  /* The header blocks sit inside the region's .no-tabs wrapper — make IT the
+     flex row so the blocks become flex items we can order. */
+  .am-brand .no-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    column-gap: 8px;
+    row-gap: 4px;
+    width: 100%;
+    position: relative;
+  }
+  /* Row 1: logo / site name — full width, centred */
+  .am-brand .no-tabs > .block-system-header { order: 0; flex: 1 1 100%; display: flex; justify-content: center; }
+  /* Row 2 left: hamburger block. (Quick-links block set to the right below.) */
+  .am-brand .no-tabs > .block-tb-megamenu-main-menu { order: 1; flex: 0 0 auto; }
+  .am-brand .no-tabs > .block-system-main-menu { display: none !important; }
 
   /* Hide social in the header (still available in the footer) */
   .am-header-actions { display: none; }
-
-  /* Nav row: a single line — hamburger on the left, quick-link buttons on the
-     right (like archive.sierraavalanchecenter.org). Position relative so the
-     full-width menu drawer can drop below it. */
-  .am-nav-row {
-    display: flex;
-    align-items: center;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    gap: 10px;
-    position: relative;
-    padding: 8px 12px;
-  }
-  /* Hamburger block on the left; quick-links block gets pushed to the right. */
-  .am-header .block-tb-megamenu-main-menu { order: 0; flex: 0 0 auto; }
 
   /* Logo: smaller on mobile but still legible — keep natural aspect ratio.
      No width cap: the logo sizes to the mobile height and keeps its ratio,
@@ -461,15 +466,22 @@ html.admin-bar .am-header .tb-megamenu .nav-collapse {
     border-radius: var(--am-radius-sm) !important;
     color: #fff !important; cursor: pointer; box-shadow: none !important; text-shadow: none !important;
   }
-  .am-header .tb-megamenu-button:hover { background: rgba(255, 255, 255, 0.14) !important; }
+  .am-header .tb-megamenu-button:hover,
+  .am-header .tb-megamenu-button.active,
+  .am-header .tb-megamenu-button:active,
+  .am-header .tb-megamenu-button:focus {
+    background: rgba(255, 255, 255, 0.14) !important;
+    box-shadow: none !important; outline: none !important;
+  }
   .am-header .tb-megamenu-button i, .am-header .tb-megamenu-button .fa {
     display: inline-block !important; color: #fff !important; font-size: 30px !important; line-height: 1 !important;
   }
 
   /* Quick links: Advisory / Observations / Donate — pushed to the right, on the
      same line as the hamburger. Plain text; the last (Donate) is the red accent. */
+  /* Row 2 right: quick-link buttons (order after the hamburger). */
   .am-header .block-menu-menu-responsive-links {
-    display: block; order: 1; margin: 0 0 0 auto; min-width: 0;
+    display: block; order: 2; margin: 0 0 0 auto; min-width: 0;
   }
   .am-header .block-menu-menu-responsive-links > h2 { display: none; }
   .am-header .block-menu-menu-responsive-links .menu {
