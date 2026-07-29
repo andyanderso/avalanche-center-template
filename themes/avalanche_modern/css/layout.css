@@ -432,8 +432,10 @@ html.admin-bar .am-header .tb-megamenu .nav-collapse {
   /* Nav row: stack as block so the drawer expands below it naturally */
   .am-nav-row { display: block; }
 
-  /* Logo: smaller on mobile but still legible — keep natural aspect ratio */
-  .am-brand .block-system-header .logo img { height: auto; width: auto; max-height: 80px; max-width: 220px; }
+  /* Logo: smaller on mobile but still legible — keep natural aspect ratio.
+     No width cap: the logo sizes to the mobile height and keeps its ratio,
+     with a 75px floor so it stays readable. */
+  .am-brand .block-system-header .logo img { height: auto; width: auto; min-height: 75px; max-height: 80px; }
   .am-brand #site-name a, .am-brand .site-name a { font-size: 20px; }
 
   /* Hamburger button — normal flow (static), styled as a clear MENU button. */
