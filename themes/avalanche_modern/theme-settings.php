@@ -14,8 +14,8 @@
 function avalanche_modern_form_system_theme_settings_alter(&$form, &$form_state) {
   $form['advisory_form'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Advisory form'),
-    '#description' => t('Options for the avalanche advisory create/edit form.'),
+    '#title' => t('Forecast form'),
+    '#description' => t('Options for the avalanche forecast create/edit form.'),
     '#weight' => -18,
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
@@ -31,8 +31,8 @@ function avalanche_modern_form_system_theme_settings_alter(&$form, &$form_state)
   // form). These are read by inc/advisory.inc and the advisory templates.
   $form['advisory_page'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Advisory page labels'),
-    '#description' => t('Elevation-band and weather labels shown on the published avalanche advisory.'),
+    '#title' => t('Forecast page labels'),
+    '#description' => t('Elevation-band and weather labels shown on the published avalanche forecast.'),
     '#weight' => -16,
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,

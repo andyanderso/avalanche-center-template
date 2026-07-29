@@ -35,5 +35,5 @@
     },
     "storage": "custom",
     "name": "node.advisory",
-    "label": "Node: Advisory"
+    "label": "Node: Forecast"
 }

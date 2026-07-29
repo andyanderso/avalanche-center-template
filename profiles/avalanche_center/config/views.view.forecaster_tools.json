@@ -15,7 +15,7 @@
                     "type": "views_query",
                     "options": []
                 },
-                "title": "Avalanche Advisory ",
+                "title": "Avalanche Forecast ",
                 "use_more_always": false,
                 "access": {
                     "type": "none"
@@ -311,7 +311,7 @@
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
-                        "label": "Date the advisory was published:",
+                        "label": "Date the forecast was published:",
                         "exclude": 0,
                         "alter": {
                             "alter_text": 1,
@@ -664,7 +664,7 @@
                         "exposed": true,
                         "expose": {
                             "operator_id": "date_filter_op",
-                            "label": "Date the advisory was published:",
+                            "label": "Date the forecast was published:",
                             "description": "",
                             "use_operator": false,
                             "operator": "date_filter_op",
@@ -2798,7 +2798,7 @@
                         "exposed": true,
                         "expose": {
                             "operator_id": "date_filter_op",
-                            "label": "Date the advisory was published:",
+                            "label": "Date the forecast was published:",
                             "description": "",
                             "use_operator": false,
                             "operator": "date_filter_op",

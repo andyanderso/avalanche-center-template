@@ -75,7 +75,7 @@
           // inline ("Get more information"), so skip the redundant link
           // below it.
           if (region.advisory_url && region.danger_rating !== 0) {
-            var linkText = region.expired ? Backdrop.t('Get more information') : Backdrop.t('Read Full Advisory');
+            var linkText = region.expired ? Backdrop.t('Get more information') : Backdrop.t('Read Full Forecast');
             popupHtml += '<div class="danger-map-popup-link">' +
               '<a href="' + region.advisory_url + '">' + linkText + ' &raquo;</a>' +
             '</div>';

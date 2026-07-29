@@ -146,15 +146,15 @@ $form['map_first'] = array(
 //advisory page settings
 $form['advisory_page_settings'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Advisory Page Settings'),
+    '#title' => t('Forecast Page Settings'),
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
   );
   $form['advisory_page_settings']['show_forecast_region'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Show the forecast regions at the top of the advisory?'),
+    '#title' => t('Show the forecast regions at the top of the forecast?'),
     '#default_value' => theme_get_setting('show_forecast_region'),
-    '#description'   => t("Check this box to display the regions that the advisory covers at the top of the advisory. Useful if you have more than one forecast region."),
+    '#description'   => t("Check this box to display the regions that the forecast covers at the top of the forecast. Useful if you have more than one forecast region."),
   );
     $form['advisory_page_settings']['enable_danger_rose_view'] = array(
     '#type' => 'radios',
@@ -168,27 +168,27 @@ $form['advisory_page_settings'] = array(
   );
   $form['advisory_page_settings']['upper_elevation_band'] = array(
     '#type' => 'textfield',
-    '#title' => t('Advisory upper elevation zone'),
+    '#title' => t('Forecast upper elevation zone'),
     '#default_value' => theme_get_setting('upper_elevation_band'),
-    '#description'   => t("Sets the upper elevation zone on the advisory page. Example: Above Treeline"),
+    '#description'   => t("Sets the upper elevation zone on the forecast page. Example: Above Treeline"),
   );
   $form['advisory_page_settings']['middle_elevation_band'] = array(
     '#type' => 'textfield',
-    '#title' => t('Advisory middle elevation zone'),
+    '#title' => t('Forecast middle elevation zone'),
     '#default_value' => theme_get_setting('middle_elevation_band'),
-    '#description'   => t("Sets the middle elevation zone on the advisory page. Example: Near Treeline"),
+    '#description'   => t("Sets the middle elevation zone on the forecast page. Example: Near Treeline"),
   );
   $form['advisory_page_settings']['lower_elevation_band'] = array(
     '#type' => 'textfield',
-    '#title' => t('Advisory lower elevation zone'),
+    '#title' => t('Forecast lower elevation zone'),
     '#default_value' => theme_get_setting('lower_elevation_band'),
-    '#description'   => t("Sets the lower elevation zone on the advisory page. Example: Lower Treeline"),
+    '#description'   => t("Sets the lower elevation zone on the forecast page. Example: Lower Treeline"),
   );
   $form['advisory_page_settings']['local_nws_name'] = array(
     '#type' => 'textfield',
     '#title' => t('Name of your NWS office'),
     '#default_value' => theme_get_setting('local_nws_name'),
-    '#description'   => t("Sets the name for you local NWS office on the advisory page."),
+    '#description'   => t("Sets the name for you local NWS office on the forecast page."),
   );
   $form['advisory_page_settings']['local_nws_url'] = array(
     '#type' => 'textfield',
@@ -200,19 +200,19 @@ $form['advisory_page_settings'] = array(
     '#type' => 'textfield',
     '#title' => t('Lower weather forecast elevation range'),
     '#default_value' => theme_get_setting('wx_elevation_low'),
-    '#description'   => t("Sets the lower elevation zone for the weather forecast on the advisory page."),
+    '#description'   => t("Sets the lower elevation zone for the weather forecast on the forecast page."),
   );
   $form['advisory_page_settings']['wx_elevation_high'] = array(
     '#type' => 'textfield',
     '#title' => t('Upper weather forecast elevation range'),
     '#default_value' => theme_get_setting('wx_elevation_high'),
-    '#description'   => t("Sets the upper elevation zone for the weather forecast on the advisory page."),
+    '#description'   => t("Sets the upper elevation zone for the weather forecast on the forecast page."),
   );
   $form['advisory_page_settings']['current_wx_conditions_desc'] = array(
     '#type' => 'textfield',
     '#title' => t('Current weather conditions text'),
     '#default_value' => theme_get_setting('current_wx_conditions_desc'),
-    '#description'   => t("Sets the description for the current weather description part of the advisory. For example: 'Weather observations from along the ridgeline between 8,200 ft. and 8,800 ft.'"),
+    '#description'   => t("Sets the description for the current weather description part of the forecast. For example: 'Weather observations from along the ridgeline between 8,200 ft. and 8,800 ft.'"),
   );
   $form['advisory_page_settings']['wx_map_page'] = array(
     '#type' => 'textfield',

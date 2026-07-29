@@ -1,10 +1,10 @@
 {
     "_config_name": "node.type.advisory",
     "type": "advisory",
-    "name": "Advisory",
+    "name": "Forecast",
     "base": "node_content",
     "module": "node",
-    "description": "Use this to create the daily avalanche advisories. This type includes the icons and graphics.",
+    "description": "Use this to create the daily avalanche forecasts. This type includes the icons and graphics.",
     "help": "",
     "has_title": true,
     "title_label": "Title",

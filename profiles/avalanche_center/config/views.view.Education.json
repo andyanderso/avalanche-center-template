@@ -373,7 +373,7 @@
                 "path": "education",
                 "menu": {
                     "type": "none",
-                    "title": "Advisory",
+                    "title": "Forecast",
                     "weight": "0"
                 }
             }

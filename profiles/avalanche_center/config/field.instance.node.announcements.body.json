@@ -5,7 +5,7 @@
     "bundle": "announcements",
     "deleted": "0",
     "default_value": null,
-    "description": "<p>Use this to create announcements for the home page or the top of the advisory page.</p>",
+    "description": "<p>Use this to create announcements for the home page or the top of the forecast page.</p>",
     "display": {
         "default": {
             "label": "hidden",

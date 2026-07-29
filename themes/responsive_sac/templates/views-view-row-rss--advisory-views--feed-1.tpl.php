@@ -51,10 +51,10 @@
              <div id="advisory-published-date" class="advisory-date">
  <?php
 		if ($duration >= '120') {
-                echo t('Avalanche Advisory published on @date', array('@date' => $forecastdate));
+                echo t('Avalanche Forecast published on @date', array('@date' => $forecastdate));
                 }
                 elseif ($nowTimestamp <= $expdateTimestamp) {
-                echo t('Avalanche Advisory published on @date', array('@date' => $forecastdate)) . '</br><span id="timeToExp">' . t('This Avalanche Advisory expires in') . ' ';
+                echo t('Avalanche Forecast published on @date', array('@date' => $forecastdate)) . '</br><span id="timeToExp">' . t('This Avalanche Forecast expires in') . ' ';
                 if ($timeLeftToExpire->format("%h") < 2) {
                    echo '<span style="color:red">';
 				   echo t('@hours hours, @minutes minutes', array('@hours' => $timeLeftToExpire->format('%h'), '@minutes' => $timeLeftToExpire->format('%i')));
@@ -75,7 +75,7 @@
 		                        
         }
         elseif ($nowTimestamp > $expdateTimestamp) {
-                echo '<span style="background:red">' . t('THIS AVALANCHE ADVISORY EXPIRED ON @date', array('@date' => $expdate)) . '</span></br>' . t('Avalanche Advisory published on @date', array('@date' => $forecastdate));
+                echo '<span style="background:red">' . t('THIS AVALANCHE ADVISORY EXPIRED ON @date', array('@date' => $expdate)) . '</span></br>' . t('Avalanche Forecast published on @date', array('@date' => $forecastdate));
         }
     ?>
              </div>
@@ -84,7 +84,7 @@
                     echo '';
                    }
                    elseif ($duration <= '120'){
-                   print '<span style=\'font-weight:bold; text-transform:uppercase\'>' . t('This advisory is valid for @duration hours', array('@duration' => $duration)) . '</span><br>';
+                   print '<span style=\'font-weight:bold; text-transform:uppercase\'>' . t('This forecast is valid for @duration hours', array('@duration' => $duration)) . '</span><br>';
                    }
                  ?> 
                <?php print t('Issued by'); ?>
@@ -278,7 +278,7 @@
 
 <?php if (isset($node->field_text_discussion['und'][0]['value'])): ?>
 <div id="current-conditions-row" class="advisory-row">
-<strong><?php print t('Advisory discussion'); ?></strong><br />
+<strong><?php print t('Forecast discussion'); ?></strong><br />
 <?php print_r($node->field_text_discussion['und'][0]['value']); ?>
 </div>
 <?php endif; ?>

@@ -25,7 +25,7 @@
             "weight": 0
         }
     },
-    "label": "Advisory Announcement",
+    "label": "Forecast Announcement",
     "required": 0,
     "settings": {
         "user_register_form": false

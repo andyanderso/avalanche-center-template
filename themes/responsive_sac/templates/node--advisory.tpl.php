@@ -238,10 +238,10 @@ else { $size35 = 0; }
       <div id="advisory-published-date" class="advisory-date">
         <?php
         if ($duration >= '120') {
-          echo t('Avalanche Advisory published on @date', array('@date' => $forecastdate));
+          echo t('Avalanche Forecast published on @date', array('@date' => $forecastdate));
         }
         elseif ($nowTimestamp <= $expdateTimestamp) {
-          echo t('Avalanche Advisory published on @date', array('@date' => $forecastdate)) . '</br><span id="timeToExp">' . t('This Avalanche Advisory expires in') . ' ';
+          echo t('Avalanche Forecast published on @date', array('@date' => $forecastdate)) . '</br><span id="timeToExp">' . t('This Avalanche Forecast expires in') . ' ';
           if (($timeLeftToExpire->format("%h") < 2) && ($timeLeftToExpire->format("%d") == 0) ) {
             echo '<span style="color:red">';
             echo t('@hours hours, @minutes minutes', array('@hours' => $timeLeftToExpire->format('%h'), '@minutes' => $timeLeftToExpire->format('%i')));
@@ -262,7 +262,7 @@ else { $size35 = 0; }
 
         }
         elseif ($nowTimestamp > $expdateTimestamp) {
-          echo '<span style="background:red">' . t('THIS AVALANCHE ADVISORY EXPIRED ON @date', array('@date' => $expdate)) . '</span></br>' . t('Avalanche Advisory published on @date', array('@date' => $forecastdate));
+          echo '<span style="background:red">' . t('THIS AVALANCHE ADVISORY EXPIRED ON @date', array('@date' => $expdate)) . '</span></br>' . t('Avalanche Forecast published on @date', array('@date' => $forecastdate));
         }
         ?>
       </div>
@@ -271,7 +271,7 @@ else { $size35 = 0; }
         echo '';
       }
       elseif ($duration <= '120'){
-        print '<span style=\'font-weight:bold; text-transform:uppercase\'>' . t('This advisory is valid for @duration hours', array('@duration' => $duration)) . '</span><br>';
+        print '<span style=\'font-weight:bold; text-transform:uppercase\'>' . t('This forecast is valid for @duration hours', array('@duration' => $duration)) . '</span><br>';
       }
       ?>
       <?php print t('Issued by'); ?>
@@ -302,7 +302,7 @@ else { $size35 = 0; }
             <br /><br />
             <?php if (isset($content['field_bottom_line'][0]['#markup'])) { print render($content['field_bottom_line'][0]['#markup']); } ?>
             <p id="how-to-read-advisory">
-              <a href="<?php print $url; ?>/how-to-read-avalanche-advisory"><?php print t('How to read the advisory'); ?>
+              <a href="<?php print $url; ?>/how-to-read-avalanche-forecast"><?php print t('How to read the advisory'); ?>
               </a>
             </p>
           </div>
@@ -324,7 +324,7 @@ else { $size35 = 0; }
     <?php elseif ($show_regions == 0):?>
       <h3 id="simple-avalanche-danger-title"><?php print t('Bottom Line'); ?></h3>
     <?php endif;?>
-    <a id="how-to-read-advisory-simple" href="<?php print $url; ?>/how-to-read-avalanche-advisory"><?php print t('How to read the advisory'); ?></a>
+    <a id="how-to-read-advisory-simple" href="<?php print $url; ?>/how-to-read-avalanche-forecast"><?php print t('How to read the advisory'); ?></a>
     <?php $a = $advisory['danger_rating']; ?>
   </div>
   <div id="bottom-line">

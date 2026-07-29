@@ -1,10 +1,10 @@
 {
     "_config_name": "block.custom.2",
     "delta": "2",
-    "info": "Advisory Links",
+    "info": "Forecast Links",
     "title": "",
     "body": {
-        "value": "<div><a href=\"/advisory\">Today's Avalanche Advisory</a></div>\n<div><a href=\"/archive\">Advisory Archives</a></div>\n<div><a href=\"/text-advisory\">Text Advisory</a></div>\n",
+        "value": "<div><a href=\"/forecast\">Today's Avalanche Forecast</a></div>\n<div><a href=\"/archive\">Forecast Archives</a></div>\n<div><a href=\"/text-advisory\">Text Forecast</a></div>\n",
         "format": "full_html"
     }
 }

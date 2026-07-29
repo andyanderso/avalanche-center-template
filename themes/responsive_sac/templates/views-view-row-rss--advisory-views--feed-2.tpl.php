@@ -52,10 +52,10 @@
 <?php 
 $forecastdate = date("F j, Y", $node->created);
 if (date('Y-m-d') == date('Y-m-d', $node->created)) {
-print t("Today's Avalanche Advisory:");
+print t("Today's Avalanche Forecast:");
 }
 else { 
-echo t('Avalanche Advisory published on @date:', array('@date' => $forecastdate));
+echo t('Avalanche Forecast published on @date:', array('@date' => $forecastdate));
 } ?>
         </th>
         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php print t('Issued by'); ?> <?php print render($display_name[0]['name_line']);?> - <?php print render($company[0]['title']);?>

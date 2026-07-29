@@ -212,7 +212,7 @@ function avalanche_center_localize_menu_blocks($langcode) {
   $bodies = array();
   if ($langcode === 'es') {
     $bodies = array(
-      2 => '<div><a href="/advisory">Pronóstico de Avalanchas de Hoy</a></div>' . "\n"
+      2 => '<div><a href="/forecast">Pronóstico de Avalanchas de Hoy</a></div>' . "\n"
         . '<div><a href="/archive">Archivo de Pronósticos</a></div>' . "\n"
         . '<div><a href="/text-advisory">Pronóstico en Texto</a></div>' . "\n",
       4 => '<div><a href="/how-to-read-avalanche-forecast">Cómo Leer el Pronóstico</a></div>' . "\n"
@@ -318,8 +318,8 @@ function avalanche_center_create_demo_content($lat, $lng) {
   // exception, on both reference sites.
   $region_a = avalanche_center_demo_region(t('North Zone'), $lat, $lng, 0.12, -0.03);
   $region_b = avalanche_center_demo_region(t('South Zone'), $lat, $lng, -0.12, 0.03);
-  avalanche_center_demo_advisory($region_a, 1, t('This is a demo avalanche advisory created automatically at install so the danger map has something to show. Watch for wind slab and cornice hazards on steep, wind-loaded slopes. Replace it with a real forecast, or delete it.'));
-  avalanche_center_demo_advisory($region_b, 2, t('A second demo avalanche advisory for the second demo forecast zone. Evaluate the snowpack carefully for persistent slab instabilities before entering avalanche terrain. Replace it with a real forecast, or delete it.'));
+  avalanche_center_demo_advisory($region_a, 1, t('This is a demo avalanche forecast created automatically at install so the danger map has something to show. Watch for wind slab and cornice hazards on steep, wind-loaded slopes. Replace it with a real forecast, or delete it.'));
+  avalanche_center_demo_advisory($region_b, 2, t('A second demo avalanche forecast for the second demo forecast zone. Evaluate the snowpack carefully for persistent slab instabilities before entering avalanche terrain. Replace it with a real forecast, or delete it.'));
 
   // Dedicated home page. Matching the Gulmarg/Argentina baseline, the front
   // page is its own standalone "page" node aliased to "home", NOT a promoted
@@ -354,7 +354,7 @@ function avalanche_center_create_demo_content($lat, $lng) {
   // Three ready-to-use avalanche-education reference pages (generic,
   // industry-standard content: how to read a forecast, the danger scale, and
   // the nine avalanche problem types). Given fixed aliases so the Advisory
-  // dropdown's "Advisory Resources" links resolve. A center can edit or
+  // dropdown's "Forecast Resources" links resolve. A center can edit or
   // delete them like any other page.
   avalanche_center_demo_reference_page(t('How to Read the Avalanche Forecast'), 'how-to-read-avalanche-forecast', 'how-to-read-avalanche-forecast.html');
 
@@ -638,7 +638,7 @@ function avalanche_center_demo_region($name, $lat, $lng, $lat_offset, $lng_offse
 function avalanche_center_demo_advisory($region_tid, $danger_level, $bottom_line) {
   $node = entity_create('node', array('type' => 'advisory'));
   node_object_prepare($node);
-  $node->title = t('Demo Avalanche Advisory');
+  $node->title = t('Demo Avalanche Forecast');
   $node->language = LANGUAGE_NONE;
   $node->status = 1;
   $node->promote = 0;
@@ -1009,7 +1009,7 @@ function avalanche_center_demo_menu_links($about_nid, $donate_nid, $contact_nid,
   // donate link) are dropped.
   avalanche_center_demo_menu_link('main-menu', t('Home'), '<front>', -10);
 
-  $advisory_mlid = avalanche_center_demo_menu_link('main-menu', t('Advisory'), 'advisory', -9);
+  $advisory_mlid = avalanche_center_demo_menu_link('main-menu', t('Forecast'), 'forecast', -9);
 
   $obs_mlid = avalanche_center_demo_menu_link('main-menu', t('Observations'), 'observations', -8);
   $submit_mlid = avalanche_center_demo_menu_link('main-menu', t('Submit Observations'), 'node/add/observation', 0, $obs_mlid);
@@ -1055,7 +1055,7 @@ function avalanche_center_demo_menu_links($about_nid, $donate_nid, $contact_nid,
 
   avalanche_center_demo_menu_link('menu-contact', t('Frequently Asked Questions'), 'node/' . $faq_nid, -50);
 
-  avalanche_center_demo_menu_link('menu-responsive-links', t('Advisory'), 'advisory', 1);
+  avalanche_center_demo_menu_link('menu-responsive-links', t('Forecast'), 'forecast', 1);
   avalanche_center_demo_menu_link('menu-responsive-links', t('Observations'), 'observations', 2);
   avalanche_center_demo_menu_link('menu-responsive-links', t('Donate'), 'node/' . $donate_nid, 3);
 }
@@ -1150,10 +1150,10 @@ function avalanche_center_build_megamenu($mlids) {
     );
   };
 
-  // Advisory: 2 cols (6/6) - the zone-aware Advisory Links block (a module
+  // Advisory: 2 cols (6/6) - the zone-aware Forecast Links block (a module
   //   block, not a static custom block, so its links change with the number
   //   of forecast zones - see avalanche_danger_map_advisory_links()) |
-  //   Advisory Resources (block.custom.4).
+  //   Forecast Resources (block.custom.4).
   // Observations: 2 cols (7/5) - Observations | Submit Observations.
   // Incidents: 2 cols (6/6) - Incidents | Submit Observations.
   $menu_config = array(

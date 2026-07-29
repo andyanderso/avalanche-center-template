@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
 # --- Navigation / page titles ---
-msgid "Advisory"
+msgid "Forecast"
 msgstr "Pronóstico"
 
 msgid "Observations"
@@ -78,13 +78,13 @@ msgid "South Zone"
 msgstr "Zona Sur"
 
 # --- Demo advisory ---
-msgid "Demo Avalanche Advisory"
+msgid "Demo Avalanche Forecast"
 msgstr "Pronóstico de Avalancha de Demostración"
 
-msgid "This is a demo avalanche advisory created automatically at install so the danger map has something to show. Watch for wind slab and cornice hazards on steep, wind-loaded slopes. Replace it with a real forecast, or delete it."
+msgid "This is a demo avalanche forecast created automatically at install so the danger map has something to show. Watch for wind slab and cornice hazards on steep, wind-loaded slopes. Replace it with a real forecast, or delete it."
 msgstr "Este es un pronóstico de avalancha de demostración creado automáticamente durante la instalación para que el mapa de peligro tenga algo que mostrar. Preste atención a los peligros de placas de viento y cornisas en laderas empinadas cargadas por el viento. Reemplácelo con un pronóstico real, o elimínelo."
 
-msgid "A second demo avalanche advisory for the second demo forecast zone. Evaluate the snowpack carefully for persistent slab instabilities before entering avalanche terrain. Replace it with a real forecast, or delete it."
+msgid "A second demo avalanche forecast for the second demo forecast zone. Evaluate the snowpack carefully for persistent slab instabilities before entering avalanche terrain. Replace it with a real forecast, or delete it."
 msgstr "Un segundo pronóstico de avalancha de demostración para la segunda zona de pronóstico. Evalúe cuidadosamente el manto nivoso en busca de inestabilidades de placa persistente antes de ingresar a terreno de avalanchas. Reemplácelo con un pronóstico real, o elimínelo."
 
 # --- Demo pages ---
@@ -161,16 +161,16 @@ msgstr "Grado de Peligro de Avalancha"
 msgid "Avalanche Danger Rating Map"
 msgstr "Mapa de Grado de Peligro de Avalancha"
 
-msgid "Avalanche Advisory"
+msgid "Avalanche Forecast"
 msgstr "Pronóstico de Avalancha"
 
-msgid "Avalanche Advisories"
+msgid "Avalanche Forecasts"
 msgstr "Pronósticos de Avalancha"
 
-msgid "All Advisories"
+msgid "All Forecasts"
 msgstr "Todos los Pronósticos"
 
-msgid "Advisory Archives"
+msgid "Forecast Archives"
 msgstr "Archivo de Pronósticos"
 
 msgid "Author"
@@ -185,7 +185,7 @@ msgstr "Vence"
 msgid "Get more information"
 msgstr "Más información"
 
-msgid "Read Full Advisory"
+msgid "Read Full Forecast"
 msgstr "Leer Pronóstico Completo"
 
 msgid "Travel Advice:"
@@ -194,7 +194,7 @@ msgstr "Recomendación para el Terreno:"
 msgid "Insufficient data exists to issue a danger rating."
 msgstr "No existen datos suficientes para emitir una clasificación de peligro."
 
-msgid "No current avalanche advisory is available. Please check back soon."
+msgid "No current avalanche forecast is available. Please check back soon."
 msgstr "No hay ningún pronóstico de avalancha vigente. Vuelva a consultar pronto."
 
 msgid "No current avalanche forecast available."

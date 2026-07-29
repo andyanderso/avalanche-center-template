@@ -1,7 +1,7 @@
 {
     "_config_name": "auto_nodetitle.settings",
     "ant_advisory": "1",
-    "ant_pattern_advisory": "Avalanche Advisory - [node:created:custom:n/j/Y]",
+    "ant_pattern_advisory": "Avalanche Forecast - [node:created:custom:n/j/Y]",
     "ant_announcements": "0",
     "ant_pattern_announcements": "",
     "ant_avalanche_education": "0",

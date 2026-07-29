@@ -756,7 +756,7 @@
                     "pager_id": 0,
                     "items_per_page": "1",
                     "offset": 0,
-                    "path": "advisory",
+                    "path": "forecast",
                     "fields_override": null,
                     "title_display": "default",
                     "title": "",
@@ -1019,7 +1019,7 @@
                     "pager_id": 0,
                     "items_per_page": "1",
                     "offset": 0,
-                    "path": "advisory",
+                    "path": "forecast",
                     "fields_override": null,
                     "title_display": "default",
                     "title": "",
@@ -1088,7 +1088,7 @@
                         "plugin": "path",
                         "data": {
                             "settings": {
-                                "paths": "<front>\r\nhome\r\nevent-calendar\r\nadvisory\r\narchive\r\nobservations\r\nobservations-map\r\nobservations-archive\r\nobservations-map-archive\r\nincidents\r\nincidents-map\r\nincidents-archive\r\nincidents-map-archive\r\nnode/add/snowpack-obs\r\nnode/add/avy-obs\r\nnode/add/forecast\r\nnode/add/advisory\r\nsponsors\r\nweather-stations\r\nemail-subscriptions\r\nweather-station-map\r\nweather-map-setup",
+                                "paths": "<front>\r\nhome\r\nevent-calendar\r\nforecast\r\narchive\r\nobservations\r\nobservations-map\r\nobservations-archive\r\nobservations-map-archive\r\nincidents\r\nincidents-map\r\nincidents-archive\r\nincidents-map-archive\r\nnode/add/snowpack-obs\r\nnode/add/avy-obs\r\nnode/add/forecast\r\nnode/add/advisory\r\nsponsors\r\nweather-stations\r\nemail-subscriptions\r\nweather-station-map\r\nweather-map-setup",
                                 "visibility_setting": 0
                             }
                         }
@@ -1147,7 +1147,7 @@
                         "plugin": "path",
                         "data": {
                             "settings": {
-                                "paths": "<front>\r\nhome\r\nevents\r\nadvisory\r\narchive\r\nobservations\r\nobservations-map\r\nobservations-archive\r\nobservations-map-archive\r\nincidents\r\nincidents-map\r\nincidents-archive\r\nincidents-map-archive\r\nnode/add/snowpack-obs\r\nnode/add/avy-obs\r\nnode/add/forecast\r\nnode/add/advisory\r\nsponsors\r\nweather-stations\r\nemail-subscriptions\r\nweather-station-map\r\nweather-map-setup",
+                                "paths": "<front>\r\nhome\r\nevents\r\nforecast\r\narchive\r\nobservations\r\nobservations-map\r\nobservations-archive\r\nobservations-map-archive\r\nincidents\r\nincidents-map\r\nincidents-archive\r\nincidents-map-archive\r\nnode/add/snowpack-obs\r\nnode/add/avy-obs\r\nnode/add/forecast\r\nnode/add/advisory\r\nsponsors\r\nweather-stations\r\nemail-subscriptions\r\nweather-station-map\r\nweather-map-setup",
                                 "visibility_setting": 0
                             }
                         }

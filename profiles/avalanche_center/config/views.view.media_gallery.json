@@ -1114,7 +1114,7 @@
             }
         },
         "block_1": {
-            "display_title": "Advisory Page Media Gallery",
+            "display_title": "Forecast Page Media Gallery",
             "display_plugin": "block",
             "display_options": {
                 "query": {
