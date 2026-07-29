@@ -150,22 +150,6 @@ function avalanche_modern_preprocess_page(&$variables) {
 }
 
 /**
- * Implements template_preprocess_header().
- *
- * Respect the standard "Toggle display" theme settings for the site name and
- * slogan. The system header block always builds these, so empty them here when
- * the corresponding theme setting is off.
- */
-function avalanche_modern_preprocess_header(&$variables) {
-  if (!theme_get_setting('toggle_name')) {
-    $variables['site_name'] = '';
-  }
-  if (!theme_get_setting('toggle_slogan')) {
-    $variables['site_slogan'] = '';
-  }
-}
-
-/**
  * Implements template_preprocess_layout().
  *
  * Inject social/contact URLs and the header background for the layout template.

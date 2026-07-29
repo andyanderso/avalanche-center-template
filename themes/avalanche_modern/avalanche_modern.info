@@ -67,9 +67,8 @@ settings[submit_avalanche_obs_page] = /node/add/observation
 settings[forecaster_name_field] = field_first_name
 settings[map_first] = 0
 
-; Header site name / slogan visibility (standard Backdrop toggle settings).
-settings[toggle_name] = 1
-settings[toggle_slogan] = 0
+; Site name / slogan visibility is controlled by the Header block placed in the
+; layout (its own settings), not by the theme.
 settings[advisory_weather_expanded] = 0
 ; No default logo is shipped (a generic distribution can't ship any one
 ; center's brand) — leave the logo hidden until a center uploads its own

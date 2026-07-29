@@ -53,8 +53,8 @@ html.admin-bar .am-header .tb-megamenu .nav-collapse {
   align-items: center;
   gap: 14px;
 }
-/* Site name / slogan visibility is controlled by the theme "Toggle display"
-   settings (toggle_name / toggle_slogan), handled in template.php. */
+/* Site name / slogan visibility is controlled by the Header block's own
+   settings in the layout (Manage layouts), not by the theme. */
 .am-brand .block-system-header .name-and-slogan { text-align: center; }
 .am-brand #site-name,
 .am-brand .site-name,
@@ -429,8 +429,20 @@ html.admin-bar .am-header .tb-megamenu .nav-collapse {
   /* Hide social in the header (still available in the footer) */
   .am-header-actions { display: none; }
 
-  /* Nav row: stack as block so the drawer expands below it naturally */
-  .am-nav-row { display: block; }
+  /* Nav row: a single line — hamburger on the left, quick-link buttons on the
+     right (like archive.sierraavalanchecenter.org). Position relative so the
+     full-width menu drawer can drop below it. */
+  .am-nav-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: 10px;
+    position: relative;
+    padding: 8px 12px;
+  }
+  /* Hamburger block on the left; quick-links block gets pushed to the right. */
+  .am-header .block-tb-megamenu-main-menu { order: 0; flex: 0 0 auto; }
 
   /* Logo: smaller on mobile but still legible — keep natural aspect ratio.
      No width cap: the logo sizes to the mobile height and keeps its ratio,
@@ -438,42 +450,41 @@ html.admin-bar .am-header .tb-megamenu .nav-collapse {
   .am-brand .block-system-header .logo img { height: auto; width: auto; min-height: 75px; max-height: 80px; }
   .am-brand #site-name a, .am-brand .site-name a { font-size: 20px; }
 
-  /* Hamburger button — normal flow (static), styled as a clear MENU button. */
+  /* Hamburger button — a bare white icon on the left (SAC-style, no label). */
   .am-header .block-tb-megamenu-main-menu .tb-megamenu { position: static; background: transparent; }
   .am-header .tb-megamenu-button {
-    display: inline-flex !important; align-items: center; gap: 9px;
+    display: inline-flex !important; align-items: center; justify-content: center;
     float: none !important; position: static !important;
-    width: auto !important; height: auto !important; margin: 0 !important; padding: 11px 18px !important;
-    background: rgba(255, 255, 255, 0.16) !important;
-    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    width: auto !important; height: auto !important; margin: 0 !important; padding: 6px 8px !important;
+    background: transparent !important;
+    border: 0 !important;
     border-radius: var(--am-radius-sm) !important;
     color: #fff !important; cursor: pointer; box-shadow: none !important; text-shadow: none !important;
   }
-  .am-header .tb-megamenu-button:hover { background: rgba(255, 255, 255, 0.28) !important; }
+  .am-header .tb-megamenu-button:hover { background: rgba(255, 255, 255, 0.14) !important; }
   .am-header .tb-megamenu-button i, .am-header .tb-megamenu-button .fa {
-    display: inline-block !important; color: #fff !important; font-size: 20px !important; line-height: 1 !important;
-  }
-  .am-header .tb-megamenu-button::after {
-    content: "MENU"; font-family: var(--am-font-head); font-weight: 700;
-    font-size: 0.9rem; letter-spacing: 0.5px; color: #fff;
+    display: inline-block !important; color: #fff !important; font-size: 30px !important; line-height: 1 !important;
   }
 
-  /* Quick links: Advisory / Observations / Donate (own full-width row) */
-  .am-header .block-menu-menu-responsive-links { display: block; margin-top: 10px; }
+  /* Quick links: Advisory / Observations / Donate — pushed to the right, on the
+     same line as the hamburger. Plain text; the last (Donate) is the red accent. */
+  .am-header .block-menu-menu-responsive-links {
+    display: block; order: 1; margin: 0 0 0 auto; min-width: 0;
+  }
   .am-header .block-menu-menu-responsive-links > h2 { display: none; }
   .am-header .block-menu-menu-responsive-links .menu {
-    display: flex; flex-wrap: wrap; justify-content: flex-start; align-items: center;
-    gap: 8px; margin: 0; padding: 0;
+    display: flex; flex-wrap: nowrap; justify-content: flex-end; align-items: center;
+    gap: 4px; margin: 0; padding: 0;
   }
   .am-header .block-menu-menu-responsive-links .menu li { list-style: none; margin: 0; }
   .am-header .block-menu-menu-responsive-links .menu a {
-    display: block; color: #fff; text-decoration: none;
-    font-family: var(--am-font-head); font-weight: 700; font-size: 0.9rem;
+    display: block; color: #fff; text-decoration: none; white-space: nowrap;
+    font-family: var(--am-font-head); font-weight: 700; font-size: 0.72rem;
     text-transform: uppercase; letter-spacing: 0.3px;
-    padding: 9px 14px; border-radius: var(--am-radius-sm);
-    background: rgba(255, 255, 255, 0.12);
+    padding: 8px 9px; border-radius: var(--am-radius-sm);
+    background: transparent;
   }
-  .am-header .block-menu-menu-responsive-links .menu a:hover { background: rgba(255, 255, 255, 0.22); }
+  .am-header .block-menu-menu-responsive-links .menu a:hover { background: rgba(255, 255, 255, 0.14); }
   .am-header .block-menu-menu-responsive-links .menu li.last a,
   .am-header .block-menu-menu-responsive-links .menu a[href*="donate"] { background: var(--am-accent); }
   .am-header .block-menu-menu-responsive-links .menu li.last a:hover,
@@ -484,12 +495,12 @@ html.admin-bar .am-header .tb-megamenu .nav-collapse {
      We restore scrolling on the open state and keep the container
      clipped horizontally so nothing spills outside the viewport. */
   .am-header .tb-megamenu .nav-collapse {
-    position: relative;
+    position: absolute;
+    left: 0; right: 0; top: 100%;
     background: #fff;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
     z-index: 1200;
     overflow-x: hidden !important; /* prevent any child from widening past viewport */
-    top: -5px;
   }
   .am-header .tb-megamenu .nav-collapse.in {
     display: block !important;

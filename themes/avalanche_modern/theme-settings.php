@@ -7,30 +7,11 @@
 /**
  * Implements hook_form_system_theme_settings_alter().
  *
- * Adds GUI toggles for the header site name and slogan. Backdrop moved the
- * core name/slogan/logo toggles into the Header block, so we expose theme-level
- * toggles here; avalanche_modern_preprocess_header() reads these settings.
+ * Adds GUI options for the avalanche advisory form and published advisory
+ * page. (The site name/slogan/logo are shown by the Header block placed in the
+ * layout, and toggled in that block's own settings — not here.)
  */
 function avalanche_modern_form_system_theme_settings_alter(&$form, &$form_state) {
-  $form['header_display'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Header display'),
-    '#description' => t('Show or hide the site name and slogan text in the header. (The logo image is configured separately in the Header block / Appearance settings.)'),
-    '#weight' => -20,
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-  );
-  $form['header_display']['toggle_name'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Display site name'),
-    '#default_value' => theme_get_setting('toggle_name'),
-  );
-  $form['header_display']['toggle_slogan'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Display site slogan'),
-    '#default_value' => theme_get_setting('toggle_slogan'),
-  );
-
   $form['advisory_form'] = array(
     '#type' => 'fieldset',
     '#title' => t('Advisory form'),

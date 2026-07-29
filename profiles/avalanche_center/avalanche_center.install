@@ -1057,7 +1057,7 @@ function avalanche_center_demo_menu_links($about_nid, $donate_nid, $contact_nid,
 
   avalanche_center_demo_menu_link('menu-responsive-links', t('Advisory'), 'advisory', 1);
   avalanche_center_demo_menu_link('menu-responsive-links', t('Observations'), 'observations', 2);
-  avalanche_center_demo_menu_link('menu-responsive-links', t('Avalanche Terms'), 'avalanche-terms', 3);
+  avalanche_center_demo_menu_link('menu-responsive-links', t('Donate'), 'node/' . $donate_nid, 3);
 }
 
 /**
