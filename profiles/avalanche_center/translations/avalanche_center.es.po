@@ -269,3 +269,125 @@ msgstr "Somos una organización sin fines de lucro y las donaciones son deducibl
 
 msgid "Thank you for your support - we cannot operate without you!"
 msgstr "¡Gracias por su apoyo - no podemos operar sin usted!"
+
+# Demo content strings (added for full Spanish parity).
+
+msgid "A demo avalanche safety class for snowmobilers."
+msgstr "Una clase demostrativa de seguridad ante avalanchas para quienes usan motos de nieve."
+
+msgid "A demo avalanche watch, issued ahead of a forecast when conditions may warrant one."
+msgstr "Una alerta demostrativa de avalancha, emitida antes de un pronóstico cuando las condiciones puedan justificarla."
+
+msgid "A demo blog-style post."
+msgstr "Una publicación demostrativa tipo blog."
+
+msgid "A demo community ski day event."
+msgstr "Un evento demostrativo de día comunitario de esquí."
+
+msgid "A demo featured content card."
+msgstr "Una tarjeta demostrativa de contenido destacado."
+
+msgid "A demo feed item description."
+msgstr "Una descripción demostrativa de elemento de feed."
+
+msgid "A demo introductory avalanche safety class."
+msgstr "Una clase demostrativa introductoria de seguridad ante avalanchas."
+
+msgid "A demo newsletter issue."
+msgstr "Un número demostrativo del boletín."
+
+msgid "A demo overview of your education program."
+msgstr "Un resumen demostrativo de su programa de educación."
+
+msgid "A demo public awareness event."
+msgstr "Un evento demostrativo de concientización pública."
+
+msgid "A demo site map page."
+msgstr "Una página demostrativa de mapa del sitio."
+
+msgid "A demo snowpack summary bottom line."
+msgstr "Un resumen demostrativo de lo más importante del manto de nieve."
+
+msgid "A demo sponsor banner ad."
+msgstr "Un banner publicitario demostrativo de patrocinador."
+
+msgid "A demo weekly summary of conditions and observations."
+msgstr "Un resumen semanal demostrativo de condiciones y observaciones."
+
+msgid "Avalanche Awareness Night"
+msgstr "Noche de Concientización sobre Avalanchas"
+
+msgid "Avalanche Education Program"
+msgstr "Programa de Educación sobre Avalanchas"
+
+msgid "Avalanche Watch"
+msgstr "Alerta de Avalancha"
+
+msgid "Community Ski Day"
+msgstr "Día Comunitario de Esquí"
+
+msgid "Custom Map Example"
+msgstr "Ejemplo de Mapa Personalizado"
+
+msgid "Demo Observation"
+msgstr "Observación Demostrativa"
+
+msgid "Demo disclaimer text."
+msgstr "Texto demostrativo de descargo de responsabilidad."
+
+msgid "Demo terrain choice notes."
+msgstr "Notas demostrativas de elección de terreno."
+
+msgid "Example Sponsor"
+msgstr "Patrocinador de Ejemplo"
+
+msgid "Example Sponsor Banner"
+msgstr "Banner de Patrocinador de Ejemplo"
+
+msgid "Featured Card"
+msgstr "Tarjeta Destacada"
+
+msgid "Feed Example"
+msgstr "Ejemplo de Feed"
+
+msgid "Feed Item Example"
+msgstr "Ejemplo de Elemento de Feed"
+
+msgid "Field Work Plan Example"
+msgstr "Ejemplo de Plan de Trabajo de Campo"
+
+msgid "Home"
+msgstr "Inicio"
+
+msgid "Introduction to Avalanche Safety"
+msgstr "Introducción a la Seguridad ante Avalanchas"
+
+msgid "Know Before You Go"
+msgstr "Conozca Antes de Ir"
+
+msgid "Near the demo forecast zone"
+msgstr "Cerca de la zona de pronóstico demostrativa"
+
+msgid "Photo Gallery Example"
+msgstr "Ejemplo de Galería de Fotos"
+
+msgid "Placeholder forecast zone created at install. Replace with your real forecast zones, or delete this one."
+msgstr "Zona de pronóstico de marcador de posición creada durante la instalación. Reemplácela con sus zonas de pronóstico reales, o elimínela."
+
+msgid "Sample Blog Post"
+msgstr "Publicación de Blog de Ejemplo"
+
+msgid "Sample Newsletter Issue"
+msgstr "Número de Boletín de Ejemplo"
+
+msgid "Site Map"
+msgstr "Mapa del Sitio"
+
+msgid "Snowmobiler Avalanche Awareness"
+msgstr "Concientización sobre Avalanchas para Motonieve"
+
+msgid "Snowpack Summary Example"
+msgstr "Ejemplo de Resumen del Manto de Nieve"
+
+msgid "Week in Review"
+msgstr "Resumen Semanal"

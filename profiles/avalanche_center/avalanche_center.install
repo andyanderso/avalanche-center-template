@@ -192,6 +192,14 @@ function avalanche_center_enable_spanish() {
   // renders verbatim - it never passes through t(), so the PO import above
   // can't reach it. Rewrite those bodies to the target language here.
   avalanche_center_localize_menu_blocks('es');
+
+  // View display titles, field labels and date-format patterns are stored in
+  // the exported views config as literal strings - Views never runs them
+  // through t() at render time, so, like the menu blocks, the PO import can't
+  // reach them. Rewrite the visitor-facing ones (homepage forecast/archive,
+  // announcements, observations, incidents, events, etc.) into the target
+  // language here. Also localizes the content-type display label.
+  avalanche_center_localize_views('es');
 }
 
 /**
@@ -239,6 +247,199 @@ function avalanche_center_localize_menu_blocks($langcode) {
     }
     $config->set('body.value', $value);
     $config->save();
+  }
+}
+
+/**
+ * Rewrites Views display titles, field labels and date-format patterns into
+ * the given language.
+ *
+ * Everything a shipped View shows that isn't node content - the display/page
+ * title ("Most Current Avalanche Forecast:"), the field labels ("Recent
+ * Observations", "Mountain Weather", the weather grid, ...) and the date
+ * format patterns - lives as literal strings in the views.view.* config.
+ * Views emits them verbatim; they never pass through t(), so the interface-
+ * translation (PO) import can't touch them. This walks the relevant view
+ * configs and replaces the exact English strings with their target-language
+ * equivalents (exact-match only, so machine names and untranslated strings
+ * are left untouched). It also localizes the forecast content-type's display
+ * label. Center-agnostic: the strings are generic forecast-site vocabulary,
+ * so any same-language install reuses them.
+ *
+ * @param string $langcode
+ *   Target language. A no-op if no map is shipped for it.
+ */
+function avalanche_center_localize_views($langcode) {
+  if ($langcode !== 'es') {
+    return;
+  }
+
+  // Exact English -> Spanish for every visitor-facing view "title" and
+  // "label". Applied by exact match only.
+  $strings = array(
+    // advisory_views: display/page titles.
+    'Most Current Avalanche Forecast:' => 'Pronóstico de Avalancha Más Reciente:',
+    'Archived Avalanche Forecasts' => 'Pronósticos de Avalancha Archivados',
+    'Overall Danger Ratings for the Week' => 'Grados de Peligro Generales de la Semana',
+    'The Bottom Line:' => 'Lo Más Importante:',
+    'The Bottom Line from the Avalanche Forecast' => 'Lo Más Importante del Pronóstico de Avalancha',
+    'Avalanche Forecast' => 'Pronóstico de Avalancha',
+    'Avalanche Danger Rating' => 'Grado de Peligro de Avalancha',
+    'Avalanche Forecasts and Snow, Weather, and Avalanche Information' => 'Pronósticos de Avalancha e Información de Nieve, Clima y Avalanchas',
+    // advisory_views: displayed field labels.
+    'Recent Observations' => 'Observaciones Recientes',
+    'Bottom Line' => 'Lo Más Importante',
+    'Mountain Weather' => 'Clima de Montaña',
+    'Overall Danger Rating' => 'Grado de Peligro General',
+    'Avalanche Forecast published on' => 'Pronóstico de Avalancha publicado el',
+    'This forecast is valid for' => 'Este pronóstico es válido para',
+    'Date the forecast was published:' => 'Fecha de publicación del pronóstico:',
+    'Today the avalanche danger is' => 'Hoy el peligro de avalancha es',
+    'Total Snow Depth' => 'Profundidad Total de Nieve',
+    'Region' => 'Región',
+    'Avalanche Problem #1' => 'Problema de Avalancha #1',
+    'Avalanche Problem #2' => 'Problema de Avalancha #2',
+    'Avalanche Problem #3' => 'Problema de Avalancha #3',
+    // Weather grid (Today / Tonight / Tomorrow x 7-8 / 8-9 x metric).
+    'Today 7-8 Snow' => 'Hoy 7-8 Nieve',
+    'Today 7-8 Temp' => 'Hoy 7-8 Temp.',
+    'Today 7-8 Weather ' => 'Hoy 7-8 Clima ',
+    'Today 7-8 Wind Direction' => 'Hoy 7-8 Dirección del Viento',
+    'Today 7-8 Wind Speed' => 'Hoy 7-8 Velocidad del Viento',
+    'Today 8-9 Snow' => 'Hoy 8-9 Nieve',
+    'Today 8-9 Temp' => 'Hoy 8-9 Temp.',
+    'Today 8-9 Weather' => 'Hoy 8-9 Clima',
+    'Today 8-9 Wind Direction' => 'Hoy 8-9 Dirección del Viento',
+    'Today 8-9 Wind Speed' => 'Hoy 8-9 Velocidad del Viento',
+    'Tonight 7-8 Snow' => 'Esta Noche 7-8 Nieve',
+    'Tonight 7-8 Temp' => 'Esta Noche 7-8 Temp.',
+    'Tonight 7-8 Weather' => 'Esta Noche 7-8 Clima',
+    'Tonight 7-8 Wind Direction' => 'Esta Noche 7-8 Dirección del Viento',
+    'Tonight 7-8 Wind Speed' => 'Esta Noche 7-8 Velocidad del Viento',
+    'Tonight 8-9 Snow' => 'Esta Noche 8-9 Nieve',
+    'Tonight 8-9 Temp' => 'Esta Noche 8-9 Temp.',
+    'Tonight 8-9 Weather' => 'Esta Noche 8-9 Clima',
+    'Tonight 8-9 Wind Direction' => 'Esta Noche 8-9 Dirección del Viento',
+    'Tonight 8-9 Wind Speed' => 'Esta Noche 8-9 Velocidad del Viento',
+    'Tomorrow 7-8 Snow' => 'Mañana 7-8 Nieve',
+    'Tomorrow 7-8 Temp' => 'Mañana 7-8 Temp.',
+    'Tomorrow 7-8 Weather' => 'Mañana 7-8 Clima',
+    'Tomorrow 7-8 Wind Direction' => 'Mañana 7-8 Dirección del Viento',
+    'Tomorrow 7-8 Wind Speed' => 'Mañana 7-8 Velocidad del Viento',
+    'Tomorrow 8-9 Snow' => 'Mañana 8-9 Nieve',
+    'Tomorrow 8-9 Temp' => 'Mañana 8-9 Temp.',
+    'Tomorrow 8-9 Weather' => 'Mañana 8-9 Clima',
+    'Tomorrow 8-9 Wind Direction' => 'Mañana 8-9 Dirección del Viento',
+    'Tomorrow 8-9 Wind Speed' => 'Mañana 8-9 Velocidad del Viento',
+    // home_announcements / banner_ads (note the misspelled variant too).
+    'Announcements and News:' => 'Anuncios y Noticias:',
+    'Annoucements and News:' => 'Anuncios y Noticias:',
+    // media_gallery (homepage "Recent Observations:" block title).
+    'Recent Observations:' => 'Observaciones Recientes:',
+    // observations view.
+    'Snowpack, Weather, and Avalanche Observations' => 'Observaciones de Nieve, Clima y Avalanchas',
+    'Location' => 'Ubicación',
+    'Observation made by' => 'Observación realizada por',
+    'Date and time of observation' => 'Fecha y hora de la observación',
+    'Date and time of observation or avalanche occurrence' => 'Fecha y hora de la observación o del evento de avalancha',
+    'Snowpack, Avalanche, Weather Images' => 'Imágenes de Nieve, Avalancha y Clima',
+    'Snowpack, Avalanche, Weather Videos' => 'Videos de Nieve, Avalancha y Clima',
+    'Snowpit or crown profile photo or graph' => 'Foto o gráfico de perfil de nieve o corona',
+    // incidents.
+    'Avalanche Incidents' => 'Incidentes de Avalancha',
+    // events_upcoming.
+    'Upcoming Events:' => 'Próximos Eventos:',
+    'Events' => 'Eventos',
+    'Event Calendar' => 'Calendario de Eventos',
+    'Event Calendar Day' => 'Calendario de Eventos - Día',
+    'Event Calendar Week' => 'Calendario de Eventos - Semana',
+    'Event Calendar Month' => 'Calendario de Eventos - Mes',
+    'Event Calendar Year' => 'Calendario de Eventos - Año',
+    // week_in_review_views (note the misspelled "Arichives" as shipped).
+    'Week in Review' => 'Resumen Semanal',
+    'Week in Review Arichives' => 'Archivo de Resúmenes Semanales',
+    // advisory_board.
+    'Advisory Board' => 'Junta Asesora',
+    'Board of Directors' => 'Junta Directiva',
+    'Forecasters' => 'Pronosticadores',
+    'Professional Observers' => 'Observadores Profesionales',
+    'Staff' => 'Personal',
+    // considerable_sponsors (per-tier blocks + list).
+    'Sponsors' => 'Patrocinadores',
+    'Sponsors List' => 'Lista de Patrocinadores',
+    'Summit Sponsors' => 'Patrocinadores Cumbre',
+    'Extreme Sponsors' => 'Patrocinadores Extremo',
+    'High Sponsors' => 'Patrocinadores Alto',
+    'Considerable Sponsors' => 'Patrocinadores Considerable',
+    'Moderate Sponsors' => 'Patrocinadores Moderado',
+    'Low Sponsors' => 'Patrocinadores Bajo',
+  );
+
+  // Date-format patterns (PHP date() syntax). The English ordinal ("jS" ->
+  // "29th") and "at"/"@" separators read wrong in Spanish; use the
+  // "j de F de Y a las G:i" convention. Month/day names themselves are
+  // translated by locale at format time. The ISO machine format is left as-is.
+  $dates = array(
+    'l, F jS, Y' => 'l, j \d\e F \d\e Y',
+    'F j, Y \a\t G:i' => 'j \d\e F \d\e Y \a \l\a\s G:i',
+    'F j, Y \a\t G:i a' => 'j \d\e F \d\e Y \a \l\a\s G:i a',
+    'F j, Y \@ g:ia' => 'j \d\e F \d\e Y \a \l\a\s g:ia',
+  );
+
+  // Every shipped view is scanned, but only exact-match strings are touched,
+  // so the map itself scopes the change.
+  $config_dir = backdrop_get_path('profile', 'avalanche_center') . '/config';
+  foreach (glob($config_dir . '/views.view.*.json') as $file) {
+    $name = basename($file, '.json');
+    $config = config($name);
+    if ($config->isNew()) {
+      continue;
+    }
+    $data = $config->get();
+    $changed = FALSE;
+    avalanche_center_localize_walk($data, array('title' => TRUE, 'label' => TRUE), $strings, $changed);
+    avalanche_center_localize_walk($data, array('custom_date_format' => TRUE), $dates, $changed);
+    if ($changed) {
+      $config->setData($data);
+      $config->save();
+    }
+  }
+
+  // Content-type display label (admin: /node/add, content lists). The machine
+  // name stays "advisory"; only the human label changes.
+  $type = config('node.type.advisory');
+  if (!$type->isNew()) {
+    $type->set('name', 'Pronóstico');
+    $type->save();
+  }
+}
+
+/**
+ * Recursively replaces string values under whitelisted keys using an
+ * exact-match map. Helper for avalanche_center_localize_views().
+ *
+ * @param array $data
+ *   Config data, modified by reference.
+ * @param array $keys
+ *   Keys whose string values are eligible for replacement (as a set:
+ *   key => TRUE).
+ * @param array $map
+ *   Exact English => translated string map.
+ * @param bool $changed
+ *   Set to TRUE (by reference) if any replacement was made.
+ */
+function avalanche_center_localize_walk(&$data, $keys, $map, &$changed) {
+  if (!is_array($data)) {
+    return;
+  }
+  foreach ($data as $key => &$value) {
+    if (is_array($value)) {
+      avalanche_center_localize_walk($value, $keys, $map, $changed);
+    }
+    elseif (isset($keys[$key]) && is_string($value) && isset($map[$value])) {
+      $value = $map[$value];
+      $changed = TRUE;
+    }
   }
 }
 
