@@ -600,3 +600,14 @@ msgstr "Velocidad del Viento"
 
 msgid "produced in partnership with"
 msgstr "elaborado en colaboración con"
+
+# Core filter tips (shown under body fields).
+
+msgid "Web page addresses and email addresses turn into links automatically, unless the parent tag has the 'nolink' class."
+msgstr "Las direcciones de páginas web y de correo electrónico se convierten automáticamente en enlaces, a menos que la etiqueta contenedora tenga la clase 'nolink'."
+
+msgid "Lines and paragraphs break automatically."
+msgstr "Las líneas y los párrafos se separan automáticamente."
+
+msgid "No HTML tags allowed."
+msgstr "No se permiten etiquetas HTML."

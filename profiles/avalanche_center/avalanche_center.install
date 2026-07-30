@@ -690,7 +690,7 @@ function avalanche_center_localize_observation_form($langcode) {
     'field_highest_precipitation_rate' => array('S-1' => 'Nevada muy ligera (S-1)', 'S1' => 'Nevada ligera (S1)', 'S2' => 'Nevada moderada (S2)', 'S5' => 'Nevada intensa (S5)', 'S10' => 'Nevada muy intensa (S10)', 'RV' => 'Lluvia muy ligera (RV)', 'RL' => 'Lluvia ligera (RL)', 'RM' => 'Lluvia moderada (RM)', 'RH' => 'Lluvia intensa (RH)'),
     'field_position' => array('Public' => 'Público', 'Forecaster' => 'Pronosticador', 'Professional Observer' => 'Observador Profesional', 'Guide' => 'Guía', 'Educator' => 'Educador', 'Program Manager' => 'Director de Programa', 'Board of Directors' => 'Junta Directiva', 'Advisory Board' => 'Junta Asesora'),
     'field_persistent_weak_layers' => array('On the surface' => 'En la superficie', 'Buried' => 'Enterrada', 'Not observed' => 'No observada', 'Not present' => 'No presente'),
-    'field_terrain_alerts' => array('Slopes Steeper than 30 degrees' => 'Pendientes de más de 30 grados', 'Obvious Slide Path' => 'Vía de avalancha evidente', 'Trigger Points' => 'Puntos de detonación', 'Terrain Traps' => 'Trampas de terreno', 'Terrain Matches the Forecast' => 'El terreno coincide con el pronóstico'),
+    'field_terrain_alerts' => array('Slopes Steeper than 30 degrees' => 'Pendientes de más de 30 grados', 'Obvious Slide Path' => 'Vía de avalancha evidente', 'Trigger Points' => 'Puntos de detonación', 'Terrain Traps' => 'Trampas de terreno', 'Terrain Matches the Forecast' => 'El terreno coincide con el pronóstico', 'Terrain Matches the Advisory' => 'El terreno coincide con el pronóstico'),
     'field_terrain_elevations' => array('Above Treeline' => 'Sobre el límite arbóreo', 'Near Treeline' => 'Cerca del límite arbóreo', 'Below Treeline' => 'Bajo el límite arbóreo'),
     'field_today_s_assessed_hazard_ab' => array('Insufficient Data' => 'Datos insuficientes', 'VG' => 'Muy Buena', 'G' => 'Buena', 'F' => 'Regular', 'P' => 'Mala', 'VP' => 'Muy Mala'),
     'field_trigger_modifier' => array('intentionally-triggered' => 'Detonada intencionalmente', 'accidentally-triggered' => 'Detonada accidentalmente', 'remotely-triggered' => 'Detonada a distancia', 'cornice-fall-triggered' => 'Detonada por caída de cornisa'),
@@ -746,6 +746,69 @@ function avalanche_center_localize_observation_form($langcode) {
     }
     $config->set('settings.allowed_values', $allowed);
     $config->save();
+  }
+
+  // Field groups (the form's fieldsets/tabs). The label lives both at the top
+  // level and under format_settings; set both. The "professional assessment"
+  // group also carries a large US/Canada SWAG stability-rating table in its
+  // description - replace it with a concise Spanish note (the SWAG table links
+  // out to US resources and isn't a fit for a generic/Spanish center).
+  $group_labels = array(
+    'group_avalanche_det' => 'Detalles de la Avalancha',
+    'group_observation' => 'Observación',
+    'group_people_involved' => 'Personas Involucradas',
+    'group_pro_assessment' => 'Evaluación Profesional',
+    'group_size' => 'Tamaño',
+    'group_snowpack' => 'Detalles del Manto de Nieve',
+    'group_snowpack_terrain' => 'Terreno',
+    'group_terrain' => 'Terreno',
+    'group_trigger' => 'Detonante',
+    'group_weather' => 'Detalles del Clima',
+  );
+  $group_descriptions = array(
+    'group_pro_assessment' => 'Para las definiciones de los términos de estabilidad, consulte el sistema de clasificación de estabilidad de la nieve (SWAG). Las clasificaciones van de Muy Buena (VG) a Muy Mala (VP), según la sensibilidad a los detonantes, la actividad de avalanchas naturales y los resultados de las pruebas de estabilidad.',
+  );
+  foreach ($group_labels as $group => $label) {
+    $config = config('field_group.field_group.node.observation.form.' . $group);
+    if ($config->isNew()) {
+      continue;
+    }
+    $config->set('label', $label);
+    $config->set('format_settings.label', $label);
+    if (isset($group_descriptions[$group])) {
+      $config->set('format_settings.instance_settings.description', $group_descriptions[$group]);
+    }
+    $config->save();
+  }
+
+  // The "Conditions Alerts" checkboxes on the form are taxonomy terms (DB
+  // content, stored in English - the reference sites never translated this
+  // vocabulary). Rename them by exact match, so a center's own edits are left
+  // alone. Imperial thresholds are converted to metric.
+  $conditions_alerts = array(
+    'Avalanche Activity' => 'Actividad de Avalanchas',
+    'Other Signs of Instability (cracking, whumpfing, collapsing)' => 'Otras Señales de Inestabilidad (grietas, whumpf, colapsos)',
+    'Shooting Cracks' => 'Grietas que se Propagan',
+    'Collapsing / whumpfing noises' => 'Ruidos de Colapso / Whumpf',
+    'Persistent Problem' => 'Problema Persistente',
+    'Recent Loading' => 'Carga Reciente',
+    'More Than a Foot of New Snow' => 'Más de 30 cm de Nieve Nueva',
+    'Snowfall Rates of More Than 1 in/hr' => 'Tasa de Nevada Mayor a 2 cm/h',
+    'Blowing Snow' => 'Ventisca',
+    'Rain on Snow' => 'Lluvia sobre Nieve',
+    'Rapid or Prolonged Warming' => 'Calentamiento Rápido o Prolongado',
+    'Rollerballs / Pinwheels' => 'Bolas de Nieve / Rodados',
+    'Strong Sunshine' => 'Sol Intenso',
+    'Warm Temperatures' => 'Temperaturas Cálidas',
+  );
+  if (db_table_exists('taxonomy_term_data')) {
+    foreach ($conditions_alerts as $en => $es) {
+      db_update('taxonomy_term_data')
+        ->fields(array('name' => $es))
+        ->condition('vocabulary', 'conditions_alerts')
+        ->condition('name', $en)
+        ->execute();
+    }
   }
 }
 
