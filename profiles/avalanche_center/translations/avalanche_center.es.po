@@ -517,3 +517,12 @@ msgstr "Mapa Topográfico Mundial Esri"
 
 msgid "Forecast menu links (zone-aware)"
 msgstr "Enlaces del menú de pronóstico (según zona)"
+
+# Core Views exposed date-range filter labels (incidents/observations).
+
+msgid "Start date"
+msgstr "Fecha de inicio"
+
+msgid "End date"
+msgstr "Fecha de fin"
+
