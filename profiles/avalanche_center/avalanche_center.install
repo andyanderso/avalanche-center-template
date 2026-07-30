@@ -200,6 +200,74 @@ function avalanche_center_enable_spanish() {
   // announcements, observations, incidents, events, etc.) into the target
   // language here. Also localizes the content-type display label.
   avalanche_center_localize_views('es');
+
+  // Give the main navigation Spanish public URLs (/pronostico instead of
+  // /forecast, /observaciones instead of /observations, ...) via path aliases.
+  // The internal router paths stay English/generic, so the module code remains
+  // center-agnostic; only the visible URL changes, and only for this language.
+  avalanche_center_create_url_aliases('es');
+}
+
+/**
+ * Internal router path => localized URL-alias map for a language.
+ *
+ * ASCII aliases only (no accents): browsers percent-encode non-ASCII and
+ * Backdrop's own alias handling transliterates them, so an accented alias is
+ * fragile. The visible link text keeps its accents ("Pronóstico"); only the
+ * URL slug is ASCII ("pronostico"). Returns an empty array for languages with
+ * no map, so callers can loop unconditionally.
+ *
+ * @param string $langcode
+ *   Target language.
+ *
+ * @return array
+ *   source (internal path) => alias (URL slug).
+ */
+function avalanche_center_url_alias_map($langcode) {
+  if ($langcode === 'es') {
+    return array(
+      'forecast' => 'pronostico',
+      'archive' => 'archivo',
+      'text-advisory' => 'pronostico-texto',
+      'observations' => 'observaciones',
+      'observations-map' => 'observaciones-mapa',
+      'observations-archive' => 'observaciones-archivo',
+      'observations-map-archive' => 'observaciones-mapa-archivo',
+      'incidents' => 'incidentes',
+      'incidents-map' => 'incidentes-mapa',
+      'incidents-archive' => 'incidentes-archivo',
+      'incidents-map-archive' => 'incidentes-mapa-archivo',
+    );
+  }
+  return array();
+}
+
+/**
+ * Creates localized URL aliases for the main navigation paths.
+ *
+ * Aliases a bare router/view path (e.g. the module's "forecast" hook_menu
+ * callback, or a view's "observations" page) to a localized slug. Because
+ * url() resolves system paths to their alias automatically, every link the
+ * code builds with url('forecast') then emits "/pronostico" without any code
+ * change. Idempotent: an existing alias for the same source is removed first,
+ * so re-running (or a migration) always lands on exactly the mapped slug.
+ *
+ * @param string $langcode
+ *   Target language; a no-op if no alias map is shipped for it.
+ */
+function avalanche_center_create_url_aliases($langcode) {
+  foreach (avalanche_center_url_alias_map($langcode) as $source => $alias) {
+    // Clear any prior alias for this source so url() output is deterministic.
+    path_delete(array('source' => $source));
+    // path_save() takes its argument by reference (it writes back the new pid),
+    // so it needs a variable, not an array literal.
+    $path = array(
+      'source' => $source,
+      'alias' => $alias,
+      'langcode' => LANGUAGE_NONE,
+    );
+    path_save($path);
+  }
 }
 
 /**
@@ -220,20 +288,20 @@ function avalanche_center_localize_menu_blocks($langcode) {
   $bodies = array();
   if ($langcode === 'es') {
     $bodies = array(
-      2 => '<div><a href="/forecast">Pronóstico de Avalanchas de Hoy</a></div>' . "\n"
-        . '<div><a href="/archive">Archivo de Pronósticos</a></div>' . "\n"
-        . '<div><a href="/text-advisory">Pronóstico en Texto</a></div>' . "\n",
+      2 => '<div><a href="/pronostico">Pronóstico de Avalanchas de Hoy</a></div>' . "\n"
+        . '<div><a href="/archivo">Archivo de Pronósticos</a></div>' . "\n"
+        . '<div><a href="/pronostico-texto">Pronóstico en Texto</a></div>' . "\n",
       4 => '<div><a href="/how-to-read-avalanche-forecast">Cómo Leer el Pronóstico</a></div>' . "\n"
         . '<div><a href="/avalanche-danger-scale">La Escala de Peligro</a></div>' . "\n"
         . '<div><a href="/avalanche-problems">Problemas de Avalancha</a></div>' . "\n",
-      5 => '<div><a href="/observations">Observaciones - Vista de Lista</a></div>' . "\n"
-        . '<div><a href="/observations-map">Observaciones - Vista de Mapa</a></div>' . "\n"
-        . '<div><a href="/observations-archive">Observaciones Archivadas - Vista de Lista</a></div>' . "\n"
-        . '<div><a href="/observations-map-archive">Observaciones Archivadas - Vista de Mapa</a></div>' . "\n",
-      6 => '<div><a href="/incidents">Incidentes - Vista de Lista</a></div>' . "\n"
-        . '<div><a href="/incidents-map">Incidentes - Vista de Mapa</a></div>' . "\n"
-        . '<div><a href="/incidents-archive">Incidentes Archivados - Vista de Lista</a></div>' . "\n"
-        . '<div><a href="/incidents-map-archive">Incidentes Archivados - Vista de Mapa</a></div>' . "\n",
+      5 => '<div><a href="/observaciones">Observaciones - Vista de Lista</a></div>' . "\n"
+        . '<div><a href="/observaciones-mapa">Observaciones - Vista de Mapa</a></div>' . "\n"
+        . '<div><a href="/observaciones-archivo">Observaciones Archivadas - Vista de Lista</a></div>' . "\n"
+        . '<div><a href="/observaciones-mapa-archivo">Observaciones Archivadas - Vista de Mapa</a></div>' . "\n",
+      6 => '<div><a href="/incidentes">Incidentes - Vista de Lista</a></div>' . "\n"
+        . '<div><a href="/incidentes-mapa">Incidentes - Vista de Mapa</a></div>' . "\n"
+        . '<div><a href="/incidentes-archivo">Incidentes Archivados - Vista de Lista</a></div>' . "\n"
+        . '<div><a href="/incidentes-mapa-archivo">Incidentes Archivados - Vista de Mapa</a></div>' . "\n",
       7 => '<div class="submit-obs-button" style="text-align:center"><a href="/node/add/observation">Enviar Observaciones</a></div>' . "\n",
       18 => '<div style="text-align:center"><span class="submit-obs-button" style="display:inline-block;height:42px;"><a href="/node/add/observation">Enviar Observaciones</a></span></div>' . "\n",
     );
@@ -286,6 +354,20 @@ function avalanche_center_localize_views($langcode) {
     'Avalanche Forecast' => 'Pronóstico de Avalancha',
     'Avalanche Danger Rating' => 'Grado de Peligro de Avalancha',
     'Avalanche Forecasts and Snow, Weather, and Avalanche Information' => 'Pronósticos de Avalancha e Información de Nieve, Clima y Avalanchas',
+    // Pre-rename ("Advisory") equivalents of the titles/labels above, plus the
+    // trailing-space variants, so this map localizes both a fresh post-rename
+    // install AND an existing site being migrated from before the
+    // advisory->forecast rename (its config still carries the old strings).
+    'Most Current Avalanche Advisory:' => 'Pronóstico de Avalancha Más Reciente:',
+    'Archived Avalanche Advisories' => 'Pronósticos de Avalancha Archivados',
+    'The Bottom Line from the Avalanche Advisory' => 'Lo Más Importante del Pronóstico de Avalancha',
+    'Avalanche Advisory published on' => 'Pronóstico de Avalancha publicado el',
+    'This advisory is valid for' => 'Este pronóstico es válido para',
+    'Date the advisory was published:' => 'Fecha de publicación del pronóstico:',
+    'Advisory' => 'Pronóstico',
+    'Forecast' => 'Pronóstico',
+    'Avalanche Advisory ' => 'Pronóstico de Avalancha ',
+    'Avalanche Forecast ' => 'Pronóstico de Avalancha ',
     // advisory_views: displayed field labels.
     'Recent Observations' => 'Observaciones Recientes',
     'Bottom Line' => 'Lo Más Importante',
