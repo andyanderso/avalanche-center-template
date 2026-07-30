@@ -181,17 +181,27 @@ function avalanche_modern_advisory_weather_html($node) {
   $nws_name = theme_get_setting('local_nws_name');
   $nws_url = theme_get_setting('local_nws_url');
 
+  // Unit suffixes for the numeric weather values (imperial by default; metric
+  // when the theme's "Weather units" setting is metric). The suffixes are the
+  // only thing that changes - the field values are entered in whichever unit
+  // the center forecasts in.
+  $metric = (theme_get_setting('weather_units') === 'metric');
+  $u_temp = $metric ? ' °C' : ' deg. F.';
+  $u_speed = $metric ? ' km/h' : ' mph';
+  $u_depth = $metric ? ' cm' : ' inches';
+  $u_snow = $metric ? ' cm' : ' in.';
+
   $out = '';
 
   // Current conditions table.
   $cur = array(
-    array(t('0600 temperature'), 'field_temp8700', ' deg. F.'),
-    array(t('Max. temperature in the last 24 hours'), 'field_hr24maxtemp', ' deg. F.'),
+    array(t('0600 temperature'), 'field_temp8700', $u_temp),
+    array(t('Max. temperature in the last 24 hours'), 'field_hr24maxtemp', $u_temp),
     array(t('Average wind direction during the last 24 hours'), 'field_hr24winddir', ''),
-    array(t('Average wind speed during the last 24 hours'), 'field_hr24windspeed', ' mph'),
-    array(t('Maximum wind gust in the last 24 hours'), 'field_hr24maxgust', ' mph'),
-    array(t('New snowfall in the last 24 hours'), 'field_hr24snowfall', ' inches'),
-    array(t('Total snow depth'), 'field_totalsnowdepth', ' inches'),
+    array(t('Average wind speed during the last 24 hours'), 'field_hr24windspeed', $u_speed),
+    array(t('Maximum wind gust in the last 24 hours'), 'field_hr24maxgust', $u_speed),
+    array(t('New snowfall in the last 24 hours'), 'field_hr24snowfall', $u_depth),
+    array(t('Total snow depth'), 'field_totalsnowdepth', $u_depth),
   );
   $rows = '';
   foreach ($cur as $c) {
@@ -212,10 +222,10 @@ function avalanche_modern_advisory_weather_html($node) {
   $cols = array('today' => t('Today'), 'tonight' => t('Tonight'), 'tomorrow' => t('Tomorrow'));
   $metrics = array(
     array(t('Weather'), 'weather', ''),
-    array(t('Temperatures'), 'temp', ' deg. F.'),
+    array(t('Temperatures'), 'temp', $u_temp),
     array(t('Wind Direction'), 'winddirection', ''),
     array(t('Wind Speed'), 'windspeed', ''),
-    array(t('Expected snowfall'), 'snow', ' in.'),
+    array(t('Expected snowfall'), 'snow', $u_snow),
   );
   $bands = array(array($wx_low, '7to8'), array($wx_high, '8to9'));
   $forecast = '';

@@ -526,3 +526,77 @@ msgstr "Fecha de inicio"
 msgid "End date"
 msgstr "Fecha de fin"
 
+
+# Forecast node: weather tables, section headings, expiry notices.
+
+msgid "0600 temperature"
+msgstr "Temperatura a las 0600"
+
+msgid "Average wind direction during the last 24 hours"
+msgstr "Dirección media del viento en las últimas 24 horas"
+
+msgid "Average wind speed during the last 24 hours"
+msgstr "Velocidad media del viento en las últimas 24 horas"
+
+msgid "Expected snowfall"
+msgstr "Nevada esperada"
+
+msgid "Forecast Discussion"
+msgstr "Discusión del Pronóstico"
+
+msgid "Get more information &raquo;"
+msgstr "Más información &raquo;"
+
+msgid "It was issued @date and is no longer current."
+msgstr "Se emitió el @date y ya no está vigente."
+
+msgid "Max. temperature in the last 24 hours"
+msgstr "Temperatura máxima en las últimas 24 horas"
+
+msgid "Maximum wind gust in the last 24 hours"
+msgstr "Racha máxima de viento en las últimas 24 horas"
+
+msgid "Mountain Weather"
+msgstr "Clima de Montaña"
+
+msgid "New snowfall in the last 24 hours"
+msgstr "Nieve nueva en las últimas 24 horas"
+
+msgid "Recent Avalanche Activity"
+msgstr "Actividad Reciente de Avalanchas"
+
+msgid "THE BOTTOM LINE"
+msgstr "LO MÁS IMPORTANTE"
+
+msgid "Temperatures"
+msgstr "Temperaturas"
+
+msgid "This forecast has expired."
+msgstr "Este pronóstico ha expirado."
+
+msgid "Today"
+msgstr "Hoy"
+
+msgid "Tomorrow"
+msgstr "Mañana"
+
+msgid "Tonight"
+msgstr "Esta Noche"
+
+msgid "Total snow depth"
+msgstr "Profundidad total de nieve"
+
+msgid "Two-Day Mountain Weather Forecast"
+msgstr "Pronóstico Meteorológico de Montaña a Dos Días"
+
+msgid "Weather"
+msgstr "Clima"
+
+msgid "Wind Direction"
+msgstr "Dirección del Viento"
+
+msgid "Wind Speed"
+msgstr "Velocidad del Viento"
+
+msgid "produced in partnership with"
+msgstr "elaborado en colaboración con"

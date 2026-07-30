@@ -73,6 +73,16 @@ function avalanche_modern_form_system_theme_settings_alter(&$form, &$form_state)
     '#default_value' => theme_get_setting('current_wx_conditions_desc'),
     '#description' => t('Heading shown above the current-conditions table in the weather section.'),
   );
+  $form['advisory_page']['weather_units'] = array(
+    '#type' => 'select',
+    '#title' => t('Weather units'),
+    '#options' => array(
+      'imperial' => t('Imperial (°F, mph, inches)'),
+      'metric' => t('Metric (°C, km/h, cm)'),
+    ),
+    '#default_value' => theme_get_setting('weather_units') ? theme_get_setting('weather_units') : 'imperial',
+    '#description' => t('Units appended to the numeric values in the mountain-weather tables.'),
+  );
   $form['advisory_page']['local_nws_name'] = array(
     '#type' => 'textfield',
     '#title' => t('Local weather service name'),

@@ -210,6 +210,10 @@ function avalanche_center_enable_spanish() {
   // ones too.
   avalanche_center_localize_menus('es');
 
+  // Spanish-speaking avalanche centers (Chile, Argentina, ...) forecast in
+  // metric, so default the weather tables to metric units.
+  config_set('avalanche_modern.settings', 'weather_units', 'metric');
+
   // Give the main navigation Spanish public URLs (/pronostico instead of
   // /forecast, /observaciones instead of /observations, ...) via path aliases.
   // The internal router paths stay English/generic, so the module code remains

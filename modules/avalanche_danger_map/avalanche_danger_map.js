@@ -9,7 +9,9 @@
       $mapEl.data('leaflet-map-initialized', true);
 
       var map = L.map(mapId, {
-        scrollWheelZoom: false
+        // Zoom with the mouse wheel / trackpad gesture, not only the +/-
+        // buttons. touchZoom (pinch) is on by default for mobile.
+        scrollWheelZoom: true
       }).setView(mapSettings.center, mapSettings.zoom);
 
       // Base layers come from the server (avalanche_danger_map_leaflet_map_info),
@@ -92,11 +94,33 @@
       });
 
       if (bounds.length > 0) {
-        var combined = bounds[0];
+        var combined = L.latLngBounds(bounds[0].getSouthWest(), bounds[0].getNorthEast());
         for (var i = 1; i < bounds.length; i++) {
           combined.extend(bounds[i]);
         }
+        // Default view: frame every zone.
         map.fitBounds(combined, { padding: [20, 20] });
+
+        // If the visitor shares their location, zoom in to the forecast zones
+        // nearest them instead. Falls back silently to the all-zones view on
+        // denial, error, timeout, or when geolocation is unavailable.
+        if (bounds.length > 2 && navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function (pos) {
+            var here = L.latLng(pos.coords.latitude, pos.coords.longitude);
+            var ranked = bounds.map(function (b, idx) {
+              return { idx: idx, dist: here.distanceTo(b.getCenter()) };
+            }).sort(function (a, b) { return a.dist - b.dist; });
+            var k = Math.min(3, ranked.length);
+            var near = L.latLngBounds(
+              bounds[ranked[0].idx].getSouthWest(),
+              bounds[ranked[0].idx].getNorthEast()
+            );
+            for (var j = 1; j < k; j++) {
+              near.extend(bounds[ranked[j].idx]);
+            }
+            map.fitBounds(near, { padding: [30, 30], maxZoom: 11 });
+          }, function () {}, { timeout: 8000, maximumAge: 600000 });
+        }
       }
     }
   };
