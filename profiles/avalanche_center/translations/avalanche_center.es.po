@@ -391,3 +391,129 @@ msgstr "Ejemplo de Resumen del Manto de Nieve"
 
 msgid "Week in Review"
 msgstr "Resumen Semanal"
+
+# Forecast-page strings (node--advisory template, theme label helpers,
+# danger-map module): avalanche problem types match /avalanche-problems.
+
+msgid "The Bottom Line"
+msgstr "Lo Más Importante"
+
+msgid "Read the Full Forecast"
+msgstr "Leer el Pronóstico Completo"
+
+msgid "Text Forecast"
+msgstr "Pronóstico en Texto"
+
+msgid "Today's Avalanche Forecast"
+msgstr "Pronóstico de Avalancha de Hoy"
+
+msgid "Above Treeline"
+msgstr "Sobre el Límite Arbóreo"
+
+msgid "Near Treeline"
+msgstr "Cerca del Límite Arbóreo"
+
+msgid "Below Treeline"
+msgstr "Bajo el Límite Arbóreo"
+
+msgid "Danger Scale"
+msgstr "Escala de Peligro"
+
+msgid "Avalanche Problems (@count)"
+msgstr "Problemas de Avalancha (@count)"
+
+msgid "Problem #@number: @type"
+msgstr "Problema #@number: @type"
+
+msgid "Problem Type"
+msgstr "Tipo de Problema"
+
+msgid "Aspect/Elevation"
+msgstr "Aspecto/Elevación"
+
+msgid "Likelihood"
+msgstr "Probabilidad"
+
+msgid "Size"
+msgstr "Tamaño"
+
+msgid "Unlikely"
+msgstr "Improbable"
+
+msgid "Possible"
+msgstr "Posible"
+
+msgid "Likely"
+msgstr "Probable"
+
+msgid "Very Likely"
+msgstr "Muy Probable"
+
+msgid "Certain"
+msgstr "Seguro"
+
+msgid "Small (D1)"
+msgstr "Pequeña (D1)"
+
+msgid "Large (D2)"
+msgstr "Grande (D2)"
+
+msgid "Very Large (D3)"
+msgstr "Muy Grande (D3)"
+
+msgid "Historic (D4-5)"
+msgstr "Histórica (D4-5)"
+
+msgid "Low"
+msgstr "Bajo"
+
+msgid "Moderate"
+msgstr "Moderado"
+
+msgid "Considerable"
+msgstr "Considerable"
+
+msgid "High"
+msgstr "Alto"
+
+msgid "Extreme"
+msgstr "Extremo"
+
+msgid "Storm Slab"
+msgstr "Placa de Tormenta"
+
+msgid "Deep Slab"
+msgstr "Placa Persistente Profunda"
+
+msgid "Wind Slab"
+msgstr "Placa de Viento"
+
+msgid "Wet Slab"
+msgstr "Placa Húmeda"
+
+msgid "Persistent Slab"
+msgstr "Placa Persistente"
+
+msgid "Loose Wet"
+msgstr "Nieve Húmeda Suelta"
+
+msgid "Loose Dry"
+msgstr "Nieve Seca Suelta"
+
+msgid "Normal Caution"
+msgstr "Precaución Normal"
+
+msgid "Cornice"
+msgstr "Caída de Cornisa"
+
+msgid "Glide"
+msgstr "Avalancha de Placa Glide"
+
+msgid "Esri Satellite Imagery"
+msgstr "Imágenes Satelitales Esri"
+
+msgid "Esri World Topo Map"
+msgstr "Mapa Topográfico Mundial Esri"
+
+msgid "Forecast menu links (zone-aware)"
+msgstr "Enlaces del menú de pronóstico (según zona)"

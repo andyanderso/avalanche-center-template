@@ -46,7 +46,7 @@
                         "ui_name": "",
                         "label": "",
                         "empty": 1,
-                        "content": "This page displays avalanche incidents reported that have occurred in the backcountry and involve a person caught, buried, and/or injuried.\n<div style=\"text-align:center\"><span style=\"display:inline-block;height:42px;\" class=\"submit-obs-button\"><a href=\"/node/add/observation\">Submit Observations</a></span></div>",
+                        "content": "<p>This page displays avalanche incidents reported in the backcountry that involved a person caught, buried, and/or injured.</p>",
                         "format": "full_html",
                         "tokenize": 0
                     }
@@ -657,7 +657,7 @@
                         "table": "views",
                         "field": "area",
                         "empty": true,
-                        "content": "This page displays avalanche incidents reported that have occurred in the backcountry and involve a person caught, buried, and/or injuried. The map displays 15 incidents at a time.\r\n<div style=\"text-align:center\"><span style=\"display:inline-block;height:42px;\" class=\"submit-obs-button\"><a href=\"/node/add/observation\">Submit Observations</a></span></div>",
+                        "content": "<p>This page displays avalanche incidents reported in the backcountry that involved a person caught, buried, and/or injured.</p>",
                         "format": "full_html"
                     }
                 },
@@ -1041,7 +1041,7 @@
                         "ui_name": "",
                         "label": "",
                         "empty": 1,
-                        "content": "This page displays avalanche incidents reported that have occurred in the backcountry and involve a person caught, buried, and/or injuried. The map displays 15 incidents at a time.\n<div style=\"text-align:center\"><span style=\"display:inline-block;height:42px;\" class=\"submit-obs-button\"><a href=\"/node/add/observation\">Submit Observations</a></span></div>",
+                        "content": "<p>This page displays avalanche incidents reported in the backcountry that involved a person caught, buried, and/or injured.</p>",
                         "format": "full_html",
                         "tokenize": 0
                     }

@@ -201,6 +201,15 @@ function avalanche_center_enable_spanish() {
   // language here. Also localizes the content-type display label.
   avalanche_center_localize_views('es');
 
+  // The observations/incidents views carry multi-sentence explanatory HTML in
+  // their header areas (stored config, not t()) - localize those too.
+  avalanche_center_localize_view_headers('es');
+
+  // Menu titles double as the footer menu-block headings (blocks use the menu
+  // title when they set no title of their own), so localize the visitor-facing
+  // ones too.
+  avalanche_center_localize_menus('es');
+
   // Give the main navigation Spanish public URLs (/pronostico instead of
   // /forecast, /observaciones instead of /observations, ...) via path aliases.
   // The internal router paths stay English/generic, so the module code remains
@@ -493,6 +502,111 @@ function avalanche_center_localize_views($langcode) {
   if (!$type->isNew()) {
     $type->set('name', 'Pronóstico');
     $type->save();
+  }
+}
+
+/**
+ * Localizes the visitor-facing menu titles.
+ *
+ * Menu titles are stored config (not t()), and the footer menu blocks render
+ * the menu title as their heading (they set no title of their own). Exact-
+ * match guarded: only the shipped English default is replaced, so a center's
+ * own renamed menu title is preserved on a migration.
+ *
+ * @param string $langcode
+ *   Target language; a no-op if no map is shipped for it.
+ */
+function avalanche_center_localize_menus($langcode) {
+  if ($langcode !== 'es') {
+    return;
+  }
+  $titles = array(
+    'main-menu' => array('Main menu' => 'Menú Principal'),
+    'menu-about' => array('About' => 'Acerca de'),
+    'menu-archives' => array('People' => 'Usuarios'),
+    'menu-contact' => array('Resources' => 'Recursos'),
+    'menu-doormat-menu' => array('Footer Menu' => 'Enlaces'),
+    'menu-responsive-links' => array('Responsive Links' => 'Enlaces Adaptables'),
+  );
+  foreach ($titles as $menu_name => $map) {
+    $config = config('menu.menu.' . $menu_name);
+    if ($config->isNew()) {
+      continue;
+    }
+    $current = $config->get('title');
+    if (isset($map[$current])) {
+      $config->set('title', $map[$current]);
+      $config->save();
+    }
+  }
+}
+
+/**
+ * Rewrites the observations/incidents views' header-area explanatory text.
+ *
+ * These views show a multi-sentence intro paragraph above the list/map (a
+ * Views "area" handler, stored as HTML in config - never through t(), so the
+ * PO import can't reach it, same as the menu blocks). Each shipped view has
+ * the paragraph on several displays (list page, map page, archives); this sets
+ * the target-language copy on every one. Idempotent (overwrites). The English
+ * shipped copy is already the generic version, so this only runs for other
+ * languages. Center-agnostic - generic backcountry-observation boilerplate.
+ *
+ * @param string $langcode
+ *   Target language; a no-op if no copy is shipped for it.
+ */
+function avalanche_center_localize_view_headers($langcode) {
+  if ($langcode !== 'es') {
+    return;
+  }
+
+  $obs_disclaimer = '<p>Estas observaciones describen las condiciones en un único punto en el tiempo y el espacio, y pueden no representar las condiciones donde usted planea desplazarse. Provienen de diversas fuentes —algunas profesionales, otras del público— y no se puede garantizar su calidad ni exactitud. Utilícelas como una parte de su recopilación de información y nunca base sus decisiones en un solo dato. Envíe sus propias observaciones mediante los botones a continuación.</p>';
+  $obs_map = '<p>Este mapa muestra las observaciones de manto de nieve y de avalanchas enviadas. Las observaciones de manto de nieve se muestran con marcadores azules y las de avalanchas con marcadores rojos. Haga clic en un marcador para ver la observación.</p>';
+  $inc_desc = '<p>Esta página muestra los incidentes de avalancha reportados en el backcountry que involucraron a una persona atrapada, enterrada y/o herida.</p>';
+
+  // config name => (display machine name => header HTML).
+  $headers = array(
+    'views.view.observations' => array(
+      'default' => $obs_disclaimer,
+      'page_1' => $obs_disclaimer,
+      'page_5' => $obs_disclaimer,
+      'page_2' => $obs_map,
+      'page_4' => $obs_map,
+    ),
+    'views.view.incidents' => array(
+      'default' => $inc_desc,
+      'page_2' => $inc_desc,
+      'page_3' => $inc_desc,
+    ),
+  );
+
+  foreach ($headers as $config_name => $displays) {
+    $config = config($config_name);
+    if ($config->isNew()) {
+      continue;
+    }
+    $data = $config->get();
+    $changed = FALSE;
+    foreach ($displays as $display => $html) {
+      if (!isset($data['display'][$display]['display_options']['header']['area'])) {
+        continue;
+      }
+      $area = &$data['display'][$display]['display_options']['header']['area'];
+      // Header content is either a scalar string or a {value, format} array,
+      // depending on the area handler - preserve whichever shape it has.
+      if (isset($area['content']) && is_array($area['content'])) {
+        $area['content']['value'] = $html;
+      }
+      else {
+        $area['content'] = $html;
+      }
+      unset($area);
+      $changed = TRUE;
+    }
+    if ($changed) {
+      $config->setData($data);
+      $config->save();
+    }
   }
 }
 
