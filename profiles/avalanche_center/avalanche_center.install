@@ -210,6 +210,11 @@ function avalanche_center_enable_spanish() {
   // ones too.
   avalanche_center_localize_menus('es');
 
+  // The observation submission form's field labels, help text, option lists
+  // and the content-type name are all stored config (not t()), so localize
+  // them here as well.
+  avalanche_center_localize_observation_form('es');
+
   // Spanish-speaking avalanche centers (Chile, Argentina, ...) forecast in
   // metric, so default the weather tables to metric units.
   config_set('avalanche_modern.settings', 'weather_units', 'metric');
@@ -542,6 +547,205 @@ function avalanche_center_localize_menus($langcode) {
       $config->set('title', $map[$current]);
       $config->save();
     }
+  }
+}
+
+/**
+ * Localizes the observation submission form: content-type name/title/help,
+ * every field instance's label + description, and the option lists (allowed
+ * values) on its select fields. All of these are stored config, never t(), so
+ * the PO import can't reach them. Center-agnostic generic SWAG-style
+ * observation vocabulary; option lists are also converted to metric where they
+ * carried imperial units. A no-op for languages with no map.
+ *
+ * @param string $langcode
+ *   Target language.
+ */
+function avalanche_center_localize_observation_form($langcode) {
+  if ($langcode !== 'es') {
+    return;
+  }
+
+  // Content type.
+  $type = config('node.type.observation');
+  if (!$type->isNew()) {
+    $type->set('name', 'Observación');
+    $type->set('title_label', 'Un título breve, por ej.: «Avalancha en el Filo Norte», «Nueva acumulación de viento en...» o «Perfil de nieve en...»');
+    $type->set('help', 'Esta página es para enviar observaciones al centro de avalanchas. Incluya toda la información que pueda: los detalles ayudan a la comunidad a tomar mejores decisiones.');
+    $type->save();
+  }
+
+  // Field instance labels.
+  $labels = array(
+    'body' => 'Descripción de las Condiciones de Nieve, Clima y Avalanchas',
+    'field_avalanche_length' => 'Largo de la Avalancha (recorrido vertical)',
+    'field_avalanche_type' => 'Tipo de Avalancha',
+    'field_avalanche_width' => 'Ancho de la Avalancha (ancho promedio)',
+    'field_blowing_snow_detail' => 'Ventisca',
+    'field_comments_on_danger_rating_' => 'Comentarios',
+    'field_conditions_alerts_tax_term' => 'Alertas de Condiciones',
+    'field_crown_height' => 'Altura de la Corona',
+    'field_destructive_size' => 'Tamaño Destructivo',
+    'field_elevation_of_observation' => 'Elevación de la Observación',
+    'field_email' => 'Correo Electrónico',
+    'field_highest_precipitation_rate' => 'Tasa Máxima de Precipitación',
+    'field_is_this_an_avalanche_obser' => '¿Es esta una observación de avalancha?',
+    'field_location' => 'Ubicación',
+    'field_number_of_full_burials' => 'Número de personas totalmente enterradas',
+    'field_number_of_partial_burials' => 'Número de personas parcialmente enterradas',
+    'field_number_of_people_caught_2' => 'Número de personas atrapadas',
+    'field_number_of_similar_avalanch' => 'Número adicional de avalanchas similares',
+    'field_ob_air_temp' => 'Temperatura del Aire',
+    'field_ob_aspect' => 'Orientación',
+    'field_ob_date_time' => 'Fecha y Hora de la Observación o Fecha y Hora Estimada de la Avalancha',
+    'field_ob_loc_name' => 'Nombre del Lugar',
+    'field_ob_precip' => 'Precipitación',
+    'field_observer_name' => 'Nombre',
+    'field_ob_snowpit_photo' => 'Foto o gráfico de perfil de nieve o corona',
+    'field_ob_weak_layer' => 'Plano de Falla / Capa Débil',
+    'field_ob_wind_dir' => 'Dirección del Viento',
+    'field_ob_wind_speed' => 'Velocidad del Viento',
+    'field_persistent_weak_layers' => 'Capas Débiles Persistentes',
+    'field_position' => 'Observación realizada por',
+    'field_published_ob' => '¿Publicar esta observación en el sitio web?',
+    'field_region' => 'Región',
+    'field_relative_size' => 'Tamaño Relativo',
+    'field_share_this_observation_' => '¿Compartir esta observación en las redes sociales, suscripciones por correo y feeds RSS del sitio?',
+    'field_sky_cover' => 'Cobertura del Cielo',
+    'field_slope' => 'Ángulo de la Pendiente en la Zona de Inicio',
+    'field_snowpack_avalanche_weather' => 'Imágenes de Nieve, Avalancha y Clima',
+    'field_snowpack_avalanche_wx_vids' => 'Videos de Nieve, Avalancha y Clima',
+    'field_starting_elevation' => 'Elevación de Inicio',
+    'field_terrain_alerts' => 'Alertas de Terreno',
+    'field_terrain_aspects' => 'Terreno: orientaciones',
+    'field_terrain_elevations' => 'Terreno: elevaciones',
+    'field_today_s_assessed_hazard_ab' => 'Estabilidad Evaluada Hoy — Sobre el Límite Arbóreo',
+    'field_today_s_assessed_hazard_be' => 'Estabilidad Evaluada Hoy — Bajo el Límite Arbóreo',
+    'field_today_s_assessed_hazard_ne' => 'Estabilidad Evaluada Hoy — Cerca del Límite Arbóreo',
+    'field_total_snow_depth' => 'Profundidad Total de Nieve',
+    'field_trigger_modifier' => 'Modificador del Detonante',
+    'field_trigger' => 'Detonante',
+  );
+  // Field instance descriptions (only those that carry help text).
+  $descriptions = array(
+    'field_elevation_of_observation' => 'Sugerencias: 1800-2100 m / 2100-2400 m / 2400-2700 m',
+    'field_email' => 'Su correo solo se usará para contactarlo si tenemos preguntas sobre su observación. No se publicará.',
+    'field_ob_date_time' => '<i>Seleccione la fecha en que realizó esta observación o la fecha estimada de la avalancha.</i>',
+    'field_ob_loc_name' => 'Indique el nombre del lugar donde realizó su observación.',
+    'field_observer_name' => 'Nombre Apellido, por ejemplo: Juan Pérez. Su nombre puede mostrarse públicamente junto a la observación.',
+    'field_position' => '<p>Use este campo para describir quién es usted (por ejemplo, público general, guía o patrullero).</p>',
+    'field_published_ob' => 'Su información de contacto permanecerá anónima.',
+    'field_share_this_observation_' => 'Su información de contacto permanecerá anónima.',
+    'field_sky_cover' => 'Cantidad de cobertura nubosa',
+    'field_snowpack_avalanche_wx_vids' => 'Pegue el enlace de YouTube o Vimeo de su video.',
+    'field_starting_elevation' => 'Sugerencias: bajo el límite arbóreo / cerca del límite arbóreo / sobre el límite arbóreo',
+    'field_trigger' => 'Sugerencias: Desconocido / Natural / Esquiador / Motonieve / Explosivo',
+  );
+  foreach ($labels as $field => $label) {
+    $config = config('field.instance.node.observation.' . $field);
+    if ($config->isNew()) {
+      continue;
+    }
+    $config->set('label', $label);
+    if (isset($descriptions[$field])) {
+      $config->set('description', $descriptions[$field]);
+    }
+    $config->save();
+  }
+
+  // Option lists (allowed_values) on the shared fields. Keys are the stored
+  // values and never change; only the human labels are translated. Metric
+  // where the original carried imperial units.
+  $compass = array('n' => 'Norte', 'ne' => 'Noreste', 'e' => 'Este', 'se' => 'Sureste', 's' => 'Sur', 'sw' => 'Suroeste', 'w' => 'Oeste', 'nw' => 'Noroeste');
+  $dict_options = array(
+    'field_ob_aspect' => $compass,
+    'field_ob_wind_dir' => $compass,
+    'field_ob_precip' => array('none' => 'Ninguna', 'rain' => 'Lluvia', 'snow' => 'Nieve', 'mix' => 'Mezcla de lluvia y nieve'),
+    'field_ob_wind_speed' => array('calm' => 'Calmo', 'light' => 'Ligero', 'moderate' => 'Moderado', 'strong' => 'Fuerte', 'gale' => 'Vendaval'),
+    'field_blowing_snow_detail' => array('none' => 'Ninguna', 'light' => 'Ligera', 'moderate' => 'Moderada', 'intense' => 'Intensa', 'previous' => 'Previa'),
+    'field_ob_air_temp' => array('below freezing' => 'Bajo cero', 'above freezing' => 'Sobre cero'),
+    'field_sky_cover' => array(
+      'CLR' => 'Despejado',
+      'FEW' => 'Poco nuboso — hasta 2/8 cubierto',
+      'SCT' => 'Disperso — Parcialmente nublado — 3/8 a 4/8 cubierto',
+      'BRK' => 'Fragmentado — Mayormente nublado — más de 4/8 y menos de 8/8',
+      'OVC' => 'Cubierto — 8/8 cubierto',
+      'X' => 'Oscurecido por niebla, etc.',
+      'increasing-clouds' => 'Nubosidad en aumento',
+      'decreasing-clouds' => 'Nubosidad en disminución',
+    ),
+    'field_ob_weak_layer' => array('storm' => 'Nieve reciente', 'old' => 'Nieve antigua', 'old-new-interface' => 'Interfaz nieve nueva/antigua', 'ground' => 'Suelo', 'other' => 'Otro', 'unknown' => 'Desconocido'),
+    'field_avalanche_type' => array('unknown' => 'Desconocido', 'dry-loose' => 'Nieve suelta seca / Sluff', 'wet-loose' => 'Nieve húmeda suelta', 'Wind Slab' => 'Placa de Viento', 'Storm Slab' => 'Placa de Tormenta', 'wet-slab' => 'Placa Húmeda', 'Persistent Slab' => 'Placa Persistente', 'Deep Slab' => 'Placa Persistente Profunda', 'cornice' => 'Cornisa', 'glide' => 'Deslizamiento (Glide)'),
+    'field_relative_size' => array('R1' => 'R1 Muy pequeña', 'R2' => 'R2 Pequeña', 'R3' => 'R3 Mediana', 'R4' => 'R4 Grande', 'R5' => 'R5 Muy grande', 'unknown' => 'desconocido'),
+    'field_destructive_size' => array(
+      'D1' => 'D1 Relativamente inofensiva para las personas.',
+      'D2' => 'D2 Podría enterrar, herir o matar a una persona.',
+      'D3' => 'D3 Podría enterrar y destruir un automóvil, dañar un camión, destruir una',
+      'wood frame house, or break a few trees.' => 'casa de madera o quebrar algunos árboles.',
+      'D4' => 'D4 Podría destruir un vagón de tren, un camión grande, varios',
+      'buildings, or a substantial amount of forest.' => 'edificios o una cantidad importante de bosque.',
+      'D5' => 'D5 Podría arrasar el paisaje. La mayor avalancha conocida.',
+      'unknown' => 'desconocido',
+    ),
+    'field_highest_precipitation_rate' => array('S-1' => 'Nevada muy ligera (S-1)', 'S1' => 'Nevada ligera (S1)', 'S2' => 'Nevada moderada (S2)', 'S5' => 'Nevada intensa (S5)', 'S10' => 'Nevada muy intensa (S10)', 'RV' => 'Lluvia muy ligera (RV)', 'RL' => 'Lluvia ligera (RL)', 'RM' => 'Lluvia moderada (RM)', 'RH' => 'Lluvia intensa (RH)'),
+    'field_position' => array('Public' => 'Público', 'Forecaster' => 'Pronosticador', 'Professional Observer' => 'Observador Profesional', 'Guide' => 'Guía', 'Educator' => 'Educador', 'Program Manager' => 'Director de Programa', 'Board of Directors' => 'Junta Directiva', 'Advisory Board' => 'Junta Asesora'),
+    'field_persistent_weak_layers' => array('On the surface' => 'En la superficie', 'Buried' => 'Enterrada', 'Not observed' => 'No observada', 'Not present' => 'No presente'),
+    'field_terrain_alerts' => array('Slopes Steeper than 30 degrees' => 'Pendientes de más de 30 grados', 'Obvious Slide Path' => 'Vía de avalancha evidente', 'Trigger Points' => 'Puntos de detonación', 'Terrain Traps' => 'Trampas de terreno', 'Terrain Matches the Forecast' => 'El terreno coincide con el pronóstico'),
+    'field_terrain_elevations' => array('Above Treeline' => 'Sobre el límite arbóreo', 'Near Treeline' => 'Cerca del límite arbóreo', 'Below Treeline' => 'Bajo el límite arbóreo'),
+    'field_today_s_assessed_hazard_ab' => array('Insufficient Data' => 'Datos insuficientes', 'VG' => 'Muy Buena', 'G' => 'Buena', 'F' => 'Regular', 'P' => 'Mala', 'VP' => 'Muy Mala'),
+    'field_trigger_modifier' => array('intentionally-triggered' => 'Detonada intencionalmente', 'accidentally-triggered' => 'Detonada accidentalmente', 'remotely-triggered' => 'Detonada a distancia', 'cornice-fall-triggered' => 'Detonada por caída de cornisa'),
+    'field_crown_height' => array('-1' => 'Menos de 0,3 m', '1' => '0,3 m', '2' => '0,6 m', '3' => '0,9 m', '4' => '1,2 m', '5' => '1,5 m', '6' => '1,8 m', '7' => '2,1 m', '8' => '2,4 m', '9' => '2,7 m', '10' => '3 m', '11' => 'Más de 3 m'),
+    'field_number_of_similar_avalanch' => array('7' => 'Más de 10'),
+    'field_published_ob' => array('yes' => 'Sí', 'no' => 'No'),
+    'field_share_this_observation_' => array('yes' => 'Sí', 'no' => 'No'),
+    'field_region' => array('Other' => 'Otro'),
+  );
+  // The two assessed-hazard sibling fields share the same option set.
+  $dict_options['field_today_s_assessed_hazard_be'] = $dict_options['field_today_s_assessed_hazard_ab'];
+  $dict_options['field_today_s_assessed_hazard_ne'] = $dict_options['field_today_s_assessed_hazard_ab'];
+
+  foreach ($dict_options as $field => $map) {
+    $config = config('field.field.' . $field);
+    if ($config->isNew()) {
+      continue;
+    }
+    $allowed = $config->get('settings.allowed_values');
+    if (!is_array($allowed)) {
+      continue;
+    }
+    foreach ($map as $key => $label) {
+      if (array_key_exists($key, $allowed)) {
+        $allowed[$key] = $label;
+      }
+    }
+    $config->set('settings.allowed_values', $allowed);
+    $config->save();
+  }
+
+  // List-style allowed_values (numerically indexed): translate matching values
+  // in place, preserving order.
+  $list_options = array(
+    'field_is_this_an_avalanche_obser' => array('Yes' => 'Sí', 'No' => 'No'),
+    'field_number_of_full_burials' => array('More than 5' => 'Más de 5'),
+    'field_number_of_partial_burials' => array('More than 5' => 'Más de 5'),
+    'field_number_of_people_caught_2' => array('More than 5' => 'Más de 5'),
+  );
+  foreach ($list_options as $field => $map) {
+    $config = config('field.field.' . $field);
+    if ($config->isNew()) {
+      continue;
+    }
+    $allowed = $config->get('settings.allowed_values');
+    if (!is_array($allowed)) {
+      continue;
+    }
+    foreach ($allowed as $i => $val) {
+      if (isset($map[$val])) {
+        $allowed[$i] = $map[$val];
+      }
+    }
+    $config->set('settings.allowed_values', $allowed);
+    $config->save();
   }
 }
 
