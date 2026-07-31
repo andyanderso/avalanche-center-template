@@ -71,6 +71,7 @@ dependencies[] = entity_ui
 dependencies[] = field_collection
 dependencies[] = field_group
 dependencies[] = field_permissions
+dependencies[] = select_or_other
 dependencies[] = geocoder
 dependencies[] = geofield
 ; geofield_map is a submodule shipped inside geofield/modules/ - already

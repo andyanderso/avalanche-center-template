@@ -7,11 +7,18 @@
     "label": "Clothing",
     "widget": {
         "weight": "6",
-        "type": "text_textfield",
-        "module": "text",
+        "type": "select_or_other_buttons",
+        "module": "select_or_other",
         "active": 1,
         "settings": {
-            "size": 60
+            "available_options": "Synthetic or Wool Base Layers|Synthetic or Wool Base Layers\nSoft Shell Snow Pants|Soft Shell Snow Pants\nSoft Shell Snow Jacket|Soft Shell Snow Jacket\nWindbreaker|Windbreaker\n2 Pairs of Gloves|At Least 2 Pairs of Gloves\nHigh Loft Insulated Jacket|High Loft Insulated Jacket\nWarm Hat|Warm Hat\nAppropriate Eyewear|Appropriate Eyewear\nAppropriate Footwear|Appropriate Footwear\nWaterproof Jacket|Waterproof Jacket\nWaterproof Pants|Waterproof Pants\nFleece Jacket|Fleece Jacket\nInsulated Pants|Insulated Pants",
+            "available_options_php": "",
+            "other": "Other",
+            "other_title": "Other",
+            "other_unknown_defaults": "other",
+            "other_size": "60",
+            "sort_options": 0,
+            "markup_available_options_php": "&lt;none&gt;"
         }
     },
     "settings": {
@@ -34,7 +41,7 @@
         }
     },
     "required": 0,
-    "description": " Suggestions: Synthetic or Wool Base Layers / Soft Shell Snow Pants / Soft Shell Snow Jacket / Windbreaker / 2 Pairs of Gloves / High Loft Insulated Jacket / Warm Hat / Appropriate Eyewear / Appropriate Footwear / Waterproof Jacket / Waterproof Pants / Fleece Jacket / Insulated Pants.",
+    "description": "",
     "default_value": [
         {
             "value": "Synthetic or Wool Base Layers"

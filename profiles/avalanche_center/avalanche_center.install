@@ -985,6 +985,42 @@ function avalanche_center_localize_fwp_form($langcode) {
     $config->set('format_settings.label', $label);
     $config->save();
   }
+
+  // The Travel Method and Clothing check-box lists use the select_or_other
+  // widget, whose options live in the widget's "available_options" setting as a
+  // newline list of "value|label" pairs. Translate the label (right of the
+  // pipe) while keeping the stored value (left) in English, so checked data
+  // stays consistent across languages - same key-stable approach as the
+  // allowed_values lists above.
+  $widget_options = array(
+    'field.instance.field_collection_item.field_trip_members.field_travel_method' =>
+      "Skis|Esquís\nSnowmobile|Motonieve\nSplitboard|Splitboard\nSnowshoes|Raquetas\nFoot|A pie",
+    'field.instance.field_collection_item.field_trip_members.field_clothing' =>
+      "Synthetic or Wool Base Layers|Primera capa sintética o de lana\n" .
+      "Soft Shell Snow Pants|Pantalón soft shell\n" .
+      "Soft Shell Snow Jacket|Chaqueta soft shell\n" .
+      "Windbreaker|Cortaviento\n" .
+      "2 Pairs of Gloves|Al menos 2 pares de guantes\n" .
+      "High Loft Insulated Jacket|Chaqueta de pluma / alta loft\n" .
+      "Warm Hat|Gorro abrigado\n" .
+      "Appropriate Eyewear|Protección ocular adecuada\n" .
+      "Appropriate Footwear|Calzado adecuado\n" .
+      "Waterproof Jacket|Chaqueta impermeable\n" .
+      "Waterproof Pants|Pantalón impermeable\n" .
+      "Fleece Jacket|Chaqueta de polar\n" .
+      "Insulated Pants|Pantalón térmico",
+  );
+  foreach ($widget_options as $name => $options) {
+    $config = config($name);
+    if ($config->isNew()) {
+      continue;
+    }
+    $config->set('widget.settings.available_options', $options);
+    // "Other" free-text option and its title.
+    $config->set('widget.settings.other', 'Otro');
+    $config->set('widget.settings.other_title', 'Otro');
+    $config->save();
+  }
 }
 
 /**

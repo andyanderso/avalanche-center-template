@@ -7,11 +7,18 @@
     "label": "Travel Method",
     "widget": {
         "weight": "2",
-        "type": "text_textfield",
-        "module": "text",
+        "type": "select_or_other_buttons",
+        "module": "select_or_other",
         "active": 1,
         "settings": {
-            "size": 60
+            "available_options": "Skis|Skis\nSnowmobile|Snowmobile\nSplitboard|Splitboard\nSnowshoes|Snowshoes\nFoot|Foot",
+            "available_options_php": "",
+            "other": "Other",
+            "other_title": "Other",
+            "other_unknown_defaults": "other",
+            "other_size": "60",
+            "sort_options": 0,
+            "markup_available_options_php": "&lt;none&gt;"
         }
     },
     "settings": {
@@ -34,7 +41,7 @@
         }
     },
     "required": 0,
-    "description": " Suggestions: Skis / Snowmobile / Splitboard / Snowshoes / Foot.",
+    "description": "",
     "default_value": [
         {
             "value": "Skis"
