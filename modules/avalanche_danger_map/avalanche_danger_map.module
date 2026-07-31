@@ -296,11 +296,26 @@ function avalanche_danger_map_leaflet_map_info() {
   $attr_osm  = 'Map data &copy; <a target="attr" href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors';
   $attr_otm  = 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="https://viewfinderpanoramas.org/">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a>';
 
+  // Default center/zoom for the observations + incidents (and location-picker)
+  // maps, from the center-setup config. 'force' is FALSE, so this is used only
+  // when the map has no features (an empty result, or a new submission form);
+  // when there are markers the map still fits to them. Browser geolocation (in
+  // leaflet.backdrop.js) overrides this to the visitor's location when shared.
+  $center_lat = config_get('avalanche_center.settings', 'map_center_lat');
+  $center_lng = config_get('avalanche_center.settings', 'map_center_lng');
+  $center_zoom = config_get('avalanche_center.settings', 'map_zoom');
+
   return array(
     'avalanche_topo_satellite' => array(
       'label' => 'Avalanche Center Topo + Satellite',
       'description' => 'Multi-layer map with topo and satellite options',
+      'center' => array(
+        'lat' => is_numeric($center_lat) ? (float) $center_lat : 0,
+        'lon' => is_numeric($center_lng) ? (float) $center_lng : 0,
+        'force' => FALSE,
+      ),
       'settings' => array(
+        'zoomDefault'        => is_numeric($center_zoom) ? (int) $center_zoom : 9,
         'attributionControl' => TRUE,
         'closePopupOnClick'  => TRUE,
         'doubleClickZoom'    => TRUE,

@@ -226,6 +226,19 @@ function avalanche_center_setup_form_submit($form, &$form_state) {
   $settings->set('language', $values['language']);
   $settings->save();
 
+  // Point the observation location-picker map (leaflet_widget on
+  // field_location) at the same default center, so a new observation form
+  // opens on the center's region rather than at [0,0]. Browser geolocation
+  // (leaflet-widget.js) still overrides this to the visitor's location.
+  if (is_numeric($values['map_center_lat']) && is_numeric($values['map_center_lng'])) {
+    $loc = config('field.instance.node.observation.field_location');
+    if (!$loc->isNew()) {
+      $loc->set('widget.settings.map.center.lat', (float) $values['map_center_lat']);
+      $loc->set('widget.settings.map.center.lng', (float) $values['map_center_lng']);
+      $loc->save();
+    }
+  }
+
   // When Spanish is chosen, make it the default language and import the
   // bundled UI translations before any demo content is created, so the whole
   // site (including that content's surrounding chrome) comes up in Spanish.

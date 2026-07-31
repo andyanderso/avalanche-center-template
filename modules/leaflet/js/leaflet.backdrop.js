@@ -242,6 +242,20 @@
           }
         }
 
+        // Browser geolocation: when the map has no features of its own (an
+        // empty observations/incidents result, or a new submission form), and
+        // the visitor shares their location, recenter on them. Runs async, so
+        // the default center shows first and is used as the fallback if the
+        // visitor denies, the request errors, or geolocation is unavailable.
+        if (this.features.length === 0 && navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function (pos) {
+            lMap.setView(new L.LatLng(pos.coords.latitude, pos.coords.longitude), zoom);
+            if (typeof lMap.viewCenterControl === 'object') {
+              lMap.viewCenterControl.options.vcLatLng = [pos.coords.latitude, pos.coords.longitude];
+            }
+          }, function () {}, { timeout: 8000, maximumAge: 600000 });
+        }
+
         // Associate the center and zoom level proprerties to the built lMap.
         // useful for post-interaction with it
         lMap.center = lMap.getCenter();

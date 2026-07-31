@@ -56,6 +56,14 @@
             map.fitBounds(features.getBounds());
           }
         }
+        // New submission (no existing point): center near the visitor when they
+        // share their location, so they can drop the marker where they are.
+        // Falls back to the configured default center on denial/error.
+        else if (editableItems.getLayers().length === 0 && navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function (pos) {
+            map.setView(new L.LatLng(pos.coords.latitude, pos.coords.longitude), map.getZoom());
+          }, function () {}, { timeout: 8000, maximumAge: 600000 });
+        }
 
         // Create and add the draw toolbar based on field widget settings.
         let drawControlSetup = geofieldWidget.assembleToolbar(itemSettings.widget.featureTypes);
