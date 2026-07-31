@@ -18,35 +18,29 @@
     "display": {
         "default": {
             "label": "hidden",
-            "type": "field_collection_table_view",
+            "type": "field_collection_view",
             "weight": "3",
             "settings": {
                 "edit": "",
                 "delete": "",
                 "add": "",
                 "description": 0,
-                "view_mode": "full",
-                "empty": 1,
-                "cssrowcol": false,
-                "cssfield": false
+                "view_mode": "full"
             },
-            "module": "field_collection_table"
+            "module": "field_collection"
         },
         "token": {
             "label": "hidden",
-            "type": "field_collection_table_view",
+            "type": "field_collection_view",
             "weight": "3",
             "settings": {
                 "edit": "",
                 "delete": "",
                 "add": "",
                 "description": 0,
-                "view_mode": "full",
-                "empty": 1,
-                "cssrowcol": false,
-                "cssfield": false
+                "view_mode": "full"
             },
-            "module": "field_collection_table"
+            "module": "field_collection"
         }
     },
     "required": 0,

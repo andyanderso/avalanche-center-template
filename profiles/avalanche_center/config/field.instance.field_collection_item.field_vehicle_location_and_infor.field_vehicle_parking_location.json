@@ -1,0 +1,109 @@
+{
+    "_config_name": "field.instance.field_collection_item.field_vehicle_location_and_infor.field_vehicle_parking_location",
+    "field_name": "field_vehicle_parking_location",
+    "entity_type": "field_collection_item",
+    "bundle": "field_vehicle_location_and_infor",
+    "deleted": "0",
+    "label": "Vehicle Parking Location",
+    "widget": {
+        "weight": "2",
+        "type": "leaflet_widget_widget",
+        "module": "leaflet_widget",
+        "active": 1,
+        "settings": {
+            "map": {
+                "base_layer": "esri_world_topo",
+                "center": {
+                    "lat": 0,
+                    "lng": 0
+                },
+                "min_zoom": 2,
+                "max_zoom": 18,
+                "auto_center": true,
+                "zoom": 13,
+                "height": 400,
+                "feature_types": {
+                    "marker": "marker",
+                    "polyline": 0,
+                    "polygon": 0,
+                    "rectangle": 0
+                },
+                "search_widget": false
+            }
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "geofield_leaflet",
+            "weight": 0,
+            "settings": {
+                "leaflet_map": "avalanche_topo_satellite",
+                "height": 350,
+                "popup": {
+                    "value": "",
+                    "html": "",
+                    "htmlClass": ""
+                },
+                "zoom": {
+                    "initialZoom": 13,
+                    "minZoom": 0,
+                    "maxZoom": 18,
+                    "scrollWheelZoom": false
+                },
+                "icon": {
+                    "iconUrl": "",
+                    "iconSize": {
+                        "x": "",
+                        "y": ""
+                    },
+                    "iconAnchor": {
+                        "x": "",
+                        "y": ""
+                    },
+                    "shadowUrl": "",
+                    "shadowSize": {
+                        "x": "",
+                        "y": ""
+                    },
+                    "shadowAnchor": {
+                        "x": "",
+                        "y": ""
+                    },
+                    "popupAnchor": {
+                        "x": "",
+                        "y": ""
+                    },
+                    "html": "",
+                    "htmlClass": ""
+                },
+                "vector_display": {
+                    "stroke_override": 0,
+                    "stroke": 1,
+                    "color": "",
+                    "weight": "",
+                    "opacity": "",
+                    "dashArray": "",
+                    "fill": 1,
+                    "fillColor": "",
+                    "fillOpacity": "",
+                    "clickable": 1
+                }
+            },
+            "module": "leaflet"
+        },
+        "token": {
+            "label": "hidden",
+            "type": "hidden",
+            "settings": [],
+            "weight": 0
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": [],
+    "default_value_function": null
+}

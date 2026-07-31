@@ -1,0 +1,40 @@
+{
+    "_config_name": "field.instance.field_collection_item.field_vehicle_location_and_infor.field_vehicle_color",
+    "field_name": "field_vehicle_color",
+    "entity_type": "field_collection_item",
+    "bundle": "field_vehicle_location_and_infor",
+    "deleted": "0",
+    "label": "Vehicle Color",
+    "widget": {
+        "weight": "4",
+        "type": "text_textfield",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "size": "10"
+        }
+    },
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "text_default",
+            "weight": 1,
+            "settings": [],
+            "module": "text"
+        },
+        "token": {
+            "label": "above",
+            "type": "text_default",
+            "weight": 1,
+            "settings": [],
+            "module": "text"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": null
+}

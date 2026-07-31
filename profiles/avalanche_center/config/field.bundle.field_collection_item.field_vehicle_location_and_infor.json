@@ -1,0 +1,20 @@
+{
+    "_config_name": "field.bundle.field_collection_item.field_vehicle_location_and_infor",
+    "entity_type": "field_collection_item",
+    "bundle": "field_vehicle_location_and_infor",
+    "view_modes": {
+        "full": {
+            "custom_settings": false
+        },
+        "ical": {
+            "custom_settings": false
+        },
+        "token": {
+            "custom_settings": true
+        }
+    },
+    "extra_fields": {
+        "form": [],
+        "display": []
+    }
+}

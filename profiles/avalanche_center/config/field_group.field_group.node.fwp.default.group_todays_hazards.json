@@ -12,7 +12,8 @@
         "field_weather_or_snowpack",
         "field_forecast_confidence",
         "field_hazard_trend",
-        "field_other_environmental_hazard"
+        "field_other_environmental_hazard",
+        "field_strategic_mind_set"
     ],
     "format_type": "fieldset",
     "format_settings": {
