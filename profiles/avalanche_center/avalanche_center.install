@@ -215,6 +215,9 @@ function avalanche_center_enable_spanish() {
   // them here as well.
   avalanche_center_localize_observation_form('es');
 
+  // The Field Work Plan (fwp) trip-planning form is likewise all stored config.
+  avalanche_center_localize_fwp_form('es');
+
   // Spanish-speaking avalanche centers (Chile, Argentina, ...) forecast in
   // metric, so default the weather tables to metric units.
   config_set('avalanche_modern.settings', 'weather_units', 'metric');
@@ -809,6 +812,178 @@ function avalanche_center_localize_observation_form($langcode) {
         ->condition('name', $en)
         ->execute();
     }
+  }
+}
+
+/**
+ * Localizes the Field Work Plan (fwp) trip-planning form.
+ *
+ * Same situation as the observation form: fwp's content-type name, its field
+ * instance labels/descriptions (on the node and on each field-collection
+ * sub-form), its option lists (allowed_values), and its field-group fieldset
+ * labels are all stored config, never passed through t(), so the PO import
+ * can't reach them. This rewrites them in the active config. Idempotent;
+ * exact-match guarded so a center's own edits are left alone. Center-agnostic
+ * (generic backcountry field-work terminology). Metric/localized where the
+ * original carried US-specific units or wording.
+ *
+ * @param string $langcode
+ *   Target language; only 'es' is shipped.
+ */
+function avalanche_center_localize_fwp_form($langcode) {
+  if ($langcode !== 'es') {
+    return;
+  }
+
+  // Content type.
+  $type = config('node.type.fwp');
+  if (!$type->isNew()) {
+    $type->set('name', 'Plan de Trabajo de Campo');
+    $type->set('description', 'Un formulario para registrar los peligros, la mitigación de peligros, los objetivos y los planes de desplazamiento del trabajo de campo.');
+    $type->save();
+  }
+
+  // Field instance labels, keyed by "<entity_type>.<bundle>.<field_name>" so a
+  // sub-field name that appears in more than one bundle can be addressed.
+  $labels = array(
+    // Node-level fields.
+    'node.fwp.field_field_work_date' => 'Fecha del Trabajo de Campo',
+    'node.fwp.field_responsible_party' => 'Persona Responsable',
+    'node.fwp.field_trip_members' => 'Integrantes de la Salida',
+    'node.fwp.field_avalanche_problems' => 'Problemas de Avalancha',
+    'node.fwp.field_weather_or_snowpack' => 'Cambios Críticos en el Clima o el Manto de Nieve',
+    'node.fwp.field_forecast_confidence' => 'Confianza del Pronóstico',
+    'node.fwp.field_hazard_trend' => 'Factores que Podrían Aumentar el Peligro',
+    'node.fwp.field_other_environmental_hazard' => 'Otros Peligros del Entorno',
+    'node.fwp.field_strategic_mind_set' => 'Mentalidad Estratégica',
+    'node.fwp.field_data_wanted' => 'Datos Buscados',
+    'node.fwp.field_terrain_choice' => 'Elección del Terreno',
+    'node.fwp.field_vehicle_location_and_infor' => 'Ubicación e Información del Vehículo',
+    'node.fwp.field_hazard_mitigation_measures' => 'Medidas de Mitigación del Peligro',
+    'node.fwp.field_destination_and_route' => 'Destino y Ruta',
+    // Responsible Party collection.
+    'field_collection_item.field_responsible_party.field_responsible_party_name' => 'Nombre de la Persona Responsable',
+    'field_collection_item.field_responsible_party.field_responsible_party_phone_nu' => 'Teléfono de la Persona Responsable',
+    // Trip Members collection.
+    'field_collection_item.field_trip_members.field_trip_member_name' => 'Nombre del Integrante',
+    'field_collection_item.field_trip_members.field_trip_member_phone_number' => 'Teléfono del Integrante',
+    'field_collection_item.field_trip_members.field_travel_method' => 'Medio de Desplazamiento',
+    'field_collection_item.field_trip_members.field_clothing' => 'Vestimenta',
+    'field_collection_item.field_trip_members.field_communication_equipment' => 'Equipo de Comunicación',
+    'field_collection_item.field_trip_members.field_equipment' => 'Equipo de Seguridad en Avalanchas',
+    'field_collection_item.field_trip_members.field_other_equipment' => 'Otro Equipo',
+    'field_collection_item.field_trip_members.field_emergency_contact' => 'Contacto de Emergencia',
+    // Emergency Contact (nested) collection.
+    'field_collection_item.field_emergency_contact.field_emergency_contact_name' => 'Nombre del Contacto de Emergencia',
+    'field_collection_item.field_emergency_contact.field_emergency_contact_phone_nu' => 'Teléfono del Contacto de Emergencia',
+    // Destination and Route collection.
+    'field_collection_item.field_destination_and_route.field_destination' => 'Destino',
+    'field_collection_item.field_destination_and_route.field_brief_route_description' => 'Breve Descripción de la Ruta',
+    // Vehicle Location and Information collection.
+    'field_collection_item.field_vehicle_location_and_infor.field_vehicle_color' => 'Color del Vehículo',
+    'field_collection_item.field_vehicle_location_and_infor.field_vehicle_description' => 'Descripción del Vehículo',
+    'field_collection_item.field_vehicle_location_and_infor.field_fs_door_number_or_license_' => 'Patente o Identificación del Vehículo',
+    'field_collection_item.field_vehicle_location_and_infor.field_vehicle_parking_location' => 'Ubicación de Estacionamiento del Vehículo',
+  );
+  // Field instance descriptions (only those that carry help text).
+  $descriptions = array(
+    'node.fwp.field_data_wanted' => '¿Qué está buscando y por qué?',
+    'node.fwp.field_terrain_choice' => '¿A qué tipo de terreno necesita ingresar para obtener los datos requeridos?',
+    'node.fwp.field_weather_or_snowpack' => '¿Algún cambio crítico en el clima o el manto de nieve?',
+    'node.fwp.field_hazard_trend' => '¿Qué factores podrían aumentar el peligro existente?',
+    'node.fwp.field_responsible_party' => 'La persona u oficina que hace seguimiento hoy y conoce su plan de desplazamiento.',
+    'field_collection_item.field_trip_members.field_travel_method' => ' Sugerencias: Esquís / Motonieve / Splitboard / Raquetas / A pie.',
+    'field_collection_item.field_trip_members.field_clothing' => ' Sugerencias: Primera capa sintética o de lana / Pantalón soft shell / Chaqueta soft shell / Cortaviento / 2 pares de guantes / Chaqueta de pluma o alta loft / Gorro abrigado / Protección ocular adecuada / Calzado adecuado / Chaqueta impermeable / Pantalón impermeable / Chaqueta de polar / Pantalón térmico.',
+  );
+  foreach ($labels as $key => $label) {
+    $config = config('field.instance.' . $key);
+    if ($config->isNew()) {
+      continue;
+    }
+    $config->set('label', $label);
+    if (isset($descriptions[$key])) {
+      $config->set('description', $descriptions[$key]);
+    }
+    $config->save();
+  }
+
+  // Option lists (allowed_values). Keys are the stored values and never
+  // change; only the human labels are translated.
+  $dict_options = array(
+    'field_avalanche_problems' => array(
+      1 => 'Placa de Tormenta',
+      2 => 'Placa Persistente Profunda',
+      3 => 'Placa de Viento',
+      4 => 'Placa Húmeda',
+      5 => 'Placa Persistente',
+      6 => 'Nieve Húmeda Suelta',
+      7 => 'Nieve Suelta Seca',
+      8 => 'Precaución Normal',
+      9 => 'Cornisa',
+    ),
+    'field_forecast_confidence' => array('Low' => 'Baja', 'Medium' => 'Media', 'High' => 'Alta'),
+    'field_strategic_mind_set' => array(
+      'Assessment' => 'Evaluación',
+      'Stepping Out' => 'Avanzando (Stepping Out)',
+      'Status Quo' => 'Statu Quo',
+      'Stepping Back' => 'Retrocediendo (Stepping Back)',
+      'Entrenchment' => 'Atrincheramiento',
+      'Open Season' => 'Temporada Abierta',
+      'Spring Diurnal' => 'Ciclo Diurno Primaveral',
+    ),
+    'field_communication_equipment' => array('Cell Phone' => 'Teléfono Celular', 'SPOT' => 'inReach', 'Radio' => 'Radio'),
+    'field_equipment' => array('Beacon' => 'Detector (ARVA)', 'Shovel' => 'Pala', 'Probe' => 'Sonda', 'Airbag' => 'Airbag', 'Avalung' => 'Avalung'),
+    'field_other_equipment' => array(
+      'Helmet' => 'Casco',
+      'First Aid Kit' => 'Botiquín de Primeros Auxilios',
+      'Water' => 'Agua',
+      'Food' => 'Comida',
+      'Emergency Shelter' => 'Refugio de Emergencia',
+      'Repair Kit' => 'Kit de Reparación',
+      'Snow Saw' => 'Sierra de Nieve',
+      'Snow Study Kit' => 'Kit de Estudio de Nieve',
+      'Skins' => 'Pieles de Foca',
+      'Headlamp' => 'Linterna Frontal',
+      'Extra Batteries' => 'Baterías de Repuesto',
+      'Knife' => 'Cuchillo',
+      'Fire Starter' => 'Encendedor',
+      'Signalling Device' => 'Dispositivo de Señalización',
+    ),
+  );
+  foreach ($dict_options as $field => $map) {
+    $config = config('field.field.' . $field);
+    if ($config->isNew()) {
+      continue;
+    }
+    $allowed = $config->get('settings.allowed_values');
+    if (!is_array($allowed)) {
+      continue;
+    }
+    foreach ($map as $stored_key => $label) {
+      if (array_key_exists($stored_key, $allowed)) {
+        $allowed[$stored_key] = $label;
+      }
+    }
+    $config->set('settings.allowed_values', $allowed);
+    $config->save();
+  }
+
+  // Field groups (the form's fieldsets). Label lives both at the top level and
+  // under format_settings; set both.
+  $group_labels = array(
+    'field_group.field_group.node.fwp.form.group_todays_hazards' => 'Peligros de Hoy',
+    'field_group.field_group.node.fwp.form.group_field_work_objectives' => 'Objetivos del Trabajo de Campo',
+    'field_group.field_group.node.fwp.form.group_travel_plan' => 'Plan de Desplazamiento Propuesto',
+    'field_group.field_group.field_collection_item.field_trip_members.form.group_equipment' => 'Equipo',
+  );
+  foreach ($group_labels as $name => $label) {
+    $config = config($name);
+    if ($config->isNew()) {
+      continue;
+    }
+    $config->set('label', $label);
+    $config->set('format_settings.label', $label);
+    $config->save();
   }
 }
 
