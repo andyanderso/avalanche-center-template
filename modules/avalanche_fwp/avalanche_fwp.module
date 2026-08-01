@@ -33,6 +33,34 @@ function avalanche_fwp_user_format_name_alter(&$name, $account) {
 }
 
 /**
+ * Implements hook_node_presave().
+ *
+ * Auto-titles a Field Work Plan as
+ * "<work date m-d-Y>-<author display name>-Field Work Plan", matching the SAC
+ * convention. Uses the author's display name (username fallback).
+ */
+function avalanche_fwp_node_presave(Node $node) {
+  if ($node->type !== 'fwp') {
+    return;
+  }
+  $L = AVALANCHE_FWP_LANG;
+  $bits = array();
+  if (!empty($node->field_field_work_date[$L][0]['value'])) {
+    $ts = strtotime(str_replace('T', ' ', $node->field_field_work_date[$L][0]['value']) . ' UTC');
+    if ($ts) {
+      $bits[] = gmdate('m-d-Y', $ts);
+    }
+  }
+  $author = !empty($node->uid) ? user_load($node->uid) : NULL;
+  $name = $author ? user_format_name($author) : '';
+  if ($name !== '') {
+    $bits[] = $name;
+  }
+  $bits[] = t('Field Work Plan');
+  $node->title = implode('-', $bits);
+}
+
+/**
  * Implements hook_node_prepare().
  *
  * Fires when a NEW node add form is prepared; does not fire on edit, so
@@ -204,7 +232,87 @@ function avalanche_fwp_menu() {
     'access arguments' => array('administer avalanche fwp'),
     'file' => 'avalanche_fwp.admin.inc',
   );
+  $items['fwp-access'] = array(
+    'title' => 'Field Work Plan access',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('avalanche_fwp_unlock_form'),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
   return $items;
+}
+
+/* ===========================================================================
+ * Public-access password gate.
+ * ======================================================================== */
+
+/**
+ * Implements hook_init().
+ *
+ * When a view password is configured, anonymous visitors must unlock Field
+ * Work Plan pages first. Logged-in users are unaffected.
+ */
+function avalanche_fwp_init() {
+  $pw = config_get('avalanche_fwp.settings', 'view_password');
+  if (empty($pw) || user_is_logged_in() || !empty($_SESSION['avalanche_fwp_unlocked'])) {
+    return;
+  }
+  $path = current_path();
+  if ($path === 'fwp-access' || $path === 'user/login' || $path === 'user') {
+    return;
+  }
+  if (avalanche_fwp_is_protected_path($path)) {
+    $_SESSION['avalanche_fwp_destination'] = $_GET['q'];
+    backdrop_goto('fwp-access');
+  }
+}
+
+/**
+ * Is this internal path a Field Work Plan page (a plan node or a list page)?
+ */
+function avalanche_fwp_is_protected_path($path) {
+  if (preg_match('#^node/(\d+)$#', $path, $m)) {
+    $node = node_load($m[1]);
+    return $node && $node->type === 'fwp';
+  }
+  return in_array($path, array('field-work-plans', 'fwp-search'), TRUE);
+}
+
+/**
+ * The public-access password form.
+ */
+function avalanche_fwp_unlock_form($form, &$form_state) {
+  $form['intro'] = array(
+    '#markup' => '<p>' . t('Field Work Plans are password protected. Enter the access password to continue, or <a href="@login">log in</a>.', array('@login' => url('user/login', array('query' => backdrop_get_destination())))) . '</p>',
+  );
+  $form['password'] = array(
+    '#type' => 'password',
+    '#title' => t('Access password'),
+    '#required' => TRUE,
+  );
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array('#type' => 'submit', '#value' => t('Continue'));
+  return $form;
+}
+
+/**
+ * Validates the access password.
+ */
+function avalanche_fwp_unlock_form_validate($form, &$form_state) {
+  $pw = (string) config_get('avalanche_fwp.settings', 'view_password');
+  if (!hash_equals($pw, (string) $form_state['values']['password'])) {
+    form_set_error('password', t('That password is not correct.'));
+  }
+}
+
+/**
+ * Unlocks the session and returns to the requested plan page.
+ */
+function avalanche_fwp_unlock_form_submit($form, &$form_state) {
+  $_SESSION['avalanche_fwp_unlocked'] = TRUE;
+  $dest = !empty($_SESSION['avalanche_fwp_destination']) ? $_SESSION['avalanche_fwp_destination'] : 'field-work-plans';
+  unset($_SESSION['avalanche_fwp_destination']);
+  $form_state['redirect'] = $dest;
 }
 
 /**
@@ -305,6 +413,21 @@ function avalanche_fwp_node_view($node, $view_mode, $langcode) {
   if ($node->type !== 'fwp' || $view_mode !== 'full') {
     return;
   }
+
+  // Emergency response plan banner at the very top of every plan.
+  $erp = config_get('avalanche_fwp.settings', 'emergency_response_link');
+  if (!empty($erp)) {
+    $text = config_get('avalanche_fwp.settings', 'emergency_response_text');
+    if (empty($text)) {
+      $text = t('Emergency Response Plan');
+    }
+    $node->content['avalanche_fwp_erp'] = array(
+      '#markup' => '<div class="fwp-emergency-response messages warning"><a href="'
+        . check_url(url($erp, array('absolute' => TRUE))) . '">' . check_plain($text) . '</a></div>',
+      '#weight' => -100,
+    );
+  }
+
   $status = avalanche_fwp_get_status($node->nid);
   if (!empty($status->checked_in)) {
     $when = format_date($status->check_in_time, 'short');

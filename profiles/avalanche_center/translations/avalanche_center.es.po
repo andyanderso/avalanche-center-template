@@ -695,3 +695,23 @@ msgstr "Plan de trabajo de campo presentado: @who"
 
 msgid "@who has filed a field work plan and is heading into the field, due back at @when. You are listed as their responsible party."
 msgstr "@who ha presentado un plan de trabajo de campo y se dirige al terreno, con regreso previsto a las @when. Usted figura como su persona responsable."
+
+# FWP title, emergency link, access-password gate
+
+msgid "Field Work Plan"
+msgstr "Plan de Trabajo de Campo"
+
+msgid "Field Work Plans are password protected. Enter the access password to continue, or <a href="@login">log in</a>."
+msgstr "Los Planes de Trabajo de Campo están protegidos con contraseña. Ingrese la contraseña de acceso para continuar, o <a href="@login">inicie sesión</a>."
+
+msgid "Access password"
+msgstr "Contraseña de acceso"
+
+msgid "Continue"
+msgstr "Continuar"
+
+msgid "That password is not correct."
+msgstr "Esa contraseña no es correcta."
+
+msgid "Emergency Response Plan"
+msgstr "Plan de Respuesta ante Emergencias"

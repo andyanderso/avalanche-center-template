@@ -52,5 +52,36 @@ function avalanche_fwp_settings_form($form, &$form_state) {
     '#description' => t('Email is always sent. Enable this to additionally text the responsible party and field worker. Requires Twilio credentials on the <a href="@url">Twilio settings page</a> (Account SID, Auth Token, and a sending number).', array('@url' => url('admin/config/system/twilio'))),
   );
 
+  $form['emergency'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Emergency response plan'),
+    '#collapsible' => FALSE,
+  );
+  $form['emergency']['emergency_response_link'] = array(
+    '#type' => 'url',
+    '#title' => t('Emergency response plan link'),
+    '#default_value' => $conf->get('emergency_response_link'),
+    '#description' => t('If set, a prominent link to your emergency response plan is shown at the top of every Field Work Plan page.'),
+  );
+  $form['emergency']['emergency_response_text'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Link text'),
+    '#default_value' => $conf->get('emergency_response_text') ?: t('Emergency Response Plan'),
+    '#size' => 40,
+  );
+
+  $form['access'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Public access password'),
+    '#collapsible' => FALSE,
+  );
+  $form['access']['view_password'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Field Work Plan access password'),
+    '#default_value' => $conf->get('view_password'),
+    '#size' => 30,
+    '#description' => t('If set, Field Work Plan pages are hidden from the public. Logged-in users see them normally; anyone else must enter this password (share it with partners/dispatch who do not have accounts). Leave blank to make the plans fully public.'),
+  );
+
   return system_settings_form($form);
 }

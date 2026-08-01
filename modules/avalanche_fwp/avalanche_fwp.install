@@ -76,4 +76,14 @@ function avalanche_fwp_install() {
   if (user_role_load('administrator')) {
     user_role_grant_permissions('administrator', array('check in any field work plan'));
   }
+  // URL alias pattern: fwp/<auto title>, matching the SAC convention. Core's
+  // path module builds the alias from this when a plan is saved.
+  config_set('path.settings', 'node_fwp_pattern', 'fwp/[node:title]');
+}
+
+/**
+ * Set the Field Work Plan URL alias pattern (installs made before this).
+ */
+function avalanche_fwp_update_1001() {
+  config_set('path.settings', 'node_fwp_pattern', 'fwp/[node:title]');
 }
