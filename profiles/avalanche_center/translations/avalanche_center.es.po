@@ -637,3 +637,53 @@ msgstr "Registrar el regreso de su propio Plan de Trabajo de Campo"
 
 msgid "Check in any Field Work Plan"
 msgstr "Registrar el regreso de cualquier Plan de Trabajo de Campo"
+
+# Field Work Plan notifications (avalanche_fwp Phase C)
+
+msgid "Field work check-in due soon: @who"
+msgstr "Registro de regreso próximo: @who"
+
+msgid "@who is due back from the field at @when. You are their responsible party. If you do not hear a check-in, follow your protocol."
+msgstr "@who debe regresar del terreno a las @when. Usted es su persona responsable. Si no recibe un aviso de regreso, siga su protocolo."
+
+msgid "Plan: @url"
+msgstr "Plan: @url"
+
+msgid "Live tracking: @t"
+msgstr "Seguimiento en vivo: @t"
+
+msgid "Field worker OVERDUE — no check-in: @who"
+msgstr "Persona ATRASADA — sin registro de regreso: @who"
+
+msgid "@who was due back at @when and has NOT checked in. Please follow your response protocol."
+msgstr "@who debía regresar a las @when y NO ha registrado su regreso. Siga su protocolo de respuesta."
+
+msgid "Time to check in from the field"
+msgstr "Hora de registrar su regreso del terreno"
+
+msgid "You were due back at @when. Please check in so your responsible party knows you are safe: @url"
+msgstr "Debía regresar a las @when. Registre su regreso para que su persona responsable sepa que está a salvo: @url"
+
+msgid "Checked in safely: @who"
+msgstr "Regreso registrado: @who"
+
+msgid "@who has checked in safely from the field."
+msgstr "@who ha registrado su regreso del terreno sano y salvo."
+
+msgid "A field worker"
+msgstr "Una persona en terreno"
+
+msgid "the planned time"
+msgstr "la hora prevista"
+
+msgid "That check-in link was invalid. Please use the button on the plan."
+msgstr "Ese enlace de registro no era válido. Utilice el botón en el plan."
+
+msgid "Responsible Party Email"
+msgstr "Correo de la Persona Responsable"
+
+msgid "Used to email safe-return notifications to the responsible party."
+msgstr "Se usa para enviar por correo los avisos de regreso a la persona responsable."
+
+msgid "Live Tracking Link"
+msgstr "Enlace de Seguimiento en Vivo"

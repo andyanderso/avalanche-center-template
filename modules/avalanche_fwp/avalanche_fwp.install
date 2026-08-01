@@ -31,7 +31,35 @@ function avalanche_fwp_schema() {
     'primary key' => array('nid'),
     'indexes' => array('checked_in' => array('checked_in')),
   );
+  $schema['avalanche_fwp_notification'] = array(
+    'description' => 'Log of Field Work Plan notifications already sent (idempotency for cron).',
+    'fields' => array(
+      'nid' => array(
+        'description' => 'The Field Work Plan node id.',
+        'type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE,
+      ),
+      'type' => array(
+        'description' => 'Notification type: rp_pre, rp_due, user_reminder, checkin.',
+        'type' => 'varchar', 'length' => 32, 'not null' => TRUE,
+      ),
+      'sent' => array(
+        'description' => 'Unix timestamp the notification was sent.',
+        'type' => 'int', 'not null' => TRUE, 'default' => 0,
+      ),
+    ),
+    'primary key' => array('nid', 'type'),
+  );
   return $schema;
+}
+
+/**
+ * Add the notification-log table (for installs made before Phase C).
+ */
+function avalanche_fwp_update_1000() {
+  if (!db_table_exists('avalanche_fwp_notification')) {
+    $schema = backdrop_get_schema_unprocessed('avalanche_fwp', 'avalanche_fwp_notification');
+    db_create_table('avalanche_fwp_notification', $schema);
+  }
 }
 
 /**

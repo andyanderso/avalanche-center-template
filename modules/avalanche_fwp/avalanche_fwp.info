@@ -7,3 +7,4 @@ backdrop = 1.x
 dependencies[] = node
 dependencies[] = field_collection
 dependencies[] = date
+dependencies[] = twilio

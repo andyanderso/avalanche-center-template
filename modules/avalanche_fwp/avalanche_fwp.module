@@ -38,6 +38,7 @@ function avalanche_fwp_node_prepare(Node $node) {
   $rp = _avalanche_fwp_user_fc_item($account, 'field_responsible_party');
   _avalanche_fwp_default_fc($node, 'field_responsible_party', $rp, array(
     'field_responsible_party_name', 'field_responsible_party_phone_nu',
+    'field_responsible_party_email',
   ));
 
   // --- Vehicle (single field-collection); skip the per-trip parking location ---
@@ -156,6 +157,11 @@ function avalanche_fwp_permission() {
       'title' => t('Check in any Field Work Plan'),
       'description' => t('Mark any Field Work Plan as safely returned (e.g. a dispatcher or responsible party).'),
     ),
+    'administer avalanche fwp' => array(
+      'title' => t('Administer Field Work Plan settings'),
+      'description' => t('Configure notification timing and SMS.'),
+      'restrict access' => TRUE,
+    ),
   );
 }
 
@@ -171,15 +177,49 @@ function avalanche_fwp_menu() {
     'access arguments' => array(1),
     'type' => MENU_CALLBACK,
   );
+  $items['admin/config/system/avalanche-fwp'] = array(
+    'title' => 'Field Work Plan',
+    'description' => 'Safe-return notification timing and SMS settings.',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('avalanche_fwp_settings_form'),
+    'access arguments' => array('administer avalanche fwp'),
+    'file' => 'avalanche_fwp.admin.inc',
+  );
   return $items;
 }
 
 /**
- * Access callback: may the current user check this plan in?
+ * Returns a stable, session-independent check-in token for a node.
+ *
+ * Signed with the site's private key + hash salt so an emailed/texted "check
+ * in" link stays valid when clicked later, whether or not the recipient is
+ * logged in. It is a capability link for a low-risk action (marking a plan
+ * safely returned).
+ */
+function avalanche_fwp_signed_token($nid) {
+  return backdrop_hmac_base64('fwp-checkin:' . $nid, backdrop_get_private_key() . backdrop_get_hash_salt());
+}
+
+/**
+ * Absolute check-in URL carrying the signed token.
+ */
+function avalanche_fwp_checkin_url($node) {
+  return url('node/' . $node->nid . '/check-in', array(
+    'absolute' => TRUE,
+    'query' => array('t' => avalanche_fwp_signed_token($node->nid)),
+  ));
+}
+
+/**
+ * Access callback: a valid signed token authorizes (magic link); otherwise
+ * fall back to the permission model for the on-page button.
  */
 function avalanche_fwp_checkin_access($node) {
   if (!is_object($node) || $node->type !== 'fwp') {
     return FALSE;
+  }
+  if (!empty($_GET['t']) && $_GET['t'] === avalanche_fwp_signed_token($node->nid)) {
+    return TRUE;
   }
   if (user_access('check in any field work plan')) {
     return TRUE;
@@ -190,12 +230,10 @@ function avalanche_fwp_checkin_access($node) {
 
 /**
  * Page callback: record a safe-return check-in, then return to the node.
- *
- * CSRF-guarded by a per-node token carried on the check-in link.
  */
 function avalanche_fwp_checkin_page($node) {
-  if (empty($_GET['token']) || !backdrop_valid_token($_GET['token'], 'fwp-checkin-' . $node->nid)) {
-    backdrop_set_message(t('That check-in link was invalid or expired. Please try again.'), 'error');
+  if (empty($_GET['t']) || $_GET['t'] !== avalanche_fwp_signed_token($node->nid)) {
+    backdrop_set_message(t('That check-in link was invalid. Please use the button on the plan.'), 'error');
     backdrop_goto('node/' . $node->nid);
   }
   $status = avalanche_fwp_get_status($node->nid);
@@ -233,6 +271,8 @@ function avalanche_fwp_set_checkin($node, $account = NULL) {
       'check_in_uid' => $account->uid,
     ))
     ->execute();
+  // Notify the responsible party that the party is back safe.
+  avalanche_fwp_notify($node, 'checkin');
   module_invoke_all('avalanche_fwp_checked_in', $node, $account);
 }
 
@@ -259,8 +299,7 @@ function avalanche_fwp_node_view($node, $view_mode, $langcode) {
     );
   }
   elseif (avalanche_fwp_checkin_access($node)) {
-    $token = backdrop_get_token('fwp-checkin-' . $node->nid);
-    $link = url('node/' . $node->nid . '/check-in', array('query' => array('token' => $token)));
+    $link = avalanche_fwp_checkin_url($node);
     $node->content['avalanche_fwp_checkin'] = array(
       '#markup' => '<div class="fwp-checkin-action"><a href="' . check_plain($link)
         . '" class="button button-primary fwp-checkin-button">'
@@ -268,4 +307,237 @@ function avalanche_fwp_node_view($node, $view_mode, $langcode) {
       '#weight' => -50,
     );
   }
+}
+
+/* ===========================================================================
+ * Phase C: safe-return notifications (email always; Twilio SMS optional).
+ * ======================================================================== */
+
+/**
+ * The expected-return timestamp = end of the Field Work Date range, or NULL.
+ * Date fields store in UTC (timezone_db = UTC).
+ */
+function avalanche_fwp_return_timestamp($node) {
+  $L = AVALANCHE_FWP_LANG;
+  if (empty($node->field_field_work_date[$L][0]['value2'])) {
+    return NULL;
+  }
+  $str = str_replace('T', ' ', $node->field_field_work_date[$L][0]['value2']);
+  $ts = strtotime($str . ' UTC');
+  return $ts ? $ts : NULL;
+}
+
+/**
+ * Responsible-party contact (name/email/phone) from the node's RP collection.
+ */
+function _avalanche_fwp_rp_contact($node) {
+  $L = AVALANCHE_FWP_LANG;
+  $out = array('name' => '', 'email' => '', 'phone' => '');
+  if (!empty($node->field_responsible_party[$L][0]['value'])) {
+    $items = entity_load('field_collection_item', array($node->field_responsible_party[$L][0]['value']));
+    if ($items) {
+      $it = reset($items);
+      $out['name'] = isset($it->field_responsible_party_name[$L][0]['value']) ? $it->field_responsible_party_name[$L][0]['value'] : '';
+      $out['email'] = isset($it->field_responsible_party_email[$L][0]['value']) ? $it->field_responsible_party_email[$L][0]['value'] : '';
+      $out['phone'] = isset($it->field_responsible_party_phone_nu[$L][0]['value']) ? $it->field_responsible_party_phone_nu[$L][0]['value'] : '';
+    }
+  }
+  return $out;
+}
+
+/**
+ * Planner (node author) contact: email from the account, phone from their own
+ * trip-member row on the plan.
+ */
+function _avalanche_fwp_planner_contact($node) {
+  $L = AVALANCHE_FWP_LANG;
+  $acc = user_load($node->uid);
+  $out = array('name' => $acc ? format_username($acc) : '', 'email' => $acc ? $acc->mail : '', 'phone' => '');
+  if (!empty($node->field_trip_members[$L][0]['value'])) {
+    $items = entity_load('field_collection_item', array($node->field_trip_members[$L][0]['value']));
+    if ($items) {
+      $tm = reset($items);
+      if (!empty($tm->field_trip_member_name[$L][0]['value'])) {
+        $out['name'] = $tm->field_trip_member_name[$L][0]['value'];
+      }
+      if (!empty($tm->field_trip_member_phone_number[$L][0]['value'])) {
+        $out['phone'] = $tm->field_trip_member_phone_number[$L][0]['value'];
+      }
+    }
+  }
+  return $out;
+}
+
+/**
+ * Sends one notification of the given type for a plan. Email always; SMS only
+ * when enabled + Twilio present. Each channel is skipped if its address blank.
+ */
+function avalanche_fwp_notify($node, $type) {
+  $L = AVALANCHE_FWP_LANG;
+  $rp = _avalanche_fwp_rp_contact($node);
+  $planner = _avalanche_fwp_planner_contact($node);
+  $return_ts = avalanche_fwp_return_timestamp($node);
+  $when = $return_ts ? format_date($return_ts, 'short') : t('the planned time');
+  $who = $planner['name'] ? $planner['name'] : t('A field worker');
+  $node_url = url('node/' . $node->nid, array('absolute' => TRUE));
+  $tracking = !empty($node->field_tracking_link[$L][0]['value']) ? $node->field_tracking_link[$L][0]['value'] : '';
+
+  $email_to = $sms_to = $subject = $body = $sms = '';
+
+  switch ($type) {
+    case 'rp_pre':
+      $email_to = $rp['email'];
+      $sms_to = $rp['phone'];
+      $subject = t('Field work check-in due soon: @who', array('@who' => $who));
+      $sms = t('@who is due back from the field at @when. You are their responsible party. If you do not hear a check-in, follow your protocol.', array('@who' => $who, '@when' => $when));
+      $body = $sms . "\n\n" . t('Plan: @url', array('@url' => $node_url));
+      if ($tracking) {
+        $body .= "\n" . t('Live tracking: @t', array('@t' => $tracking));
+      }
+      break;
+
+    case 'rp_due':
+      $email_to = $rp['email'];
+      $sms_to = $rp['phone'];
+      $subject = t('Field worker OVERDUE — no check-in: @who', array('@who' => $who));
+      $sms = t('@who was due back at @when and has NOT checked in. Please follow your response protocol.', array('@who' => $who, '@when' => $when));
+      $body = $sms . "\n\n" . t('Plan: @url', array('@url' => $node_url));
+      if ($tracking) {
+        $body .= "\n" . t('Live tracking: @t', array('@t' => $tracking));
+      }
+      break;
+
+    case 'user_reminder':
+      $email_to = $planner['email'];
+      $sms_to = $planner['phone'];
+      $checkin = avalanche_fwp_checkin_url($node);
+      $subject = t('Time to check in from the field');
+      $sms = t('You were due back at @when. Please check in so your responsible party knows you are safe: @url', array('@when' => $when, '@url' => $checkin));
+      $body = $sms;
+      break;
+
+    case 'checkin':
+      $email_to = $rp['email'];
+      $sms_to = $rp['phone'];
+      $subject = t('Checked in safely: @who', array('@who' => $who));
+      $sms = t('@who has checked in safely from the field.', array('@who' => $who));
+      $body = $sms . "\n\n" . t('Plan: @url', array('@url' => $node_url));
+      break;
+
+    default:
+      return;
+  }
+
+  if ($email_to) {
+    avalanche_fwp_send_email($email_to, $type, $subject, $body);
+  }
+  if ($sms_to && config_get('avalanche_fwp.settings', 'enable_sms')) {
+    avalanche_fwp_send_sms($sms_to, $sms);
+  }
+}
+
+/**
+ * Implements hook_mail().
+ */
+function avalanche_fwp_mail($key, &$message, $params) {
+  $message['subject'] = $params['subject'];
+  $message['body'][] = $params['body'];
+}
+
+/**
+ * Sends a notification email via core mail.
+ */
+function avalanche_fwp_send_email($to, $key, $subject, $body) {
+  backdrop_mail('avalanche_fwp', $key, $to, language_default(), array(
+    'subject' => $subject,
+    'body' => $body,
+  ));
+}
+
+/**
+ * Sends an SMS via the Twilio module, if available.
+ */
+function avalanche_fwp_send_sms($number, $message) {
+  if (function_exists('twilio_send')) {
+    twilio_send($number, $message);
+  }
+}
+
+/**
+ * Implements hook_cron().
+ *
+ * Fires the pre-return and overdue notifications for plans not yet checked in.
+ * Each (plan, type) is logged so it sends at most once. Needs cron to run every
+ * few minutes for the lead-time to be accurate.
+ */
+function avalanche_fwp_cron() {
+  $lead = (int) config_get('avalanche_fwp.settings', 'lead_minutes');
+  if (!$lead) {
+    $lead = 15;
+  }
+  $now = REQUEST_TIME;
+
+  // Candidate plans: published fwp, not checked in, end date within +/- a day
+  // (string comparison on the UTC 'Y-m-d H:i:s' value2 is chronological).
+  $result = db_query("SELECT n.nid FROM {node} n
+    INNER JOIN {field_data_field_field_work_date} d
+      ON d.entity_type = 'node' AND d.entity_id = n.nid AND d.deleted = 0
+    LEFT JOIN {avalanche_fwp_status} s ON s.nid = n.nid
+    WHERE n.type = 'fwp' AND n.status = 1
+      AND (s.checked_in IS NULL OR s.checked_in = 0)
+      AND d.field_field_work_date_value2 IS NOT NULL
+      AND d.field_field_work_date_value2 BETWEEN :from AND :to",
+    array(
+      ':from' => gmdate('Y-m-d H:i:s', $now - 86400),
+      ':to' => gmdate('Y-m-d H:i:s', $now + 86400),
+    ));
+
+  foreach ($result as $row) {
+    $node = node_load($row->nid);
+    if (!$node) {
+      continue;
+    }
+    $return_ts = avalanche_fwp_return_timestamp($node);
+    if (!$return_ts) {
+      continue;
+    }
+    $sent = avalanche_fwp_notifications_sent($node->nid);
+
+    if ($now >= ($return_ts - $lead * 60) && empty($sent['rp_pre'])) {
+      avalanche_fwp_notify($node, 'rp_pre');
+      avalanche_fwp_log_notification($node->nid, 'rp_pre');
+    }
+    if ($now >= $return_ts) {
+      if (empty($sent['rp_due'])) {
+        avalanche_fwp_notify($node, 'rp_due');
+        avalanche_fwp_log_notification($node->nid, 'rp_due');
+      }
+      if (empty($sent['user_reminder'])) {
+        avalanche_fwp_notify($node, 'user_reminder');
+        avalanche_fwp_log_notification($node->nid, 'user_reminder');
+      }
+    }
+  }
+}
+
+/**
+ * Returns a map of notification types already sent for a plan.
+ */
+function avalanche_fwp_notifications_sent($nid) {
+  $out = array();
+  $result = db_query('SELECT type FROM {avalanche_fwp_notification} WHERE nid = :nid', array(':nid' => $nid));
+  foreach ($result as $row) {
+    $out[$row->type] = TRUE;
+  }
+  return $out;
+}
+
+/**
+ * Records that a notification type was sent for a plan.
+ */
+function avalanche_fwp_log_notification($nid, $type) {
+  db_merge('avalanche_fwp_notification')
+    ->key(array('nid' => $nid, 'type' => $type))
+    ->fields(array('sent' => REQUEST_TIME))
+    ->execute();
 }
