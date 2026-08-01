@@ -79,6 +79,10 @@ function avalanche_fwp_install() {
   // URL alias pattern: fwp/<auto title>, matching the SAC convention. Core's
   // path module builds the alias from this when a plan is saved.
   config_set('path.settings', 'node_fwp_pattern', 'fwp/[node:title]');
+  // We do not use Twilio's per-user number registration (we text numbers from
+  // the plan itself), so suppress its phone field on the user forms — the
+  // profile's own "Mobile Phone" field is the single source.
+  config_set('twilio.settings', 'twilio_registration_form', 0);
 }
 
 /**
@@ -86,4 +90,11 @@ function avalanche_fwp_install() {
  */
 function avalanche_fwp_update_1001() {
   config_set('path.settings', 'node_fwp_pattern', 'fwp/[node:title]');
+}
+
+/**
+ * Suppress Twilio's duplicate per-user phone field on the user forms.
+ */
+function avalanche_fwp_update_1002() {
+  config_set('twilio.settings', 'twilio_registration_form', 0);
 }
