@@ -1132,10 +1132,47 @@ function avalanche_fwp_taxonomy_term_presave($term) {
   }
   $pt = _avalanche_fwp_region_point($term->field_region_map[$L][0]);
   if ($pt) {
-    $tz = avalanche_fwp_timezone_from_coords($pt[0], $pt[1]);
+    $tz = avalanche_fwp_derive_region_timezone($pt[0], $pt[1]);
     if ($tz) {
       $term->field_region_timezone[$L][0]['value'] = $tz;
     }
+  }
+}
+
+/**
+ * The timezone for a region at [lat, lng], country-constrained to the site.
+ *
+ * Coordinate timezone-boundary data merges neighbouring zones with identical
+ * current rules, so a point in the far reaches of the center's country can
+ * resolve to a neighbouring country's representative zone (e.g. southern Chile
+ * -> America/Sao_Paulo). Since a center's forecast regions are all within its
+ * own country, snap any cross-border result back to the site timezone.
+ */
+function avalanche_fwp_derive_region_timezone($lat, $lng) {
+  $tz = avalanche_fwp_timezone_from_coords($lat, $lng);
+  if (!$tz) {
+    return NULL;
+  }
+  $site_tz = config_get('system.date', 'default_timezone');
+  if ($site_tz) {
+    $site_country = avalanche_fwp_country_of_tz($site_tz);
+    if ($site_country && avalanche_fwp_country_of_tz($tz) !== $site_country) {
+      return $site_tz;
+    }
+  }
+  return $tz;
+}
+
+/**
+ * ISO country code for an IANA timezone id, or '' if unknown.
+ */
+function avalanche_fwp_country_of_tz($tz) {
+  try {
+    $loc = timezone_open($tz)->getLocation();
+    return !empty($loc['country_code']) ? $loc['country_code'] : '';
+  }
+  catch (Exception $e) {
+    return '';
   }
 }
 
