@@ -80,6 +80,9 @@ function avalanche_center_install() {
   theme_enable(array('avalanche_modern', 'responsive_sac', 'responsive_bartik', 'basis'));
   config_set('system.core', 'theme_default', 'avalanche_modern');
   config_set('system.core', 'admin_theme', 'basis');
+  // Make 'administrator' the site's full-access super-admin role (bypasses all
+  // permission checks) — the canonical Backdrop admin setup.
+  config_set('system.core', 'user_admin_role', 'administrator');
 
   avalanche_center_enable_glossary_filter();
 }
