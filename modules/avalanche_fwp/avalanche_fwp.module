@@ -978,6 +978,14 @@ function avalanche_fwp_form_node_form_alter(&$form, &$form_state, $form_id) {
     return;
   }
   $L = AVALANCHE_FWP_LANG;
+
+  // On a NEW plan, the end date pre-fills to the start date (today) but the end
+  // time is left blank so the user enters their expected return time. Attach to
+  // the date-combo element (value2/time is built by its #process later).
+  if (empty($form['#node']->nid) && isset($form['field_field_work_date'][$L][0])) {
+    $form['field_field_work_date'][$L][0]['#after_build'][] = 'avalanche_fwp_blank_end_time';
+  }
+
   if (empty($form['field_trip_members'][$L])) {
     return;
   }
@@ -1019,4 +1027,16 @@ function avalanche_fwp_form_node_form_alter(&$form, &$form_state, $form_id) {
     'type' => 'setting',
     'data' => array('avalancheFwp' => array('people' => $data)),
   );
+}
+
+/**
+ * #after_build for the Field Work Date end (value2): clears the time input so
+ * the user must enter their expected return time, keeping the pre-filled date.
+ */
+function avalanche_fwp_blank_end_time($element, &$form_state) {
+  if (isset($element['value2']['time'])) {
+    $element['value2']['time']['#value'] = '';
+    $element['value2']['time']['#default_value'] = '';
+  }
+  return $element;
 }
