@@ -72,7 +72,8 @@
         "view own files",
         "view own unpublished content",
         "view the administration theme",
-        "upload editor images"
+        "upload editor images",
+        "check in own field work plan"
     ],
     "description": ""
 }

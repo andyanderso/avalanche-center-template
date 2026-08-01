@@ -1,0 +1,51 @@
+<?php
+/**
+ * @file
+ * Install/schema for the Avalanche Field Work Plan module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function avalanche_fwp_schema() {
+  $schema['avalanche_fwp_status'] = array(
+    'description' => 'Safe-return check-in status for Field Work Plan nodes.',
+    'fields' => array(
+      'nid' => array(
+        'description' => 'The Field Work Plan node id.',
+        'type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE,
+      ),
+      'checked_in' => array(
+        'description' => '1 once the party has checked in safely.',
+        'type' => 'int', 'size' => 'tiny', 'not null' => TRUE, 'default' => 0,
+      ),
+      'check_in_time' => array(
+        'description' => 'Unix timestamp of the check-in.',
+        'type' => 'int', 'not null' => FALSE,
+      ),
+      'check_in_uid' => array(
+        'description' => 'The user who recorded the check-in.',
+        'type' => 'int', 'unsigned' => TRUE, 'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('nid'),
+    'indexes' => array('checked_in' => array('checked_in')),
+  );
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ *
+ * Generic, center-agnostic permission defaults. The profile additionally grants
+ * "check in any" to its own forecaster/director-type roles via shipped config;
+ * site admins can adjust everything on the permissions page.
+ */
+function avalanche_fwp_install() {
+  if (user_role_load('authenticated')) {
+    user_role_grant_permissions('authenticated', array('check in own field work plan'));
+  }
+  if (user_role_load('administrator')) {
+    user_role_grant_permissions('administrator', array('check in any field work plan'));
+  }
+}

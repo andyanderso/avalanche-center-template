@@ -252,7 +252,8 @@
         "view revisions",
         "view snowmobile_class registration",
         "view the administration theme",
-        "view files"
+        "view files",
+        "check in any field work plan"
     ],
     "description": ""
 }

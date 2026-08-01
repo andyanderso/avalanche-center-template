@@ -620,7 +620,8 @@
         "delete any application files",
         "download own application files",
         "download any application files",
-        "assign roles"
+        "assign roles",
+        "check in any field work plan"
     ],
     "description": ""
 }

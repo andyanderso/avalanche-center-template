@@ -138,3 +138,134 @@ function _avalanche_fwp_default_fc(Node $node, $field_name, $source_item, array 
     $new->setHostEntity('node', $node);
   }
 }
+
+/* ===========================================================================
+ * Phase B: safe-return check-in.
+ * ======================================================================== */
+
+/**
+ * Implements hook_permission().
+ */
+function avalanche_fwp_permission() {
+  return array(
+    'check in own field work plan' => array(
+      'title' => t('Check in own Field Work Plan'),
+      'description' => t('Mark a Field Work Plan you created as safely returned from the field.'),
+    ),
+    'check in any field work plan' => array(
+      'title' => t('Check in any Field Work Plan'),
+      'description' => t('Mark any Field Work Plan as safely returned (e.g. a dispatcher or responsible party).'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function avalanche_fwp_menu() {
+  $items['node/%node/check-in'] = array(
+    'title' => 'Check in',
+    'page callback' => 'avalanche_fwp_checkin_page',
+    'page arguments' => array(1),
+    'access callback' => 'avalanche_fwp_checkin_access',
+    'access arguments' => array(1),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+/**
+ * Access callback: may the current user check this plan in?
+ */
+function avalanche_fwp_checkin_access($node) {
+  if (!is_object($node) || $node->type !== 'fwp') {
+    return FALSE;
+  }
+  if (user_access('check in any field work plan')) {
+    return TRUE;
+  }
+  global $user;
+  return $user->uid && $node->uid == $user->uid && user_access('check in own field work plan');
+}
+
+/**
+ * Page callback: record a safe-return check-in, then return to the node.
+ *
+ * CSRF-guarded by a per-node token carried on the check-in link.
+ */
+function avalanche_fwp_checkin_page($node) {
+  if (empty($_GET['token']) || !backdrop_valid_token($_GET['token'], 'fwp-checkin-' . $node->nid)) {
+    backdrop_set_message(t('That check-in link was invalid or expired. Please try again.'), 'error');
+    backdrop_goto('node/' . $node->nid);
+  }
+  $status = avalanche_fwp_get_status($node->nid);
+  if (!empty($status->checked_in)) {
+    backdrop_set_message(t('This Field Work Plan is already checked in.'), 'warning');
+    backdrop_goto('node/' . $node->nid);
+  }
+  avalanche_fwp_set_checkin($node);
+  backdrop_set_message(t('Checked in — glad you made it back safely.'));
+  backdrop_goto('node/' . $node->nid);
+}
+
+/**
+ * Returns the check-in status row for a plan, or FALSE if none yet.
+ */
+function avalanche_fwp_get_status($nid) {
+  return db_query('SELECT nid, checked_in, check_in_time, check_in_uid FROM {avalanche_fwp_status} WHERE nid = :nid',
+    array(':nid' => $nid))->fetchObject();
+}
+
+/**
+ * Records a safe-return check-in and lets other modules react (Phase C:
+ * cancel pending notifications + send a check-in message).
+ */
+function avalanche_fwp_set_checkin($node, $account = NULL) {
+  if (!$account) {
+    global $user;
+    $account = $user;
+  }
+  db_merge('avalanche_fwp_status')
+    ->key(array('nid' => $node->nid))
+    ->fields(array(
+      'checked_in' => 1,
+      'check_in_time' => REQUEST_TIME,
+      'check_in_uid' => $account->uid,
+    ))
+    ->execute();
+  module_invoke_all('avalanche_fwp_checked_in', $node, $account);
+}
+
+/**
+ * Implements hook_node_view().
+ *
+ * Shows either the "check in" button (permitted, not yet checked in) or the
+ * safe-return confirmation on the full node.
+ */
+function avalanche_fwp_node_view($node, $view_mode, $langcode) {
+  if ($node->type !== 'fwp' || $view_mode !== 'full') {
+    return;
+  }
+  $status = avalanche_fwp_get_status($node->nid);
+  if (!empty($status->checked_in)) {
+    $when = format_date($status->check_in_time, 'short');
+    $who = $status->check_in_uid ? format_username(user_load($status->check_in_uid)) : '';
+    $text = $who
+      ? t('Checked in safely on @when by @who.', array('@when' => $when, '@who' => $who))
+      : t('Checked in safely on @when.', array('@when' => $when));
+    $node->content['avalanche_fwp_checkin'] = array(
+      '#markup' => '<div class="fwp-checked-in messages status">' . check_plain($text) . '</div>',
+      '#weight' => -50,
+    );
+  }
+  elseif (avalanche_fwp_checkin_access($node)) {
+    $token = backdrop_get_token('fwp-checkin-' . $node->nid);
+    $link = url('node/' . $node->nid . '/check-in', array('query' => array('token' => $token)));
+    $node->content['avalanche_fwp_checkin'] = array(
+      '#markup' => '<div class="fwp-checkin-action"><a href="' . check_plain($link)
+        . '" class="button button-primary fwp-checkin-button">'
+        . t("I'm back safe — check in") . '</a></div>',
+      '#weight' => -50,
+    );
+  }
+}

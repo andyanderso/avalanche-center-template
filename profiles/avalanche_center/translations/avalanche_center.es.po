@@ -611,3 +611,29 @@ msgstr "Las líneas y los párrafos se separan automáticamente."
 
 msgid "No HTML tags allowed."
 msgstr "No se permiten etiquetas HTML."
+
+# Field Work Plan check-in (avalanche_fwp)
+
+msgid "I'm back safe — check in"
+msgstr "Ya regresé — registrar mi regreso"
+
+msgid "Checked in safely on @when by @who."
+msgstr "Regreso registrado el @when por @who."
+
+msgid "Checked in safely on @when."
+msgstr "Regreso registrado el @when."
+
+msgid "Checked in — glad you made it back safely."
+msgstr "Regreso registrado — nos alegra que haya vuelto sano y salvo."
+
+msgid "This Field Work Plan is already checked in."
+msgstr "Este Plan de Trabajo de Campo ya tiene el regreso registrado."
+
+msgid "That check-in link was invalid or expired. Please try again."
+msgstr "Ese enlace de registro no era válido o expiró. Inténtelo de nuevo."
+
+msgid "Check in own Field Work Plan"
+msgstr "Registrar el regreso de su propio Plan de Trabajo de Campo"
+
+msgid "Check in any Field Work Plan"
+msgstr "Registrar el regreso de cualquier Plan de Trabajo de Campo"

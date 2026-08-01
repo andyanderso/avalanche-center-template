@@ -207,6 +207,7 @@
         "administer simplenews subscriptions",
         "administer simplenews settings",
         "send newsletter",
-        "subscribe to newsletters"
+        "subscribe to newsletters",
+        "check in any field work plan"
     ]
 }

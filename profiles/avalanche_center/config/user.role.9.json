@@ -101,7 +101,8 @@
         "view own snowmobile_class registration",
         "view scheduled content",
         "view snowmobile_class registration",
-        "view files"
+        "view files",
+        "check in any field work plan"
     ],
     "description": ""
 }
