@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.instance.user.user.field_tracking_link",
+    "field_name": "field_tracking_link",
+    "entity_type": "user",
+    "bundle": "user",
+    "deleted": "0",
+    "label": "Default Live Tracking Link",
+    "widget": {
+        "weight": "10",
+        "type": "text_textfield",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "size": 60
+        }
+    },
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "text_default",
+            "weight": "10",
+            "settings": [],
+            "module": "text"
+        }
+    },
+    "required": 0,
+    "description": "Optional default tracking link, pre-filled into new Field Work Plans.",
+    "default_value": null
+}

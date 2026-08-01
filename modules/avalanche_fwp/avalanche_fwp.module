@@ -1,0 +1,140 @@
+<?php
+/**
+ * @file
+ * Avalanche Field Work Plan: workflow on top of the fwp content type.
+ *
+ * Phase A: pre-fills a new Field Work Plan from the logged-in user's profile
+ * (name, responsible party, emergency contact, vehicle, default equipment,
+ * tracking link). The user's saved values live on their own user account as
+ * the same fields the fwp uses, so autofill is a value copy into the node's
+ * field-collection default items, which the embed widgets then render pre-filled.
+ */
+
+define('AVALANCHE_FWP_LANG', LANGUAGE_NONE);
+
+/**
+ * Implements hook_node_prepare().
+ *
+ * Fires when a NEW node add form is prepared; does not fire on edit, so
+ * existing plans are never overwritten.
+ */
+function avalanche_fwp_node_prepare(Node $node) {
+  if ($node->type !== 'fwp' || !empty($node->nid) || !user_is_logged_in()) {
+    return;
+  }
+  global $user;
+  $account = user_load($user->uid);
+  if (!$account) {
+    return;
+  }
+  $L = AVALANCHE_FWP_LANG;
+
+  // --- Scalar: live tracking link ---
+  if (!empty($account->field_tracking_link[$L])) {
+    $node->field_tracking_link[$L] = $account->field_tracking_link[$L];
+  }
+
+  // --- Responsible Party (single field-collection) ---
+  $rp = _avalanche_fwp_user_fc_item($account, 'field_responsible_party');
+  _avalanche_fwp_default_fc($node, 'field_responsible_party', $rp, array(
+    'field_responsible_party_name', 'field_responsible_party_phone_nu',
+  ));
+
+  // --- Vehicle (single field-collection); skip the per-trip parking location ---
+  $veh = _avalanche_fwp_user_fc_item($account, 'field_vehicle_location_and_infor');
+  _avalanche_fwp_default_fc($node, 'field_vehicle_location_and_infor', $veh, array(
+    'field_vehicle_color', 'field_vehicle_description', 'field_fs_door_number_or_license_',
+  ));
+
+  // --- Trip member row 0 = the current user, with nested emergency contact ---
+  $member = entity_create('field_collection_item', array('field_name' => 'field_trip_members'));
+  $member_has = FALSE;
+
+  // Name: field_first_name is an addressfield ("Contact information") whose
+  // name lives in first_name/last_name (or name_line); fall back to username.
+  $name = '';
+  if (!empty($account->field_first_name[$L][0])) {
+    $af = $account->field_first_name[$L][0];
+    $parts = trim((isset($af['first_name']) ? $af['first_name'] : '') . ' ' . (isset($af['last_name']) ? $af['last_name'] : ''));
+    if ($parts !== '') {
+      $name = $parts;
+    }
+    elseif (!empty($af['name_line'])) {
+      $name = $af['name_line'];
+    }
+  }
+  if ($name === '' && !empty($account->name)) {
+    $name = $account->name;
+  }
+  if ($name !== '') {
+    $member->field_trip_member_name[$L][0]['value'] = $name;
+    $member_has = TRUE;
+  }
+
+  // Default equipment / clothing carried on the user account.
+  foreach (array('field_equipment', 'field_communication_equipment', 'field_other_equipment', 'field_clothing') as $eq) {
+    if (!empty($account->{$eq}[$L])) {
+      $member->{$eq}[$L] = $account->{$eq}[$L];
+      $member_has = TRUE;
+    }
+  }
+
+  // Nested emergency contact from the user's profile.
+  $ec = _avalanche_fwp_user_fc_item($account, 'field_emergency_contact');
+  if ($ec) {
+    $ec_new = _avalanche_fwp_build_fc('field_emergency_contact', $ec, array(
+      'field_emergency_contact_name', 'field_emergency_contact_phone_nu',
+    ));
+    if ($ec_new) {
+      $ec_new->setHostEntity('field_collection_item', $member);
+      $member_has = TRUE;
+    }
+  }
+
+  if ($member_has) {
+    $member->setHostEntity('node', $node);
+  }
+}
+
+/**
+ * Loads a user's single-value field-collection item entity, or NULL.
+ */
+function _avalanche_fwp_user_fc_item($account, $field_name) {
+  $L = AVALANCHE_FWP_LANG;
+  if (empty($account->{$field_name}[$L][0]['value'])) {
+    return NULL;
+  }
+  $items = entity_load('field_collection_item', array($account->{$field_name}[$L][0]['value']));
+  return $items ? reset($items) : NULL;
+}
+
+/**
+ * Builds a new (unsaved) field-collection item copying the named sub-fields
+ * from a source item. Returns the new item, or NULL if nothing was copied.
+ */
+function _avalanche_fwp_build_fc($field_name, $source_item, array $subfields) {
+  $L = AVALANCHE_FWP_LANG;
+  if (!$source_item) {
+    return NULL;
+  }
+  $new = entity_create('field_collection_item', array('field_name' => $field_name));
+  $has = FALSE;
+  foreach ($subfields as $sf) {
+    if (!empty($source_item->{$sf}[$L])) {
+      $new->{$sf}[$L] = $source_item->{$sf}[$L];
+      $has = TRUE;
+    }
+  }
+  return $has ? $new : NULL;
+}
+
+/**
+ * Attaches a default (unsaved) field-collection item to a host node, copying
+ * the named sub-fields from a source item. No-op if source is empty.
+ */
+function _avalanche_fwp_default_fc(Node $node, $field_name, $source_item, array $subfields) {
+  $new = _avalanche_fwp_build_fc($field_name, $source_item, $subfields);
+  if ($new) {
+    $new->setHostEntity('node', $node);
+  }
+}

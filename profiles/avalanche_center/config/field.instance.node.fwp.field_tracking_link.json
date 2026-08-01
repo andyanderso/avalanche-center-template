@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.instance.node.fwp.field_tracking_link",
+    "field_name": "field_tracking_link",
+    "entity_type": "node",
+    "bundle": "fwp",
+    "deleted": "0",
+    "label": "Live Tracking Link",
+    "widget": {
+        "weight": "9",
+        "type": "text_textfield",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "size": 60
+        }
+    },
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "text_default",
+            "weight": "9",
+            "settings": [],
+            "module": "text"
+        }
+    },
+    "required": 0,
+    "description": "Optional: a public link where your live location can be followed (e.g. a Garmin/inReach MapShare or similar).",
+    "default_value": null
+}

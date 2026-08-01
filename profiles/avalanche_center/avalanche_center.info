@@ -72,6 +72,7 @@ dependencies[] = field_collection
 dependencies[] = field_group
 dependencies[] = field_permissions
 dependencies[] = select_or_other
+dependencies[] = avalanche_fwp
 dependencies[] = geocoder
 dependencies[] = geofield
 ; geofield_map is a submodule shipped inside geofield/modules/ - already

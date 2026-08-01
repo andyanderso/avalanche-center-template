@@ -8,6 +8,7 @@
     "label": "Proposed Travel Plan",
     "weight": "9",
     "children": [
+        "field_tracking_link",
         "field_vehicle_location_and_infor",
         "field_hazard_mitigation_measures",
         "field_destination_and_route"

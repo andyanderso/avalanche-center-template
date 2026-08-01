@@ -1,0 +1,37 @@
+{
+    "_config_name": "field.instance.user.user.field_other_equipment",
+    "field_name": "field_other_equipment",
+    "entity_type": "user",
+    "bundle": "user",
+    "deleted": "0",
+    "label": "Default Other Equipment",
+    "widget": {
+        "weight": "15",
+        "type": "options_buttons",
+        "module": "options",
+        "active": 1,
+        "settings": []
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "list_default",
+            "weight": "4",
+            "settings": [],
+            "module": "list"
+        },
+        "token": {
+            "label": "above",
+            "type": "hidden",
+            "weight": "4",
+            "settings": []
+        }
+    },
+    "required": 0,
+    "description": "Pre-filled into your trip-member entry on new Field Work Plans.",
+    "default_value": null,
+    "default_value_label_token": 0
+}
