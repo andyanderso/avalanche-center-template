@@ -1141,3 +1141,11 @@ msgstr "El modelo conceptual evalúa cada problema de avalancha por separado seg
 msgid "The hazard chart plots each problem by its likelihood (vertical) and destructive size (horizontal). Problems toward the upper right represent greater avalanche hazard. — Statham et al. (2018), Fig. 3"
 msgstr "El gráfico de peligro ubica cada problema según su probabilidad (vertical) y su tamaño destructivo (horizontal). Los problemas hacia la parte superior derecha representan un mayor peligro de avalancha. — Statham et al. (2018), Fig. 3"
 
+
+# --- Forecast tool: rose shortcuts + overall danger ---
+msgid "Click a sector to toggle it, an aspect label for a whole aspect, or a band button (or Alt-click a sector) for a whole elevation band. Outer ring = below treeline, centre = above; north is up."
+msgstr "Haga clic en un sector para activarlo, en una etiqueta de orientación para toda una orientación, o en un botón de banda (o Alt-clic en un sector) para toda una banda de elevación. Anillo exterior = bajo el límite arbóreo, centro = sobre el límite arbóreo; el norte está arriba."
+
+msgid "Overall danger"
+msgstr "Peligro general"
+

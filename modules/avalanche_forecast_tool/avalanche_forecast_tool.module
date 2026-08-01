@@ -276,7 +276,7 @@ function avalanche_forecast_tool_settings_data() {
     '4' => array('Moderate',    'Considerable', 'High',         'High',   'Extreme'),      // Very Likely
     '3' => array('Moderate',    'Considerable', 'Considerable', 'High',   'High'),         // Likely
     '2' => array('Low',         'Moderate',     'Considerable', 'Considerable', 'High'),   // Possible
-    '1' => array('Low',         'Low',          'Moderate',     'Considerable', 'Considerable'), // Unlikely
+    '1' => array('Low',         'Low',          'Low',          'Moderate',     'Considerable'), // Unlikely
   );
   // field_danger_rating_N stores these exact strings; localise for display.
   $danger_labels = array(
@@ -340,16 +340,37 @@ function avalanche_forecast_tool_settings_data() {
     'dangerColors' => $danger_colors,
     'pairing' => $pairing,
     'aspects' => array('N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'),
+    // Elevation-band labels: use the site's configured labels (same as the
+    // forecast form/display) when the theme provides them, else the defaults.
     'bands' => array(
-      array('key' => 'above', 'label' => t('Above Treeline')),
-      array('key' => 'near', 'label' => t('Near Treeline')),
-      array('key' => 'below', 'label' => t('Below Treeline')),
+      array('key' => 'above', 'label' => avalanche_forecast_tool_band_label('upper', t('Above Treeline'))),
+      array('key' => 'near', 'label' => avalanche_forecast_tool_band_label('middle', t('Near Treeline'))),
+      array('key' => 'below', 'label' => avalanche_forecast_tool_band_label('lower', t('Below Treeline'))),
     ),
     'maxProblems' => 3,
     'applyUrl' => url('forecast-tool/apply'),
     'addFormUrl' => url('node/add/advisory'),
     'token' => backdrop_get_token('avalanche_forecast_tool'),
   );
+}
+
+/**
+ * Elevation-band label, matching the forecast form: prefer the active theme's
+ * configured band label (theme setting <pos>_elevation_band), else the default.
+ *
+ * @param string $pos
+ *   'upper' | 'middle' | 'lower'.
+ * @param string $default
+ *   Fallback label.
+ */
+function avalanche_forecast_tool_band_label($pos, $default) {
+  if (function_exists('theme_get_setting')) {
+    $val = theme_get_setting($pos . '_elevation_band');
+    if (!empty($val)) {
+      return $val;
+    }
+  }
+  return $default;
 }
 
 /**

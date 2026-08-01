@@ -49,11 +49,37 @@
 .aft-problem h4 { margin: 1em 0 0.4em; font-size: 0.95em; text-transform: uppercase; letter-spacing: 0.03em; color: #5c6670; }
 
 /* Aspect/elevation rose (clickable NAC octagon) */
-.aft-rose-wrap { max-width: 220px; }
-.aft-rose-svg { width: 180px; height: 180px; display: block; }
+.aft-rose-wrap { max-width: 300px; }
+.aft-rose-svg { width: 250px; height: 250px; display: block; }
 .aft-rose-svg path { transition: fill 0.08s; }
 .aft-rose-svg path:hover { fill: #cfe6fb !important; }
+.aft-rose-aspect { font-size: 66px; fill: #2b3138; font-weight: 700; cursor: pointer; }
+.aft-rose-aspect:hover { fill: #1a6496; text-decoration: underline; }
+.aft-rose-bands { display: flex; gap: 0.4em; flex-wrap: wrap; margin: 0.5em 0 0.3em; }
+.aft-rose-band-btn {
+  border: 1px solid #1a6496; background: #eaf3f9; color: #1a6496;
+  border-radius: 4px; padding: 0.25em 0.6em; font-size: 0.82em; cursor: pointer;
+}
+.aft-rose-band-btn:hover { background: #d7e9f5; }
 .aft-rose-legend { font-size: 0.82em; color: #5c6670; margin: 0.3em 0 0; }
+
+/* Per-problem likelihood matrix (Fig 2) */
+.aft-likematrix { border-collapse: collapse; margin: 0.5em 0; font-size: 0.8em; }
+.aft-likematrix th { font-weight: 600; color: #40474e; padding: 3px 6px; text-align: center; }
+.aft-lm-corner { font-size: 0.85em; color: #5c6670; text-align: right; }
+.aft-lm-row { text-align: right; white-space: nowrap; }
+.aft-lm-cell {
+  border: 1px solid #fff; padding: 4px 8px; text-align: center; color: #23292e;
+  min-width: 66px; white-space: nowrap;
+}
+.aft-lm-selected { outline: 3px solid #14507a; outline-offset: -3px; font-weight: 700; }
+
+/* Overall danger, shown separately from the mountain */
+.aft-danger-overall {
+  display: flex; align-items: center; gap: 0.75em; margin-top: 1em;
+  padding-top: 0.75em; border-top: 1px solid #e0e5ea;
+}
+.aft-danger-overall-name { font-weight: 700; color: #2b3138; }
 
 /* Sensitivity / distribution choices */
 .aft-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25em; }

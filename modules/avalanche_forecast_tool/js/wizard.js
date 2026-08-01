@@ -57,6 +57,22 @@
     'No Rating': 0, 'Low': 1, 'Moderate': 2, 'Considerable': 3, 'High': 4, 'Extreme': 5
   };
 
+  // Colours for the per-problem likelihood matrix (green = unlikely, red = certain).
+  var LIKELIHOOD_COLORS = {
+    '1': '#d9efce', '2': '#bfe08f', '3': '#f4e556', '4': '#f4a63c', '5': '#e35b3f'
+  };
+
+  function hexToRgb(hex) {
+    hex = String(hex).replace('#', '');
+    if (hex.length === 3) { hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]; }
+    return [parseInt(hex.slice(0, 2), 16), parseInt(hex.slice(2, 4), 16), parseInt(hex.slice(4, 6), 16)];
+  }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function mixRgb(c1, c2, t) {
+    return [Math.round(lerp(c1[0], c2[0], t)), Math.round(lerp(c1[1], c2[1], t)), Math.round(lerp(c1[2], c2[2], t))];
+  }
+  function rgbStr(c) { return 'rgb(' + c[0] + ',' + c[1] + ',' + c[2] + ')'; }
+
   // Unique id source (used for radio-group names, so each group is distinct and
   // options within a group share one name — otherwise multiple would select).
   var UID = 0;
@@ -345,33 +361,88 @@
   };
 
   // Clickable NAC aspect/elevation rose (same octagon the published forecast
-  // uses). Outer ring = below treeline, middle = near, centre = above; N up.
+  // uses), with aspect labels + elevation-band buttons and the same multi-select
+  // shortcuts as the forecast form: click an aspect label to toggle that whole
+  // aspect spoke; click a band button (or Alt-click a sector) for a whole ring.
+  // Outer ring = below treeline, centre = above; N up.
   Wizard.prototype.renderRose = function (p) {
     var self = this;
     var svgNS = 'http://www.w3.org/2000/svg';
+    var C = 527;
     var svg = document.createElementNS(svgNS, 'svg');
     svg.setAttribute('class', 'aft-rose-svg');
-    svg.setAttribute('viewBox', '0 0 1050 1050');
+    svg.setAttribute('viewBox', '-170 -170 1394 1394');
+
+    var pathByCell = {};
+    function paint(cellKey) {
+      var path = pathByCell[cellKey];
+      if (!path) { return; }
+      var fill = p.rose[cellKey] ? 'rgb(77,184,248)' : 'rgb(255,255,255)';
+      path.setAttribute('style', 'cursor:pointer;stroke:rgb(81,85,88);stroke-width:10px;fill:' + fill + ';');
+    }
     (this.cfg.rosePaths || []).forEach(function (seg) {
       var cellKey = seg.band + ':' + seg.aspect;
       var path = document.createElementNS(svgNS, 'path');
       path.setAttribute('d', seg.d);
-      function paint() {
-        var fill = p.rose[cellKey] ? 'rgb(77,184,248)' : 'rgb(255,255,255)';
-        path.setAttribute('style', 'cursor:pointer;stroke:rgb(81,85,88);stroke-width:10px;fill:' + fill + ';');
-      }
-      paint();
-      path.addEventListener('click', function () {
-        p.rose[cellKey] = !p.rose[cellKey];
-        paint();
-        self.renderOutput();
+      pathByCell[cellKey] = path;
+      paint(cellKey);
+      path.addEventListener('click', function (ev) {
+        if (ev.altKey || ev.metaKey) {
+          self.toggleGroup(p, self.bandKeys(seg.band), paint);
+        }
+        else {
+          p.rose[cellKey] = !p.rose[cellKey];
+          paint(cellKey);
+          self.renderOutput();
+        }
       });
       svg.appendChild(path);
     });
+
+    // Aspect labels around the octagon; click = toggle that whole aspect spoke.
+    var R = 615;
+    this.cfg.aspects.forEach(function (a, ai) {
+      var th = ai * Math.PI / 4;
+      var txt = document.createElementNS(svgNS, 'text');
+      txt.setAttribute('x', C + R * Math.sin(th));
+      txt.setAttribute('y', C - R * Math.cos(th));
+      txt.setAttribute('text-anchor', 'middle');
+      txt.setAttribute('dominant-baseline', 'central');
+      txt.setAttribute('class', 'aft-rose-aspect');
+      txt.textContent = a;
+      txt.addEventListener('click', function () { self.toggleGroup(p, self.aspectKeys(ai), paint); });
+      svg.appendChild(txt);
+    });
+
     var wrap = el('div', { class: 'aft-rose-wrap' });
     wrap.appendChild(svg);
-    wrap.appendChild(el('p', { class: 'aft-rose-legend', text: Backdrop.t('Click sectors to mark where the problem exists. Outer ring = below treeline, middle = near treeline, centre = above treeline; north is up.') }));
+
+    // Elevation-band quick-select buttons (whole ring), labelled like the form.
+    var bandRow = el('div', { class: 'aft-rose-bands' });
+    this.cfg.bands.forEach(function (b) {
+      bandRow.appendChild(el('button', {
+        type: 'button', class: 'aft-rose-band-btn',
+        onclick: function () { self.toggleGroup(p, self.bandKeys(b.key), paint); }
+      }, [b.label]));
+    });
+    wrap.appendChild(bandRow);
+    wrap.appendChild(el('p', { class: 'aft-rose-legend', text: Backdrop.t('Click a sector to toggle it, an aspect label for a whole aspect, or a band button (or Alt-click a sector) for a whole elevation band. Outer ring = below treeline, centre = above; north is up.') }));
     return wrap;
+  };
+
+  Wizard.prototype.bandKeys = function (band) {
+    var keys = [];
+    for (var a = 0; a < 8; a++) { keys.push(band + ':' + a); }
+    return keys;
+  };
+  Wizard.prototype.aspectKeys = function (aspectIdx) {
+    return ['above', 'near', 'below'].map(function (b) { return b + ':' + aspectIdx; });
+  };
+  // Toggle a group of cells together: if any is off, turn all on; else all off.
+  Wizard.prototype.toggleGroup = function (p, keys, paint) {
+    var anyOff = keys.some(function (k) { return !p.rose[k]; });
+    keys.forEach(function (k) { p.rose[k] = anyOff; paint(k); });
+    this.renderOutput();
   };
 
   Wizard.prototype.renderChoice = function (title, options, current, onpick, helpKey) {
@@ -397,12 +468,40 @@
 
   Wizard.prototype.updateLikelihood = function (p, host) {
     host.innerHTML = '';
+    host.appendChild(this.renderLikelihoodMatrix(p));
     var like = this.likelihoodFor(p);
     if (!like) {
       host.appendChild(el('span', { class: 'aft-like aft-like--pending', text: Backdrop.t('Likelihood: choose sensitivity and distribution') }));
       return;
     }
     host.appendChild(el('span', { class: 'aft-like', html: Backdrop.t('Likelihood (from the Fig 2 matrix): ') + '<strong>' + this.cfg.likelihoodLabels[like] + '</strong>' }));
+  };
+
+  // Visualise the Fig 2 likelihood matrix for this problem: distribution (rows,
+  // widespread on top) x sensitivity (cols), each cell its resulting likelihood,
+  // the current selection highlighted.
+  Wizard.prototype.renderLikelihoodMatrix = function (p) {
+    var self = this;
+    var sens = this.cfg.sensitivity;                 // low -> high (cols)
+    var dist = this.cfg.distribution.slice().reverse(); // widespread on top
+    var table = el('table', { class: 'aft-likematrix' });
+    var head = el('tr', {}, [el('th', { class: 'aft-lm-corner' }, [Backdrop.t('Likelihood')])]);
+    sens.forEach(function (s) { head.appendChild(el('th', { class: 'aft-lm-col', text: s.label })); });
+    table.appendChild(head);
+    dist.forEach(function (d) {
+      var tr = el('tr', {}, [el('th', { class: 'aft-lm-row', text: d.label })]);
+      sens.forEach(function (s) {
+        var lk = (self.cfg.matrix[d.key] || {})[s.key] || '';
+        var selected = p.distribution === d.key && p.sensitivity === s.key;
+        tr.appendChild(el('td', {
+          class: 'aft-lm-cell' + (selected ? ' aft-lm-selected' : ''),
+          style: 'background:' + (LIKELIHOOD_COLORS[lk] || '#eee') + ';',
+          text: lk ? self.cfg.likelihoodLabels[lk] : ''
+        }));
+      });
+      table.appendChild(tr);
+    });
+    return table;
   };
 
   Wizard.prototype.renderSize = function (p) {
@@ -463,18 +562,34 @@
     }
     var svg = s('svg', { viewBox: '0 0 ' + W + ' ' + H, class: 'aft-chart' });
 
-    // Background cells shaded by implied danger.
-    for (var li = 1; li <= rows; li++) {           // likelihood 1..5 (bottom..top)
-      for (var si = 1; si <= cols; si++) {         // size 1..5 (left..right)
-        var label = self.dangerFor(String(li), String(si));
-        var x = padL + (si - 1) * cw;
-        var y = padT + (rows - li) * ch;
+    // Colour at a continuous (likelihood, size) point by bilinearly interpolating
+    // the danger colours of the four surrounding grid cells (li/si in 1..5).
+    function cellRgb(li, si) {
+      return hexToRgb(self.cfg.dangerColors[self.dangerFor(String(li), String(si))] || '#cccccc');
+    }
+    function colorAt(liF, siF) {
+      var si0 = Math.max(1, Math.min(4, Math.floor(siF))), fs = siF - si0;
+      var li0 = Math.max(1, Math.min(4, Math.floor(liF))), fl = liF - li0;
+      var bottom = mixRgb(cellRgb(li0, si0), cellRgb(li0, si0 + 1), fs);
+      var top = mixRgb(cellRgb(li0 + 1, si0), cellRgb(li0 + 1, si0 + 1), fs);
+      return mixRgb(bottom, top, fl);
+    }
+    // Smooth gradient background: a fine mesh of rects, no boxes.
+    var mx = 56, my = 44, rw = plotW / mx, rh = plotH / my;
+    for (var gx = 0; gx < mx; gx++) {
+      for (var gy = 0; gy < my; gy++) {
+        var siF = 1 + ((gx + 0.5) / mx) * 4;          // left D1 -> right D5
+        var liF = 1 + (1 - (gy + 0.5) / my) * 4;      // top Certain -> bottom Unlikely
         svg.appendChild(s('rect', {
-          x: x, y: y, width: cw, height: ch,
-          fill: self.cfg.dangerColors[label] || '#eee', 'fill-opacity': '0.85',
-          stroke: '#fff', 'stroke-width': '1'
+          x: padL + gx * rw, y: padT + gy * rh, width: rw + 0.6, height: rh + 0.6,
+          fill: rgbStr(colorAt(liF, siF)), 'shape-rendering': 'crispEdges'
         }));
       }
+    }
+    // Faint gridlines at the cell boundaries so positions are still readable.
+    for (var gi = 0; gi <= cols; gi++) {
+      svg.appendChild(s('line', { x1: padL + gi * cw, y1: padT, x2: padL + gi * cw, y2: padT + plotH, stroke: 'rgba(255,255,255,0.35)', 'stroke-width': '1' }));
+      svg.appendChild(s('line', { x1: padL, y1: padT + gi * ch, x2: padL + plotW, y2: padT + gi * ch, stroke: 'rgba(255,255,255,0.35)', 'stroke-width': '1' }));
     }
     // Axes labels.
     self.cfg.sizes.forEach(function (sz, i) {
@@ -528,25 +643,39 @@
       el('p', { class: 'aft-hint', text: Backdrop.t('A suggestion from the hazard chart — danger is a judgment call, so review it and enter the actual rating yourself on the forecast form.') })
     ]);
 
+    function pill(label) {
+      return el('span', {
+        class: 'aft-danger-pill',
+        style: 'background:' + (self.cfg.dangerColors[label] || '#ccc') + ';color:' + (label === 'Extreme' ? '#fff' : '#111') + ';',
+        text: self.cfg.dangerLabels[label] || label
+      });
+    }
+
+    // The mountain (three elevation bands only) + their band rows.
     var layout = el('div', { class: 'aft-danger-layout' });
     layout.appendChild(this.renderPyramid(sugg));
-
-    // Band rows top-to-bottom (above, near, below) + overall, matching the form.
     var rows = el('div', { class: 'aft-danger-band-rows' });
-    [['above', Backdrop.t('Above Treeline')], ['near', Backdrop.t('Near Treeline')], ['below', Backdrop.t('Below Treeline')], ['overall', Backdrop.t('Overall')]].forEach(function (b) {
-      var label = sugg[b[0]];
+    [['above', this.bandLabel('above')], ['near', this.bandLabel('near')], ['below', this.bandLabel('below')]].forEach(function (b) {
       rows.appendChild(el('div', { class: 'aft-danger-band-row' }, [
         el('span', { class: 'aft-danger-band-name', text: b[1] }),
-        el('span', {
-          class: 'aft-danger-pill',
-          style: 'background:' + (self.cfg.dangerColors[label] || '#ccc') + ';color:' + (label === 'Extreme' ? '#fff' : '#111') + ';',
-          text: self.cfg.dangerLabels[label] || label
-        })
+        pill(sugg[b[0]])
       ]));
     });
     layout.appendChild(rows);
     card.appendChild(layout);
+
+    // Overall danger — shown separately from the by-elevation mountain.
+    card.appendChild(el('div', { class: 'aft-danger-overall' }, [
+      el('span', { class: 'aft-danger-overall-name', text: Backdrop.t('Overall danger') }),
+      pill(sugg.overall)
+    ]));
     return card;
+  };
+
+  Wizard.prototype.bandLabel = function (key) {
+    var found = null;
+    (this.cfg.bands || []).forEach(function (b) { if (b.key === key) { found = b.label; } });
+    return found || key;
   };
 
   // The NAC danger "mountain" (same pyramid the forecast form/display uses),
