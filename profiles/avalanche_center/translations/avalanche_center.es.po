@@ -715,3 +715,14 @@ msgstr "Esa contraseña no es correcta."
 
 msgid "Emergency Response Plan"
 msgstr "Plan de Respuesta ante Emergencias"
+
+# FWP dashboard links block
+
+msgid "All Field Work Plans"
+msgstr "Todos los Planes de Trabajo de Campo"
+
+msgid "Search Field Work Plans"
+msgstr "Buscar Planes de Trabajo de Campo"
+
+msgid "Create a Field Work Plan"
+msgstr "Crear un Plan de Trabajo de Campo"

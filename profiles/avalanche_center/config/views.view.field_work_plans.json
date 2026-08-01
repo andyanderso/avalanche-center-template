@@ -3,6 +3,7 @@
     "name": "field_work_plans",
     "description": "",
     "tag": "default",
+    "disabled": false,
     "base_table": "node",
     "human_name": "Field Work Plans",
     "core": "7",
@@ -35,11 +36,43 @@
                 "style_plugin": "table",
                 "style_options": {
                     "columns": {
-                        "title": "title"
+                        "title": "title",
+                        "field_field_work_date": "field_field_work_date",
+                        "checked_in": "checked_in",
+                        "check_in_time": "check_in_time",
+                        "field_trip_members": "field_trip_members"
                     },
                     "default": "-1",
                     "info": {
                         "title": {
+                            "sortable": 1,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "field_field_work_date": {
+                            "sortable": 1,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "checked_in": {
+                            "sortable": 1,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "check_in_time": {
+                            "sortable": 1,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "field_trip_members": {
                             "sortable": 0,
                             "default_sort_order": "asc",
                             "align": "",
@@ -67,6 +100,34 @@
                         "alter": {
                             "word_boundary": false,
                             "ellipsis": false
+                        }
+                    },
+                    "field_field_work_date": {
+                        "id": "field_field_work_date",
+                        "table": "field_data_field_field_work_date",
+                        "field": "field_field_work_date",
+                        "label": "Time Out"
+                    },
+                    "checked_in": {
+                        "id": "checked_in",
+                        "table": "avalanche_fwp_status",
+                        "field": "checked_in",
+                        "label": "Checked In"
+                    },
+                    "check_in_time": {
+                        "id": "check_in_time",
+                        "table": "avalanche_fwp_status",
+                        "field": "check_in_time",
+                        "label": "Time Back In"
+                    },
+                    "field_trip_members": {
+                        "id": "field_trip_members",
+                        "table": "field_data_field_trip_members",
+                        "field": "field_trip_members",
+                        "label": "Members & Contact",
+                        "type": "field_collection_fields",
+                        "settings": {
+                            "view_mode": "token"
                         }
                     }
                 },

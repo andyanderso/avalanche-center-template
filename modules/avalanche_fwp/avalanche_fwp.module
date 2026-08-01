@@ -13,6 +13,98 @@
 define('AVALANCHE_FWP_LANG', LANGUAGE_NONE);
 
 /**
+ * Implements hook_views_api().
+ */
+function avalanche_fwp_views_api() {
+  return array('api' => 3.0, 'path' => backdrop_get_path('module', 'avalanche_fwp'));
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function avalanche_fwp_block_info() {
+  return array(
+    'fwp_links' => array(
+      'info' => t('Field Work Plans links'),
+      'description' => t('Quick links to the Field Work Plan lists (for the dashboard).'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function avalanche_fwp_block_view($delta = '', $settings = array(), $contexts = array()) {
+  if ($delta !== 'fwp_links') {
+    return;
+  }
+  $links = array();
+  if (avalanche_fwp_menu_access('field-work-plans')) {
+    $links[] = l(t('All Field Work Plans'), 'field-work-plans');
+    $links[] = l(t('Search Field Work Plans'), 'fwp-search');
+  }
+  if (node_access('create', 'fwp')) {
+    $links[] = l(t('Create a Field Work Plan'), 'node/add/fwp');
+  }
+  if (!$links) {
+    return;
+  }
+  return array(
+    'subject' => t('Field Work Plans'),
+    'content' => theme('item_list', array('items' => $links)),
+  );
+}
+
+/**
+ * Whether the current user can reach a Views page path.
+ */
+function avalanche_fwp_menu_access($path) {
+  $item = menu_get_item($path);
+  return $item && !empty($item['access']);
+}
+
+/**
+ * Places the Field Work Plans links block on the admin dashboard, if not
+ * already present. Idempotent; safe to call on install/update.
+ */
+function avalanche_fwp_place_dashboard_block() {
+  $config = config('layout.layout.dashboard');
+  if ($config->isNew()) {
+    return;
+  }
+  $content = (array) $config->get('content');
+  foreach ($content as $block) {
+    if (isset($block['plugin']) && $block['plugin'] === 'avalanche_fwp:fwp_links') {
+      return;
+    }
+  }
+  $uuid = 'af90b1c2-fwp0-4a5b-8c6d-7e8f9a0b1c2d';
+  $content[$uuid] = array(
+    'plugin' => 'avalanche_fwp:fwp_links',
+    'data' => array(
+      'module' => 'avalanche_fwp',
+      'delta' => 'fwp_links',
+      'settings' => array(
+        'title_display' => 'default',
+        'title' => '',
+        'style' => 'default',
+        'block_settings' => array(),
+        'contexts' => array(),
+      ),
+      'uuid' => $uuid,
+      'style' => array('plugin' => 'default', 'data' => array('settings' => array('classes' => ''))),
+    ),
+  );
+  $config->set('content', $content);
+
+  $positions = (array) $config->get('positions');
+  $region = isset($positions['half2']) ? 'half2' : (isset($positions['sidebar']) ? 'sidebar' : key($positions));
+  $positions[$region][] = $uuid;
+  $config->set('positions', $positions);
+  $config->save();
+}
+
+/**
  * Implements hook_user_format_name_alter().
  *
  * Displays a user's "Name (as displayed on the website)" wherever

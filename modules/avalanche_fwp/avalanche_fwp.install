@@ -83,6 +83,17 @@ function avalanche_fwp_install() {
   // the plan itself), so suppress its phone field on the user forms — the
   // profile's own "Mobile Phone" field is the single source.
   config_set('twilio.settings', 'twilio_registration_form', 0);
+  // Place the Field Work Plans links block on the admin dashboard.
+  module_load_include('module', 'avalanche_fwp');
+  avalanche_fwp_place_dashboard_block();
+}
+
+/**
+ * Place the Field Work Plans links block on the dashboard.
+ */
+function avalanche_fwp_update_1003() {
+  module_load_include('module', 'avalanche_fwp');
+  avalanche_fwp_place_dashboard_block();
 }
 
 /**
