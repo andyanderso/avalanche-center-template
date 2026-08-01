@@ -13,6 +13,26 @@
 define('AVALANCHE_FWP_LANG', LANGUAGE_NONE);
 
 /**
+ * Implements hook_user_format_name_alter().
+ *
+ * Displays a user's "Name (as displayed on the website)" wherever
+ * user_format_name() is used — forecast/observation author bylines, field work
+ * plans, comments, etc. — instead of their login name.
+ */
+function avalanche_fwp_user_format_name_alter(&$name, $account) {
+  if (empty($account->uid)) {
+    return;
+  }
+  // Use the field if the passed object already carries it; otherwise load.
+  if (!isset($account->field_display_name)) {
+    $account = user_load($account->uid);
+  }
+  if (!empty($account->field_display_name[AVALANCHE_FWP_LANG][0]['value'])) {
+    $name = $account->field_display_name[AVALANCHE_FWP_LANG][0]['value'];
+  }
+}
+
+/**
  * Implements hook_node_prepare().
  *
  * Fires when a NEW node add form is prepared; does not fire on edit, so
@@ -51,24 +71,17 @@ function avalanche_fwp_node_prepare(Node $node) {
   $member = entity_create('field_collection_item', array('field_name' => 'field_trip_members'));
   $member_has = FALSE;
 
-  // Name: field_first_name is an addressfield ("Contact information") whose
-  // name lives in first_name/last_name (or name_line); fall back to username.
-  $name = '';
-  if (!empty($account->field_first_name[$L][0])) {
-    $af = $account->field_first_name[$L][0];
-    $parts = trim((isset($af['first_name']) ? $af['first_name'] : '') . ' ' . (isset($af['last_name']) ? $af['last_name'] : ''));
-    if ($parts !== '') {
-      $name = $parts;
-    }
-    elseif (!empty($af['name_line'])) {
-      $name = $af['name_line'];
-    }
-  }
-  if ($name === '' && !empty($account->name)) {
-    $name = $account->name;
-  }
+  // Name: prefer the display name, then the contact-info addressfield name,
+  // then the username (format_username applies the same display-name logic).
+  $name = user_format_name($account);
   if ($name !== '') {
     $member->field_trip_member_name[$L][0]['value'] = $name;
+    $member_has = TRUE;
+  }
+
+  // Mobile phone -> the trip member's phone.
+  if (!empty($account->field_mobile_phone[$L][0]['value'])) {
+    $member->field_trip_member_phone_number[$L][0]['value'] = $account->field_mobile_phone[$L][0]['value'];
     $member_has = TRUE;
   }
 
@@ -289,7 +302,7 @@ function avalanche_fwp_node_view($node, $view_mode, $langcode) {
   $status = avalanche_fwp_get_status($node->nid);
   if (!empty($status->checked_in)) {
     $when = format_date($status->check_in_time, 'short');
-    $who = $status->check_in_uid ? format_username(user_load($status->check_in_uid)) : '';
+    $who = $status->check_in_uid ? user_format_name(user_load($status->check_in_uid)) : '';
     $text = $who
       ? t('Checked in safely on @when by @who.', array('@when' => $when, '@who' => $who))
       : t('Checked in safely on @when.', array('@when' => $when));
@@ -352,7 +365,11 @@ function _avalanche_fwp_rp_contact($node) {
 function _avalanche_fwp_planner_contact($node) {
   $L = AVALANCHE_FWP_LANG;
   $acc = user_load($node->uid);
-  $out = array('name' => $acc ? format_username($acc) : '', 'email' => $acc ? $acc->mail : '', 'phone' => '');
+  $out = array('name' => $acc ? user_format_name($acc) : '', 'email' => $acc ? $acc->mail : '', 'phone' => '');
+  // Phone: prefer the profile mobile, then the planner's trip-member row.
+  if ($acc && !empty($acc->field_mobile_phone[$L][0]['value'])) {
+    $out['phone'] = $acc->field_mobile_phone[$L][0]['value'];
+  }
   if (!empty($node->field_trip_members[$L][0]['value'])) {
     $items = entity_load('field_collection_item', array($node->field_trip_members[$L][0]['value']));
     if ($items) {
