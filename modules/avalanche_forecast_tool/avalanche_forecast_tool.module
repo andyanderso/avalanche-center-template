@@ -270,12 +270,14 @@ function avalanche_forecast_tool_settings_data() {
   // This is an interpretation of the CMAH hazard chart, presented as a
   // suggestion only; the forecaster sets the actual rating. Danger is
   // judgment, not a formula (Statham 2018 is explicit on this).
+  // Red (High) only starts above Likely (Very Likely / Certain) and at D4+;
+  // yellow (Moderate) and orange (Considerable) fill the rest.
   $danger_table = array(
-    // size:      D1            D2              D3              D4        D5
-    '5' => array('Moderate',    'Considerable', 'High',         'High',   'Extreme'),      // Certain
-    '4' => array('Moderate',    'Considerable', 'High',         'High',   'Extreme'),      // Very Likely
-    '3' => array('Moderate',    'Considerable', 'Considerable', 'High',   'High'),         // Likely
-    '2' => array('Low',         'Moderate',     'Considerable', 'Considerable', 'High'),   // Possible
+    // size:      D1            D2              D3              D4              D5
+    '5' => array('Moderate',    'Considerable', 'Considerable', 'High',         'Extreme'),      // Certain
+    '4' => array('Moderate',    'Considerable', 'Considerable', 'High',         'High'),         // Very Likely
+    '3' => array('Moderate',    'Moderate',     'Considerable', 'Considerable', 'Considerable'), // Likely
+    '2' => array('Low',         'Moderate',     'Moderate',     'Considerable', 'Considerable'), // Possible
     '1' => array('Low',         'Low',          'Low',          'Moderate',     'Considerable'), // Unlikely
   );
   // field_danger_rating_N stores these exact strings; localise for display.

@@ -69,10 +69,10 @@
 .aft-lm-corner { font-size: 0.85em; color: #5c6670; text-align: right; }
 .aft-lm-row { text-align: right; white-space: nowrap; }
 .aft-lm-cell {
-  border: 1px solid #fff; padding: 4px 8px; text-align: center; color: #23292e;
-  min-width: 66px; white-space: nowrap;
+  border: 1px solid #d3dae0; background: #f8fafb; padding: 4px 8px;
+  text-align: center; color: #23292e; min-width: 66px; white-space: nowrap;
 }
-.aft-lm-selected { outline: 3px solid #14507a; outline-offset: -3px; font-weight: 700; }
+.aft-lm-selected { background: #dcecf7; outline: 3px solid #14507a; outline-offset: -3px; font-weight: 700; }
 
 /* Overall danger, shown separately from the mountain */
 .aft-danger-overall {

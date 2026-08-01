@@ -57,11 +57,6 @@
     'No Rating': 0, 'Low': 1, 'Moderate': 2, 'Considerable': 3, 'High': 4, 'Extreme': 5
   };
 
-  // Colours for the per-problem likelihood matrix (green = unlikely, red = certain).
-  var LIKELIHOOD_COLORS = {
-    '1': '#d9efce', '2': '#bfe08f', '3': '#f4e556', '4': '#f4a63c', '5': '#e35b3f'
-  };
-
   function hexToRgb(hex) {
     hex = String(hex).replace('#', '');
     if (hex.length === 3) { hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]; }
@@ -495,7 +490,6 @@
         var selected = p.distribution === d.key && p.sensitivity === s.key;
         tr.appendChild(el('td', {
           class: 'aft-lm-cell' + (selected ? ' aft-lm-selected' : ''),
-          style: 'background:' + (LIKELIHOOD_COLORS[lk] || '#eee') + ';',
           text: lk ? self.cfg.likelihoodLabels[lk] : ''
         }));
       });
