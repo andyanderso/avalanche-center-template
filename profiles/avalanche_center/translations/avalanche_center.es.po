@@ -726,3 +726,14 @@ msgstr "Buscar Planes de Trabajo de Campo"
 
 msgid "Create a Field Work Plan"
 msgstr "Crear un Plan de Trabajo de Campo"
+
+# FWP partner picker (Phase E)
+
+msgid "— Select a saved person —"
+msgstr "— Seleccione una persona guardada —"
+
+msgid "Add a saved person"
+msgstr "Agregar una persona guardada"
+
+msgid "Pick a teammate or a partner you have listed before to fill in their details."
+msgstr "Elija a un compañero o a una persona que haya registrado antes para completar sus datos."

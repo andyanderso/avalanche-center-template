@@ -31,6 +31,24 @@ function avalanche_fwp_schema() {
     'primary key' => array('nid'),
     'indexes' => array('checked_in' => array('checked_in')),
   );
+  $schema['avalanche_fwp_partner'] = array(
+    'description' => 'Reusable trip-member contacts (non-account partners) captured from plans, scoped to the user who worked with them.',
+    'fields' => array(
+      'pid' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE),
+      'owner_uid' => array(
+        'description' => 'The user this partner belongs to.',
+        'type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0,
+      ),
+      'name' => array('type' => 'varchar', 'length' => 255, 'not null' => TRUE, 'default' => ''),
+      'email' => array('type' => 'varchar', 'length' => 255, 'not null' => TRUE, 'default' => ''),
+      'phone' => array('type' => 'varchar', 'length' => 64, 'not null' => TRUE, 'default' => ''),
+      'emergency_name' => array('type' => 'varchar', 'length' => 255, 'not null' => TRUE, 'default' => ''),
+      'emergency_phone' => array('type' => 'varchar', 'length' => 64, 'not null' => TRUE, 'default' => ''),
+      'changed' => array('type' => 'int', 'not null' => TRUE, 'default' => 0),
+    ),
+    'primary key' => array('pid'),
+    'indexes' => array('owner' => array('owner_uid')),
+  );
   $schema['avalanche_fwp_notification'] = array(
     'description' => 'Log of Field Work Plan notifications already sent (idempotency for cron).',
     'fields' => array(
@@ -94,6 +112,16 @@ function avalanche_fwp_install() {
 function avalanche_fwp_update_1003() {
   module_load_include('module', 'avalanche_fwp');
   avalanche_fwp_place_dashboard_block();
+}
+
+/**
+ * Add the reusable-partner table.
+ */
+function avalanche_fwp_update_1004() {
+  if (!db_table_exists('avalanche_fwp_partner')) {
+    $schema = backdrop_get_schema_unprocessed('avalanche_fwp', 'avalanche_fwp_partner');
+    db_create_table('avalanche_fwp_partner', $schema);
+  }
 }
 
 /**

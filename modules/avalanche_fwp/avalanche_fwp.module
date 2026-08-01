@@ -691,6 +691,7 @@ function avalanche_fwp_notify($node, $type) {
 function avalanche_fwp_node_insert($node) {
   if ($node->type === 'fwp') {
     avalanche_fwp_maybe_notify_submit($node);
+    avalanche_fwp_capture_partners($node);
   }
 }
 
@@ -702,6 +703,7 @@ function avalanche_fwp_node_insert($node) {
 function avalanche_fwp_node_update($node) {
   if ($node->type === 'fwp') {
     avalanche_fwp_maybe_notify_submit($node);
+    avalanche_fwp_capture_partners($node);
   }
 }
 
@@ -830,4 +832,187 @@ function avalanche_fwp_log_notification($nid, $type) {
     ->key(array('nid' => $nid, 'type' => $type))
     ->fields(array('sent' => REQUEST_TIME))
     ->execute();
+}
+
+/* ===========================================================================
+ * Phase E: reusable trip-member partner picker.
+ * ======================================================================== */
+
+/**
+ * Looks up a user id by email, or FALSE.
+ */
+function _avalanche_fwp_user_by_email($email) {
+  if ($email === '') {
+    return FALSE;
+  }
+  return db_query('SELECT uid FROM {users} WHERE mail = :m', array(':m' => $email))->fetchField();
+}
+
+/**
+ * Captures non-account trip members from a saved plan into the author's
+ * reusable partner list, so they can be picked again. Idempotent (upsert).
+ */
+function avalanche_fwp_capture_partners($node) {
+  $L = AVALANCHE_FWP_LANG;
+  if (empty($node->field_trip_members[$L])) {
+    return;
+  }
+  $ids = array();
+  foreach ($node->field_trip_members[$L] as $item) {
+    if (!empty($item['value'])) {
+      $ids[] = $item['value'];
+    }
+  }
+  if (!$ids) {
+    return;
+  }
+  foreach (entity_load('field_collection_item', $ids) as $tm) {
+    $name = isset($tm->field_trip_member_name[$L][0]['value']) ? trim($tm->field_trip_member_name[$L][0]['value']) : '';
+    if ($name === '') {
+      continue;
+    }
+    $email = isset($tm->field_trip_member_email[$L][0]['value']) ? trim($tm->field_trip_member_email[$L][0]['value']) : '';
+    // Skip trip members who are their own account (incl. the plan author).
+    if ($email !== '' && _avalanche_fwp_user_by_email($email)) {
+      continue;
+    }
+    $phone = isset($tm->field_trip_member_phone_number[$L][0]['value']) ? trim($tm->field_trip_member_phone_number[$L][0]['value']) : '';
+    $em_name = $em_phone = '';
+    if (!empty($tm->field_emergency_contact[$L][0]['value'])) {
+      $ec = entity_load('field_collection_item', array($tm->field_emergency_contact[$L][0]['value']));
+      if ($ec) {
+        $ec = reset($ec);
+        $em_name = isset($ec->field_emergency_contact_name[$L][0]['value']) ? $ec->field_emergency_contact_name[$L][0]['value'] : '';
+        $em_phone = isset($ec->field_emergency_contact_phone_nu[$L][0]['value']) ? $ec->field_emergency_contact_phone_nu[$L][0]['value'] : '';
+      }
+    }
+    _avalanche_fwp_upsert_partner($node->uid, $name, $email, $phone, $em_name, $em_phone);
+  }
+}
+
+/**
+ * Inserts or updates one partner for an owner. Dedups by email when present,
+ * otherwise by name.
+ */
+function _avalanche_fwp_upsert_partner($owner, $name, $email, $phone, $em_name, $em_phone) {
+  $query = db_select('avalanche_fwp_partner', 'p')
+    ->fields('p', array('pid'))
+    ->condition('owner_uid', $owner);
+  if ($email !== '') {
+    $query->condition('email', $email);
+  }
+  else {
+    $query->condition('name', $name);
+  }
+  $pid = $query->execute()->fetchField();
+  $fields = array(
+    'owner_uid' => $owner,
+    'name' => $name,
+    'email' => $email,
+    'phone' => $phone,
+    'emergency_name' => $em_name,
+    'emergency_phone' => $em_phone,
+    'changed' => REQUEST_TIME,
+  );
+  if ($pid) {
+    db_update('avalanche_fwp_partner')->fields($fields)->condition('pid', $pid)->execute();
+  }
+  else {
+    db_insert('avalanche_fwp_partner')->fields($fields)->execute();
+  }
+}
+
+/**
+ * Builds the people list for the partner picker: field-worker user accounts
+ * (excluding the current user) plus the user's own saved partners.
+ */
+function avalanche_fwp_people_for_user($account) {
+  $L = AVALANCHE_FWP_LANG;
+  $people = array();
+
+  $uids = db_query('SELECT uid FROM {users} WHERE status = 1 AND uid > 0')->fetchCol();
+  foreach (user_load_multiple($uids) as $u) {
+    if ($u->uid == $account->uid || !user_access('create fwp content', $u)) {
+      continue;
+    }
+    $em_name = $em_phone = '';
+    $ec = _avalanche_fwp_user_fc_item($u, 'field_emergency_contact');
+    if ($ec) {
+      $em_name = isset($ec->field_emergency_contact_name[$L][0]['value']) ? $ec->field_emergency_contact_name[$L][0]['value'] : '';
+      $em_phone = isset($ec->field_emergency_contact_phone_nu[$L][0]['value']) ? $ec->field_emergency_contact_phone_nu[$L][0]['value'] : '';
+    }
+    $people['u:' . $u->uid] = array(
+      'label' => user_format_name($u),
+      'name' => user_format_name($u),
+      'phone' => isset($u->field_mobile_phone[$L][0]['value']) ? $u->field_mobile_phone[$L][0]['value'] : '',
+      'email' => $u->mail,
+      'em_name' => $em_name,
+      'em_phone' => $em_phone,
+    );
+  }
+
+  $result = db_query('SELECT * FROM {avalanche_fwp_partner} WHERE owner_uid = :o ORDER BY name', array(':o' => $account->uid));
+  foreach ($result as $p) {
+    $people['p:' . $p->pid] = array(
+      'label' => $p->name,
+      'name' => $p->name,
+      'phone' => $p->phone,
+      'email' => $p->email,
+      'em_name' => $p->emergency_name,
+      'em_phone' => $p->emergency_phone,
+    );
+  }
+  return $people;
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter() for node_form.
+ *
+ * Adds a "pick a saved person" select to each trip-member row; a small JS then
+ * fills that row's fields (name/phone/email + emergency contact) client-side.
+ */
+function avalanche_fwp_form_node_form_alter(&$form, &$form_state, $form_id) {
+  if (empty($form['#node']) || $form['#node']->type !== 'fwp') {
+    return;
+  }
+  $L = AVALANCHE_FWP_LANG;
+  if (empty($form['field_trip_members'][$L])) {
+    return;
+  }
+  global $user;
+  $account = user_load($user->uid);
+  $people = avalanche_fwp_people_for_user($account);
+  if (!$people) {
+    return;
+  }
+
+  $options = array('' => t('— Select a saved person —'));
+  $data = array();
+  foreach ($people as $id => $p) {
+    $options[$id] = $p['label'];
+    $data[$id] = array(
+      'name' => $p['name'], 'phone' => $p['phone'], 'email' => $p['email'],
+      'em_name' => $p['em_name'], 'em_phone' => $p['em_phone'],
+    );
+  }
+
+  foreach (element_children($form['field_trip_members'][$L]) as $i) {
+    if (!is_numeric($i)) {
+      continue;
+    }
+    $form['field_trip_members'][$L][$i]['avalanche_fwp_picker'] = array(
+      '#type' => 'select',
+      '#title' => t('Add a saved person'),
+      '#options' => $options,
+      '#weight' => -50,
+      '#attributes' => array('class' => array('avalanche-fwp-picker')),
+      '#description' => t('Pick a teammate or a partner you have listed before to fill in their details.'),
+    );
+  }
+
+  $form['#attached']['js'][] = backdrop_get_path('module', 'avalanche_fwp') . '/js/partner-picker.js';
+  $form['#attached']['js'][] = array(
+    'type' => 'setting',
+    'data' => array('avalancheFwp' => array('people' => $data)),
+  );
 }
