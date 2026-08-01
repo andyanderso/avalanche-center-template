@@ -1,7 +1,7 @@
 {
-    "_config_name": "user.role.9",
-    "name": "9",
-    "label": "Program_manager",
+    "_config_name": "user.role.program_manager",
+    "name": "program_manager",
+    "label": "Program Manager",
     "weight": "3",
     "permissions": [
         "access administration pages",

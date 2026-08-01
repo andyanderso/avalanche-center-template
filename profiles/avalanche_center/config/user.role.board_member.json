@@ -1,7 +1,7 @@
 {
-    "_config_name": "user.role.6",
-    "name": "6",
-    "label": "Board_member",
+    "_config_name": "user.role.board_member",
+    "name": "board_member",
+    "label": "Board Member",
     "weight": "0",
     "permissions": [
         "access administration menu",
