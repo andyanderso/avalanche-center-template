@@ -867,12 +867,15 @@ function avalanche_center_localize_fwp_form($langcode) {
     'node.fwp.field_vehicle_location_and_infor' => 'Ubicación e Información del Vehículo',
     'node.fwp.field_hazard_mitigation_measures' => 'Medidas de Mitigación del Peligro',
     'node.fwp.field_destination_and_route' => 'Destino y Ruta',
+    'node.fwp.field_tracking_link' => 'Enlace de Seguimiento en Vivo',
     // Responsible Party collection.
     'field_collection_item.field_responsible_party.field_responsible_party_name' => 'Nombre de la Persona Responsable',
     'field_collection_item.field_responsible_party.field_responsible_party_phone_nu' => 'Teléfono de la Persona Responsable',
+    'field_collection_item.field_responsible_party.field_responsible_party_email' => 'Correo de la Persona Responsable',
     // Trip Members collection.
     'field_collection_item.field_trip_members.field_trip_member_name' => 'Nombre del Integrante',
     'field_collection_item.field_trip_members.field_trip_member_phone_number' => 'Teléfono del Integrante',
+    'field_collection_item.field_trip_members.field_trip_member_email' => 'Correo del Integrante',
     'field_collection_item.field_trip_members.field_travel_method' => 'Medio de Desplazamiento',
     'field_collection_item.field_trip_members.field_clothing' => 'Vestimenta',
     'field_collection_item.field_trip_members.field_communication_equipment' => 'Equipo de Comunicación',
@@ -1026,6 +1029,26 @@ function avalanche_center_localize_fwp_form($langcode) {
     $config->set('widget.settings.other', 'Otro');
     $config->set('widget.settings.other_title', 'Otro');
     $config->save();
+  }
+
+  // User-profile fields the avalanche_fwp module adds (labels are stored config).
+  $user_labels = array(
+    'field.instance.user.user.field_display_name' => 'Nombre (como se muestra en el sitio web)',
+    'field.instance.user.user.field_mobile_phone' => 'Teléfono Móvil',
+    'field.instance.user.user.field_tracking_link' => 'Enlace de Seguimiento en Vivo Predeterminado',
+    'field.instance.user.user.field_vehicle_location_and_infor' => 'Vehículo Predeterminado',
+    'field.instance.user.user.field_avalanche_safety_equipment' => 'Equipo de Seguridad en Avalanchas Predeterminado',
+    'field.instance.user.user.field_communication_equipment' => 'Equipo de Comunicación Predeterminado',
+    'field.instance.user.user.field_other_equipment' => 'Otro Equipo Predeterminado',
+    'field.instance.user.user.field_clothing' => 'Vestimenta Predeterminada',
+    'field.instance.taxonomy_term.region.field_region_timezone' => 'Zona Horaria',
+  );
+  foreach ($user_labels as $name => $label) {
+    $config = config($name);
+    if (!$config->isNew()) {
+      $config->set('label', $label);
+      $config->save();
+    }
   }
 }
 
