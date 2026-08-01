@@ -1,0 +1,109 @@
+/**
+ * @file
+ * Styles for the guided avalanche forecast wizard.
+ */
+
+.aft-wizard { max-width: 900px; }
+.aft-wizard-intro .aft-intro { font-size: 1.05em; color: #333; }
+
+.aft-card {
+  background: #fff;
+  border: 1px solid #d8dde2;
+  border-radius: 6px;
+  padding: 1em 1.25em;
+  margin: 0 0 1.25em;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+.aft-card h2 { margin-top: 0; }
+.aft-hint { color: #5c6670; font-size: 0.92em; margin: 0.25em 0 0.75em; }
+.aft-empty { color: #7a828a; font-style: italic; }
+
+/* Conditions checklist */
+.aft-condition-list { display: grid; grid-template-columns: 1fr 1fr; gap: 0.35em 1.25em; }
+.aft-condition { display: flex; align-items: flex-start; gap: 0.5em; cursor: pointer; padding: 0.15em 0; }
+.aft-condition input { margin-top: 0.25em; }
+@media (max-width: 640px) { .aft-condition-list { grid-template-columns: 1fr; } }
+
+.aft-suggestions { margin-top: 0.9em; }
+.aft-suggest-label { font-weight: 600; margin: 0 0 0.4em; }
+.aft-suggest-chips { display: flex; flex-wrap: wrap; gap: 0.5em; }
+.aft-chip {
+  border: 1px solid #1a6496; background: #eaf3f9; color: #1a6496;
+  border-radius: 999px; padding: 0.3em 0.9em; cursor: pointer; font-size: 0.92em;
+}
+.aft-chip:hover { background: #d7e9f5; }
+.aft-chip--added { background: #e6f4e6; border-color: #4a8f4a; color: #2e6b2e; cursor: default; }
+.aft-chip[disabled] { opacity: 0.6; cursor: default; }
+
+.aft-add-problem { display: flex; align-items: center; gap: 0.6em; flex-wrap: wrap; margin: 0 0 1.25em; }
+.aft-add-label { color: #5c6670; }
+
+/* Problem card */
+.aft-problem-head { display: flex; align-items: center; justify-content: space-between; }
+.aft-problem-head h3 { margin: 0; }
+.aft-remove {
+  border: none; background: #f2d5d5; color: #a02020; border-radius: 4px;
+  width: 28px; height: 28px; font-size: 1.2em; line-height: 1; cursor: pointer;
+}
+.aft-remove:hover { background: #e9bcbc; }
+.aft-problem h4 { margin: 1em 0 0.4em; font-size: 0.95em; text-transform: uppercase; letter-spacing: 0.03em; color: #5c6670; }
+
+/* Rose grid */
+.aft-rose { border-collapse: collapse; }
+.aft-rose th { font-size: 0.78em; color: #5c6670; font-weight: 600; padding: 2px 4px; }
+.aft-rose-band { text-align: right; white-space: nowrap; }
+.aft-rose-cell {
+  width: 30px; height: 26px; border: 1px solid #cfd6dc; background: #f6f8fa;
+  cursor: pointer; padding: 0;
+}
+.aft-rose-cell:hover { background: #e2eaf0; }
+.aft-rose-cell.aft-on { background: #1a6496; border-color: #14507a; }
+
+/* Sensitivity / distribution choices */
+.aft-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25em; }
+@media (max-width: 640px) { .aft-two-col { grid-template-columns: 1fr; } }
+.aft-choice-title { font-weight: 600; margin-bottom: 0.4em; }
+.aft-radio { display: flex; align-items: flex-start; gap: 0.5em; padding: 0.25em 0; cursor: pointer; }
+.aft-radio input { margin-top: 0.3em; }
+.aft-radio-desc { color: #6a727a; font-size: 0.9em; }
+
+.aft-likelihood-row { margin-top: 0.75em; }
+.aft-like { display: inline-block; background: #eef4f8; border-radius: 4px; padding: 0.35em 0.7em; }
+.aft-like--pending { background: #f4f0e6; color: #7a6a3a; }
+
+.aft-size-row { display: flex; gap: 1.5em; flex-wrap: wrap; }
+.aft-size { display: flex; flex-direction: column; gap: 0.25em; }
+.aft-size span { font-size: 0.9em; color: #5c6670; }
+
+/* Hazard chart */
+.aft-chart-wrap { display: flex; gap: 1.25em; align-items: flex-start; flex-wrap: wrap; }
+.aft-chart { width: 520px; max-width: 100%; height: auto; border: 1px solid #e0e5ea; border-radius: 4px; }
+.aft-axis { font-size: 11px; fill: #333; }
+.aft-axis-title { font-size: 12px; fill: #333; font-weight: 600; }
+.aft-marker { font-size: 12px; font-weight: 700; fill: #111; }
+.aft-chart-legend { list-style: none; margin: 0; padding: 0; }
+.aft-chart-legend li { margin: 0.2em 0; }
+.aft-legend-num {
+  display: inline-block; width: 20px; height: 20px; line-height: 20px; text-align: center;
+  border: 1px solid #111; border-radius: 50%; font-weight: 700; font-size: 0.8em;
+}
+
+/* Danger suggestion */
+.aft-danger-row { display: flex; gap: 0.75em; flex-wrap: wrap; }
+.aft-danger-band { flex: 1; min-width: 120px; text-align: center; }
+.aft-danger-band-name { font-size: 0.85em; color: #5c6670; margin-bottom: 0.3em; }
+.aft-danger-pill { border-radius: 4px; padding: 0.5em; font-weight: 700; }
+
+/* Pairing warnings */
+.aft-pairing h3 { margin-top: 0; }
+.aft-overlap { margin: 0.4em 0; }
+.aft-pairing-ask { font-weight: 600; margin-bottom: 0.4em; }
+.aft-justify { width: 100%; }
+
+/* Approve */
+.aft-approve-btn { margin-right: 0.75em; }
+.aft-approve-msg { color: #a05a00; font-size: 0.9em; }
+
+/* Entry-point banner on the advisory add form */
+.aft-entry { margin-bottom: 1.25em; }
+.aft-entry .aft-start-button { display: inline-block; margin-top: 0.25em; }

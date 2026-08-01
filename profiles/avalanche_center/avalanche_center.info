@@ -120,6 +120,7 @@ dependencies[] = danger_rose
 dependencies[] = avalanche_danger_map
 dependencies[] = avalanche_glossary
 dependencies[] = avalanche_social_meta
+dependencies[] = avalanche_forecast_tool
 
 ; --- Themes ---
 themes[] = avalanche_modern
