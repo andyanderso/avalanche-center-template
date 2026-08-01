@@ -687,3 +687,11 @@ msgstr "Se usa para enviar por correo los avisos de regreso a la persona respons
 
 msgid "Live Tracking Link"
 msgstr "Enlace de Seguimiento en Vivo"
+
+# FWP on-submit notification
+
+msgid "Field work plan filed: @who"
+msgstr "Plan de trabajo de campo presentado: @who"
+
+msgid "@who has filed a field work plan and is heading into the field, due back at @when. You are listed as their responsible party."
+msgstr "@who ha presentado un plan de trabajo de campo y se dirige al terreno, con regreso previsto a las @when. Usted figura como su persona responsable."

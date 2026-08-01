@@ -424,6 +424,17 @@ function avalanche_fwp_notify($node, $type) {
       $body = $sms . "\n\n" . t('Plan: @url', array('@url' => $node_url));
       break;
 
+    case 'submit':
+      $email_to = $rp['email'];
+      $sms_to = $rp['phone'];
+      $subject = t('Field work plan filed: @who', array('@who' => $who));
+      $sms = t('@who has filed a field work plan and is heading into the field, due back at @when. You are listed as their responsible party.', array('@who' => $who, '@when' => $when));
+      $body = $sms . "\n\n" . t('Plan: @url', array('@url' => $node_url));
+      if ($tracking) {
+        $body .= "\n" . t('Live tracking: @t', array('@t' => $tracking));
+      }
+      break;
+
     default:
       return;
   }
@@ -433,6 +444,46 @@ function avalanche_fwp_notify($node, $type) {
   }
   if ($sms_to && config_get('avalanche_fwp.settings', 'enable_sms')) {
     avalanche_fwp_send_sms($sms_to, $sms);
+  }
+}
+
+/**
+ * Implements hook_node_insert().
+ */
+function avalanche_fwp_node_insert($node) {
+  if ($node->type === 'fwp') {
+    avalanche_fwp_maybe_notify_submit($node);
+  }
+}
+
+/**
+ * Implements hook_node_update().
+ *
+ * Covers plans created unpublished and published later.
+ */
+function avalanche_fwp_node_update($node) {
+  if ($node->type === 'fwp') {
+    avalanche_fwp_maybe_notify_submit($node);
+  }
+}
+
+/**
+ * Sends the "plan filed" notice to the responsible party once, if enabled and
+ * the plan is published.
+ */
+function avalanche_fwp_maybe_notify_submit($node) {
+  if (empty($node->status) || !config_get('avalanche_fwp.settings', 'notify_on_submit')) {
+    return;
+  }
+  $sent = avalanche_fwp_notifications_sent($node->nid);
+  if (!empty($sent['submit'])) {
+    return;
+  }
+  // Reload so field-collection references (responsible party) are resolved.
+  $fresh = node_load($node->nid, NULL, TRUE);
+  if ($fresh) {
+    avalanche_fwp_notify($fresh, 'submit');
+    avalanche_fwp_log_notification($node->nid, 'submit');
   }
 }
 
@@ -503,7 +554,8 @@ function avalanche_fwp_cron() {
     }
     $sent = avalanche_fwp_notifications_sent($node->nid);
 
-    if ($now >= ($return_ts - $lead * 60) && empty($sent['rp_pre'])) {
+    // Advance warning (skipped when lead is 0).
+    if ($lead > 0 && $now >= ($return_ts - $lead * 60) && empty($sent['rp_pre'])) {
       avalanche_fwp_notify($node, 'rp_pre');
       avalanche_fwp_log_notification($node->nid, 'rp_pre');
     }
