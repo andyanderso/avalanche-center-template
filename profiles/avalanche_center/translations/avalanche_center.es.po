@@ -737,3 +737,17 @@ msgstr "Agregar una persona guardada"
 
 msgid "Pick a teammate or a partner you have listed before to fill in their details."
 msgstr "Elija a un compañero o a una persona que haya registrado antes para completar sus datos."
+
+# FWP approved-by dropdown
+
+msgid "- None -"
+msgstr "- Ninguno -"
+
+msgid "Approver roles"
+msgstr "Roles de aprobador"
+
+msgid "Users with any of these roles appear in the "Approved By" dropdown when filling out a Field Work Plan."
+msgstr "Los usuarios con cualquiera de estos roles aparecen en el menú «Aprobado Por» al completar un Plan de Trabajo de Campo."
+
+msgid "Plan approval"
+msgstr "Aprobación del plan"

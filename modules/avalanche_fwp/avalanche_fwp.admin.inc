@@ -83,5 +83,26 @@ function avalanche_fwp_settings_form($form, &$form_state) {
     '#description' => t('If set, Field Work Plan pages are hidden from the public. Logged-in users see them normally; anyone else must enter this password (share it with partners/dispatch who do not have accounts). Leave blank to make the plans fully public.'),
   );
 
+  $form['approval'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Plan approval'),
+    '#collapsible' => FALSE,
+  );
+  // Roles whose members appear in the "Approved By" dropdown on a plan.
+  $role_options = user_roles(TRUE);
+  unset($role_options[BACKDROP_AUTHENTICATED_ROLE]);
+  $default_roles = $conf->get('approver_roles');
+  if ($default_roles === NULL) {
+    // Sensible default: the roles that can already check in any plan.
+    $default_roles = array('administrator', 'forecaster', 'program_manager');
+  }
+  $form['approval']['approver_roles'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Approver roles'),
+    '#options' => $role_options,
+    '#default_value' => is_array($default_roles) ? $default_roles : array(),
+    '#description' => t('Users with any of these roles appear in the "Approved By" dropdown when filling out a Field Work Plan.'),
+  );
+
   return system_settings_form($form);
 }

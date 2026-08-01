@@ -968,6 +968,29 @@ function avalanche_fwp_people_for_user($account) {
 }
 
 /**
+ * Options for the "Approved By" dropdown: display name => display name for every
+ * active user holding one of the configured approver roles. Keyed by the display
+ * name so the stored text value is the approver's name.
+ */
+function avalanche_fwp_approver_options() {
+  $roles = array_filter((array) config_get('avalanche_fwp.settings', 'approver_roles'));
+  if (!$roles) {
+    $roles = array('administrator', 'forecaster', 'program_manager');
+  }
+  $uids = db_query('SELECT DISTINCT ur.uid FROM {users_roles} ur WHERE ur.role IN (:roles)', array(':roles' => $roles))->fetchCol();
+  $options = array();
+  if ($uids) {
+    foreach (user_load_multiple($uids) as $u) {
+      if (!empty($u->status)) {
+        $options[user_format_name($u)] = user_format_name($u);
+      }
+    }
+    natcasesort($options);
+  }
+  return $options;
+}
+
+/**
  * Implements hook_form_BASE_FORM_ID_alter() for node_form.
  *
  * Adds a "pick a saved person" select to each trip-member row; a small JS then
@@ -984,6 +1007,16 @@ function avalanche_fwp_form_node_form_alter(&$form, &$form_state, $form_id) {
   // the date-combo element (value2/time is built by its #process later).
   if (empty($form['#node']->nid) && isset($form['field_field_work_date'][$L][0])) {
     $form['field_field_work_date'][$L][0]['#after_build'][] = 'avalanche_fwp_blank_end_time';
+  }
+
+  // Turn "Approved By" into a dropdown of users holding an approver role.
+  if (isset($form['field_approved_by'][$L][0]['value'])) {
+    $approvers = avalanche_fwp_approver_options();
+    $el = &$form['field_approved_by'][$L][0]['value'];
+    $el['#type'] = 'select';
+    $el['#options'] = array('' => t('- None -')) + $approvers;
+    // Drop textfield-only properties that don't apply to a select.
+    unset($el['#size'], $el['#maxlength'], $el['#attributes']['maxlength']);
   }
 
   if (empty($form['field_trip_members'][$L])) {
