@@ -35,6 +35,10 @@ function avalanche_forecast_tool_permission() {
       'title' => t('Use the guided avalanche forecast tool'),
       'description' => t('Access the guided wizard that helps build an avalanche forecast.'),
     ),
+    'review forecasts with ai' => array(
+      'title' => t('Review forecasts with AI'),
+      'description' => t('Run the optional AI writing/consistency review on a saved forecast. Requires AI review to be enabled and an API key configured.'),
+    ),
   );
 }
 
@@ -58,6 +62,18 @@ function avalanche_forecast_tool_menu() {
     'access callback' => 'avalanche_forecast_tool_access',
     'type' => MENU_CALLBACK,
     'file' => 'avalanche_forecast_tool.pages.inc',
+  );
+
+  // Optional AI review, as a local task (tab) on a saved forecast node.
+  $items['node/%node/ai-review'] = array(
+    'title' => 'AI review',
+    'page callback' => 'avalanche_forecast_tool_ai_review_page',
+    'page arguments' => array(1),
+    'access callback' => 'avalanche_forecast_tool_ai_review_access',
+    'access arguments' => array(1),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 10,
+    'file' => 'avalanche_forecast_tool.ai.inc',
   );
 
   $items['admin/config/system/avalanche-forecast-tool'] = array(

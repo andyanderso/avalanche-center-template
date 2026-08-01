@@ -1038,3 +1038,77 @@ msgstr "Generalizada"
 msgid "You can add up to @n avalanche problems."
 msgstr "Puede agregar hasta @n problemas de avalancha."
 
+
+# --- Avalanche Forecast Tool: AI review layer ---
+msgid "Adds an optional \"AI review\" tab on each forecast that sends the saved forecast to an AI model for writing and consistency suggestions. It is advisory only — it never sets the danger rating or the avalanche problems. The forecast text is sent to the external AI service, and API usage is billed to the key you provide."
+msgstr "Agrega una pestaña opcional de «revisión con IA» en cada pronóstico que envía el pronóstico guardado a un modelo de IA para obtener sugerencias de redacción y consistencia. Es solo un consejo: nunca establece la clasificación de peligro ni los problemas de avalancha. El texto del pronóstico se envía al servicio de IA externo, y el uso de la API se cobra a la clave que usted proporcione."
+
+msgid "AI review is enabled but no API key is configured. Add one on the <a href=\"@url\">forecast tool settings page</a>."
+msgstr "La revisión con IA está habilitada pero no hay ninguna clave de API configurada. Agregue una en la <a href=\"@url\">página de configuración de la herramienta de pronóstico</a>."
+
+msgid "AI review (optional)"
+msgstr "Revisión con IA (opcional)"
+
+msgid "AI review: @title"
+msgstr "Revisión con IA: @title"
+
+msgid "A key is currently set in settings.php, which takes precedence over anything entered here."
+msgstr "Actualmente hay una clave configurada en settings.php, que tiene prioridad sobre lo que se ingrese aquí."
+
+msgid "Anthropic API key"
+msgstr "Clave de API de Anthropic"
+
+msgid "@band danger: @v"
+msgstr "Peligro @band: @v"
+
+msgid "Bottom line: @t"
+msgstr "Resumen: @t"
+
+msgid "Could not reach the AI service (@e)."
+msgstr "No se pudo conectar con el servicio de IA (@e)."
+
+msgid "Discussion: @t"
+msgstr "Discusión: @t"
+
+msgid "Enable AI review"
+msgstr "Habilitar revisión con IA"
+
+msgid "Model"
+msgstr "Modelo"
+
+msgid "No API key configured."
+msgstr "No hay ninguna clave de API configurada."
+
+msgid "Overall danger: @t"
+msgstr "Peligro general: @t"
+
+msgid "Problem @n: @type (likelihood: @l, size: @s)"
+msgstr "Problema @n: @type (probabilidad: @l, tamaño: @s)"
+
+msgid "Review forecasts with AI"
+msgstr "Revisar pronósticos con IA"
+
+msgid "Review this forecast with AI"
+msgstr "Revisar este pronóstico con IA"
+
+msgid "Run the optional AI writing/consistency review on a saved forecast. Requires AI review to be enabled and an API key configured."
+msgstr "Ejecutar la revisión opcional de redacción/consistencia con IA sobre un pronóstico guardado. Requiere que la revisión con IA esté habilitada y una clave de API configurada."
+
+msgid "The AI service returned an error: @m"
+msgstr "El servicio de IA devolvió un error: @m"
+
+msgid "The AI service returned no review text."
+msgstr "El servicio de IA no devolvió ningún texto de revisión."
+
+msgid "The Anthropic model to use. Defaults to the current most capable model."
+msgstr "El modelo de Anthropic a utilizar. Por defecto, el modelo más capaz disponible."
+
+msgid "This sends the saved forecast to an AI model for a writing and consistency review. The suggestions below are advisory only — they do not change your forecast, and the danger rating is always yours to set. The forecast text is sent to the external AI service."
+msgstr "Esto envía el pronóstico guardado a un modelo de IA para una revisión de redacción y consistencia. Las sugerencias a continuación son solo un consejo: no modifican su pronóstico, y la clasificación de peligro siempre la establece usted. El texto del pronóstico se envía al servicio de IA externo."
+
+msgid "Title: @t"
+msgstr "Título: @t"
+
+msgid "Your Anthropic API key. For better security you can instead set it in settings.php as <code>$settings[\"avalanche_forecast_tool_api_key\"]</code>, which then takes precedence and keeps it out of exported configuration."
+msgstr "Su clave de API de Anthropic. Para mayor seguridad, puede establecerla en settings.php como <code>$settings[\"avalanche_forecast_tool_api_key\"]</code>, que entonces tiene prioridad y la mantiene fuera de la configuración exportada."
+
