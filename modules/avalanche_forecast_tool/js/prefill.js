@@ -120,28 +120,27 @@
   function showBanner(form, data) {
     var wrap = document.createElement('div');
     wrap.className = 'aft-prefill-banner messages status';
-    var html = '<p><strong>' + t('The guided tool filled in the problem type, likelihood, size and location fields below.') +
-      '</strong> ' + t('Please review everything, then set the danger rating yourself.') + '</p>';
+    var html = '<p><strong>' + Backdrop.t('The guided tool filled in the problem type, likelihood, size and location fields below.') +
+      '</strong> ' + Backdrop.t('Please review everything, then set the danger rating yourself.') + '</p>';
 
     if (data.suggestions) {
-      var map = { above: t('Above Treeline'), near: t('Near Treeline'), below: t('Below Treeline'), overall: t('Overall') };
+      var map = { above: Backdrop.t('Above Treeline'), near: Backdrop.t('Near Treeline'), below: Backdrop.t('Below Treeline'), overall: Backdrop.t('Overall') };
       var parts = [];
       ['above', 'near', 'below', 'overall'].forEach(function (b) {
         if (data.suggestions[b]) { parts.push(map[b] + ': <strong>' + esc(data.suggestions[b]) + '</strong>'); }
       });
       if (parts.length) {
-        html += '<p>' + t('Suggested danger rating (for your consideration — not entered): ') + parts.join(' · ') + '</p>';
+        html += '<p>' + Backdrop.t('Suggested danger rating (for your consideration — not entered): ') + parts.join(' · ') + '</p>';
       }
     }
     if (data.notes && data.notes.length) {
-      html += '<p>' + t('Pairing justification you noted: ') + esc(data.notes.join(' — ')) + '</p>';
+      html += '<p>' + Backdrop.t('Pairing justification you noted: ') + esc(data.notes.join(' — ')) + '</p>';
     }
     wrap.innerHTML = html;
     var target = form.querySelector ? form : document.body;
     (target.firstChild ? target.insertBefore(wrap, target.firstChild) : target.appendChild(wrap));
   }
 
-  function t(s) { return (Backdrop.t ? Backdrop.t(s) : s); }
   function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
 })(jQuery, Backdrop);

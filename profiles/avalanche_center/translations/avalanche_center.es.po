@@ -701,8 +701,8 @@ msgstr "@who ha presentado un plan de trabajo de campo y se dirige al terreno, c
 msgid "Field Work Plan"
 msgstr "Plan de Trabajo de Campo"
 
-msgid "Field Work Plans are password protected. Enter the access password to continue, or <a href="@login">log in</a>."
-msgstr "Los Planes de Trabajo de Campo están protegidos con contraseña. Ingrese la contraseña de acceso para continuar, o <a href="@login">inicie sesión</a>."
+msgid "Field Work Plans are password protected. Enter the access password to continue, or <a href=\"@login\">log in</a>."
+msgstr "Los Planes de Trabajo de Campo están protegidos con contraseña. Ingrese la contraseña de acceso para continuar, o <a href=\"@login\">inicie sesión</a>."
 
 msgid "Access password"
 msgstr "Contraseña de acceso"
@@ -746,8 +746,295 @@ msgstr "- Ninguno -"
 msgid "Approver roles"
 msgstr "Roles de aprobador"
 
-msgid "Users with any of these roles appear in the "Approved By" dropdown when filling out a Field Work Plan."
+msgid "Users with any of these roles appear in the \"Approved By\" dropdown when filling out a Field Work Plan."
 msgstr "Los usuarios con cualquiera de estos roles aparecen en el menú «Aprobado Por» al completar un Plan de Trabajo de Campo."
 
 msgid "Plan approval"
 msgstr "Aprobación del plan"
+
+# --- Avalanche Forecast Tool (guided wizard) ---
+msgid "1. What are you seeing?"
+msgstr "1. ¿Qué está observando?"
+
+msgid "A buried persistent weak layer that is reactive"
+msgstr "Una capa débil persistente enterrada que está reactiva"
+
+msgid "Access the guided wizard that helps build an avalanche forecast."
+msgstr "Acceder al asistente guiado que ayuda a elaborar un pronóstico de avalanchas."
+
+msgid "Add a justification for the flagged pairing above to continue."
+msgstr "Agregue una justificación para la combinación señalada más arriba para continuar."
+
+msgid "Add problem"
+msgstr "Agregar problema"
+
+msgid "A deep, hard slab (~1.5 m+) on a basal weak layer; stubborn, produces large avalanches"
+msgstr "Una placa profunda y dura (~1,5 m o más) sobre una capa débil basal; terca, produce avalanchas grandes"
+
+msgid "Approve & pre-fill the forecast form"
+msgstr "Aprobar y precompletar el formulario de pronóstico"
+
+msgid "A suggestion from the hazard chart — danger is a judgment call, so review it and enter the actual rating yourself on the forecast form."
+msgstr "Una sugerencia a partir del gráfico de peligro: el peligro es un juicio experto, así que revíselo e ingrese usted mismo la clasificación real en el formulario de pronóstico."
+
+msgid "Because they overlap in location, likelihood and size, please explain why you are forecasting both:"
+msgstr "Debido a que se superponen en ubicación, probabilidad y tamaño, explique por qué está pronosticando ambos:"
+
+msgid "Build this forecast with the guided tool?"
+msgstr "¿Elaborar este pronóstico con la herramienta guiada?"
+
+msgid "Check the conditions you have evidence for. The tool suggests the matching avalanche problems — you decide which to add."
+msgstr "Marque las condiciones para las que tiene evidencia. La herramienta sugiere los problemas de avalancha correspondientes; usted decide cuáles agregar."
+
+msgid "Check this pairing: @a + @b"
+msgstr "Revise esta combinación: @a + @b"
+
+msgid "— choose a problem —"
+msgstr "— elija un problema —"
+
+msgid "Cohesive slab formed by wind-drifted snow."
+msgstr "Placa cohesiva formada por nieve transportada por el viento."
+
+msgid "Cohesive slab released by free water reaching a buried layer."
+msgstr "Placa cohesiva liberada por agua libre que alcanza una capa enterrada."
+
+msgid "Could not save. Please try again."
+msgstr "No se pudo guardar. Inténtelo nuevamente."
+
+msgid "Deep Persistent Slab"
+msgstr "Placa Persistente Profunda"
+
+msgid "Destructive size"
+msgstr "Tamaño destructivo"
+
+msgid "Dry, loose surface snow sluffing on steep terrain"
+msgstr "Nieve superficial seca y suelta que se desliza en terreno empinado"
+
+msgid "Each problem plotted by likelihood and size (Statham Fig 3). Shading shows the danger the hazard chart implies."
+msgstr "Cada problema se ubica según su probabilidad y tamaño (Statham Fig. 3). El sombreado muestra el peligro que implica el gráfico."
+
+msgid "Expected size (destructive)"
+msgstr "Tamaño esperado (destructivo)"
+
+msgid "Features with common characteristics; evidence exists but is not obvious."
+msgstr "Rasgos con características comunes; la evidencia existe pero no es obvia."
+
+msgid "Few naturals; difficult to trigger, or only with large explosives."
+msgstr "Pocas avalanchas naturales; difícil de gatillar, o solo con explosivos grandes."
+
+msgid "Finish each problem (location, likelihood, size) to continue."
+msgstr "Complete cada problema (ubicación, probabilidad, tamaño) para continuar."
+
+msgid "Free water at the snow surface (melt or rain), loose wet snow"
+msgstr "Agua libre en la superficie de la nieve (derretimiento o lluvia), nieve húmeda suelta"
+
+msgid "Free water percolating down to a buried layer (wet slab release)"
+msgstr "Agua libre que percola hacia una capa enterrada (liberación de placa húmeda)"
+
+msgid "Full-depth glide release, often preceded by glide cracks."
+msgstr "Liberación de deslizamiento a espesor completo, a menudo precedida por grietas de deslizamiento."
+
+msgid "Glide cracks or recent glide-avalanche activity"
+msgstr "Grietas de deslizamiento o actividad reciente de avalanchas de deslizamiento"
+
+msgid "Hazard chart"
+msgstr "Gráfico de peligro"
+
+msgid "Historic — could destroy a rail car or several buildings."
+msgstr "Histórica: podría destruir un vagón de tren o varios edificios."
+
+msgid "How the tool is offered"
+msgstr "Cómo se ofrece la herramienta"
+
+msgid "Isolated"
+msgstr "Aislada"
+
+msgid "It walks you through the avalanche problems, likelihood, size and a suggested danger rating, then fills in the form for you — helping ratings stay consistent across regions and forecasters. You can also just fill out the form below."
+msgstr "Lo guía a través de los problemas de avalancha, la probabilidad, el tamaño y una clasificación de peligro sugerida, y luego completa el formulario por usted, ayudando a que las clasificaciones sean consistentes entre regiones y pronosticadores. También puede simplemente completar el formulario a continuación."
+
+msgid "Large — could bury, injure or kill a person."
+msgstr "Grande: podría enterrar, herir o matar a una persona."
+
+msgid "Large or failing cornices"
+msgstr "Cornisas grandes o que están colapsando"
+
+msgid "Largest expected"
+msgstr "Tamaño máximo esperado"
+
+msgid "Largest known — could gouge terrain, destroy a village."
+msgstr "La más grande conocida: podría erosionar el terreno, destruir un pueblo."
+
+msgid "likelihood"
+msgstr "probabilidad"
+
+msgid "Likelihood: choose sensitivity and distribution"
+msgstr "Probabilidad: elija sensibilidad y distribución"
+
+msgid "Likelihood (from the Fig 2 matrix): "
+msgstr "Probabilidad (según la matriz de la Fig. 2): "
+
+msgid "location"
+msgstr "ubicación"
+
+msgid "Loose Dry and Loose Wet are the same loose-snow problem in different states; you would not normally have both at once."
+msgstr "Nieve Seca Suelta y Nieve Húmeda Suelta son el mismo problema de nieve suelta en distintos estados; normalmente no tendría ambos a la vez."
+
+msgid "Loose Wet and Wet Slab are both wet problems; pair them only when they differ meaningfully in distribution, likelihood or size."
+msgstr "Nieve Húmeda Suelta y Placa Húmeda son ambos problemas húmedos; combínelos solo cuando difieran de forma significativa en distribución, probabilidad o tamaño."
+
+msgid "Loose, wet, cohesionless snow from melt or rain."
+msgstr "Nieve suelta, húmeda y sin cohesión por derretimiento o lluvia."
+
+msgid "Many locations and features; evidence is everywhere and easy to find."
+msgstr "Muchas ubicaciones y rasgos; la evidencia está en todas partes y es fácil de encontrar."
+
+msgid "New snow in the last 24–48 hours forming a soft slab"
+msgstr "Nieve nueva en las últimas 24–48 horas que forma una placa blanda"
+
+msgid "No natural avalanches; unlikely to trigger even with a large load."
+msgstr "Sin avalanchas naturales; improbable de gatillar incluso con una carga grande."
+
+msgid "No problems added yet. Check conditions above or add one manually."
+msgstr "Aún no se han agregado problemas. Marque condiciones más arriba o agregue uno manualmente."
+
+msgid "No significant instability observed"
+msgstr "No se observa inestabilidad significativa"
+
+msgid "No specific avalanche problem; general caution only."
+msgstr "Sin problema de avalancha específico; solo precaución general."
+
+msgid "Numerous naturals; triggering is almost certain."
+msgstr "Numerosas avalanchas naturales; el gatillado es casi seguro."
+
+msgid "Opening the forecast form…"
+msgstr "Abriendo el formulario de pronóstico…"
+
+msgid "Or add a problem manually:"
+msgstr "O agregue un problema manualmente:"
+
+msgid "Overall"
+msgstr "General"
+
+msgid "Overhanging cornice failure, which may also trigger a slab below."
+msgstr "Colapso de una cornisa saliente, que también puede gatillar una placa más abajo."
+
+msgid "Pairing justification you noted: "
+msgstr "Justificación de la combinación que anotó: "
+
+msgid "Persistent Slab and Deep Persistent Slab describe the same family of buried weak layers; pair them only when they differ meaningfully in distribution, likelihood or size."
+msgstr "Placa Persistente y Placa Persistente Profunda describen la misma familia de capas débiles enterradas; combínelas solo cuando difieran de forma significativa en distribución, probabilidad o tamaño."
+
+msgid "Please review everything, then set the danger rating yourself."
+msgstr "Revise todo y luego establezca usted mismo la clasificación de peligro."
+
+msgid "Problem @n: "
+msgstr "Problema @n: "
+
+msgid "Reactive"
+msgstr "Reactiva"
+
+msgid "Recent wind-loading / blowing snow (last ~3 days)"
+msgstr "Carga de viento reciente / nieve arrastrada por el viento (últimos ~3 días)"
+
+msgid "Require the guided tool for new forecasts"
+msgstr "Exigir la herramienta guiada para nuevos pronósticos"
+
+msgid "Sensitivity & distribution"
+msgstr "Sensibilidad y distribución"
+
+msgid "Sensitivity to triggers"
+msgstr "Sensibilidad a los gatillantes"
+
+msgid "Several naturals; easy to trigger with ski cuts or a single hand charge."
+msgstr "Varias avalanchas naturales; fácil de gatillar con cortes de esquí o una sola carga de mano."
+
+msgid "size"
+msgstr "tamaño"
+
+msgid "Slab resting on a buried, persistent weak layer."
+msgstr "Placa que descansa sobre una capa débil persistente enterrada."
+
+msgid "Sluffing of dry, cohesionless surface snow."
+msgstr "Deslizamiento de nieve superficial seca y sin cohesión."
+
+msgid "Smallest expected"
+msgstr "Tamaño mínimo esperado"
+
+msgid "Small — relatively harmless to people."
+msgstr "Pequeña: relativamente inofensiva para las personas."
+
+msgid "Soft slab of recent storm snow (last ~24–48h)."
+msgstr "Placa blanda de nieve reciente de tormenta (últimas ~24–48 h)."
+
+msgid "Spatial distribution"
+msgstr "Distribución espacial"
+
+msgid "Specific"
+msgstr "Específica"
+
+msgid "Spotty; a few specific features; evidence is rare and hard to find."
+msgstr "Irregular; unos pocos rasgos específicos; la evidencia es escasa y difícil de encontrar."
+
+msgid "Start the guided forecast tool"
+msgstr "Iniciar la herramienta guiada de pronóstico"
+
+msgid "Storm Slab and Wind Slab are both new-snow slabs; the guidance suggests not pairing them unless they differ meaningfully in distribution, likelihood or size."
+msgstr "Placa de Tormenta y Placa de Viento son ambas placas de nieve nueva; la guía sugiere no combinarlas a menos que difieran de forma significativa en distribución, probabilidad o tamaño."
+
+msgid "Stubborn"
+msgstr "Terca"
+
+msgid "Suggested danger rating"
+msgstr "Clasificación de peligro sugerida"
+
+msgid "Suggested danger rating (for your consideration — not entered): "
+msgstr "Clasificación de peligro sugerida (para su consideración, no ingresada): "
+
+msgid "Suggested problems:"
+msgstr "Problemas sugeridos:"
+
+msgid "The guided forecast tool needs JavaScript enabled."
+msgstr "La herramienta guiada de pronóstico necesita JavaScript habilitado."
+
+msgid "The guided tool filled in the problem type, likelihood, size and location fields below."
+msgstr "La herramienta guiada completó los campos de tipo de problema, probabilidad, tamaño y ubicación a continuación."
+
+msgid "These two currently overlap in: "
+msgstr "Estos dos actualmente se superponen en: "
+
+msgid "Thick, hard slab on a deeply buried basal weak layer; stubborn but large."
+msgstr "Placa gruesa y dura sobre una capa débil basal profundamente enterrada; terca pero grande."
+
+msgid "This site is configured to build forecasts with the guided tool."
+msgstr "Este sitio está configurado para elaborar pronósticos con la herramienta guiada."
+
+msgid "This tool walks you through each avalanche problem — where it is, how sensitive and how widespread it is (which sets the likelihood), and how big it could get — then shows a hazard chart and a suggested danger rating for each elevation band. Nothing is saved until you approve it and review the forecast form."
+msgstr "Esta herramienta lo guía a través de cada problema de avalancha: dónde está, cuán sensible y cuán extendido está (lo que define la probabilidad) y cuán grande podría llegar a ser; luego muestra un gráfico de peligro y una clasificación de peligro sugerida para cada banda de elevación. No se guarda nada hasta que lo apruebe y revise el formulario de pronóstico."
+
+msgid "Touchy"
+msgstr "Muy sensible"
+
+msgid "Unreactive"
+msgstr "No reactiva"
+
+msgid "Use the guided avalanche forecast tool"
+msgstr "Usar la herramienta guiada de pronóstico de avalanchas"
+
+msgid "Very large — could bury a car, destroy a house."
+msgstr "Muy grande: podría enterrar un automóvil, destruir una casa."
+
+msgid "When off (default), forecasters see a prompt at the top of the forecast form offering the guided tool, and can still fill the form by hand. When on, the forecast form leads with the guided tool. Turn this on once your forecasters are comfortable with the tool."
+msgstr "Cuando está desactivado (predeterminado), los pronosticadores ven un aviso en la parte superior del formulario que ofrece la herramienta guiada y aún pueden completar el formulario a mano. Cuando está activado, el formulario comienza con la herramienta guiada. Actívelo una vez que sus pronosticadores estén cómodos con la herramienta."
+
+msgid "When you approve, the forecast form opens with the problems, likelihood and size filled in. Review everything and enter the danger rating before saving."
+msgstr "Cuando apruebe, el formulario de pronóstico se abre con los problemas, la probabilidad y el tamaño completados. Revise todo e ingrese la clasificación de peligro antes de guardar."
+
+msgid "Why are both problems needed here?"
+msgstr "¿Por qué se necesitan ambos problemas aquí?"
+
+msgid "Widespread"
+msgstr "Generalizada"
+
+msgid "You can add up to @n avalanche problems."
+msgstr "Puede agregar hasta @n problemas de avalancha."
+

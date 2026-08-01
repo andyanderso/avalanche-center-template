@@ -221,6 +221,11 @@ function avalanche_center_enable_spanish() {
   // The Field Work Plan (fwp) trip-planning form is likewise all stored config.
   avalanche_center_localize_fwp_form('es');
 
+  // The guided forecast wizard builds its UI client-side with Backdrop.t();
+  // register those JS strings and rebuild the per-language JS so the wizard
+  // renders in Spanish on the very first visit (not only after a later rebuild).
+  avalanche_center_register_forecast_tool_js('es');
+
   // Spanish-speaking avalanche centers (Chile, Argentina, ...) forecast in
   // metric, so default the weather tables to metric units.
   config_set('avalanche_modern.settings', 'weather_units', 'metric');
@@ -839,6 +844,35 @@ function avalanche_center_localize_observation_form($langcode) {
  * @param string $langcode
  *   Target language; only 'es' is shipped.
  */
+/**
+ * Registers the guided forecast wizard's client-side JS strings for translation.
+ *
+ * wizard.js and prefill.js build their interface at runtime via Backdrop.t().
+ * Backdrop only serves a translated string to the client once the source has
+ * been registered with a 'javascript' location (normally discovered lazily when
+ * the page is first built). Parsing the files here, right after the PO import,
+ * plus rebuilding the per-language JS, means the wizard is fully translated on
+ * the first visit instead of after a later cache rebuild. Idempotent.
+ *
+ * @param string $langcode
+ *   Target language; only 'es' is shipped.
+ */
+function avalanche_center_register_forecast_tool_js($langcode) {
+  require_once BACKDROP_ROOT . '/core/includes/locale.inc';
+  $mod = backdrop_get_path('module', 'avalanche_forecast_tool');
+  if ($mod) {
+    foreach (array('/js/wizard.js', '/js/prefill.js') as $js) {
+      $file = $mod . $js;
+      if (is_file($file) && function_exists('_locale_parse_js_file')) {
+        _locale_parse_js_file($file);
+      }
+    }
+  }
+  if (function_exists('_locale_rebuild_js')) {
+    _locale_rebuild_js($langcode);
+  }
+}
+
 function avalanche_center_localize_fwp_form($langcode) {
   if ($langcode !== 'es') {
     return;

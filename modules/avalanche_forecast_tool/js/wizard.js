@@ -32,8 +32,6 @@
    * Small helpers
    * ---------------------------------------------------------------------- */
 
-  function t(s) { return (Backdrop.t ? Backdrop.t(s) : s); }
-
   function el(tag, attrs, children) {
     var node = document.createElement(tag);
     attrs = attrs || {};
@@ -181,8 +179,8 @@
   Wizard.prototype.renderConditions = function () {
     var self = this;
     var box = el('section', { class: 'aft-card aft-conditions' }, [
-      el('h2', { text: t('1. What are you seeing?') }),
-      el('p', { class: 'aft-hint', text: t('Check the conditions you have evidence for. The tool suggests the matching avalanche problems — you decide which to add.') })
+      el('h2', { text: Backdrop.t('1. What are you seeing?') }),
+      el('p', { class: 'aft-hint', text: Backdrop.t('Check the conditions you have evidence for. The tool suggests the matching avalanche problems — you decide which to add.') })
     ]);
     var list = el('div', { class: 'aft-condition-list' });
     this.cfg.conditions.forEach(function (c) {
@@ -210,7 +208,7 @@
     });
     var keys = Object.keys(suggested);
     if (!keys.length) { return; }
-    this.suggestHost.appendChild(el('p', { class: 'aft-suggest-label', text: t('Suggested problems:') }));
+    this.suggestHost.appendChild(el('p', { class: 'aft-suggest-label', text: Backdrop.t('Suggested problems:') }));
     var row = el('div', { class: 'aft-suggest-chips' });
     keys.forEach(function (k) {
       var already = self.problems.some(function (p) { return p.type === k; });
@@ -230,15 +228,15 @@
     var self = this;
     var wrap = el('div', { class: 'aft-add-problem' });
     var select = el('select', { class: 'aft-add-select' });
-    select.appendChild(el('option', { value: '', text: t('— choose a problem —') }));
+    select.appendChild(el('option', { value: '', text: Backdrop.t('— choose a problem —') }));
     this.cfg.problems.forEach(function (p) {
       select.appendChild(el('option', { value: p.key, text: p.label }));
     });
     var btn = el('button', {
       type: 'button', class: 'button',
       onclick: function () { if (select.value) { self.addProblem(select.value); select.value = ''; } }
-    }, [t('Add problem')]);
-    wrap.appendChild(el('span', { class: 'aft-add-label', text: t('Or add a problem manually:') }));
+    }, [Backdrop.t('Add problem')]);
+    wrap.appendChild(el('span', { class: 'aft-add-label', text: Backdrop.t('Or add a problem manually:') }));
     wrap.appendChild(select);
     wrap.appendChild(btn);
     this.addProblemControls = { select: select, button: btn };
@@ -247,7 +245,7 @@
 
   Wizard.prototype.addProblem = function (typeKey) {
     if (this.problems.length >= this.cfg.maxProblems) {
-      alert(t('You can add up to @n avalanche problems.').replace('@n', this.cfg.maxProblems));
+      alert(Backdrop.t('You can add up to @n avalanche problems.').replace('@n', this.cfg.maxProblems));
       return;
     }
     if (this.problems.some(function (p) { return p.type === typeKey; })) { return; }
@@ -267,7 +265,7 @@
   Wizard.prototype.renderProblems = function () {
     this.problemsHost.innerHTML = '';
     if (!this.problems.length) {
-      this.problemsHost.appendChild(el('p', { class: 'aft-empty', text: t('No problems added yet. Check conditions above or add one manually.') }));
+      this.problemsHost.appendChild(el('p', { class: 'aft-empty', text: Backdrop.t('No problems added yet. Check conditions above or add one manually.') }));
     }
     this.problems.forEach(function (p, i) {
       this.problemsHost.appendChild(this.renderProblemCard(p, i));
@@ -285,23 +283,23 @@
     var def = this.problemByKey[p.type] || {};
     var card = el('section', { class: 'aft-card aft-problem' });
     card.appendChild(el('div', { class: 'aft-problem-head' }, [
-      el('h3', { text: t('Problem @n: ', { '@n': idx + 1 }) + (def.label || '') }),
-      el('button', { type: 'button', class: 'aft-remove', title: t('Remove'), onclick: function () { self.removeProblem(idx); } }, ['×'])
+      el('h3', { text: Backdrop.t('Problem @n: ', { '@n': idx + 1 }) + (def.label || '') }),
+      el('button', { type: 'button', class: 'aft-remove', title: Backdrop.t('Remove'), onclick: function () { self.removeProblem(idx); } }, ['×'])
     ]));
     if (def.desc) { card.appendChild(el('p', { class: 'aft-hint', text: def.desc })); }
 
     // Location rose (band x aspect grid).
-    card.appendChild(el('h4', { text: t('Location') }));
+    card.appendChild(el('h4', { text: Backdrop.t('Location') }));
     card.appendChild(this.renderRose(p));
 
     // Sensitivity + distribution -> likelihood.
     var likeRow = el('div', { class: 'aft-likelihood-row' });
-    card.appendChild(el('h4', { text: t('Sensitivity & distribution') }));
+    card.appendChild(el('h4', { text: Backdrop.t('Sensitivity & distribution') }));
     var grid = el('div', { class: 'aft-two-col' }, [
-      this.renderChoice(t('Sensitivity to triggers'), this.cfg.sensitivity, p.sensitivity, function (v) {
+      this.renderChoice(Backdrop.t('Sensitivity to triggers'), this.cfg.sensitivity, p.sensitivity, function (v) {
         p.sensitivity = v; self.updateLikelihood(p, likeRow); self.renderOutput();
       }),
-      this.renderChoice(t('Spatial distribution'), this.cfg.distribution, p.distribution, function (v) {
+      this.renderChoice(Backdrop.t('Spatial distribution'), this.cfg.distribution, p.distribution, function (v) {
         p.distribution = v; self.updateLikelihood(p, likeRow); self.renderOutput();
       })
     ]);
@@ -310,7 +308,7 @@
     this.updateLikelihood(p, likeRow);
 
     // Size range.
-    card.appendChild(el('h4', { text: t('Expected size (destructive)') }));
+    card.appendChild(el('h4', { text: Backdrop.t('Expected size (destructive)') }));
     card.appendChild(this.renderSize(p));
 
     return card;
@@ -363,10 +361,10 @@
     host.innerHTML = '';
     var like = this.likelihoodFor(p);
     if (!like) {
-      host.appendChild(el('span', { class: 'aft-like aft-like--pending', text: t('Likelihood: choose sensitivity and distribution') }));
+      host.appendChild(el('span', { class: 'aft-like aft-like--pending', text: Backdrop.t('Likelihood: choose sensitivity and distribution') }));
       return;
     }
-    host.appendChild(el('span', { class: 'aft-like', html: t('Likelihood (from the Fig 2 matrix): ') + '<strong>' + this.cfg.likelihoodLabels[like] + '</strong>' }));
+    host.appendChild(el('span', { class: 'aft-like', html: Backdrop.t('Likelihood (from the Fig 2 matrix): ') + '<strong>' + this.cfg.likelihoodLabels[like] + '</strong>' }));
   };
 
   Wizard.prototype.renderSize = function (p) {
@@ -383,8 +381,8 @@
       return el('label', { class: 'aft-size' }, [el('span', { text: label }), sel]);
     }
     return el('div', { class: 'aft-size-row' }, [
-      sizeSelect(t('Smallest expected'), 'sizeMin'),
-      sizeSelect(t('Largest expected'), 'sizeMax')
+      sizeSelect(Backdrop.t('Smallest expected'), 'sizeMin'),
+      sizeSelect(Backdrop.t('Largest expected'), 'sizeMax')
     ]);
   };
 
@@ -403,8 +401,8 @@
     this.outputHost.appendChild(this.renderPairing());
 
     var chartCard = el('section', { class: 'aft-card' }, [
-      el('h2', { text: t('Hazard chart') }),
-      el('p', { class: 'aft-hint', text: t('Each problem plotted by likelihood and size (Statham Fig 3). Shading shows the danger the hazard chart implies.') })
+      el('h2', { text: Backdrop.t('Hazard chart') }),
+      el('p', { class: 'aft-hint', text: Backdrop.t('Each problem plotted by likelihood and size (Statham Fig 3). Shading shows the danger the hazard chart implies.') })
     ]);
     chartCard.appendChild(this.renderChart());
     this.outputHost.appendChild(chartCard);
@@ -450,7 +448,7 @@
       ty.textContent = self.cfg.likelihoodLabels[lk]; svg.appendChild(ty);
     });
     var xlab = s('text', { x: padL + plotW / 2, y: H - 6, 'text-anchor': 'middle', class: 'aft-axis-title' });
-    xlab.textContent = t('Destructive size'); svg.appendChild(xlab);
+    xlab.textContent = Backdrop.t('Destructive size'); svg.appendChild(xlab);
 
     // Plot each problem: a line spanning its size range at its likelihood, with a marker at the upper size.
     self.problems.forEach(function (p, idx) {
@@ -488,11 +486,11 @@
     var sugg = this.dangerSuggestions();
     this.currentSuggestions = sugg;
     var card = el('section', { class: 'aft-card aft-danger' }, [
-      el('h2', { text: t('Suggested danger rating') }),
-      el('p', { class: 'aft-hint', text: t('A suggestion from the hazard chart — danger is a judgment call, so review it and enter the actual rating yourself on the forecast form.') })
+      el('h2', { text: Backdrop.t('Suggested danger rating') }),
+      el('p', { class: 'aft-hint', text: Backdrop.t('A suggestion from the hazard chart — danger is a judgment call, so review it and enter the actual rating yourself on the forecast form.') })
     ]);
     var row = el('div', { class: 'aft-danger-row' });
-    [['above', t('Above Treeline')], ['near', t('Near Treeline')], ['below', t('Below Treeline')], ['overall', t('Overall')]].forEach(function (b) {
+    [['above', Backdrop.t('Above Treeline')], ['near', Backdrop.t('Near Treeline')], ['below', Backdrop.t('Below Treeline')], ['overall', Backdrop.t('Overall')]].forEach(function (b) {
       var label = sugg[b[0]];
       row.appendChild(el('div', { class: 'aft-danger-band' }, [
         el('div', { class: 'aft-danger-band-name', text: b[1] }),
@@ -518,21 +516,21 @@
     });
     flags.forEach(function (f) {
       var dims = [];
-      if (f.overlap.location) { dims.push(t('location')); }
-      if (f.overlap.likelihood) { dims.push(t('likelihood')); }
-      if (f.overlap.size) { dims.push(t('size')); }
+      if (f.overlap.location) { dims.push(Backdrop.t('location')); }
+      if (f.overlap.likelihood) { dims.push(Backdrop.t('likelihood')); }
+      if (f.overlap.size) { dims.push(Backdrop.t('size')); }
       var cls = 'aft-card aft-pairing ' + (f.strong ? 'aft-pairing--strong messages warning' : 'aft-pairing--soft messages status');
       var box = el('section', { class: cls });
-      box.appendChild(el('h3', { text: t('Check this pairing: @a + @b', { '@a': self.problemLabel(f.rule.a), '@b': self.problemLabel(f.rule.b) }) }));
+      box.appendChild(el('h3', { text: Backdrop.t('Check this pairing: @a + @b', { '@a': self.problemLabel(f.rule.a), '@b': self.problemLabel(f.rule.b) }) }));
       box.appendChild(el('p', { text: f.rule.reason }));
       if (dims.length) {
-        box.appendChild(el('p', { class: 'aft-overlap', html: t('These two currently overlap in: ') + '<strong>' + dims.join(', ') + '</strong>.' }));
+        box.appendChild(el('p', { class: 'aft-overlap', html: Backdrop.t('These two currently overlap in: ') + '<strong>' + dims.join(', ') + '</strong>.' }));
       }
       if (f.strong) {
-        box.appendChild(el('p', { class: 'aft-pairing-ask', text: t('Because they overlap in location, likelihood and size, please explain why you are forecasting both:') }));
+        box.appendChild(el('p', { class: 'aft-pairing-ask', text: Backdrop.t('Because they overlap in location, likelihood and size, please explain why you are forecasting both:') }));
         var ta = el('textarea', {
           class: 'aft-justify', rows: '2',
-          placeholder: t('Why are both problems needed here?'),
+          placeholder: Backdrop.t('Why are both problems needed here?'),
           oninput: function () { self.notes[f.key] = ta.value; self.updateApproveState(); }
         });
         ta.value = self.notes[f.key] || '';
@@ -546,11 +544,11 @@
   Wizard.prototype.renderApprove = function () {
     var self = this;
     var card = el('section', { class: 'aft-card aft-approve' });
-    card.appendChild(el('p', { class: 'aft-hint', text: t('When you approve, the forecast form opens with the problems, likelihood and size filled in. Review everything and enter the danger rating before saving.') }));
+    card.appendChild(el('p', { class: 'aft-hint', text: Backdrop.t('When you approve, the forecast form opens with the problems, likelihood and size filled in. Review everything and enter the danger rating before saving.') }));
     this.approveBtn = el('button', {
       type: 'button', class: 'button button-primary aft-approve-btn',
       onclick: function () { self.approve(); }
-    }, [t('Approve & pre-fill the forecast form')]);
+    }, [Backdrop.t('Approve & pre-fill the forecast form')]);
     this.approveMsg = el('span', { class: 'aft-approve-msg' });
     card.appendChild(this.approveBtn);
     card.appendChild(this.approveMsg);
@@ -570,8 +568,8 @@
     }, this);
     this.approveBtn.disabled = missing || incomplete || !this.problems.length;
     this.approveMsg.textContent = missing
-      ? t('Add a justification for the flagged pairing above to continue.')
-      : (incomplete ? t('Finish each problem (location, likelihood, size) to continue.') : '');
+      ? Backdrop.t('Add a justification for the flagged pairing above to continue.')
+      : (incomplete ? Backdrop.t('Finish each problem (location, likelihood, size) to continue.') : '');
   };
 
   Wizard.prototype.approve = function () {
@@ -591,7 +589,7 @@
       notes: Object.keys(this.notes).map(function (k) { return self.notes[k]; }).filter(Boolean)
     };
     this.approveBtn.disabled = true;
-    this.approveMsg.textContent = t('Opening the forecast form…');
+    this.approveMsg.textContent = Backdrop.t('Opening the forecast form…');
 
     var form = new FormData();
     form.append('token', this.cfg.token);
@@ -600,9 +598,9 @@
       .then(function (r) { return r.json(); })
       .then(function (data) {
         if (data && data.redirect) { window.location.href = data.redirect; }
-        else { self.approveMsg.textContent = t('Could not save. Please try again.'); self.updateApproveState(); }
+        else { self.approveMsg.textContent = Backdrop.t('Could not save. Please try again.'); self.updateApproveState(); }
       })
-      .catch(function () { self.approveMsg.textContent = t('Could not save. Please try again.'); self.updateApproveState(); });
+      .catch(function () { self.approveMsg.textContent = Backdrop.t('Could not save. Please try again.'); self.updateApproveState(); });
   };
 
 })(jQuery, Backdrop);
