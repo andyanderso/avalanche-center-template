@@ -1112,3 +1112,32 @@ msgstr "Título: @t"
 msgid "Your Anthropic API key. For better security you can instead set it in settings.php as <code>$settings[\"avalanche_forecast_tool_api_key\"]</code>, which then takes precedence and keeps it out of exported configuration."
 msgstr "Su clave de API de Anthropic. Para mayor seguridad, puede establecerla en settings.php como <code>$settings[\"avalanche_forecast_tool_api_key\"]</code>, que entonces tiene prioridad y la mantiene fuera de la configuración exportada."
 
+
+# --- Forecast tool: rose/pyramid + Statham 2018 help popups ---
+msgid "Click sectors to mark where the problem exists. Outer ring = below treeline, middle = near treeline, centre = above treeline; north is up."
+msgstr "Haga clic en los sectores para marcar dónde existe el problema. Anillo exterior = bajo el límite arbóreo, medio = cerca del límite arbóreo, centro = sobre el límite arbóreo; el norte está arriba."
+
+msgid "Danger is a judgment that summarises the problems for an elevation band — it is not a direct calculation. This suggestion follows the hazard chart, but you weigh the problems, the terrain and the day, and set the rating yourself. — Statham et al. (2018)"
+msgstr "El peligro es un juicio que resume los problemas para una banda de elevación; no es un cálculo directo. Esta sugerencia sigue el gráfico de peligro, pero usted pondera los problemas, el terreno y el día, y establece la clasificación usted mismo. — Statham et al. (2018)"
+
+msgid "Destructive size uses the D-scale, from D1 (relatively harmless to people) to D5 (could destroy a village). Assess the largest avalanche the problem could produce, and keep the range to about two sizes. — Statham et al. (2018)"
+msgstr "El tamaño destructivo usa la escala D, de D1 (relativamente inofensiva para las personas) a D5 (podría destruir un pueblo). Evalúe la avalancha más grande que el problema podría producir, y mantenga el rango en unos dos tamaños. — Statham et al. (2018)"
+
+msgid "Likelihood of avalanches combines sensitivity and distribution on a fixed matrix — a widespread, touchy problem is almost certain; an isolated, unreactive one is unlikely. This tool reads the value straight from that matrix. — Statham et al. (2018), Fig. 2"
+msgstr "La probabilidad de avalanchas combina la sensibilidad y la distribución en una matriz fija: un problema generalizado y muy sensible es casi seguro; uno aislado y no reactivo es improbable. Esta herramienta lee el valor directamente de esa matriz. — Statham et al. (2018), Fig. 2"
+
+msgid "Location (aspect & elevation)"
+msgstr "Ubicación (orientación y elevación)"
+
+msgid "Sensitivity to triggers is how easily the problem releases: from Unreactive (no natural or human triggering) through Stubborn and Reactive to Touchy (natural avalanches numerous, triggering almost certain). — Statham et al. (2018), Table 5"
+msgstr "La sensibilidad a los gatillantes es cuán fácilmente se libera el problema: desde No reactiva (sin activación natural ni humana), pasando por Terca y Reactiva, hasta Muy sensible (avalanchas naturales numerosas, activación casi segura). — Statham et al. (2018), Tabla 5"
+
+msgid "Spatial distribution is how widely the problem is found: from Isolated (a few specific features, evidence hard to find) through Specific to Widespread (many features, evidence everywhere). — Statham et al. (2018), Table 6"
+msgstr "La distribución espacial es cuán ampliamente se encuentra el problema: desde Aislada (unos pocos rasgos específicos, evidencia difícil de encontrar), pasando por Específica, hasta Generalizada (muchos rasgos, evidencia en todas partes). — Statham et al. (2018), Tabla 6"
+
+msgid "The conceptual model assesses each avalanche problem on its own by four factors — its type, its location (aspect and elevation), its likelihood of triggering, and its destructive size — then combines them into the avalanche hazard. About three problems describe a forecast. — Statham et al. (2018), Fig. 1"
+msgstr "El modelo conceptual evalúa cada problema de avalancha por separado según cuatro factores — su tipo, su ubicación (orientación y elevación), su probabilidad de activación y su tamaño destructivo — y luego los combina en el peligro de avalancha. Alrededor de tres problemas describen un pronóstico. — Statham et al. (2018), Fig. 1"
+
+msgid "The hazard chart plots each problem by its likelihood (vertical) and destructive size (horizontal). Problems toward the upper right represent greater avalanche hazard. — Statham et al. (2018), Fig. 3"
+msgstr "El gráfico de peligro ubica cada problema según su probabilidad (vertical) y su tamaño destructivo (horizontal). Los problemas hacia la parte superior derecha representan un mayor peligro de avalancha. — Statham et al. (2018), Fig. 3"
+

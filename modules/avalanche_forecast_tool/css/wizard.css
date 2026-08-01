@@ -48,16 +48,12 @@
 .aft-remove:hover { background: #e9bcbc; }
 .aft-problem h4 { margin: 1em 0 0.4em; font-size: 0.95em; text-transform: uppercase; letter-spacing: 0.03em; color: #5c6670; }
 
-/* Rose grid */
-.aft-rose { border-collapse: collapse; }
-.aft-rose th { font-size: 0.78em; color: #5c6670; font-weight: 600; padding: 2px 4px; }
-.aft-rose-band { text-align: right; white-space: nowrap; }
-.aft-rose-cell {
-  width: 30px; height: 26px; border: 1px solid #cfd6dc; background: #f6f8fa;
-  cursor: pointer; padding: 0;
-}
-.aft-rose-cell:hover { background: #e2eaf0; }
-.aft-rose-cell.aft-on { background: #1a6496; border-color: #14507a; }
+/* Aspect/elevation rose (clickable NAC octagon) */
+.aft-rose-wrap { max-width: 220px; }
+.aft-rose-svg { width: 180px; height: 180px; display: block; }
+.aft-rose-svg path { transition: fill 0.08s; }
+.aft-rose-svg path:hover { fill: #cfe6fb !important; }
+.aft-rose-legend { font-size: 0.82em; color: #5c6670; margin: 0.3em 0 0; }
 
 /* Sensitivity / distribution choices */
 .aft-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25em; }
@@ -88,11 +84,31 @@
   border: 1px solid #111; border-radius: 50%; font-weight: 700; font-size: 0.8em;
 }
 
-/* Danger suggestion */
-.aft-danger-row { display: flex; gap: 0.75em; flex-wrap: wrap; }
-.aft-danger-band { flex: 1; min-width: 120px; text-align: center; }
-.aft-danger-band-name { font-size: 0.85em; color: #5c6670; margin-bottom: 0.3em; }
-.aft-danger-pill { border-radius: 4px; padding: 0.5em; font-weight: 700; }
+/* Danger suggestion — mountain pyramid + band rows */
+.aft-danger-layout { display: flex; gap: 1.5em; align-items: center; flex-wrap: wrap; }
+.aft-pyramid-wrap { flex: 0 0 auto; }
+.aft-pyramid { width: 150px; height: 180px; display: block; }
+.aft-danger-band-rows { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 0.4em; }
+.aft-danger-band-row { display: flex; align-items: center; justify-content: space-between; gap: 0.75em; }
+.aft-danger-band-name { font-size: 0.9em; color: #40474e; }
+.aft-danger-pill { border-radius: 4px; padding: 0.35em 0.9em; font-weight: 700; min-width: 110px; text-align: center; }
+
+/* Help "?" popups (e.g. Statham 2018 excerpts) */
+.aft-heading { display: flex; align-items: center; gap: 0.4em; }
+.aft-help-wrap { position: relative; display: inline-flex; }
+.aft-help {
+  width: 20px; height: 20px; border-radius: 50%; border: 1px solid #1a6496;
+  background: #eaf3f9; color: #1a6496; font-weight: 700; font-size: 0.8em;
+  line-height: 1; cursor: pointer; padding: 0;
+}
+.aft-help:hover { background: #d7e9f5; }
+.aft-help-pop {
+  display: none; position: absolute; top: 130%; left: 0; z-index: 20;
+  width: 300px; max-width: 80vw; background: #1f2933; color: #f0f4f8;
+  border-radius: 6px; padding: 0.7em 0.85em; font-size: 0.85em; font-weight: 400;
+  line-height: 1.4; box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+}
+.aft-help-pop.aft-help-open { display: block; }
 
 /* Pairing warnings */
 .aft-pairing h3 { margin-top: 0; }

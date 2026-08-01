@@ -57,6 +57,36 @@
     'No Rating': 0, 'Low': 1, 'Moderate': 2, 'Considerable': 3, 'High': 4, 'Extreme': 5
   };
 
+  // Unique id source (used for radio-group names, so each group is distinct and
+  // options within a group share one name — otherwise multiple would select).
+  var UID = 0;
+  function uid() { return 'aft-g' + (++UID); }
+
+  // An info "?" button that toggles a help excerpt (e.g. from Statham 2018).
+  function helpButton(key, cfg) {
+    var text = (cfg.help && cfg.help[key]) ? cfg.help[key] : '';
+    if (!text) { return null; }
+    var pop = el('span', { class: 'aft-help-pop', role: 'note', text: text });
+    var btn = el('button', {
+      type: 'button', class: 'aft-help', 'aria-expanded': 'false',
+      'aria-label': Backdrop.t('More information'),
+      onclick: function (e) {
+        e.preventDefault();
+        var open = pop.classList.toggle('aft-help-open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+    }, ['?']);
+    return el('span', { class: 'aft-help-wrap' }, [btn, pop]);
+  }
+
+  // A heading (h2/h3/h4) with an optional trailing help button.
+  function heading(tag, text, helpKey, cfg) {
+    var kids = [el('span', { text: text })];
+    var h = helpButton(helpKey, cfg);
+    if (h) { kids.push(h); }
+    return el(tag, { class: 'aft-heading' }, kids);
+  }
+
   /* ---------------------------------------------------------------------- *
    * Wizard
    * ---------------------------------------------------------------------- */
@@ -179,7 +209,7 @@
   Wizard.prototype.renderConditions = function () {
     var self = this;
     var box = el('section', { class: 'aft-card aft-conditions' }, [
-      el('h2', { text: Backdrop.t('1. What are you seeing?') }),
+      heading('h2', Backdrop.t('1. What are you seeing?'), 'problems', this.cfg),
       el('p', { class: 'aft-hint', text: Backdrop.t('Check the conditions you have evidence for. The tool suggests the matching avalanche problems — you decide which to add.') })
     ]);
     var list = el('div', { class: 'aft-condition-list' });
@@ -288,64 +318,72 @@
     ]));
     if (def.desc) { card.appendChild(el('p', { class: 'aft-hint', text: def.desc })); }
 
-    // Location rose (band x aspect grid).
-    card.appendChild(el('h4', { text: Backdrop.t('Location') }));
+    // Location rose (clickable NAC octagon, matching the published forecast).
+    card.appendChild(el('h4', { text: Backdrop.t('Location (aspect & elevation)') }));
     card.appendChild(this.renderRose(p));
 
     // Sensitivity + distribution -> likelihood.
     var likeRow = el('div', { class: 'aft-likelihood-row' });
-    card.appendChild(el('h4', { text: Backdrop.t('Sensitivity & distribution') }));
+    card.appendChild(heading('h4', Backdrop.t('Sensitivity & distribution'), 'likelihood', this.cfg));
     var grid = el('div', { class: 'aft-two-col' }, [
       this.renderChoice(Backdrop.t('Sensitivity to triggers'), this.cfg.sensitivity, p.sensitivity, function (v) {
         p.sensitivity = v; self.updateLikelihood(p, likeRow); self.renderOutput();
-      }),
+      }, 'sensitivity'),
       this.renderChoice(Backdrop.t('Spatial distribution'), this.cfg.distribution, p.distribution, function (v) {
         p.distribution = v; self.updateLikelihood(p, likeRow); self.renderOutput();
-      })
+      }, 'distribution')
     ]);
     card.appendChild(grid);
     card.appendChild(likeRow);
     this.updateLikelihood(p, likeRow);
 
     // Size range.
-    card.appendChild(el('h4', { text: Backdrop.t('Expected size (destructive)') }));
+    card.appendChild(heading('h4', Backdrop.t('Expected size (destructive)'), 'size', this.cfg));
     card.appendChild(this.renderSize(p));
 
     return card;
   };
 
-  // 3x8 rose grid; click cells to toggle. Rows = bands, cols = aspects.
+  // Clickable NAC aspect/elevation rose (same octagon the published forecast
+  // uses). Outer ring = below treeline, middle = near, centre = above; N up.
   Wizard.prototype.renderRose = function (p) {
     var self = this;
-    var table = el('table', { class: 'aft-rose' });
-    var head = el('tr', {}, [el('th', { text: '' })]);
-    this.cfg.aspects.forEach(function (a) { head.appendChild(el('th', { text: a })); });
-    table.appendChild(head);
-    this.cfg.bands.forEach(function (band) {
-      var tr = el('tr', {}, [el('th', { class: 'aft-rose-band', text: band.label })]);
-      self.cfg.aspects.forEach(function (a, ai) {
-        var cellKey = band.key + ':' + ai;
-        var td = el('td', {
-          class: 'aft-rose-cell' + (p.rose[cellKey] ? ' aft-on' : ''),
-          onclick: function () {
-            p.rose[cellKey] = !p.rose[cellKey];
-            td.className = 'aft-rose-cell' + (p.rose[cellKey] ? ' aft-on' : '');
-            self.renderOutput();
-          }
-        });
-        tr.appendChild(td);
+    var svgNS = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('class', 'aft-rose-svg');
+    svg.setAttribute('viewBox', '0 0 1050 1050');
+    (this.cfg.rosePaths || []).forEach(function (seg) {
+      var cellKey = seg.band + ':' + seg.aspect;
+      var path = document.createElementNS(svgNS, 'path');
+      path.setAttribute('d', seg.d);
+      function paint() {
+        var fill = p.rose[cellKey] ? 'rgb(77,184,248)' : 'rgb(255,255,255)';
+        path.setAttribute('style', 'cursor:pointer;stroke:rgb(81,85,88);stroke-width:10px;fill:' + fill + ';');
+      }
+      paint();
+      path.addEventListener('click', function () {
+        p.rose[cellKey] = !p.rose[cellKey];
+        paint();
+        self.renderOutput();
       });
-      table.appendChild(tr);
+      svg.appendChild(path);
     });
-    return table;
+    var wrap = el('div', { class: 'aft-rose-wrap' });
+    wrap.appendChild(svg);
+    wrap.appendChild(el('p', { class: 'aft-rose-legend', text: Backdrop.t('Click sectors to mark where the problem exists. Outer ring = below treeline, middle = near treeline, centre = above treeline; north is up.') }));
+    return wrap;
   };
 
-  Wizard.prototype.renderChoice = function (title, options, current, onpick) {
-    var col = el('div', { class: 'aft-choice' }, [el('div', { class: 'aft-choice-title', text: title })]);
+  Wizard.prototype.renderChoice = function (title, options, current, onpick, helpKey) {
+    var groupName = uid();
+    var titleRow = el('div', { class: 'aft-choice-title' }, [el('span', { text: title })]);
+    var h = helpButton(helpKey, this.cfg);
+    if (h) { titleRow.appendChild(h); }
+    var col = el('div', { class: 'aft-choice' }, [titleRow]);
     options.forEach(function (o) {
-      var id = 'aft-' + title.replace(/\s+/g, '') + '-' + o.key + '-' + Math.random().toString(36).slice(2, 7);
+      var id = groupName + '-' + o.key;
       var radio = el('input', {
-        type: 'radio', name: id.slice(0, -6), id: id, value: o.key,
+        type: 'radio', name: groupName, id: id, value: o.key,
         checked: current === o.key ? 'checked' : null,
         onchange: function () { onpick(o.key); }
       });
@@ -401,7 +439,7 @@
     this.outputHost.appendChild(this.renderPairing());
 
     var chartCard = el('section', { class: 'aft-card' }, [
-      el('h2', { text: Backdrop.t('Hazard chart') }),
+      heading('h2', Backdrop.t('Hazard chart'), 'hazardChart', this.cfg),
       el('p', { class: 'aft-hint', text: Backdrop.t('Each problem plotted by likelihood and size (Statham Fig 3). Shading shows the danger the hazard chart implies.') })
     ]);
     chartCard.appendChild(this.renderChart());
@@ -486,23 +524,51 @@
     var sugg = this.dangerSuggestions();
     this.currentSuggestions = sugg;
     var card = el('section', { class: 'aft-card aft-danger' }, [
-      el('h2', { text: Backdrop.t('Suggested danger rating') }),
+      heading('h2', Backdrop.t('Suggested danger rating'), 'danger', this.cfg),
       el('p', { class: 'aft-hint', text: Backdrop.t('A suggestion from the hazard chart — danger is a judgment call, so review it and enter the actual rating yourself on the forecast form.') })
     ]);
-    var row = el('div', { class: 'aft-danger-row' });
+
+    var layout = el('div', { class: 'aft-danger-layout' });
+    layout.appendChild(this.renderPyramid(sugg));
+
+    // Band rows top-to-bottom (above, near, below) + overall, matching the form.
+    var rows = el('div', { class: 'aft-danger-band-rows' });
     [['above', Backdrop.t('Above Treeline')], ['near', Backdrop.t('Near Treeline')], ['below', Backdrop.t('Below Treeline')], ['overall', Backdrop.t('Overall')]].forEach(function (b) {
       var label = sugg[b[0]];
-      row.appendChild(el('div', { class: 'aft-danger-band' }, [
-        el('div', { class: 'aft-danger-band-name', text: b[1] }),
-        el('div', {
+      rows.appendChild(el('div', { class: 'aft-danger-band-row' }, [
+        el('span', { class: 'aft-danger-band-name', text: b[1] }),
+        el('span', {
           class: 'aft-danger-pill',
           style: 'background:' + (self.cfg.dangerColors[label] || '#ccc') + ';color:' + (label === 'Extreme' ? '#fff' : '#111') + ';',
           text: self.cfg.dangerLabels[label] || label
         })
       ]));
     });
-    card.appendChild(row);
+    layout.appendChild(rows);
+    card.appendChild(layout);
     return card;
+  };
+
+  // The NAC danger "mountain" (same pyramid the forecast form/display uses),
+  // each elevation band filled by its suggested danger colour.
+  Wizard.prototype.renderPyramid = function (sugg) {
+    var self = this;
+    var svgNS = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('class', 'aft-pyramid');
+    svg.setAttribute('viewBox', '0 0 250 300');
+    var paths = this.cfg.pyramidPaths || {};
+    // lower = below, mid = near, upper = above.
+    [['lower', 'below'], ['mid', 'near'], ['upper', 'above']].forEach(function (m) {
+      if (!paths[m[0]]) { return; }
+      var label = sugg[m[1]];
+      var fill = (self.cfg.dangerColors[label] && label !== 'No Rating') ? self.cfg.dangerColors[label] : '#939598';
+      var path = document.createElementNS(svgNS, 'path');
+      path.setAttribute('d', paths[m[0]]);
+      path.setAttribute('style', 'fill:' + fill + ';');
+      svg.appendChild(path);
+    });
+    return el('div', { class: 'aft-pyramid-wrap' }, [svg]);
   };
 
   // Phase E: discouraged-pairing warnings with justification capture.

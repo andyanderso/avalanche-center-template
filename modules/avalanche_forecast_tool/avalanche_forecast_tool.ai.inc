@@ -160,10 +160,11 @@ function avalanche_forecast_tool_forecast_summary($node) {
   if ($overall !== '') {
     $lines[] = t('Overall danger: @t', array('@t' => $overall));
   }
+  // Band mapping matches the theme/display: _1 = below, _2 = near, _3 = above.
   $bands = array(
-    'field_danger_rating_1' => t('Above Treeline'),
+    'field_danger_rating_3' => t('Above Treeline'),
     'field_danger_rating_2' => t('Near Treeline'),
-    'field_danger_rating_3' => t('Below Treeline'),
+    'field_danger_rating_1' => t('Below Treeline'),
   );
   foreach ($bands as $field => $bandlabel) {
     $v = $get($field);

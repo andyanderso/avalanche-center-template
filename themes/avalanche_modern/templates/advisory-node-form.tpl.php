@@ -96,6 +96,15 @@ $wx_bands = array(array($wx_low, '7to8'), array($wx_high, '8to9'));
 ?>
 <div class="am-forecast-form nac-html-body">
 
+  <?php
+    // Guided-forecast-tool entry prompt (avalanche_forecast_tool module), placed
+    // at the very top of the form. render() marks it printed so the trailing
+    // drupal_render_children() below won't repeat it.
+    if (!empty($form['avalanche_forecast_tool_entry'])) {
+      print render($form['avalanche_forecast_tool_entry']);
+    }
+  ?>
+
   <div class="nac-form-card nac-form-meta">
     <h2 class="nac-h2"><?php print t('Region &amp; Validity'); ?></h2>
     <div class="nac-form-grid nac-form-grid-3">

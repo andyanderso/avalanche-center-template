@@ -323,6 +323,13 @@ function avalanche_forecast_tool_settings_data() {
   return array(
     'problems' => $problems,
     'conditions' => $conditions,
+    'rosePaths' => avalanche_forecast_tool_rose_paths(),
+    'pyramidPaths' => array(
+      'lower' => 'M40.632,203.317l169.248,0.079l40.166,96.604l-249.519,-0.097l40.105,-96.586Z',
+      'mid'   => 'M207.532,197.909l-164.605,0.049l40.134,-96.303l84.407,-0.046l40.064,96.3Z',
+      'upper' => 'M165.209,96.238l-80.038,-0.012l40.041,-96.226l39.997,96.238Z',
+    ),
+    'help' => avalanche_forecast_tool_help_texts(),
     'sensitivity' => $sensitivity,
     'distribution' => $distribution,
     'matrix' => $matrix,
@@ -342,5 +349,66 @@ function avalanche_forecast_tool_settings_data() {
     'applyUrl' => url('forecast-tool/apply'),
     'addFormUrl' => url('node/add/advisory'),
     'token' => backdrop_get_token('avalanche_forecast_tool'),
+  );
+}
+
+/**
+ * The 24 NAC aspect/elevation rose sectors, mapped to the wizard's band/aspect
+ * scheme so the wizard's clickable rose matches the published forecast exactly.
+ *
+ * Paths are the canonical avalanche.org octagon (same source the theme's
+ * avalanche_modern_rose_svg() uses). Band mapping: upper = above treeline,
+ * middle = near, lower = below. Aspect index 0=N clockwise to 7=NW.
+ */
+function avalanche_forecast_tool_rose_paths() {
+  $paths = array(
+    'north upper' => 'M529.716,527l68.371,-166.7l-138.1,0l69.729,166.7Z',
+    'north middle' => 'M666.581,193.63l-277.081,0l69.27,166.67l138.541,0l69.27,-166.67Z',
+    'north lower' => 'M734.1,26.997l-414.2,0l69.943,166.67l275.865,0l68.392,-166.67Z',
+    'northeast upper' => 'M529.716,527l166.22,-69.529l-97.651,-97.652l-68.569,167.181Z',
+    'northeast middle' => 'M862.222,388.05l-195.925,-195.926l-68.873,166.835l97.963,97.963l166.835,-68.872Z',
+    'northeast lower' => 'M1027.79,317.966l-292.884,-292.884l-68.396,167.311l195.066,195.066l166.214,-69.493Z',
+    'east upper' => 'M527.716,528.339l166.7,68.371l0,-138.1l-166.7,69.729Z',
+    'east middle' => 'M861.086,665.204l0,-277.081l-166.67,69.27l0,138.541l166.67,69.27Z',
+    'east lower' => 'M1027.72,732.723l0,-414.2l-166.67,69.943l0,275.865l166.67,68.392Z',
+    'southeast upper' => 'M527.716,528.339l69.529,166.22l97.652,-97.651l-167.181,-68.569Z',
+    'southeast middle' => 'M666.666,860.845l195.926,-195.925l-166.835,-68.872l-97.963,97.962l68.872,166.835Z',
+    'southeast lower' => 'M736.75,1026.42l292.884,-292.884l-167.311,-68.396l-195.066,195.066l69.493,166.214Z',
+    'south upper' => 'M527.918,528.416l-68.371,166.7l138.1,0l-69.729,-166.7Z',
+    'south middle' => 'M391.053,861.786l277.081,0l-69.27,-166.67l-138.541,0l-69.27,166.67Z',
+    'south lower' => 'M323.534,1028.42l414.2,0l-69.943,-166.67l-275.865,0l-68.392,166.67Z',
+    'southwest upper' => 'M527.918,528.416l-166.22,69.529l97.651,97.652l68.569,-167.181Z',
+    'southwest middle' => 'M195.412,667.366l195.926,195.926l68.872,-166.835l-97.963,-97.963l-166.835,68.872Z',
+    'southwest lower' => 'M29.841,737.451l292.884,292.883l68.396,-167.31l-195.066,-195.067l-166.214,69.494Z',
+    'west upper' => 'M528.918,527.077l-166.7,-68.371l0,138.1l166.7,-69.729Z',
+    'west middle' => 'M195.548,390.212l0,277.081l166.67,-69.27l0,-138.541l-166.67,-69.27Z',
+    'west lower' => 'M28.915,322.693l0,414.2l166.67,-69.943l0,-275.865l-166.67,-68.392Z',
+    'northwest upper' => 'M529.918,527.077l-69.529,-166.22l-97.652,97.651l167.181,68.569Z',
+    'northwest middle' => 'M390.968,194.571l-195.926,195.926l166.835,68.872l97.963,-97.963l-68.872,-166.835Z',
+    'northwest lower' => 'M318.884,27l-292.884,292.884l167.311,68.396l195.066,-195.066l-69.493,-166.214Z',
+  );
+  $aspects = array('north' => 0, 'northeast' => 1, 'east' => 2, 'southeast' => 3, 'south' => 4, 'southwest' => 5, 'west' => 6, 'northwest' => 7);
+  $bands = array('upper' => 'above', 'middle' => 'near', 'lower' => 'below');
+  $out = array();
+  foreach ($paths as $key => $d) {
+    $parts = explode(' ', $key);
+    $out[] = array('band' => $bands[$parts[1]], 'aspect' => $aspects[$parts[0]], 'd' => $d);
+  }
+  return $out;
+}
+
+/**
+ * Short help excerpts from the CMAH (Statham et al. 2018), surfaced as info
+ * popups next to the matching wizard step. Kept concise; each cites its source.
+ */
+function avalanche_forecast_tool_help_texts() {
+  return array(
+    'problems' => t('The conceptual model assesses each avalanche problem on its own by four factors — its type, its location (aspect and elevation), its likelihood of triggering, and its destructive size — then combines them into the avalanche hazard. About three problems describe a forecast. — Statham et al. (2018), Fig. 1'),
+    'sensitivity' => t('Sensitivity to triggers is how easily the problem releases: from Unreactive (no natural or human triggering) through Stubborn and Reactive to Touchy (natural avalanches numerous, triggering almost certain). — Statham et al. (2018), Table 5'),
+    'distribution' => t('Spatial distribution is how widely the problem is found: from Isolated (a few specific features, evidence hard to find) through Specific to Widespread (many features, evidence everywhere). — Statham et al. (2018), Table 6'),
+    'likelihood' => t('Likelihood of avalanches combines sensitivity and distribution on a fixed matrix — a widespread, touchy problem is almost certain; an isolated, unreactive one is unlikely. This tool reads the value straight from that matrix. — Statham et al. (2018), Fig. 2'),
+    'size' => t('Destructive size uses the D-scale, from D1 (relatively harmless to people) to D5 (could destroy a village). Assess the largest avalanche the problem could produce, and keep the range to about two sizes. — Statham et al. (2018)'),
+    'hazardChart' => t('The hazard chart plots each problem by its likelihood (vertical) and destructive size (horizontal). Problems toward the upper right represent greater avalanche hazard. — Statham et al. (2018), Fig. 3'),
+    'danger' => t('Danger is a judgment that summarises the problems for an elevation band — it is not a direct calculation. This suggestion follows the hazard chart, but you weigh the problems, the terrain and the day, and set the rating yourself. — Statham et al. (2018)'),
   );
 }
