@@ -237,6 +237,15 @@ function avalanche_center_setup_form_submit($form, &$form_state) {
       $loc->set('widget.settings.map.center.lng', (float) $values['map_center_lng']);
       $loc->save();
     }
+
+    // Default the site timezone to the one covering the center coordinates
+    // (admin can override afterward at admin/config/regional/settings).
+    if (function_exists('avalanche_fwp_timezone_from_coords')) {
+      $tz = avalanche_fwp_timezone_from_coords($values['map_center_lat'], $values['map_center_lng']);
+      if ($tz) {
+        config_set('system.date', 'default_timezone', $tz);
+      }
+    }
   }
 
   // When Spanish is chosen, make it the default language and import the

@@ -1040,3 +1040,71 @@ function avalanche_fwp_blank_end_time($element, &$form_state) {
   }
   return $element;
 }
+
+/* ===========================================================================
+ * Timezone-from-coordinates (bundled IANA boundary lookup).
+ * ======================================================================== */
+
+/**
+ * Returns the IANA timezone id containing the given lat/lng, or NULL.
+ *
+ * Uses a bundled, simplified "now" timezone-boundary dataset (a point resolves
+ * to a zone with the correct current UTC offset + DST rules). Ray-cast
+ * point-in-polygon, so it needs no GEOS. Intended for occasional lookups
+ * (site setup, saving a region), not per-request.
+ */
+function avalanche_fwp_timezone_from_coords($lat, $lng) {
+  $lat = (float) $lat;
+  $lng = (float) $lng;
+  $features = &backdrop_static(__FUNCTION__);
+  if ($features === NULL) {
+    $file = backdrop_get_path('module', 'avalanche_fwp') . '/data/timezones.geojson';
+    $data = is_file($file) ? json_decode(file_get_contents($file), TRUE) : NULL;
+    $features = ($data && !empty($data['features'])) ? $data['features'] : array();
+  }
+  foreach ($features as $f) {
+    $g = $f['geometry'];
+    if ($g['type'] === 'Polygon') {
+      $polys = array($g['coordinates']);
+    }
+    elseif ($g['type'] === 'MultiPolygon') {
+      $polys = $g['coordinates'];
+    }
+    else {
+      continue;
+    }
+    foreach ($polys as $poly) {
+      if (_avalanche_fwp_point_in_ring($lng, $lat, $poly[0])) {
+        $in_hole = FALSE;
+        for ($h = 1, $c = count($poly); $h < $c; $h++) {
+          if (_avalanche_fwp_point_in_ring($lng, $lat, $poly[$h])) {
+            $in_hole = TRUE;
+            break;
+          }
+        }
+        if (!$in_hole) {
+          return $f['properties']['tzid'];
+        }
+      }
+    }
+  }
+  return NULL;
+}
+
+/**
+ * Ray-casting point-in-ring test. $ring is an array of [lng, lat] pairs.
+ */
+function _avalanche_fwp_point_in_ring($x, $y, $ring) {
+  $inside = FALSE;
+  $n = count($ring);
+  for ($i = 0, $j = $n - 1; $i < $n; $j = $i++) {
+    $xi = $ring[$i][0];
+    $yi = $ring[$i][1];
+    $xj = $ring[$j][0];
+    $yj = $ring[$j][1];
+    if ((($yi > $y) != ($yj > $y)) && ($x < ($xj - $xi) * ($y - $yi) / ($yj - $yi) + $xi)) {
+      $inside = !$inside;
+    }
+  }
+  return $inside;
+}
