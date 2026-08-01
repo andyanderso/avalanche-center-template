@@ -11,6 +11,7 @@ $labels = avalanche_modern_danger_labels();
 
 $created = isset($a['created']) ? $a['created'] : $node->created;
 $expires = isset($a['expires']) ? $a['expires'] : $node->created;
+$tz = isset($a['timezone']) ? $a['timezone'] : NULL;
 $overall = isset($a['danger_rating']['overall']) ? (int) $a['danger_rating']['overall'] : 0;
 
 $likelihood_labels = array(1 => t('Unlikely'), 2 => t('Possible'), 3 => t('Likely'), 4 => t('Very Likely'), 5 => t('Certain'));
@@ -52,7 +53,7 @@ $article_attributes = is_array($attributes) ? backdrop_attributes($attributes) :
         <svg class="nac-icon" viewBox="0 0 24 24" width="1em" height="1em" aria-hidden="true"><path fill="currentColor" d="M12 2 1 21h22L12 2m0 3.99L19.53 19H4.47L12 5.99M11 10v4h2v-4h-2m0 6v2h2v-2h-2"></path></svg>
         <div class="nac-expired-banner-text">
           <strong><?php print t('This forecast has expired.'); ?></strong>
-          <?php print t('It was issued @date and is no longer current.', array('@date' => format_date($created, 'custom', 'l, F j, Y - g:iA'))); ?>
+          <?php print t('It was issued @date and is no longer current.', array('@date' => format_date($created, 'custom', 'l, F j, Y - g:iA T', $tz))); ?>
           <?php if (!empty($a['current_forecast_url'])): ?>
             <a href="<?php print check_url($a['current_forecast_url']); ?>"><?php print t('Get more information &raquo;'); ?></a>
           <?php endif; ?>
@@ -73,9 +74,9 @@ $article_attributes = is_array($attributes) ? backdrop_attributes($attributes) :
     </div>
 
     <div class="nac-header">
-      <div class="nac-header-meta"><h6 class="nac-h6"><?php print t('Issued'); ?></h6> <?php print format_date($created, 'custom', 'l, F j, Y - g:iA'); ?></div>
+      <div class="nac-header-meta"><h6 class="nac-h6"><?php print t('Issued'); ?></h6> <?php print format_date($created, 'custom', 'l, F j, Y - g:iA T', $tz); ?></div>
       <?php if ($expires > $created): ?>
-        <div class="nac-header-meta"><h6 class="nac-h6"><?php print t('Expires'); ?></h6> <?php print format_date($expires, 'custom', 'l, F j, Y - g:iA'); ?></div>
+        <div class="nac-header-meta"><h6 class="nac-h6"><?php print t('Expires'); ?></h6> <?php print format_date($expires, 'custom', 'l, F j, Y - g:iA T', $tz); ?></div>
       <?php endif; ?>
       <?php if (!empty($a['forecaster'])): ?>
         <div class="nac-header-meta"><h6 class="nac-h6"><?php print t('Author'); ?></h6> <?php print check_plain($a['forecaster']); ?></div>
@@ -99,7 +100,7 @@ $article_attributes = is_array($attributes) ? backdrop_attributes($attributes) :
             <h2 class="nac-h2"><?php print t('Avalanche Danger'); ?></h2>
             <div class="nac-row">
               <div class="nac-dangerToday">
-                <div class="nac-dangerDate"><?php print format_date($created, 'custom', 'l, F j, Y'); ?></div>
+                <div class="nac-dangerDate"><?php print format_date($created, 'custom', 'l, F j, Y', $tz); ?></div>
                 <div class="nac-dangerGraphic">
                   <?php foreach (array('upper', 'mid', 'lower') as $b): ?>
                     <div class="nac-elevationBlock">

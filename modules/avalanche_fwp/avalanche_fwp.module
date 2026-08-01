@@ -1108,3 +1108,65 @@ function _avalanche_fwp_point_in_ring($x, $y, $ring) {
   }
   return $inside;
 }
+
+/* ===========================================================================
+ * Per-region timezones (forecasts render in their region's local time).
+ * ======================================================================== */
+
+/**
+ * Implements hook_taxonomy_term_presave().
+ *
+ * Auto-fills a forecast region's timezone from its polygon location. Only when
+ * empty, so an admin override sticks.
+ */
+function avalanche_fwp_taxonomy_term_presave($term) {
+  if (empty($term->vocabulary) || $term->vocabulary !== 'region') {
+    return;
+  }
+  $L = AVALANCHE_FWP_LANG;
+  if (!empty($term->field_region_timezone[$L][0]['value'])) {
+    return;
+  }
+  if (empty($term->field_region_map[$L][0])) {
+    return;
+  }
+  $pt = _avalanche_fwp_region_point($term->field_region_map[$L][0]);
+  if ($pt) {
+    $tz = avalanche_fwp_timezone_from_coords($pt[0], $pt[1]);
+    if ($tz) {
+      $term->field_region_timezone[$L][0]['value'] = $tz;
+    }
+  }
+}
+
+/**
+ * A representative [lat, lng] point for a geofield value: the computed centroid
+ * if present, else the bounding-box centre parsed from the WKT.
+ */
+function _avalanche_fwp_region_point($geo) {
+  if (isset($geo['lat'], $geo['lon']) && $geo['lat'] !== '' && $geo['lon'] !== '') {
+    return array((float) $geo['lat'], (float) $geo['lon']);
+  }
+  if (!empty($geo['geom']) && preg_match_all('/(-?\d+\.?\d*)\s+(-?\d+\.?\d*)/', $geo['geom'], $m)) {
+    $lngs = array_map('floatval', $m[1]);
+    $lats = array_map('floatval', $m[2]);
+    return array((min($lats) + max($lats)) / 2, (min($lngs) + max($lngs)) / 2);
+  }
+  return NULL;
+}
+
+/**
+ * The timezone a forecast (advisory) node should display in: its region's
+ * timezone, or NULL to fall back to the site default.
+ */
+function avalanche_fwp_forecast_timezone($node) {
+  $L = AVALANCHE_FWP_LANG;
+  if (empty($node->field_forecast_region[$L][0]['tid'])) {
+    return NULL;
+  }
+  $term = taxonomy_term_load($node->field_forecast_region[$L][0]['tid']);
+  if ($term && !empty($term->field_region_timezone[$L][0]['value'])) {
+    return $term->field_region_timezone[$L][0]['value'];
+  }
+  return NULL;
+}

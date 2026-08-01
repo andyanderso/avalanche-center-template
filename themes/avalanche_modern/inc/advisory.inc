@@ -130,6 +130,8 @@ function avalanche_modern_get_advisory_data($node) {
   $a['created'] = $node->created;
   $a['expires'] = $node->created + ($a['duration'] * 3600);
   $a['expired'] = REQUEST_TIME > $a['expires'];
+  // Show forecast times in the region's local timezone (NULL = site default).
+  $a['timezone'] = function_exists('avalanche_fwp_forecast_timezone') ? avalanche_fwp_forecast_timezone($node) : NULL;
 
   // If this forecast has expired, link to the region's latest advisory
   // (which may be a newer node, or this same one if nothing newer exists).
