@@ -32,7 +32,7 @@ function avalanche_fwp_schema() {
     'indexes' => array('checked_in' => array('checked_in')),
   );
   $schema['avalanche_fwp_partner'] = array(
-    'description' => 'Reusable trip-member contacts (non-account partners) captured from plans, scoped to the user who worked with them.',
+    'description' => 'Reusable trip-member contacts (non-account partners) captured from plans, shared across all users. owner_uid records who last captured them.',
     'fields' => array(
       'pid' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE),
       'owner_uid' => array(

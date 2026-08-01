@@ -895,9 +895,9 @@ function avalanche_fwp_capture_partners($node) {
  * otherwise by name.
  */
 function _avalanche_fwp_upsert_partner($owner, $name, $email, $phone, $em_name, $em_phone) {
-  $query = db_select('avalanche_fwp_partner', 'p')
-    ->fields('p', array('pid'))
-    ->condition('owner_uid', $owner);
+  // Partners are shared across all users, so dedup globally by email (else
+  // name); owner_uid just records who last captured them.
+  $query = db_select('avalanche_fwp_partner', 'p')->fields('p', array('pid'));
   if ($email !== '') {
     $query->condition('email', $email);
   }
@@ -924,7 +924,8 @@ function _avalanche_fwp_upsert_partner($owner, $name, $email, $phone, $em_name, 
 
 /**
  * Builds the people list for the partner picker: field-worker user accounts
- * (excluding the current user) plus the user's own saved partners.
+ * (excluding the current user) plus all shared saved partners (partners are
+ * shared across users, since teams often go out with the same people).
  */
 function avalanche_fwp_people_for_user($account) {
   $L = AVALANCHE_FWP_LANG;
@@ -951,7 +952,8 @@ function avalanche_fwp_people_for_user($account) {
     );
   }
 
-  $result = db_query('SELECT * FROM {avalanche_fwp_partner} WHERE owner_uid = :o ORDER BY name', array(':o' => $account->uid));
+  // Partners are shared: every user can pick any saved partner.
+  $result = db_query('SELECT * FROM {avalanche_fwp_partner} ORDER BY name');
   foreach ($result as $p) {
     $people['p:' . $p->pid] = array(
       'label' => $p->name,
