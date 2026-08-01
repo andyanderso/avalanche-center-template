@@ -1170,3 +1170,12 @@ function avalanche_fwp_forecast_timezone($node) {
   }
   return NULL;
 }
+
+/**
+ * Implements hook_autoload_info().
+ */
+function avalanche_fwp_autoload_info() {
+  return array(
+    'avalanche_fwp_handler_field_forecast_date' => 'views/avalanche_fwp_handler_field_forecast_date.inc',
+  );
+}

@@ -42,3 +42,15 @@ function avalanche_fwp_views_data() {
 
   return $data;
 }
+
+/**
+ * Implements hook_views_data_alter().
+ *
+ * Swap the node "created" date field handler for one that renders forecast
+ * dates in the region timezone (scoped to advisory_views inside the handler).
+ */
+function avalanche_fwp_views_data_alter(&$data) {
+  if (isset($data['node']['created']['field'])) {
+    $data['node']['created']['field']['handler'] = 'avalanche_fwp_handler_field_forecast_date';
+  }
+}
