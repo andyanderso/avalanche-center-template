@@ -868,6 +868,7 @@ function avalanche_center_localize_fwp_form($langcode) {
     'node.fwp.field_hazard_mitigation_measures' => 'Medidas de Mitigación del Peligro',
     'node.fwp.field_destination_and_route' => 'Destino y Ruta',
     'node.fwp.field_tracking_link' => 'Enlace de Seguimiento en Vivo',
+    'node.fwp.field_approved_by' => 'Aprobado Por',
     // Responsible Party collection.
     'field_collection_item.field_responsible_party.field_responsible_party_name' => 'Nombre de la Persona Responsable',
     'field_collection_item.field_responsible_party.field_responsible_party_phone_nu' => 'Teléfono de la Persona Responsable',
@@ -896,6 +897,7 @@ function avalanche_center_localize_fwp_form($langcode) {
   );
   // Field instance descriptions (only those that carry help text).
   $descriptions = array(
+    'node.fwp.field_approved_by' => 'El supervisor o pronosticador que aprobó este plan de trabajo de campo.',
     'node.fwp.field_data_wanted' => '¿Qué está buscando y por qué?',
     'node.fwp.field_terrain_choice' => '¿A qué tipo de terreno necesita ingresar para obtener los datos requeridos?',
     'node.fwp.field_weather_or_snowpack' => '¿Algún cambio crítico en el clima o el manto de nieve?',
