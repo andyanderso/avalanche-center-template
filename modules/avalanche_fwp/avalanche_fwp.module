@@ -85,8 +85,14 @@ function avalanche_fwp_node_prepare(Node $node) {
     $member_has = TRUE;
   }
 
+  // Account email -> the trip member's email.
+  if (!empty($account->mail)) {
+    $member->field_trip_member_email[$L][0]['value'] = $account->mail;
+    $member_has = TRUE;
+  }
+
   // Default equipment / clothing carried on the user account.
-  foreach (array('field_equipment', 'field_communication_equipment', 'field_other_equipment', 'field_clothing') as $eq) {
+  foreach (array('field_avalanche_safety_equipment', 'field_communication_equipment', 'field_other_equipment', 'field_clothing') as $eq) {
     if (!empty($account->{$eq}[$L])) {
       $member->{$eq}[$L] = $account->{$eq}[$L];
       $member_has = TRUE;

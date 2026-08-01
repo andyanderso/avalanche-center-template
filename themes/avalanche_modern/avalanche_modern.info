@@ -64,7 +64,7 @@ settings[wx_table_page] = /weather-stations
 settings[obs_page] = /observations
 settings[submit_snowpack_obs_page] = /node/add/observation
 settings[submit_avalanche_obs_page] = /node/add/observation
-settings[forecaster_name_field] = field_first_name
+settings[forecaster_name_field] = field_display_name
 settings[map_first] = 0
 
 ; Site name / slogan visibility is controlled by the Header block placed in the

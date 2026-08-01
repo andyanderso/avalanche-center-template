@@ -1,10 +1,10 @@
 {
-    "_config_name": "field.instance.user.user.field_first_name",
-    "field_name": "field_first_name",
+    "_config_name": "field.instance.user.user.field_postal_address",
+    "field_name": "field_postal_address",
     "entity_type": "user",
     "bundle": "user",
     "deleted": "0",
-    "label": "Contact information",
+    "label": "Postal Address",
     "widget": {
         "weight": 0,
         "type": "addressfield_standard",

@@ -8,7 +8,7 @@
     "label": "Equipment",
     "weight": "4",
     "children": [
-        "field_equipment",
+        "field_avalanche_safety_equipment",
         "field_communication_equipment",
         "field_other_equipment",
         "field_clothing"

@@ -870,7 +870,7 @@ function avalanche_center_localize_fwp_form($langcode) {
     'field_collection_item.field_trip_members.field_travel_method' => 'Medio de Desplazamiento',
     'field_collection_item.field_trip_members.field_clothing' => 'Vestimenta',
     'field_collection_item.field_trip_members.field_communication_equipment' => 'Equipo de Comunicación',
-    'field_collection_item.field_trip_members.field_equipment' => 'Equipo de Seguridad en Avalanchas',
+    'field_collection_item.field_trip_members.field_avalanche_safety_equipment' => 'Equipo de Seguridad en Avalanchas',
     'field_collection_item.field_trip_members.field_other_equipment' => 'Otro Equipo',
     'field_collection_item.field_trip_members.field_emergency_contact' => 'Contacto de Emergencia',
     // Emergency Contact (nested) collection.
@@ -932,7 +932,7 @@ function avalanche_center_localize_fwp_form($langcode) {
       'Spring Diurnal' => 'Ciclo Diurno Primaveral',
     ),
     'field_communication_equipment' => array('Cell Phone' => 'Teléfono Celular', 'SPOT' => 'inReach', 'Radio' => 'Radio'),
-    'field_equipment' => array('Beacon' => 'Detector (ARVA)', 'Shovel' => 'Pala', 'Probe' => 'Sonda', 'Airbag' => 'Airbag', 'Avalung' => 'Avalung'),
+    'field_avalanche_safety_equipment' => array('Beacon' => 'Detector (ARVA)', 'Shovel' => 'Pala', 'Probe' => 'Sonda', 'Airbag' => 'Airbag', 'Avalung' => 'Avalung'),
     'field_other_equipment' => array(
       'Helmet' => 'Casco',
       'First Aid Kit' => 'Botiquín de Primeros Auxilios',

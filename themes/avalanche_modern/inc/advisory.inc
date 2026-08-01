@@ -54,19 +54,10 @@ function avalanche_modern_get_advisory_data($node) {
     'lower' => !empty($lower_band) ? $lower_band : t('Below Treeline'),
   );
 
-  // Forecaster name from the node author.
+  // Forecaster name from the node author (uses their "Name as displayed on the
+  // website" when set, else the username).
   $author = user_load($node->uid);
-  $forecaster = '';
-  if (!empty($author->field_first_name['und'][0]['safe_value'])) {
-    $forecaster = $author->field_first_name['und'][0]['safe_value'];
-  }
-  if (!empty($author->field_last_name['und'][0]['safe_value'])) {
-    $forecaster .= ' ' . $author->field_last_name['und'][0]['safe_value'];
-  }
-  if (empty($forecaster) && !empty($author->name)) {
-    $forecaster = $author->name;
-  }
-  $a['forecaster'] = trim($forecaster);
+  $a['forecaster'] = $author ? user_format_name($author) : '';
 
   // Danger ratings. _3 = upper/above, _2 = mid/near, _1 = lower/below.
   $rating_map = array('upper' => 'field_danger_rating_3', 'mid' => 'field_danger_rating_2', 'lower' => 'field_danger_rating_1');

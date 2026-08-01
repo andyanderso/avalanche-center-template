@@ -238,19 +238,9 @@ function avalanche_danger_map_forecaster_name($uid) {
   if (!$account) {
     return '';
   }
-  $name = '';
-  $first = field_get_items('user', $account, 'field_first_name');
-  if ($first && !empty($first[0]['value'])) {
-    $name = $first[0]['value'];
-    $last = field_get_items('user', $account, 'field_last_name');
-    if ($last && !empty($last[0]['value'])) {
-      $name .= ' ' . $last[0]['value'];
-    }
-  }
-  if ($name === '' && !empty($account->name)) {
-    $name = $account->name;
-  }
-  return trim($name);
+  // Uses the author's "Name as displayed on the website" when set (via
+  // hook_user_format_name_alter), else the username.
+  return user_format_name($account);
 }
 
 /**

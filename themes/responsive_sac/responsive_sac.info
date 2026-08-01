@@ -86,7 +86,7 @@ settings[submit_avalanche_obs_page] = /node/add/observation
 ; its own via theme settings.
 settings[email_header_img] = ""
 settings[backgroung_header_img] = ""
-settings[forecaster_name_field] = field_first_name
+settings[forecaster_name_field] = field_display_name
 settings[map_first] = 0
 
 ; Header site name / slogan visibility (standard Backdrop toggle settings).

@@ -1,6 +1,6 @@
 {
-    "_config_name": "field.field.field_equipment",
-    "field_name": "field_equipment",
+    "_config_name": "field.field.field_avalanche_safety_equipment",
+    "field_name": "field_avalanche_safety_equipment",
     "type": "list_text",
     "module": "list",
     "active": 1,

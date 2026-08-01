@@ -1,12 +1,12 @@
 {
-    "_config_name": "field.instance.field_collection_item.field_trip_members.field_equipment",
-    "field_name": "field_equipment",
-    "entity_type": "field_collection_item",
-    "bundle": "field_trip_members",
+    "_config_name": "field.instance.user.user.field_avalanche_safety_equipment",
+    "field_name": "field_avalanche_safety_equipment",
+    "entity_type": "user",
+    "bundle": "user",
     "deleted": "0",
-    "label": "Avalanche Safety Equipment",
+    "label": "Default Avalanche Safety Equipment",
     "widget": {
-        "weight": "4",
+        "weight": "13",
         "type": "options_buttons",
         "module": "options",
         "active": 1,
@@ -31,20 +31,7 @@
         }
     },
     "required": 0,
-    "description": "",
-    "default_value": [
-        {
-            "value": "Beacon"
-        },
-        {
-            "value": "Shovel"
-        },
-        {
-            "value": "Probe"
-        },
-        {
-            "value": "Airbag"
-        }
-    ],
+    "description": "Pre-filled into your trip-member entry on new Field Work Plans.",
+    "default_value": null,
     "default_value_label_token": 0
 }
