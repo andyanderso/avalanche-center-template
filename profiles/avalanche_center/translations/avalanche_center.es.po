@@ -1176,3 +1176,11 @@ msgstr "Las Placas Persistentes liberan cuando se rompe el enlace con una capa d
 msgid "Deep Persistent Slabs release a thick, hard slab on a deeply buried basal weak layer. They are stubborn to trigger but produce large, destructive avalanches. They commonly evolve from a Persistent Slab as successive snow and wind events build a thicker slab over the same weak layer."
 msgstr "Las Placas Persistentes Profundas liberan una placa gruesa y dura sobre una capa débil basal profundamente enterrada. Son tercas de gatillar pero producen avalanchas grandes y destructivas. Comúnmente evolucionan a partir de una Placa Persistente a medida que sucesivos eventos de nieve y viento construyen una placa más gruesa sobre la misma capa débil."
 
+
+# --- Forecast tool: danger scale reference ---
+msgid "Danger scale"
+msgstr "Escala de peligro"
+
+msgid "The North American Avalanche Danger Scale. The hazard chart above is shaded with these colours."
+msgstr "La Escala Norteamericana de Peligro de Avalanchas. El gráfico de peligro de arriba está sombreado con estos colores."
+
