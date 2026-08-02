@@ -73,9 +73,8 @@
   var UID = 0;
   function uid() { return 'aft-g' + (++UID); }
 
-  // An info "?" button that toggles a help excerpt (e.g. from Statham 2018).
-  function helpButton(key, cfg) {
-    var text = (cfg.help && cfg.help[key]) ? cfg.help[key] : '';
+  // An info "?" button that toggles a help excerpt from raw text.
+  function helpPopup(text) {
     if (!text) { return null; }
     var pop = el('span', { class: 'aft-help-pop', role: 'note', text: text });
     var btn = el('button', {
@@ -88,6 +87,10 @@
       }
     }, ['?']);
     return el('span', { class: 'aft-help-wrap' }, [btn, pop]);
+  }
+  // Help button sourced from cfg.help[key] (e.g. the Statham 2018 excerpts).
+  function helpButton(key, cfg) {
+    return helpPopup((cfg.help && cfg.help[key]) ? cfg.help[key] : '');
   }
 
   // A heading (h2/h3/h4) with an optional trailing help button.
@@ -323,8 +326,13 @@
     var self = this;
     var def = this.problemByKey[p.type] || {};
     var card = el('section', { class: 'aft-card aft-problem' });
+    var titleRow = el('div', { class: 'aft-problem-title' }, [
+      el('h3', { text: Backdrop.t('Problem @n: ', { '@n': idx + 1 }) + (def.label || '') })
+    ]);
+    var ph = helpPopup(this.cfg.problemHelp && this.cfg.problemHelp[p.type]);
+    if (ph) { titleRow.appendChild(ph); }
     card.appendChild(el('div', { class: 'aft-problem-head' }, [
-      el('h3', { text: Backdrop.t('Problem @n: ', { '@n': idx + 1 }) + (def.label || '') }),
+      titleRow,
       el('button', { type: 'button', class: 'aft-remove', title: Backdrop.t('Remove'), onclick: function () { self.removeProblem(idx); } }, ['×'])
     ]));
     if (def.desc) { card.appendChild(el('p', { class: 'aft-hint', text: def.desc })); }

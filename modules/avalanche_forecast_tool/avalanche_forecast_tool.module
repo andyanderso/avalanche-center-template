@@ -326,7 +326,7 @@ function avalanche_forecast_tool_settings_data() {
   // location/likelihood/size overlap; ask the forecaster to justify.
   $pairing = array(
     array('a' => '1', 'b' => '3',
-      'reason' => t('Storm Slab and Wind Slab overlap where storm snow gets wind-drifted onto leeward features. The key difference is distribution: during a storm the Storm Slab is usually the more widespread problem — unstable snow across many aspects, including sheltered terrain — while a Wind Slab is limited to specific wind-loaded features (leeward ridges, cross-loaded gullies). Only forecast both when they differ meaningfully in distribution, likelihood or size; if both are confined to the same wind-loaded areas with similar likelihood and size, it is probably a single problem.')),
+      'reason' => t('Storm slabs form during storms and often exist in both exposed and sheltered terrain. Wind slabs only exist in wind-loaded terrain. If the slabs exist in both sheltered and wind-loaded terrain and formed during a storm, use storm slabs. If the slabs exist in wind-loaded areas (ie not enough new snow to produce slabs in sheltered areas or the slabs are only formed by wind blowing old snow around), use wind slabs.')),
     array('a' => '5', 'b' => '2',
       'reason' => t('Persistent Slab and Deep Persistent Slab describe the same family of buried weak layers; pair them only when they differ meaningfully in distribution, likelihood or size.')),
     array('a' => '6', 'b' => '4',
@@ -345,6 +345,7 @@ function avalanche_forecast_tool_settings_data() {
       'upper' => 'M165.209,96.238l-80.038,-0.012l40.041,-96.226l39.997,96.238Z',
     ),
     'help' => avalanche_forecast_tool_help_texts(),
+    'problemHelp' => avalanche_forecast_tool_problem_help(),
     'sensitivity' => $sensitivity,
     'distribution' => $distribution,
     'matrix' => $matrix,
@@ -367,6 +368,24 @@ function avalanche_forecast_tool_settings_data() {
     'applyUrl' => url('forecast-tool/apply'),
     'addFormUrl' => url('node/add/advisory'),
     'token' => backdrop_get_token('avalanche_forecast_tool'),
+  );
+}
+
+/**
+ * Per-problem-type help, including how each problem can transition into another
+ * (from the reference problem descriptions). Keyed by field_type_N value; only
+ * the types with meaningful transition behaviour carry a popup.
+ */
+function avalanche_forecast_tool_problem_help() {
+  return array(
+    // Storm Slab.
+    '1' => t('Storm Slabs release a cohesive layer of new storm snow, breaking within the storm snow or at the old/new interface. They form during storms and are usually widespread across terrain that received similar snowfall. Transitions: storm slabs that formed in wind-loaded areas may become Wind Slabs as the sheltered storm snow stabilises; if they overlie a persistent weak layer (surface hoar, depth hoar, near-surface facets) they may develop into — or be forecast from the start as — Persistent Slabs.'),
+    // Wind Slab.
+    '3' => t('Wind Slabs release a cohesive layer of wind-drifted snow. They form in specific, somewhat predictable locations — leeward of ridges, in cross-loaded gullies — and can be soft to hard, often smooth or sounding hollow. Transitions: a Wind Slab that overlies a persistent weak layer may be termed a Persistent Slab, or develop into one, with longer-lasting instability.'),
+    // Persistent Slab.
+    '5' => t('Persistent Slabs release when the bond to a buried persistent weak layer (surface hoar, depth hoar, near-surface facets, faceted crusts) breaks. They are hard to predict, can be triggered remotely or long after a storm, and can propagate widely. Transitions: a Persistent Slab can build into a Deep Persistent Slab as additional snow and wind events thicken the slab over the same weak layer.'),
+    // Deep Persistent Slab.
+    '2' => t('Deep Persistent Slabs release a thick, hard slab on a deeply buried basal weak layer. They are stubborn to trigger but produce large, destructive avalanches. They commonly evolve from a Persistent Slab as successive snow and wind events build a thicker slab over the same weak layer.'),
   );
 }
 

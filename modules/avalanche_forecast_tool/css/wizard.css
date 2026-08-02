@@ -40,6 +40,7 @@
 
 /* Problem card */
 .aft-problem-head { display: flex; align-items: center; justify-content: space-between; }
+.aft-problem-title { display: flex; align-items: center; gap: 0.45em; }
 .aft-problem-head h3 { margin: 0; }
 .aft-remove {
   border: none; background: #f2d5d5; color: #a02020; border-radius: 4px;
