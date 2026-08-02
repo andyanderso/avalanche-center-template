@@ -14,6 +14,10 @@
   // the blue "location" marker used by the loc_* pickers. 6 * 2 = 12.
   var ROSE_LOCATION_VALUE = 12;
 
+  // The danger-rating suggestion needs more work, so it is hidden for now (kept
+  // in the payload/code). Flip to true to show it again in the prefill banner.
+  var SHOW_DANGER_SUGGESTION = false;
+
   Backdrop.behaviors.avalancheForecastToolPrefill = {
     attach: function (context, settings) {
       var data = settings.avalancheForecastToolPrefill;
@@ -123,7 +127,7 @@
     var html = '<p><strong>' + Backdrop.t('The guided tool filled in the problem type, likelihood, size and location fields below.') +
       '</strong> ' + Backdrop.t('Please review everything, then set the danger rating yourself.') + '</p>';
 
-    if (data.suggestions) {
+    if (SHOW_DANGER_SUGGESTION && data.suggestions) {
       var map = { above: Backdrop.t('Above Treeline'), near: Backdrop.t('Near Treeline'), below: Backdrop.t('Below Treeline'), overall: Backdrop.t('Overall') };
       var parts = [];
       ['above', 'near', 'below', 'overall'].forEach(function (b) {

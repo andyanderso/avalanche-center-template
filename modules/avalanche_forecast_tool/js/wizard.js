@@ -57,6 +57,11 @@
     'No Rating': 0, 'Low': 1, 'Moderate': 2, 'Considerable': 3, 'High': 4, 'Extreme': 5
   };
 
+  // The danger-rating suggestion (mountain + band rows + overall) is hidden for
+  // now — it still needs work. Set to true to bring it back. The hazard-chart
+  // gradient stays visible regardless.
+  var SHOW_DANGER_SUGGESTION = false;
+
   function hexToRgb(hex) {
     hex = String(hex).replace('#', '');
     if (hex.length === 3) { hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]; }
@@ -550,7 +555,13 @@
     chartCard.appendChild(this.renderChart());
     this.outputHost.appendChild(chartCard);
 
-    this.outputHost.appendChild(this.renderDanger());
+    // Danger-rating suggestion (mountain + band rows + overall) is hidden for
+    // now — the logic needs more work. Keep computing it so the approve payload
+    // stays intact, and flip SHOW_DANGER_SUGGESTION back to true to re-show it.
+    this.currentSuggestions = this.dangerSuggestions();
+    if (SHOW_DANGER_SUGGESTION) {
+      this.outputHost.appendChild(this.renderDanger());
+    }
     this.outputHost.appendChild(this.renderApprove());
   };
 
