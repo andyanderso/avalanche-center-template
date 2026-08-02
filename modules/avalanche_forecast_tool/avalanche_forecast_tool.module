@@ -326,7 +326,7 @@ function avalanche_forecast_tool_settings_data() {
   // location/likelihood/size overlap; ask the forecaster to justify.
   $pairing = array(
     array('a' => '1', 'b' => '3',
-      'reason' => t('Storm Slab and Wind Slab can overlap where storm snow has been wind-affected; the guidance suggests not pairing them unless they differ meaningfully in distribution, likelihood or size (for example, wind slab confined to specific lee features versus a storm slab across many aspects).')),
+      'reason' => t('Storm Slab and Wind Slab overlap where storm snow gets wind-drifted onto leeward features. The key difference is distribution: during a storm the Storm Slab is usually the more widespread problem — unstable snow across many aspects, including sheltered terrain — while a Wind Slab is limited to specific wind-loaded features (leeward ridges, cross-loaded gullies). Only forecast both when they differ meaningfully in distribution, likelihood or size; if both are confined to the same wind-loaded areas with similar likelihood and size, it is probably a single problem.')),
     array('a' => '5', 'b' => '2',
       'reason' => t('Persistent Slab and Deep Persistent Slab describe the same family of buried weak layers; pair them only when they differ meaningfully in distribution, likelihood or size.')),
     array('a' => '6', 'b' => '4',
