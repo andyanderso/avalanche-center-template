@@ -12,7 +12,7 @@ provide them):
 - The go-ahead to **create the main administrator account** (you'll do this in
   Step 3).
 
-> Fill this in for your reference:
+> Fill this in for your reference:d
 > **My site address:** `________________________________`
 
 ---

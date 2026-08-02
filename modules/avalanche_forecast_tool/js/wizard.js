@@ -409,8 +409,9 @@
       svg.appendChild(txt);
     });
 
-    var wrap = el('div', { class: 'aft-rose-wrap' });
-    wrap.appendChild(svg);
+    // Diagram (octagon + band buttons) on the left; instructions on the right.
+    var left = el('div', { class: 'aft-rose-left' });
+    left.appendChild(svg);
 
     // Elevation-band quick-select buttons (whole ring), labelled like the form.
     var bandRow = el('div', { class: 'aft-rose-bands' });
@@ -420,7 +421,10 @@
         onclick: function () { self.toggleGroup(p, self.bandKeys(b.key), paint); }
       }, [b.label]));
     });
-    wrap.appendChild(bandRow);
+    left.appendChild(bandRow);
+
+    var wrap = el('div', { class: 'aft-rose-wrap' });
+    wrap.appendChild(left);
     wrap.appendChild(el('p', { class: 'aft-rose-legend', text: Backdrop.t('Click a sector to toggle it, an aspect label for a whole aspect, or a band button (or Alt-click a sector) for a whole elevation band. Outer ring = below treeline, centre = above; north is up.') }));
     return wrap;
   };
@@ -557,9 +561,18 @@
     var svg = s('svg', { viewBox: '0 0 ' + W + ' ' + H, class: 'aft-chart' });
 
     // Colour at a continuous (likelihood, size) point by bilinearly interpolating
-    // the danger colours of the four surrounding grid cells (li/si in 1..5).
+    // the four surrounding grid cells (li/si in 1..5). Each grid cell's colour
+    // comes from the gradient grid — a two-level cell is a 50/50 blend.
     function cellRgb(li, si) {
-      return hexToRgb(self.cfg.dangerColors[self.dangerFor(String(li), String(si))] || '#cccccc');
+      var row = self.cfg.gradientTable && self.cfg.gradientTable[String(li)];
+      var cell = row ? row[si - 1] : null;
+      if (!cell || !cell.length) { cell = [self.dangerFor(String(li), String(si))]; }
+      var rs = 0, gs = 0, bs = 0, n = 0;
+      cell.forEach(function (label) {
+        var c = hexToRgb(self.cfg.dangerColors[label] || '#cccccc');
+        rs += c[0]; gs += c[1]; bs += c[2]; n++;
+      });
+      return n ? [Math.round(rs / n), Math.round(gs / n), Math.round(bs / n)] : [204, 204, 204];
     }
     function colorAt(liF, siF) {
       var si0 = Math.max(1, Math.min(4, Math.floor(siF))), fs = siF - si0;

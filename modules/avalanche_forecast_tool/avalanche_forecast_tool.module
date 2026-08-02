@@ -270,15 +270,28 @@ function avalanche_forecast_tool_settings_data() {
   // This is an interpretation of the CMAH hazard chart, presented as a
   // suggestion only; the forecaster sets the actual rating. Danger is
   // judgment, not a formula (Statham 2018 is explicit on this).
-  // Red (High) only starts above Likely (Very Likely / Certain) and at D4+;
-  // yellow (Moderate) and orange (Considerable) fill the rest.
+  // Categorical per-band suggestion = the primary (first-listed) level of each
+  // gradient cell below, so the pill/pyramid stays consistent with the chart.
   $danger_table = array(
     // size:      D1            D2              D3              D4              D5
-    '5' => array('Moderate',    'Considerable', 'Considerable', 'High',         'Extreme'),      // Certain
-    '4' => array('Moderate',    'Considerable', 'Considerable', 'High',         'High'),         // Very Likely
-    '3' => array('Moderate',    'Moderate',     'Considerable', 'Considerable', 'Considerable'), // Likely
-    '2' => array('Low',         'Moderate',     'Moderate',     'Considerable', 'Considerable'), // Possible
-    '1' => array('Low',         'Low',          'Low',          'Moderate',     'Considerable'), // Unlikely
+    '5' => array('Considerable', 'Considerable', 'Considerable', 'High',        'Extreme'),      // Certain
+    '4' => array('Moderate',     'Considerable', 'Considerable', 'High',        'High'),         // Very Likely
+    '3' => array('Moderate',     'Moderate',     'Considerable', 'Considerable', 'Considerable'), // Likely
+    '2' => array('Low',          'Moderate',     'Moderate',     'Moderate',     'Considerable'), // Possible
+    '1' => array('Low',          'Low',          'Low',          'Low',          'Moderate'),     // Unlikely
+  );
+
+  // Colour grid for the hazard-chart gradient. Each cell is one or two danger
+  // levels; a two-level cell is rendered as a 50/50 blend of those colours, so
+  // the gradient transitions smoothly. (Provided by the forecast lead.)
+  $C = 'Considerable'; $M = 'Moderate'; $H = 'High'; $L = 'Low'; $E = 'Extreme';
+  $gradient_table = array(
+    // size:      D1            D2            D3            D4            D5
+    '5' => array(array($C, $M), array($C, $H), array($C, $H), array($H, $E), array($E)),       // Certain
+    '4' => array(array($M),     array($C, $H), array($C, $H), array($H),     array($H)),        // Very Likely
+    '3' => array(array($M),     array($M, $C), array($C),     array($C),     array($C, $H)),    // Likely
+    '2' => array(array($L),     array($M),     array($M),     array($M, $C), array($C)),        // Possible
+    '1' => array(array($L),     array($L),     array($L),     array($L, $M), array($M)),        // Unlikely
   );
   // field_danger_rating_N stores these exact strings; localise for display.
   $danger_labels = array(
@@ -313,7 +326,7 @@ function avalanche_forecast_tool_settings_data() {
   // location/likelihood/size overlap; ask the forecaster to justify.
   $pairing = array(
     array('a' => '1', 'b' => '3',
-      'reason' => t('Storm Slab and Wind Slab are both new-snow slabs; the guidance suggests not pairing them unless they differ meaningfully in distribution, likelihood or size.')),
+      'reason' => t('Storm Slab and Wind Slab can overlap where storm snow has been wind-affected; the guidance suggests not pairing them unless they differ meaningfully in distribution, likelihood or size (for example, wind slab confined to specific lee features versus a storm slab across many aspects).')),
     array('a' => '5', 'b' => '2',
       'reason' => t('Persistent Slab and Deep Persistent Slab describe the same family of buried weak layers; pair them only when they differ meaningfully in distribution, likelihood or size.')),
     array('a' => '6', 'b' => '4',
@@ -338,6 +351,7 @@ function avalanche_forecast_tool_settings_data() {
     'likelihoodLabels' => $likelihood_labels,
     'sizes' => $sizes,
     'dangerTable' => $danger_table,
+    'gradientTable' => $gradient_table,
     'dangerLabels' => $danger_labels,
     'dangerColors' => $danger_colors,
     'pairing' => $pairing,

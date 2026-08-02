@@ -1149,3 +1149,8 @@ msgstr "Haga clic en un sector para activarlo, en una etiqueta de orientación p
 msgid "Overall danger"
 msgstr "Peligro general"
 
+
+# --- Forecast tool: reworded Storm/Wind pairing ---
+msgid "Storm Slab and Wind Slab can overlap where storm snow has been wind-affected; the guidance suggests not pairing them unless they differ meaningfully in distribution, likelihood or size (for example, wind slab confined to specific lee features versus a storm slab across many aspects)."
+msgstr "Placa de Tormenta y Placa de Viento pueden superponerse donde la nieve de tormenta ha sido afectada por el viento; la guía sugiere no combinarlas a menos que difieran de forma significativa en distribución, probabilidad o tamaño (por ejemplo, una placa de viento limitada a rasgos específicos de sotavento frente a una placa de tormenta en muchas orientaciones)."
+
