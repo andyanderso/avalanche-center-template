@@ -390,6 +390,57 @@ function avalanche_forecast_tool_problem_help() {
 }
 
 /**
+ * The full danger-scale table (Danger Level / Travel Advice / Likelihood / Size
+ * and Distribution), pulled from the same preset- and language-specific content
+ * file the /avalanche-danger-scale reference page uses, so the tool shows the
+ * exact same table. Returns the <table>…</table> HTML, or '' if unavailable.
+ */
+function avalanche_forecast_tool_danger_scale_table() {
+  $scale = config_get('avalanche_center.settings', 'danger_scale');
+  $base = ($scale === 'SAC')
+    ? 'south-american-avalanche-danger-scale'
+    : 'north-american-avalanche-danger-scale';
+  $dir = backdrop_get_path('profile', 'avalanche_center') . '/content';
+
+  // Prefer the default-language companion file (matches the reference page).
+  $langcode = 'en';
+  if (function_exists('language_default')) {
+    $def = language_default();
+    if (!empty($def->langcode)) {
+      $langcode = $def->langcode;
+    }
+  }
+  $candidates = array();
+  if ($langcode !== 'en') {
+    $candidates[] = "$dir/$base.$langcode.html";
+  }
+  $candidates[] = "$dir/$base.html";
+
+  $html = '';
+  foreach ($candidates as $file) {
+    if (is_file($file)) {
+      $html = file_get_contents($file);
+      break;
+    }
+  }
+  if ($html === '') {
+    return '';
+  }
+
+  // Extract the danger-scale table.
+  $marker = strpos($html, 'napads-danger-scale');
+  $start = ($marker !== FALSE) ? strrpos(substr($html, 0, $marker), '<table') : strpos($html, '<table');
+  if ($start === FALSE) {
+    return '';
+  }
+  $end = strpos($html, '</table>', $start);
+  if ($end === FALSE) {
+    return '';
+  }
+  return substr($html, $start, $end - $start + strlen('</table>'));
+}
+
+/**
  * Elevation-band label, matching the forecast form: prefer the active theme's
  * configured band label (theme setting <pos>_elevation_band), else the default.
  *

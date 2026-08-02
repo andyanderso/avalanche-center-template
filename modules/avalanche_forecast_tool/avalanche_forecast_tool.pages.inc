@@ -22,10 +22,23 @@ function avalanche_forecast_tool_wizard_page() {
     . t('This tool walks you through each avalanche problem — where it is, how sensitive and how widespread it is (which sets the likelihood), and how big it could get — then shows a hazard chart and a suggested danger rating for each elevation band. Nothing is saved until you approve it and review the forecast form.')
     . '</p>';
 
+  // Full danger-scale reference table at the bottom (same table + preset +
+  // language as the /avalanche-danger-scale page). Server-rendered so it sits
+  // outside the JS-managed wizard mount.
+  $scale = avalanche_forecast_tool_danger_scale_table();
+  $scale_html = '';
+  if ($scale !== '') {
+    $scale_html = '<section class="aft-card aft-scale-full">'
+      . '<h2>' . t('Danger scale') . '</h2>'
+      . '<div class="aft-scale-table">' . $scale . '</div>'
+      . '</section>';
+  }
+
   return '<div class="aft-wizard-intro">' . $intro . '</div>'
     . '<div id="aft-wizard" class="aft-wizard"><noscript>'
     . t('The guided forecast tool needs JavaScript enabled.')
-    . '</noscript></div>';
+    . '</noscript></div>'
+    . $scale_html;
 }
 
 /**

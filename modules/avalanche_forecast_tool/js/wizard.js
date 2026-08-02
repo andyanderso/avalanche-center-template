@@ -220,30 +220,8 @@
     this.mount.appendChild(this.renderAddProblem());
     this.outputHost = el('div', { class: 'aft-output' });
     this.mount.appendChild(this.outputHost);
-    // Danger-scale reference at the very bottom (colours match the hazard chart).
-    this.mount.appendChild(this.renderDangerScale());
     this.renderProblems();
     this.renderOutput();
-  };
-
-  // North American danger scale reference: the five levels with their colours,
-  // matching the hazard-chart gradient. Always shown, at the bottom of the tool.
-  Wizard.prototype.renderDangerScale = function () {
-    var self = this;
-    var levels = [['1', 'Low'], ['2', 'Moderate'], ['3', 'Considerable'], ['4', 'High'], ['5', 'Extreme']];
-    var row = el('div', { class: 'aft-scale-row' });
-    levels.forEach(function (lv) {
-      var color = self.cfg.dangerColors[lv[1]] || '#ccc';
-      row.appendChild(el('div', { class: 'aft-scale-item', style: 'border-top: 10px solid ' + color + ';' }, [
-        el('strong', { text: lv[0] }),
-        el('span', { text: ' — ' + (self.cfg.dangerLabels[lv[1]] || lv[1]) })
-      ]));
-    });
-    return el('section', { class: 'aft-card aft-scale' }, [
-      el('h2', { text: Backdrop.t('Danger scale') }),
-      el('p', { class: 'aft-hint', text: Backdrop.t('The North American Avalanche Danger Scale. The hazard chart above is shaded with these colours.') }),
-      row
-    ]);
   };
 
   // Step 1: observed conditions -> suggested problem types.
