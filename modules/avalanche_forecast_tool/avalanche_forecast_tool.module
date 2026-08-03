@@ -134,9 +134,8 @@ function avalanche_forecast_tool_toggle() {
   }
   $to = !empty($_GET['to']);
   config_set('avalanche_forecast_tool.settings', 'enabled', $to);
-  backdrop_set_message($to
-    ? t('The guided forecast tool is now on.')
-    : t('The guided forecast tool is now off. You can turn it back on from the forecast form or under Configuration &raquo; Avalanche Forecast Tool.'));
+  // No status message: the entry banner on the form below already reflects the
+  // new state (a second "the tool is now on/off" message would just duplicate it).
   backdrop_goto('node/add/advisory');
 }
 
