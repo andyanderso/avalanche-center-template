@@ -768,8 +768,8 @@ msgstr "Agregue una justificación para la combinación señalada más arriba pa
 msgid "Add problem"
 msgstr "Agregar problema"
 
-msgid "A deep, hard slab (~1.5 m+) on a basal weak layer; stubborn, produces large avalanches"
-msgstr "Una placa profunda y dura (~1,5 m o más) sobre una capa débil basal; terca, produce avalanchas grandes"
+msgid "A deep, hard slab (~@d+) on a basal weak layer; stubborn, produces large avalanches"
+msgstr "Una placa profunda y dura (~@d o más) sobre una capa débil basal; terca, produce avalanchas grandes"
 
 msgid "Approve & pre-fill the forecast form"
 msgstr "Aprobar y precompletar el formulario de pronóstico"
@@ -819,8 +819,8 @@ msgstr "Tamaño esperado (destructivo)"
 msgid "Features with common characteristics; evidence exists but is not obvious."
 msgstr "Rasgos con características comunes; la evidencia existe pero no es obvia."
 
-msgid "Few naturals; difficult to trigger, or only with large explosives."
-msgstr "Pocas avalanchas naturales; difícil de gatillar, o solo con explosivos grandes."
+msgid "Few or no natural avalanches; Human triggered avalanches are tough to trigger unless a person finds a trigger point like a thin or weak spot — larger triggers like multiple people on a slope, large cornices, or explosives may still trigger avalanches."
+msgstr "Pocas o ninguna avalancha natural; las avalanchas gatilladas por personas son difíciles de gatillar a menos que se encuentre un punto de gatillado, como un sector delgado o débil — gatillantes mayores como varias personas en una ladera, grandes cornisas o explosivos aún pueden gatillar avalanchas."
 
 msgid "Finish each problem (location, likelihood, size) to continue."
 msgstr "Complete cada problema (ubicación, probabilidad, tamaño) para continuar."
@@ -867,8 +867,8 @@ msgstr "La más grande conocida: podría erosionar el terreno, destruir un puebl
 msgid "likelihood"
 msgstr "probabilidad"
 
-msgid "Likelihood: choose sensitivity and distribution"
-msgstr "Probabilidad: elija sensibilidad y distribución"
+msgid "Likelihood: set the sensitivity and distribution ranges"
+msgstr "Probabilidad: defina los rangos de sensibilidad y distribución"
 
 msgid "Likelihood (from the Fig 2 matrix): "
 msgstr "Probabilidad (según la matriz de la Fig. 2): "
@@ -888,11 +888,11 @@ msgstr "Nieve suelta, húmeda y sin cohesión por derretimiento o lluvia."
 msgid "Many locations and features; evidence is everywhere and easy to find."
 msgstr "Muchas ubicaciones y rasgos; la evidencia está en todas partes y es fácil de encontrar."
 
-msgid "New snow in the last 24–48 hours forming a soft slab"
-msgstr "Nieve nueva en las últimas 24–48 horas que forma una placa blanda"
+msgid "New snow in the last 24–48 hours forming a slab"
+msgstr "Nieve nueva en las últimas 24–48 horas que forma una placa"
 
-msgid "No natural avalanches; unlikely to trigger even with a large load."
-msgstr "Sin avalanchas naturales; improbable de gatillar incluso con una carga grande."
+msgid "Human and natural avalanches are unlikely, and very hard to trigger — even large explosives and large cornices do not trigger avalanches."
+msgstr "Las avalanchas humanas y naturales son improbables, y muy difíciles de gatillar — incluso grandes explosivos y grandes cornisas no gatillan avalanchas."
 
 msgid "No problems added yet. Check conditions above or add one manually."
 msgstr "Aún no se han agregado problemas. Marque condiciones más arriba o agregue uno manualmente."
@@ -903,8 +903,8 @@ msgstr "No se observa inestabilidad significativa"
 msgid "No specific avalanche problem; general caution only."
 msgstr "Sin problema de avalancha específico; solo precaución general."
 
-msgid "Numerous naturals; triggering is almost certain."
-msgstr "Numerosas avalanchas naturales; el gatillado es casi seguro."
+msgid "Widespread natural avalanches; Human triggering is almost certain — look for remote triggers, collapsing \"whumpfs\" and shooting cracks. Small explosives or cornice failures may trigger multiple avalanches."
+msgstr "Avalanchas naturales generalizadas; el gatillado por personas es casi seguro — busque gatillados a distancia, colapsos (\"whumpfs\") y grietas que se propagan. Pequeños explosivos o caídas de cornisa pueden gatillar múltiples avalanchas."
 
 msgid "Opening the forecast form…"
 msgstr "Abriendo el formulario de pronóstico…"
@@ -945,8 +945,8 @@ msgstr "Sensibilidad y distribución"
 msgid "Sensitivity to triggers"
 msgstr "Sensibilidad a los gatillantes"
 
-msgid "Several naturals; easy to trigger with ski cuts or a single hand charge."
-msgstr "Varias avalanchas naturales; fácil de gatillar con cortes de esquí o una sola carga de mano."
+msgid "Several natural avalanches; Human triggered avalanches are easy to trigger — a ski cut or a single rider on the slope can set one off. Single hand charges easily trigger avalanches."
+msgstr "Varias avalanchas naturales; las avalanchas gatilladas por personas son fáciles de gatillar — un corte de esquí o una sola persona en la ladera puede desencadenar una. Cargas de mano individuales gatillan avalanchas fácilmente."
 
 msgid "size"
 msgstr "tamaño"
@@ -1184,3 +1184,75 @@ msgstr "Escala de peligro"
 msgid "The North American Avalanche Danger Scale. The hazard chart above is shaded with these colours."
 msgstr "La Escala Norteamericana de Peligro de Avalanchas. El gráfico de peligro de arriba está sombreado con estos colores."
 
+
+# Forecast tool: enable/disable toggle + units (added 2026-08-02)
+msgid "1.5 m"
+msgstr "1,5 m"
+
+msgid "The guided forecast tool is turned off."
+msgstr "La herramienta de pronóstico guiada está desactivada."
+
+msgid "Forecasters see only the plain form below."
+msgstr "Los pronosticadores solo ven el formulario simple a continuación."
+
+msgid "Turn it on"
+msgstr "Activarla"
+
+msgid "Turn off the guided tool"
+msgstr "Desactivar la herramienta guiada"
+
+msgid "The guided forecast tool is now on."
+msgstr "La herramienta de pronóstico guiada ahora está activada."
+
+msgid "The guided forecast tool is now off. You can turn it back on from the forecast form or under Configuration &raquo; Avalanche Forecast Tool."
+msgstr "La herramienta de pronóstico guiada ahora está desactivada. Puede volver a activarla desde el formulario de pronóstico o en Configuración &raquo; Herramienta de Pronóstico de Avalanchas."
+
+msgid "Enable the guided forecast tool"
+msgstr "Activar la herramienta de pronóstico guiada"
+
+msgid "When off, forecasters no longer see the guided-tool prompt on the forecast form and cannot open the wizard — the form works as a plain form. You can also toggle this straight from the forecast form. This is a lighter switch than disabling the whole module on the modules page."
+msgstr "Cuando está desactivada, los pronosticadores ya no ven la propuesta de la herramienta guiada en el formulario de pronóstico y no pueden abrir el asistente; el formulario funciona como un formulario simple. También puede alternarla directamente desde el formulario de pronóstico. Este es un interruptor más ligero que desactivar todo el módulo en la página de módulos."
+
+msgid "Display"
+msgstr "Visualización"
+
+msgid "Measurement units"
+msgstr "Unidades de medida"
+
+msgid "Metric (m, t)"
+msgstr "Métricas (m, t)"
+
+msgid "Imperial (ft, tons)"
+msgstr "Imperiales (ft, tons)"
+
+msgid "Both (metric with imperial in parentheses)"
+msgstr "Ambas (métricas con imperiales entre paréntesis)"
+
+msgid "Units used where the tool shows measurements — e.g. the typical size (path length and mass) of each avalanche size class. Defaults from the site language (Spanish → metric, otherwise both) until you set it here."
+msgstr "Unidades usadas donde la herramienta muestra medidas, por ejemplo el tamaño típico (longitud del recorrido y masa) de cada clase de tamaño de avalancha. Por defecto según el idioma del sitio (español → métricas, de lo contrario ambas) hasta que la configure aquí."
+
+# Forecast tool: range sliders + region hazard chart (added 2026-08-02)
+msgid "Drag the two handles to set how easily it could be triggered — widen them if you are unsure."
+msgstr "Arrastre los dos controles para definir con qué facilidad podría gatillarse — sepárelos si no está seguro."
+
+msgid "Drag the two handles to set how widespread it is — widen them if you are unsure."
+msgstr "Arrastre los dos controles para definir qué tan generalizado está — sepárelos si no está seguro."
+
+msgid "Drag the two handles to set the smallest and largest expected size."
+msgstr "Arrastre los dos controles para definir el tamaño mínimo y máximo esperado."
+
+msgid "Drag or tap to set a range"
+msgstr "Arrastre o toque para definir un rango"
+
+msgid "Each problem is a region spanning its size and likelihood ranges (Statham Fig 3) — a bigger region means more uncertainty. Background shading shows the danger the hazard chart implies."
+msgstr "Cada problema es una región que abarca sus rangos de tamaño y probabilidad (Statham Fig. 3) — una región más grande significa más incertidumbre. El sombreado de fondo muestra el peligro que implica el gráfico de peligro."
+
+# Forecast tool: fractional likelihood + vertical sliders (added 2026-08-02)
+msgid "part of @lvl"
+msgstr "parte de @lvl"
+
+msgid "Drag the handles to set a range"
+msgstr "Arrastre los controles para definir un rango"
+
+msgid "5 ft"
+msgstr "5 ft"

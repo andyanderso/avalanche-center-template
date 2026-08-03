@@ -78,6 +78,129 @@
   var UID = 0;
   function uid() { return 'aft-g' + (++UID); }
 
+  // True when a slider position value is actually set. Position 0 is a valid
+  // value (the lowest term), so a plain falsiness check won't do.
+  function numSet(v) { return v !== '' && v != null && !isNaN(Number(v)); }
+
+  // Discrete dual-thumb range slider over an ordered option list, so a forecaster
+  // can express a RANGE (and therefore uncertainty) rather than one value.
+  //   opts = { options:[{key,label}], min:key|'', max:key|'',
+  //            onChange:fn(minKey,maxKey), placeholder:string }
+  function rangeSlider(opts) {
+    var options = opts.options, n = options.length;
+    var minV = (opts.min === '' || opts.min == null) ? null : Number(opts.min);
+    var maxV = (opts.max === '' || opts.max == null) ? null : Number(opts.max);
+    var set = (minV != null && maxV != null && !isNaN(minV) && !isNaN(maxV));
+    // Continuous position 0..n-1. Position i aligns with term row i's centre;
+    // rows are stacked highest-at-top, so higher value sits nearer the top.
+    function topPct(pos) { return n <= 1 ? 0 : (1 - (pos + 0.5) / n) * 100; }
+
+    var root = el('div', { class: 'aft-vslider' });
+    var body = el('div', { class: 'aft-vslider-body' });
+    var track = el('div', { class: 'aft-vslider-track' });
+    var fill = el('div', { class: 'aft-vslider-fill' });
+    track.appendChild(fill);
+    function mkThumb(cls) {
+      return el('div', {
+        class: 'aft-vslider-thumb ' + cls, tabindex: '0', role: 'slider',
+        'aria-valuemin': '0', 'aria-valuemax': String(n - 1)
+      });
+    }
+    var thumbMin = mkThumb('aft-vslider-thumb--min');
+    var thumbMax = mkThumb('aft-vslider-thumb--max');
+    track.appendChild(thumbMin);
+    track.appendChild(thumbMax);
+
+    // Term rows (label + description), highest value first (top).
+    var terms = el('ul', { class: 'aft-vslider-terms' });
+    var rowEls = [];
+    for (var ri = n - 1; ri >= 0; ri--) {
+      var o = options[ri];
+      var kids = [el('span', { class: 'aft-vterm-label', text: o.label })];
+      if (o.desc) { kids.push(el('span', { class: 'aft-vterm-desc', text: o.desc })); }
+      if (o.scale) { kids.push(el('span', { class: 'aft-vterm-scale', text: o.scale })); }
+      var li = el('li', { class: 'aft-vterm' }, kids);
+      (function (idx) { li.addEventListener('click', function () { setPos('near', idx); }); })(ri);
+      terms.appendChild(li);
+      rowEls[ri] = li;
+    }
+    body.appendChild(track);
+    body.appendChild(terms);
+    var caption = el('div', { class: 'aft-vslider-caption' });
+    root.appendChild(body);
+    root.appendChild(caption);
+
+    function paint() {
+      root.classList.toggle('aft-vslider--unset', !set);
+      rowEls.forEach(function (li, i) {
+        var on = set && (i - 0.5 < maxV && i + 0.5 > minV);
+        li.classList.toggle('aft-vterm--on', !!on);
+      });
+      if (!set) {
+        caption.textContent = opts.placeholder || Backdrop.t('Drag the handles to set a range');
+        return;
+      }
+      thumbMax.style.top = topPct(maxV) + '%';
+      thumbMin.style.top = topPct(minV) + '%';
+      fill.style.top = topPct(maxV) + '%';
+      fill.style.height = (topPct(minV) - topPct(maxV)) + '%';
+      thumbMin.setAttribute('aria-valuenow', minV.toFixed(2));
+      thumbMin.setAttribute('aria-valuetext', options[Math.round(minV)].label);
+      thumbMax.setAttribute('aria-valuenow', maxV.toFixed(2));
+      thumbMax.setAttribute('aria-valuetext', options[Math.round(maxV)].label);
+      caption.innerHTML = '';
+      var lo = options[Math.round(minV)].label, hi = options[Math.round(maxV)].label;
+      caption.appendChild(el('strong', { text: lo === hi ? lo : (lo + ' – ' + hi) }));
+    }
+    function commit() { opts.onChange(minV, maxV); }
+    function posFromClientY(clientY) {
+      var r = track.getBoundingClientRect();
+      var f = r.height ? (clientY - r.top) / r.height : 0; // 0 top, 1 bottom
+      f = Math.max(0, Math.min(1, f));
+      return Math.max(0, Math.min(n - 1, (1 - f) * n - 0.5));
+    }
+    function setPos(which, pos) {
+      pos = Math.max(0, Math.min(n - 1, pos));
+      if (!set) { minV = maxV = pos; set = true; }
+      else if (which === 'min') { minV = Math.min(pos, maxV); }
+      else if (which === 'max') { maxV = Math.max(pos, minV); }
+      else if (pos > maxV) { maxV = pos; }
+      else if (pos < minV) { minV = pos; }
+      else if (Math.abs(pos - minV) <= Math.abs(pos - maxV)) { minV = pos; }
+      else { maxV = pos; }
+      paint(); commit();
+    }
+    function startDrag(which, e) {
+      e.preventDefault();
+      function move(ev) { setPos(which, posFromClientY(ev.clientY)); }
+      function up() {
+        document.removeEventListener('pointermove', move);
+        document.removeEventListener('pointerup', up);
+      }
+      document.addEventListener('pointermove', move);
+      document.addEventListener('pointerup', up);
+    }
+    thumbMin.addEventListener('pointerdown', function (e) { startDrag('min', e); });
+    thumbMax.addEventListener('pointerdown', function (e) { startDrag('max', e); });
+    track.addEventListener('pointerdown', function (e) {
+      if (e.target === thumbMin || e.target === thumbMax) { return; }
+      setPos('near', posFromClientY(e.clientY));
+    });
+    function keyMove(which, e) {
+      var d = (e.key === 'ArrowUp' || e.key === 'ArrowRight') ? 0.25
+        : (e.key === 'ArrowDown' || e.key === 'ArrowLeft') ? -0.25 : 0;
+      if (!d) { return; }
+      e.preventDefault();
+      if (!set) { setPos(which, which === 'min' ? 0 : n - 1); return; }
+      setPos(which, (which === 'min' ? minV : maxV) + d);
+    }
+    thumbMin.addEventListener('keydown', function (e) { keyMove('min', e); });
+    thumbMax.addEventListener('keydown', function (e) { keyMove('max', e); });
+
+    paint();
+    return root;
+  }
+
   // An info "?" button that toggles a help excerpt from raw text.
   function helpPopup(text) {
     if (!text) { return null; }
@@ -128,11 +251,36 @@
 
   /* ---- Derived algorithm ------------------------------------------------ */
 
-  // Statham Fig 2: distribution x sensitivity -> likelihood key ('1'..'5').
+  // Bilinearly interpolate the Fig 2 matrix at CONTINUOUS distribution/sensitivity
+  // positions (0-indexed floats), so a value part-way between two terms yields a
+  // fractional likelihood (e.g. between Stubborn and Reactive -> ~2.5, "Possible
+  // and part of Likely").
+  Wizard.prototype.interpLikelihood = function (distPos, sensPos) {
+    var sens = this.cfg.sensitivity, dist = this.cfg.distribution, m = this.cfg.matrix;
+    var d0 = Math.floor(distPos), d1 = Math.min(dist.length - 1, d0 + 1), fd = distPos - d0;
+    var s0 = Math.floor(sensPos), s1 = Math.min(sens.length - 1, s0 + 1), fs = sensPos - s0;
+    function cell(di, si) { return parseInt((m[dist[di].key] || {})[sens[si].key] || '0', 10); }
+    var bottom = cell(d0, s0) * (1 - fs) + cell(d0, s1) * fs;
+    var top = cell(d1, s0) * (1 - fs) + cell(d1, s1) * fs;
+    return bottom * (1 - fd) + top * fd;
+  };
+
+  // The likelihood RANGE (fractional) from the sensitivity/distribution ranges.
+  // The interpolated surface is monotonic in both, so the low end is the low
+  // corner and the high end the high corner. Returns {min,max} as floats in 1..5.
+  Wizard.prototype.likelihoodRange = function (p) {
+    if (!numSet(p.distMin) || !numSet(p.sensMin) || !numSet(p.distMax) || !numSet(p.sensMax)) { return null; }
+    var lo = this.interpLikelihood(Number(p.distMin), Number(p.sensMin));
+    var hi = this.interpLikelihood(Number(p.distMax), Number(p.sensMax));
+    return { min: Math.min(lo, hi), max: Math.max(lo, hi) };
+  };
+
+  // The single likelihood written to the published forecast: the UPPER bound of
+  // the range, rounded to a whole level (conservative). The wizard shows the full
+  // fractional range for context.
   Wizard.prototype.likelihoodFor = function (p) {
-    if (!p.distribution || !p.sensitivity) { return ''; }
-    var row = this.cfg.matrix[p.distribution];
-    return row ? (row[p.sensitivity] || '') : '';
+    var r = this.likelihoodRange(p);
+    return r ? String(Math.max(1, Math.min(5, Math.round(r.max)))) : '';
   };
 
   // Danger table lookup: likelihood('1'..'5') x size key('1'..'5') -> label.
@@ -160,10 +308,10 @@
       var best = 'No Rating';
       self.problems.forEach(function (p) {
         var like = self.likelihoodFor(p);
-        var size = p.sizeMax || p.sizeMin;
-        if (!like || !size) { return; }
+        if (!like || !numSet(p.sizeMax)) { return; }
         if (!self.bandsOf(p)[band]) { return; }
-        var d = self.dangerFor(like, size);
+        var sizeKey = String(Math.max(1, Math.min(5, Math.round(Number(p.sizeMax)) + 1)));
+        var d = self.dangerFor(like, sizeKey);
         if (DANGER_RANK[d] > DANGER_RANK[best]) { best = d; }
       });
       out[band] = best;
@@ -199,15 +347,16 @@
     return Object.keys(ba).some(function (band) { return bb[band]; });
   };
   Wizard.prototype.likeOverlap = function (a, b) {
-    var la = parseInt(this.likelihoodFor(a), 10), lb = parseInt(this.likelihoodFor(b), 10);
-    if (!la || !lb) { return false; }
-    return Math.abs(la - lb) <= 1; // within one likelihood level
+    var ra = this.likelihoodRange(a), rb = this.likelihoodRange(b);
+    if (!ra || !rb) { return false; }
+    // Fractional ranges intersect (allowing a one-level touch, as before).
+    return ra.min <= rb.max + 1 && rb.min <= ra.max + 1;
   };
   Wizard.prototype.sizeOverlap = function (a, b) {
-    var a1 = parseInt(a.sizeMin || a.sizeMax, 10), a2 = parseInt(a.sizeMax || a.sizeMin, 10);
-    var b1 = parseInt(b.sizeMin || b.sizeMax, 10), b2 = parseInt(b.sizeMax || b.sizeMin, 10);
-    if (!a1 || !b1) { return false; }
-    return a1 <= b2 && b1 <= a2; // ranges intersect
+    if (!numSet(a.sizeMin) || !numSet(b.sizeMin)) { return false; }
+    var a1 = Number(a.sizeMin), a2 = Number(a.sizeMax);
+    var b1 = Number(b.sizeMin), b2 = Number(b.sizeMax);
+    return a1 <= b2 && b1 <= a2; // fractional ranges intersect
   };
 
   /* ---- Render ----------------------------------------------------------- */
@@ -298,7 +447,7 @@
       return;
     }
     if (this.problems.some(function (p) { return p.type === typeKey; })) { return; }
-    this.problems.push({ type: typeKey, rose: {}, sensitivity: '', distribution: '', sizeMin: '', sizeMax: '' });
+    this.problems.push({ type: typeKey, rose: {}, sensMin: '', sensMax: '', distMin: '', distMax: '', sizeMin: '', sizeMax: '' });
     this.renderProblems();
     this.renderSuggestions();
     this.renderOutput();
@@ -346,26 +495,40 @@
     card.appendChild(el('h4', { text: Backdrop.t('Location (aspect & elevation)') }));
     card.appendChild(this.renderRose(p));
 
-    // Sensitivity + distribution -> likelihood.
+    // Sensitivity + distribution -> likelihood. Both are RANGES (dual-thumb
+    // sliders) so the forecaster can express uncertainty; likelihood becomes a
+    // range too, shown below and as the region's height on the hazard chart.
     var likeRow = el('div', { class: 'aft-likelihood-row' });
     card.appendChild(heading('h4', Backdrop.t('Sensitivity & distribution'), 'likelihood', this.cfg));
     var grid = el('div', { class: 'aft-two-col' }, [
-      this.renderChoice(Backdrop.t('Sensitivity to triggers'), this.cfg.sensitivity, p.sensitivity, function (v) {
-        p.sensitivity = v; self.updateLikelihood(p, likeRow); self.renderOutput();
-      }, 'sensitivity'),
-      this.renderChoice(Backdrop.t('Spatial distribution'), this.cfg.distribution, p.distribution, function (v) {
-        p.distribution = v; self.updateLikelihood(p, likeRow); self.renderOutput();
-      }, 'distribution')
+      this.rangeField(Backdrop.t('Sensitivity to triggers'), this.cfg.sensitivity, p.sensMin, p.sensMax, function (mn, mx) {
+        p.sensMin = mn; p.sensMax = mx; self.updateLikelihood(p, likeRow); self.renderOutput();
+      }, 'sensitivity', Backdrop.t('Drag the two handles to set how easily it could be triggered — widen them if you are unsure.')),
+      this.rangeField(Backdrop.t('Spatial distribution'), this.cfg.distribution, p.distMin, p.distMax, function (mn, mx) {
+        p.distMin = mn; p.distMax = mx; self.updateLikelihood(p, likeRow); self.renderOutput();
+      }, 'distribution', Backdrop.t('Drag the two handles to set how widespread it is — widen them if you are unsure.'))
     ]);
     card.appendChild(grid);
     card.appendChild(likeRow);
     this.updateLikelihood(p, likeRow);
 
-    // Size range.
+    // Size range (also a dual-thumb slider, smallest → largest expected).
     card.appendChild(heading('h4', Backdrop.t('Expected size (destructive)'), 'size', this.cfg));
     card.appendChild(this.renderSize(p));
 
     return card;
+  };
+
+  // A titled range slider (with optional help "?" button) for a per-problem
+  // factor. onChange(minKey, maxKey).
+  Wizard.prototype.rangeField = function (title, options, minKey, maxKey, onChange, helpKey, placeholder) {
+    var titleRow = el('div', { class: 'aft-choice-title' }, [el('span', { text: title })]);
+    var h = helpButton(helpKey, this.cfg);
+    if (h) { titleRow.appendChild(h); }
+    var slider = rangeSlider({
+      options: options, min: minKey, max: maxKey, onChange: onChange, placeholder: placeholder
+    });
+    return el('div', { class: 'aft-choice aft-range-field' }, [titleRow, slider]);
   };
 
   // Clickable NAC aspect/elevation rose (same octagon the published forecast
@@ -478,33 +641,61 @@
     return col;
   };
 
+  // Describe one fractional likelihood value: a whole level, or "part of" the
+  // next level when the value falls partway between (e.g. 2.5 -> "part of Likely").
+  Wizard.prototype.likelihoodBoundLabel = function (v) {
+    var labels = this.cfg.likelihoodLabels;
+    var L = Math.max(1, Math.min(5, Math.floor(v)));
+    var f = v - Math.floor(v);
+    if (f < 0.15) { return labels[String(L)]; }
+    if (f > 0.85) { return labels[String(Math.min(5, L + 1))]; }
+    return Backdrop.t('part of @lvl', { '@lvl': labels[String(Math.min(5, L + 1))] });
+  };
+
   Wizard.prototype.updateLikelihood = function (p, host) {
     host.innerHTML = '';
     host.appendChild(this.renderLikelihoodMatrix(p));
-    var like = this.likelihoodFor(p);
-    if (!like) {
-      host.appendChild(el('span', { class: 'aft-like aft-like--pending', text: Backdrop.t('Likelihood: choose sensitivity and distribution') }));
+    var r = this.likelihoodRange(p);
+    if (!r) {
+      host.appendChild(el('span', { class: 'aft-like aft-like--pending', text: Backdrop.t('Likelihood: set the sensitivity and distribution ranges') }));
       return;
     }
-    host.appendChild(el('span', { class: 'aft-like', html: Backdrop.t('Likelihood (from the Fig 2 matrix): ') + '<strong>' + this.cfg.likelihoodLabels[like] + '</strong>' }));
+    var lo = this.likelihoodBoundLabel(r.min), hi = this.likelihoodBoundLabel(r.max);
+    var span = el('span', { class: 'aft-like' });
+    span.appendChild(document.createTextNode(Backdrop.t('Likelihood (from the Fig 2 matrix): ')));
+    span.appendChild(el('strong', { text: lo }));
+    if (Math.abs(r.max - r.min) >= 0.05 && hi !== lo) {
+      span.appendChild(document.createTextNode(' – '));
+      span.appendChild(el('strong', { text: hi }));
+    }
+    host.appendChild(span);
   };
 
   // Visualise the Fig 2 likelihood matrix for this problem: distribution (rows,
-  // widespread on top) x sensitivity (cols), each cell its resulting likelihood,
-  // the current selection highlighted.
+  // widespread on top) x sensitivity (cols), each cell its resulting likelihood.
+  // The whole selected RANGE of cells (the sensitivity x distribution rectangle)
+  // is highlighted.
   Wizard.prototype.renderLikelihoodMatrix = function (p) {
     var self = this;
     var sens = this.cfg.sensitivity;                 // low -> high (cols)
     var dist = this.cfg.distribution.slice().reverse(); // widespread on top
+    var distKeys = this.cfg.distribution.map(function (o) { return o.key; });
+    var sensKeys = sens.map(function (o) { return o.key; });
+    // Positions are continuous now; light up every whole cell the range overlaps.
+    var haveSel = numSet(p.sensMin) && numSet(p.distMin);
+    var sLo = haveSel ? Math.floor(p.sensMin) : -1, sHi = haveSel ? Math.ceil(p.sensMax) : -1;
+    var dLo = haveSel ? Math.floor(p.distMin) : -1, dHi = haveSel ? Math.ceil(p.distMax) : -1;
     var table = el('table', { class: 'aft-likematrix' });
     var head = el('tr', {}, [el('th', { class: 'aft-lm-corner' }, [Backdrop.t('Likelihood')])]);
     sens.forEach(function (s) { head.appendChild(el('th', { class: 'aft-lm-col', text: s.label })); });
     table.appendChild(head);
     dist.forEach(function (d) {
+      var dIdx = distKeys.indexOf(d.key);
       var tr = el('tr', {}, [el('th', { class: 'aft-lm-row', text: d.label })]);
       sens.forEach(function (s) {
+        var sIdx = sensKeys.indexOf(s.key);
         var lk = (self.cfg.matrix[d.key] || {})[s.key] || '';
-        var selected = p.distribution === d.key && p.sensitivity === s.key;
+        var selected = haveSel && dIdx >= dLo && dIdx <= dHi && sIdx >= sLo && sIdx <= sHi;
         tr.appendChild(el('td', {
           class: 'aft-lm-cell' + (selected ? ' aft-lm-selected' : ''),
           text: lk ? self.cfg.likelihoodLabels[lk] : ''
@@ -517,26 +708,13 @@
 
   Wizard.prototype.renderSize = function (p) {
     var self = this;
-    function sizeSelect(label, key) {
-      var sel = el('select', {
-        class: 'aft-size-select',
-        onchange: function () { p[key] = sel.value; self.clampSize(p); self.renderOutput(); }
-      });
-      sel.appendChild(el('option', { value: '', text: '—' }));
-      self.cfg.sizes.forEach(function (s) {
-        sel.appendChild(el('option', { value: s.key, text: s.label + ' — ' + s.desc, selected: p[key] === s.key ? 'selected' : null }));
-      });
-      return el('label', { class: 'aft-size' }, [el('span', { text: label }), sel]);
-    }
-    return el('div', { class: 'aft-size-row' }, [
-      sizeSelect(Backdrop.t('Smallest expected'), 'sizeMin'),
-      sizeSelect(Backdrop.t('Largest expected'), 'sizeMax')
-    ]);
-  };
-
-  Wizard.prototype.clampSize = function (p) {
-    var mn = parseInt(p.sizeMin, 10), mx = parseInt(p.sizeMax, 10);
-    if (mn && mx && mn > mx) { p.sizeMin = p.sizeMax; }
+    // The size classes carry a `scale` (typical length + mass), which the
+    // vertical slider shows on each term row — no separate reference needed.
+    return rangeSlider({
+      options: this.cfg.sizes, min: p.sizeMin, max: p.sizeMax,
+      onChange: function (mn, mx) { p.sizeMin = mn; p.sizeMax = mx; self.renderOutput(); },
+      placeholder: Backdrop.t('Drag the two handles to set the smallest and largest expected size.')
+    });
   };
 
   /* ---- Output: hazard chart + danger + pairing + approve ---------------- */
@@ -550,7 +728,7 @@
 
     var chartCard = el('section', { class: 'aft-card' }, [
       heading('h2', Backdrop.t('Hazard chart'), 'hazardChart', this.cfg),
-      el('p', { class: 'aft-hint', text: Backdrop.t('Each problem plotted by likelihood and size (Statham Fig 3). Shading shows the danger the hazard chart implies.') })
+      el('p', { class: 'aft-hint', text: Backdrop.t('Each problem is a region spanning its size and likelihood ranges (Statham Fig 3) — a bigger region means more uncertainty. Background shading shows the danger the hazard chart implies.') })
     ]);
     chartCard.appendChild(this.renderChart());
     this.outputHost.appendChild(chartCard);
@@ -629,30 +807,45 @@
     var xlab = s('text', { x: padL + plotW / 2, y: H - 6, 'text-anchor': 'middle', class: 'aft-axis-title' });
     xlab.textContent = Backdrop.t('Destructive size'); svg.appendChild(xlab);
 
-    // Plot each problem: a line spanning its size range at its likelihood, with a marker at the upper size.
+    // Plot each problem as a REGION: a rectangle spanning its size range (x) and
+    // its likelihood range (y). A bigger rectangle = more uncertainty. Regions
+    // are semi-transparent so overlaps between problems read through.
+    var PALETTE = ['#14507a', '#b5341f', '#5b3a8c'];
     self.problems.forEach(function (p, idx) {
-      var like = parseInt(self.likelihoodFor(p), 10);
-      var mn = parseInt(p.sizeMin || p.sizeMax, 10);
-      var mx = parseInt(p.sizeMax || p.sizeMin, 10);
-      if (!like || !mx) { return; }
-      var y = padT + (rows - like) * ch + ch / 2;
-      var x1 = padL + (mn - 1) * cw + cw / 2;
-      var x2 = padL + (mx - 1) * cw + cw / 2;
-      if (x2 > x1) {
-        svg.appendChild(s('line', { x1: x1, y1: y, x2: x2, y2: y, stroke: '#111', 'stroke-width': '2', 'stroke-linecap': 'round' }));
-      }
+      var r = self.likelihoodRange(p);
+      if (!r || !numSet(p.sizeMin) || !numSet(p.sizeMax)) { return; }
+      // Positions are continuous (0-indexed): size pos maps to columns, the
+      // fractional likelihood range maps to rows — so a partway value covers
+      // only PART of a box.
+      var szMin = Number(p.sizeMin), szMax = Number(p.sizeMax);
+      var color = PALETTE[idx % PALETTE.length];
+      var inset = 3;
+      var x1 = padL + szMin * cw + inset;
+      var x2 = padL + (szMax + 1) * cw - inset;
+      var yTop = padT + (rows - r.max) * ch + inset;
+      var yBot = padT + (rows - r.min + 1) * ch - inset;
+      svg.appendChild(s('rect', {
+        x: x1, y: yTop, width: Math.max(2, x2 - x1), height: Math.max(2, yBot - yTop),
+        rx: 6, fill: color, 'fill-opacity': '0.22', stroke: color, 'stroke-width': '2.5'
+      }));
+      // Numbered badge at the region's top-left corner (stays visible on overlap).
+      var bx = x1 + 13, by = yTop + 13;
       var g = s('g', {});
-      g.appendChild(s('circle', { cx: x2, cy: y, r: '11', fill: '#fff', stroke: '#111', 'stroke-width': '2' }));
-      var num = s('text', { x: x2, y: y + 4, 'text-anchor': 'middle', class: 'aft-marker' });
+      g.appendChild(s('circle', { cx: bx, cy: by, r: '11', fill: '#fff', stroke: color, 'stroke-width': '2' }));
+      var num = s('text', { x: bx, y: by + 4, 'text-anchor': 'middle', class: 'aft-marker' });
       num.textContent = String(idx + 1);
       g.appendChild(num);
       svg.appendChild(g);
     });
 
-    // Legend keying markers to problems.
+    // Legend keying region colours/numbers to problems.
     var legend = el('ul', { class: 'aft-chart-legend' });
     self.problems.forEach(function (p, idx) {
-      legend.appendChild(el('li', {}, [el('span', { class: 'aft-legend-num', text: String(idx + 1) }), ' ' + (self.problemByKey[p.type] ? self.problemByKey[p.type].label : '')]));
+      var color = PALETTE[idx % PALETTE.length];
+      var badge = el('span', { class: 'aft-legend-num', text: String(idx + 1) });
+      badge.style.borderColor = color;
+      badge.style.color = color;
+      legend.appendChild(el('li', {}, [badge, ' ' + (self.problemByKey[p.type] ? self.problemByKey[p.type].label : '')]));
     });
     var wrap = el('div', { class: 'aft-chart-wrap' });
     wrap.appendChild(svg);
@@ -785,7 +978,7 @@
       return f.strong && !(this.notes[f.key] && this.notes[f.key].trim());
     }, this);
     var incomplete = this.problems.some(function (p) {
-      return !p.type || !this.likelihoodFor(p) || !(p.sizeMax || p.sizeMin) || !Object.keys(p.rose).some(function (c) { return p.rose[c]; });
+      return !p.type || !this.likelihoodFor(p) || !numSet(p.sizeMax) || !Object.keys(p.rose).some(function (c) { return p.rose[c]; });
     }, this);
     this.approveBtn.disabled = missing || incomplete || !this.problems.length;
     this.approveMsg.textContent = missing
@@ -798,11 +991,14 @@
     var payload = {
       problems: this.problems.map(function (p) {
         var rose = Object.keys(p.rose).filter(function (c) { return p.rose[c]; });
+        // Size positions are 0-indexed floats; the form takes discrete D-class
+        // keys ('1'..'5'), so round each bound to the nearest whole class.
+        function sizeKey(v) { return String(Math.max(1, Math.min(5, Math.round(Number(v)) + 1))); }
         return {
           type: p.type,
           likelihood: self.likelihoodFor(p),
-          sizeMin: p.sizeMin || p.sizeMax,
-          sizeMax: p.sizeMax || p.sizeMin,
+          sizeMin: sizeKey(numSet(p.sizeMin) ? p.sizeMin : p.sizeMax),
+          sizeMax: sizeKey(numSet(p.sizeMax) ? p.sizeMax : p.sizeMin),
           rose: rose
         };
       }),

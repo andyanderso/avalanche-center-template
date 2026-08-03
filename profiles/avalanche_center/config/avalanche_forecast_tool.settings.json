@@ -1,5 +1,6 @@
 {
     "_config_name": "avalanche_forecast_tool.settings",
+    "enabled": true,
     "require_guided": false,
     "enable_ai": false,
     "ai_api_key": "",

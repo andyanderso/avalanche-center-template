@@ -64,6 +64,13 @@ function avalanche_forecast_tool_menu() {
     'file' => 'avalanche_forecast_tool.pages.inc',
   );
 
+  // Flip the tool's on/off switch from the forecast form (admins only).
+  $items['forecast-tool/toggle'] = array(
+    'page callback' => 'avalanche_forecast_tool_toggle',
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_CALLBACK,
+  );
+
   // Optional AI review, as a local task (tab) on a saved forecast node.
   $items['node/%node/ai-review'] = array(
     'title' => 'AI review',
@@ -89,13 +96,48 @@ function avalanche_forecast_tool_menu() {
 }
 
 /**
+ * Whether the guided tool is switched on.
+ *
+ * A lightweight on/off switch (default ON) so a site can disable the tool
+ * without disabling the whole module on the modules page. Togglable from the
+ * forecast form and the tool settings.
+ */
+function avalanche_forecast_tool_enabled() {
+  $v = config_get('avalanche_forecast_tool.settings', 'enabled');
+  // Absent (never configured) means on, so existing installs keep the tool.
+  return ($v === NULL) ? TRUE : (bool) $v;
+}
+
+/**
  * Access callback: who may use the guided wizard.
  *
- * Anyone who can create a forecast can use the tool that helps write one.
+ * Anyone who can create a forecast can use the tool that helps write one. When
+ * the tool is switched off, only administrators (who can switch it back on)
+ * retain access.
  */
 function avalanche_forecast_tool_access($account = NULL) {
+  if (!avalanche_forecast_tool_enabled() && !user_access('administer site configuration', $account)) {
+    return FALSE;
+  }
   return user_access('use avalanche forecast tool', $account)
     || node_access('create', AVALANCHE_FORECAST_TOOL_TYPE, $account);
+}
+
+/**
+ * Menu/page callback: flip the tool's on/off switch, then return to the form.
+ *
+ * Token-protected; access is restricted to site administrators via hook_menu.
+ */
+function avalanche_forecast_tool_toggle() {
+  if (empty($_GET['token']) || !backdrop_valid_token($_GET['token'], 'aft-toggle')) {
+    return MENU_ACCESS_DENIED;
+  }
+  $to = !empty($_GET['to']);
+  config_set('avalanche_forecast_tool.settings', 'enabled', $to);
+  backdrop_set_message($to
+    ? t('The guided forecast tool is now on.')
+    : t('The guided forecast tool is now off. You can turn it back on from the forecast form or under Configuration &raquo; Avalanche Forecast Tool.'));
+  backdrop_goto('node/add/advisory');
 }
 
 /**
@@ -134,15 +176,47 @@ function avalanche_forecast_tool_form_advisory_node_form_alter(&$form, &$form_st
   // hard gate; otherwise it is a dismissible banner and the form stays usable.
   $config = config('avalanche_forecast_tool.settings');
   $require = (bool) $config->get('require_guided');
+  $can_toggle = user_access('administer site configuration');
+  $css = backdrop_get_path('module', 'avalanche_forecast_tool') . '/css/wizard.css';
+
+  // Switched off: forecasters never reach here (access gate). Administrators do,
+  // so give them an in-form way to switch it back on without the modules page.
+  if (!avalanche_forecast_tool_enabled()) {
+    if ($can_toggle) {
+      $on_link = l(t('Turn it on'), 'forecast-tool/toggle', array(
+        'query' => array('to' => 1, 'token' => backdrop_get_token('aft-toggle')),
+        'attributes' => array('class' => array('button', 'aft-start-button')),
+      ));
+      $form['avalanche_forecast_tool_entry'] = array(
+        '#markup' => '<div class="aft-entry aft-entry--off messages status">'
+          . '<p><strong>' . t('The guided forecast tool is turned off.') . '</strong> '
+          . t('Forecasters see only the plain form below.') . '</p>'
+          . '<p>' . $on_link . '</p></div>',
+        '#weight' => -100,
+      );
+      $form['#attached']['css'][] = $css;
+    }
+    return;
+  }
 
   $start = l(t('Start the guided forecast tool'), 'forecast-tool', array(
     'attributes' => array('class' => array('button', 'button-primary', 'aft-start-button')),
   ));
 
+  // Administrators get a quiet "turn it off" control alongside the prompt.
+  $off_link = '';
+  if ($can_toggle) {
+    $off_link = '<p class="aft-entry-admin">' . l(t('Turn off the guided tool'), 'forecast-tool/toggle', array(
+      'query' => array('to' => 0, 'token' => backdrop_get_token('aft-toggle')),
+      'attributes' => array('class' => array('aft-toggle-off')),
+    )) . '</p>';
+  }
+
   if ($require) {
     $message = '<div class="aft-entry aft-entry--required messages warning">'
       . '<p>' . t('This site is configured to build forecasts with the guided tool.') . '</p>'
       . '<p>' . $start . '</p>'
+      . $off_link
       . '</div>';
   }
   else {
@@ -150,6 +224,7 @@ function avalanche_forecast_tool_form_advisory_node_form_alter(&$form, &$form_st
       . '<p><strong>' . t('Build this forecast with the guided tool?') . '</strong> '
       . t('It walks you through the avalanche problems, likelihood, size and a suggested danger rating, then fills in the form for you — helping ratings stay consistent across regions and forecasters. You can also just fill out the form below.') . '</p>'
       . '<p>' . $start . '</p>'
+      . $off_link
       . '</div>';
   }
 
@@ -157,7 +232,52 @@ function avalanche_forecast_tool_form_advisory_node_form_alter(&$form, &$form_st
     '#markup' => $message,
     '#weight' => -100,
   );
-  $form['#attached']['css'][] = backdrop_get_path('module', 'avalanche_forecast_tool') . '/css/wizard.css';
+  $form['#attached']['css'][] = $css;
+}
+
+/**
+ * Which measurement units to show in the tool: 'metric', 'imperial' or 'both'.
+ *
+ * Defaults from the site language when unset (Spanish → metric, otherwise
+ * both) and is overridable on the tool settings form.
+ */
+function avalanche_forecast_tool_units() {
+  $v = config_get('avalanche_forecast_tool.settings', 'units');
+  if ($v === 'metric' || $v === 'imperial' || $v === 'both') {
+    return $v;
+  }
+  $lang = language_default();
+  return (is_object($lang) && !empty($lang->langcode) && $lang->langcode !== 'en') ? 'metric' : 'both';
+}
+
+/**
+ * Formats one measurement per the units setting, given its metric and imperial
+ * renderings (e.g. "1.5 m" and "5 ft"). Use for inline measurements in text.
+ */
+function avalanche_forecast_tool_measure($metric, $imperial) {
+  switch (avalanche_forecast_tool_units()) {
+    case 'metric':
+      return $metric;
+    case 'imperial':
+      return $imperial;
+    default:
+      return t('@metric (@imperial)', array('@metric' => $metric, '@imperial' => $imperial));
+  }
+}
+
+/**
+ * The typical destructive-size scale (path length + mass) for a size class,
+ * rendered in the configured units. Figures from Statham et al. (2018) Table 4.
+ */
+function avalanche_forecast_tool_size_scale($m, $ft, $t, $tons) {
+  switch (avalanche_forecast_tool_units()) {
+    case 'metric':
+      return t('≈@m m · ~@t t', array('@m' => $m, '@t' => $t));
+    case 'imperial':
+      return t('≈@ft ft · ~@tons tons', array('@ft' => $ft, '@tons' => $tons));
+    default:
+      return t('≈@m m (@ft ft) · ~@t t (@tons tons)', array('@m' => $m, '@ft' => $ft, '@t' => $t, '@tons' => $tons));
+  }
 }
 
 /**
@@ -197,13 +317,14 @@ function avalanche_forecast_tool_settings_data() {
   // condition points at the problem type(s) it suggests. (Guidance Table 1.)
   $conditions = array(
     array('id' => 'new_snow', 'suggests' => array('1'),
-      'label' => t('New snow in the last 24–48 hours forming a soft slab')),
+      'label' => t('New snow in the last 24–48 hours forming a slab')),
     array('id' => 'wind_loading', 'suggests' => array('3'),
       'label' => t('Recent wind-loading / blowing snow (last ~3 days)')),
     array('id' => 'buried_pwl', 'suggests' => array('5'),
       'label' => t('A buried persistent weak layer that is reactive')),
     array('id' => 'deep_pwl', 'suggests' => array('2'),
-      'label' => t('A deep, hard slab (~1.5 m+) on a basal weak layer; stubborn, produces large avalanches')),
+      'label' => t('A deep, hard slab (~@d+) on a basal weak layer; stubborn, produces large avalanches',
+        array('@d' => avalanche_forecast_tool_measure(t('1.5 m'), t('5 ft'))))),
     array('id' => 'surface_wet', 'suggests' => array('6'),
       'label' => t('Free water at the snow surface (melt or rain), loose wet snow')),
     array('id' => 'water_to_layer', 'suggests' => array('4'),
@@ -218,16 +339,18 @@ function avalanche_forecast_tool_settings_data() {
       'label' => t('No significant instability observed')),
   );
 
-  // Sensitivity to triggers (Statham Table 5), ordered low → high.
+  // Sensitivity to triggers (Statham Table 5), ordered low → high. Descriptions
+  // are backcountry-focused: what a traveler would see and how easily a rider
+  // could trigger the problem, rather than avalanche-control (explosives) terms.
   $sensitivity = array(
     array('key' => 'unreactive', 'label' => t('Unreactive'),
-      'desc' => t('No natural avalanches; unlikely to trigger even with a large load.')),
+      'desc' => t('Human and natural avalanches are unlikely, and very hard to trigger — even large explosives and large cornices do not trigger avalanches.')),
     array('key' => 'stubborn', 'label' => t('Stubborn'),
-      'desc' => t('Few naturals; difficult to trigger, or only with large explosives.')),
+      'desc' => t('Few or no natural avalanches; Human triggered avalanches are tough to trigger unless a person finds a trigger point like a thin or weak spot — larger triggers like multiple people on a slope, large cornices, or explosives may still trigger avalanches.')),
     array('key' => 'reactive', 'label' => t('Reactive'),
-      'desc' => t('Several naturals; easy to trigger with ski cuts or a single hand charge.')),
+      'desc' => t('Several natural avalanches; Human triggered avalanches are easy to trigger — a ski cut or a single rider on the slope can set one off. Single hand charges easily trigger avalanches.')),
     array('key' => 'touchy', 'label' => t('Touchy'),
-      'desc' => t('Numerous naturals; triggering is almost certain.')),
+      'desc' => t('Widespread natural avalanches; Human triggering is almost certain — look for remote triggers, collapsing "whumpfs" and shooting cracks. Small explosives or cornice failures may trigger multiple avalanches.')),
   );
 
   // Spatial distribution (Statham Table 6), ordered narrow → wide.
@@ -257,13 +380,20 @@ function avalanche_forecast_tool_settings_data() {
     '5' => t('Certain'),
   );
 
-  // Sizes: field_size_N keys 1–5 = D1–D5.
+  // Sizes: field_size_N keys 1–5 = D1–D5. Each carries a typical destructive
+  // scale (path length + mass, Statham et al. 2018 Table 4) shown in the
+  // configured units (metric / imperial / both).
   $sizes = array(
-    array('key' => '1', 'label' => t('D1'), 'desc' => t('Small — relatively harmless to people.')),
-    array('key' => '2', 'label' => t('D2'), 'desc' => t('Large — could bury, injure or kill a person.')),
-    array('key' => '3', 'label' => t('D3'), 'desc' => t('Very large — could bury a car, destroy a house.')),
-    array('key' => '4', 'label' => t('D4'), 'desc' => t('Historic — could destroy a rail car or several buildings.')),
-    array('key' => '5', 'label' => t('D5'), 'desc' => t('Largest known — could gouge terrain, destroy a village.')),
+    array('key' => '1', 'label' => t('D1'), 'desc' => t('Small — relatively harmless to people.'),
+      'scale' => avalanche_forecast_tool_size_scale('10', '33', '10', '11')),
+    array('key' => '2', 'label' => t('D2'), 'desc' => t('Large — could bury, injure or kill a person.'),
+      'scale' => avalanche_forecast_tool_size_scale('100', '330', '100', '110')),
+    array('key' => '3', 'label' => t('D3'), 'desc' => t('Very large — could bury a car, destroy a house.'),
+      'scale' => avalanche_forecast_tool_size_scale('1,000', '3,300', '1,000', '1,100')),
+    array('key' => '4', 'label' => t('D4'), 'desc' => t('Historic — could destroy a rail car or several buildings.'),
+      'scale' => avalanche_forecast_tool_size_scale('2,000', '6,600', '10,000', '11,000')),
+    array('key' => '5', 'label' => t('D5'), 'desc' => t('Largest known — could gouge terrain, destroy a village.'),
+      'scale' => avalanche_forecast_tool_size_scale('3,000', '9,800', '100,000', '110,000')),
   );
 
   // Danger suggestion table. likelihood (1–5) × size (1–5) → danger label.
