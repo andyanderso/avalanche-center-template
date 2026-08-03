@@ -434,7 +434,12 @@ html.admin-bar .am-header .tb-megamenu .nav-collapse {
      and the quick-link buttons (right) share the second row — like
      archive.sierraavalanchecenter.org. Position relative so the full-width menu
      drawer can drop below. */
-  .am-logo-row { display: block; padding: 8px 14px; min-height: 0; }
+  /* .am-logo-row is full-bleed (0..viewport) and its padding-box therefore
+     reaches the screen edges; make it position:relative so it — not the
+     padded-in .no-tabs — is the menu drawer's offset parent. That lets the
+     drawer span the full viewport with a plain left/right:0 (no 100vw/-50vw
+     trickery that risked clipping the link text on real mobile browsers). */
+  .am-logo-row { display: block; padding: 8px 14px; min-height: 0; position: relative; }
   .am-brand { display: block; width: 100%; }
   /* The header blocks sit inside the region's .no-tabs wrapper — make IT the
      flex row so the blocks become flex items we can order. */
@@ -446,7 +451,9 @@ html.admin-bar .am-header .tb-megamenu .nav-collapse {
     column-gap: 8px;
     row-gap: 4px;
     width: 100%;
-    position: relative;
+    /* static so the drawer's offset parent falls through to .am-logo-row
+       (full-bleed), not this padded-in wrapper. */
+    position: static;
   }
   /* Row 1: logo / site name — full width, centred */
   .am-brand .no-tabs > .block-system-header { order: 0; flex: 1 1 100%; display: flex; justify-content: center; }
@@ -517,16 +524,10 @@ html.admin-bar .am-header .tb-megamenu .nav-collapse {
   .am-header .tb-megamenu .nav-collapse {
     position: absolute;
     top: 100%;
-    /* Full-bleed to the viewport edges regardless of the header's padding or
-       which ancestor is the offset parent: anchor the box's left at the
-       header centre (left:50%) then pull it back half a viewport. This makes
-       the drawer a true 100vw panel instead of inheriting the narrower,
-       padded width of the .no-tabs offset parent. */
-    left: 50%;
-    right: auto;
-    width: 100vw;
-    margin-left: -50vw;
-    max-width: 100vw;
+    /* Anchored to .am-logo-row (full-bleed offset parent), so left/right:0
+       spans the whole viewport edge-to-edge — no viewport-unit math. */
+    left: 0;
+    right: 0;
     background: #fff;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
     z-index: 1200;
