@@ -210,10 +210,14 @@ function avalanche_modern_field__taxonomy_term_reference($variables) {
 function avalanche_modern_preprocess_node(&$variables) {
   if ($variables['view_mode'] == 'full') {
     $variables['classes_array'][] = 'node-full';
-    if ($variables['node']->type == 'advisory') {
-      require_once dirname(__FILE__) . '/inc/advisory.inc';
-      $variables['advisory'] = avalanche_modern_get_advisory_data($variables['node']);
-    }
+  }
+  // Build the structured advisory data for advisory nodes in ANY view mode.
+  // node--advisory.tpl.php runs for teasers too (e.g. the promoted-node front
+  // page listing); building $advisory only for 'full' left it undefined there,
+  // producing "Undefined array key" warnings and a title-only region fallback.
+  if ($variables['node']->type == 'advisory') {
+    require_once dirname(__FILE__) . '/inc/advisory.inc';
+    $variables['advisory'] = avalanche_modern_get_advisory_data($variables['node']);
   }
 }
 
