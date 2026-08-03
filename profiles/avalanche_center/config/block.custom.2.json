@@ -4,7 +4,7 @@
     "info": "Forecast Links",
     "title": "",
     "body": {
-        "value": "<div><a href=\"/forecast\">Today's Avalanche Forecast</a></div>\n<div><a href=\"/archive\">Forecast Archives</a></div>\n<div><a href=\"/text-advisory\">Text Forecast</a></div>\n",
+        "value": "<div><a href=\"/forecast\">Today's Avalanche Forecast</a></div>\n<div><a href=\"/archive\">Forecast Archives</a></div>\n",
         "format": "full_html"
     }
 }

@@ -11,7 +11,8 @@
     "positions": {
         "header": [
             "84c43df4-1165-4faf-8700-c362a7153c0b",
-            "fb0b8b23-a946-4a13-ae07-7ae6b511f68d"
+            "fb0b8b23-a946-4a13-ae07-7ae6b511f68d",
+            "904e194f-23dd-4114-ab28-40858c4ecd56"
         ],
         "content": [
             "default",
@@ -57,9 +58,7 @@
             "9e6910e6-192f-4613-a800-ec693b93ea4d",
             "e8796813-7c02-4f82-8f13-19dee2940f32"
         ],
-        "megamenu": [
-            "904e194f-23dd-4114-ab28-40858c4ecd56"
-        ]
+        "megamenu": []
     },
     "content": {
         "84c43df4-1165-4faf-8700-c362a7153c0b": {

@@ -318,8 +318,7 @@ function avalanche_center_localize_menu_blocks($langcode) {
   if ($langcode === 'es') {
     $bodies = array(
       2 => '<div><a href="/pronostico">Pronóstico de Avalanchas de Hoy</a></div>' . "\n"
-        . '<div><a href="/archivo">Archivo de Pronósticos</a></div>' . "\n"
-        . '<div><a href="/pronostico-texto">Pronóstico en Texto</a></div>' . "\n",
+        . '<div><a href="/archivo">Archivo de Pronósticos</a></div>' . "\n",
       4 => '<div><a href="/how-to-read-avalanche-forecast">Cómo Leer el Pronóstico</a></div>' . "\n"
         . '<div><a href="/avalanche-danger-scale">La Escala de Peligro</a></div>' . "\n"
         . '<div><a href="/avalanche-problems">Problemas de Avalancha</a></div>' . "\n",
