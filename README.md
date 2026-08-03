@@ -203,6 +203,88 @@ and Backdrop's own guides cover the OS-level setup:
 - Backdrop core: [System requirements](https://docs.backdropcms.org/documentation/system-requirements)
   and [Installation instructions](https://docs.backdropcms.org/documentation/installation-instructions).
 
+## Using this repo as your production code base (and keeping it updated)
+
+Treat this repo as the **upstream code** for your site: the site's *code* comes
+from here, but its *content and configuration* live only on the server. Keeping
+those two straight is what makes updates safe.
+
+**What lives where**
+
+| Lives in this repo (code — safe to overwrite on deploy) | Lives only on the server (never in this repo) |
+|---|---|
+| `modules/`, `themes/`, `layouts/`, `profiles/avalanche_center/` | The database (all content, users, taxonomy) |
+| Structural config shipped in `profiles/avalanche_center/config/` | The site's **active config** in `files/config_*/active/` |
+| | Uploaded files in `files/`, and `settings.php` |
+
+The distinction that trips people up: the profile's `config/` is the **install-
+time default** structure. Once a site is installed, it reads its live settings
+from **`files/config_*/active/`** on the server, which is *not* in this repo and
+is *not* touched by a code deploy. So editing a shipped `config/*.json` here
+changes only *new* installs — to change a running site you edit its active
+config (`drush config-set …`, or *Configuration > Development > Configuration
+management*).
+
+**Deploying an update.** After you pull new template code, push just the four
+code directories to the server and clear caches — never rsync `files/`, `core/`,
+`settings.php`, or the database:
+
+```sh
+# from a checkout of this repo, on a machine with SSH access to the server
+git pull --ff-only
+rsync -a --delete modules/ themes/ layouts/ profiles/  user@server:/var/www/your-site/{modules,themes,layouts,profiles}/
+# then on the server (or via drush over SSH):
+drush updatedb -y      # run any pending schema updates
+drush cache-clear all  # rebuild the registry so new/renamed code is picked up
+```
+
+`--delete` keeps the server's code dirs an exact mirror of the repo (so files
+you removed upstream are removed on the server too) — which is exactly why you
+must scope it to the four code dirs and never point it at the site root.
+
+Two caveats when a deploy adds a **new module** or new fields: enabling it and
+creating its field tables happens at *install* on a fresh site, but on an
+existing site you enable it yourself (`drush pm-enable <module> -y`) after the
+code lands. And if a deploy changes translated strings on a **Spanish** site,
+re-import the profile PO and rebuild the JS translations (`_locale_import_po()`
++ `_locale_rebuild_js('es')`); an English site needs neither.
+
+Scripting this (git pull → rsync the four dirs → drush updatedb + cache-clear
+over SSH) into a one-command `deploy.sh` is the recommended way to make updates
+routine and hard to get wrong.
+
+### Getting notified when a new release is available
+
+The bundled **Avalanche Center Update Check** module flags the site's **Status
+report** (*Reports > Status report*, `admin/reports/status`) when a newer
+**tagged release** of the template exists upstream — so whoever runs the site
+sees "Update available" without watching the repo. It's designed for the
+git-checkout production model above (releases are git tags; you `git pull` to
+update).
+
+How it works: it compares the newest release tag in the server's **local git
+checkout** against the newest tag on the **remote** (checked on cron, cached, so
+the Status report makes no network call). When you `git pull`, the fetched tags
+catch the local copy up and the flag clears. It reads git refs straight from the
+filesystem — no shell/`exec` needed.
+
+To enable the upstream check, add a **read-only** GitHub token to `settings.php`
+(the repo is private, so the check needs one):
+
+```php
+$settings['avalanche_center_github_token'] = 'github_pat_...';   // fine-grained, read-only, this repo
+// optional:
+$settings['avalanche_center_repo']      = 'andyanderso/avalanche-center-template'; // default
+$settings['avalanche_center_repo_root'] = '/var/www/your-site';  // where .git lives, only if auto-detect fails
+$settings['avalanche_center_update_url'] = 'https://…/version.json'; // use a PUBLIC version marker instead of the token
+```
+
+If you'd rather not put a token on the server, point `avalanche_center_update_url`
+at a public JSON marker (`{"version": "1.2.0"}` or a list of tag objects) that
+you publish on each release — the module reads that instead of the GitHub API.
+Without either, the row still shows the installed release but can't check
+upstream. Cut releases as **git tags** (e.g. `v1.2.0`) for the comparison to work.
+
 ## Configuring your new center
 
 **Replace the demo content.** Go to *Content* and delete the "Demo
