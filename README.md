@@ -70,12 +70,15 @@ contain just `.ddev/` plus those files, nothing from Backdrop itself yet.
 ### 2. Add Backdrop CMS core
 
 This repo is a *profile* distribution, not a full Backdrop install — it
-has no `core/`, `index.php`, or `sites/` of its own. Clone core into a
-scratch location, copy the pieces you need into `$PROJECT`, then discard
-the scratch clone:
+has no `core/`, `index.php`, or `sites/` of its own. Clone a **stable**
+release of core into a scratch location, copy the pieces you need into
+`$PROJECT`, then discard the scratch clone:
 
 ```sh
-git clone --depth 1 https://github.com/backdrop/backdrop.git /tmp/backdrop-core
+# Pin to the current stable Backdrop release. Check the latest tag at
+# https://github.com/backdrop/backdrop/releases (1.34.3 at time of writing).
+BACKDROP_VERSION=1.34.3
+git clone --depth 1 --branch "$BACKDROP_VERSION" https://github.com/backdrop/backdrop.git /tmp/backdrop-core
 cp -r /tmp/backdrop-core/core        "$PROJECT/"
 cp -r /tmp/backdrop-core/sites       "$PROJECT/"
 cp    /tmp/backdrop-core/index.php   "$PROJECT/"
@@ -83,6 +86,12 @@ cp    /tmp/backdrop-core/.htaccess   "$PROJECT/"
 cp    /tmp/backdrop-core/robots.txt  "$PROJECT/"
 rm -rf /tmp/backdrop-core
 ```
+
+> **Always pass `--branch <version>`.** A plain `git clone …/backdrop.git`
+> checks out the **development branch** (e.g. `1.35.x-dev`), not a released
+> version — you do not want an unreleased dev snapshot on a real site.
+> To move an existing site to a newer stable release later, see
+> "Using this repo as your production code base" below.
 
 ### 3. Add this distribution
 
@@ -252,6 +261,29 @@ re-import the profile PO and rebuild the JS translations (`_locale_import_po()`
 Scripting this (git pull → rsync the four dirs → drush updatedb + cache-clear
 over SSH) into a one-command `deploy.sh` is the recommended way to make updates
 routine and hard to get wrong.
+
+### Upgrading Backdrop core
+
+Core (the `core/` directory) is separate from this distribution and is upgraded
+on its own schedule. To move to a newer **stable** release:
+
+```sh
+NEW=1.34.3   # the release you're moving to
+git clone --depth 1 --branch "$NEW" https://github.com/backdrop/backdrop.git /tmp/bd
+# replace ONLY core + the root files; never touch settings.php, files/, or the
+# distribution dirs (modules/ themes/ layouts/ profiles/):
+rm -rf "$PROJECT/core" && cp -r /tmp/bd/core "$PROJECT/"
+cp /tmp/bd/index.php /tmp/bd/.htaccess /tmp/bd/robots.txt "$PROJECT/"
+rm -rf /tmp/bd
+drush updatedb -y && drush cache-clear all      # run from $PROJECT
+```
+
+Within a minor series (e.g. 1.34.0 → 1.34.3) the root files usually don't change
+and there are no database updates — `updatedb` is a no-op — so it's effectively
+just swapping `core/`. Always back up first, and **never downgrade** core after
+running updates for a newer version (going from a `1.35.x-dev` snapshot back to
+stable is a downgrade — check `select schema_version from system where
+name='system'` against the target's update hooks first).
 
 ### Getting notified when a new release is available
 
