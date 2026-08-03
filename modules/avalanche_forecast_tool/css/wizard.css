@@ -151,12 +151,17 @@
 .aft-axis { font-size: 11px; fill: #333; }
 .aft-axis-title { font-size: 12px; fill: #333; font-weight: 600; }
 .aft-marker { font-size: 12px; font-weight: 700; fill: #111; }
+.aft-region-label { font-size: 12px; font-weight: 700; }
 .aft-chart-legend { list-style: none; margin: 0; padding: 0; }
 .aft-chart-legend li { margin: 0.2em 0; }
-.aft-legend-num {
-  display: inline-block; width: 20px; height: 20px; line-height: 20px; text-align: center;
-  border: 1px solid #111; border-radius: 50%; font-weight: 700; font-size: 0.8em;
+.aft-legend-swatch {
+  display: inline-block; width: 14px; height: 14px; border-radius: 3px;
+  vertical-align: middle; margin-right: 5px;
 }
+
+/* Likelihood-to-record picker */
+.aft-like-pick { display: inline-flex; align-items: center; gap: 0.4em; margin-left: 0.75em; font-size: 0.9em; color: #40474e; }
+.aft-like-pick-select { padding: 0.15em 0.3em; }
 
 /* Danger suggestion — mountain pyramid + band rows */
 .aft-danger-layout { display: flex; gap: 1.5em; align-items: center; flex-wrap: wrap; }

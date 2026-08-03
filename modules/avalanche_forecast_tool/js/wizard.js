@@ -82,6 +82,15 @@
   // value (the lowest term), so a plain falsiness check won't do.
   function numSet(v) { return v !== '' && v != null && !isNaN(Number(v)); }
 
+  // Split a problem label into up to two roughly-balanced lines so it fits,
+  // centred, inside a hazard-chart region.
+  function labelLines(text) {
+    var words = String(text).split(' ');
+    if (words.length <= 1) { return [text]; }
+    var mid = Math.ceil(words.length / 2);
+    return [words.slice(0, mid).join(' '), words.slice(mid).join(' ')];
+  }
+
   // Discrete dual-thumb range slider over an ordered option list, so a forecaster
   // can express a RANGE (and therefore uncertainty) rather than one value.
   //   opts = { options:[{key,label}], min:key|'', max:key|'',
@@ -275,12 +284,19 @@
     return { min: Math.min(lo, hi), max: Math.max(lo, hi) };
   };
 
-  // The single likelihood written to the published forecast: the UPPER bound of
-  // the range, rounded to a whole level (conservative). The wizard shows the full
-  // fractional range for context.
+  // The single likelihood written to the published forecast. Defaults to the
+  // UPPER bound of the range, rounded to a whole level (conservative), but the
+  // forecaster can pick any whole level within the range (p.likelihoodChoice).
   Wizard.prototype.likelihoodFor = function (p) {
     var r = this.likelihoodRange(p);
-    return r ? String(Math.max(1, Math.min(5, Math.round(r.max)))) : '';
+    if (!r) { return ''; }
+    if (numSet(p.likelihoodChoice)) {
+      var c = Math.max(1, Math.min(5, Math.round(Number(p.likelihoodChoice))));
+      if (c >= Math.max(1, Math.floor(r.min)) && c <= Math.min(5, Math.ceil(r.max))) {
+        return String(c);
+      }
+    }
+    return String(Math.max(1, Math.min(5, Math.round(r.max))));
   };
 
   // Danger table lookup: likelihood('1'..'5') x size key('1'..'5') -> label.
@@ -669,6 +685,28 @@
       span.appendChild(el('strong', { text: hi }));
     }
     host.appendChild(span);
+
+    // Let the forecaster choose which whole level to record on the form. Options
+    // are the levels the range spans; default is the (conservative) upper bound.
+    var labels = this.cfg.likelihoodLabels;
+    var loL = Math.max(1, Math.floor(r.min)), hiL = Math.min(5, Math.ceil(r.max));
+    if (numSet(p.likelihoodChoice)) {
+      var cc = Math.round(Number(p.likelihoodChoice));
+      if (cc < loL || cc > hiL) { p.likelihoodChoice = ''; } // out of range now
+    }
+    if (hiL > loL) {
+      var self = this;
+      var current = this.likelihoodFor(p);
+      var sel = el('select', { class: 'aft-like-pick-select',
+        onchange: function () { p.likelihoodChoice = sel.value; self.renderOutput(); } });
+      for (var L = loL; L <= hiL; L++) {
+        sel.appendChild(el('option', { value: String(L), text: labels[String(L)],
+          selected: String(L) === current ? 'selected' : null }));
+      }
+      host.appendChild(el('label', { class: 'aft-like-pick' }, [
+        el('span', { text: Backdrop.t('Record on the form as:') }), sel
+      ]));
+    }
   };
 
   // Visualise the Fig 2 likelihood matrix for this problem: distribution (rows,
@@ -828,24 +866,40 @@
         x: x1, y: yTop, width: Math.max(2, x2 - x1), height: Math.max(2, yBot - yTop),
         rx: 6, fill: color, 'fill-opacity': '0.22', stroke: color, 'stroke-width': '2.5'
       }));
-      // Numbered badge at the region's top-left corner (stays visible on overlap).
-      var bx = x1 + 13, by = yTop + 13;
-      var g = s('g', {});
-      g.appendChild(s('circle', { cx: bx, cy: by, r: '11', fill: '#fff', stroke: color, 'stroke-width': '2' }));
-      var num = s('text', { x: bx, y: by + 4, 'text-anchor': 'middle', class: 'aft-marker' });
-      num.textContent = String(idx + 1);
-      g.appendChild(num);
-      svg.appendChild(g);
+      // Dashed marker at the whole likelihood level that will be recorded on the
+      // form (the forecaster's pick, default = upper bound), across the region.
+      var picked = parseInt(self.likelihoodFor(p), 10);
+      if (picked) {
+        var my = padT + (rows - picked + 0.5) * ch;
+        svg.appendChild(s('line', {
+          x1: x1, y1: my, x2: x2, y2: my, stroke: color, 'stroke-width': '2',
+          'stroke-dasharray': '5 4', 'stroke-opacity': '0.9'
+        }));
+      }
+      // Problem label centred in the region (up to two lines), with a white halo.
+      var cx = (x1 + x2) / 2, cy = (yTop + yBot) / 2;
+      var label = self.problemByKey[p.type] ? self.problemByKey[p.type].label : '';
+      var lines = labelLines(label);
+      var startY = cy - (lines.length - 1) * 6.5 + 4;
+      var tx = s('text', {
+        x: cx, 'text-anchor': 'middle', class: 'aft-region-label', fill: color,
+        'paint-order': 'stroke', stroke: '#fff', 'stroke-width': '4', 'stroke-linejoin': 'round'
+      });
+      lines.forEach(function (ln, i) {
+        var ts = s('tspan', { x: cx, y: startY + i * 13 });
+        ts.textContent = ln;
+        tx.appendChild(ts);
+      });
+      svg.appendChild(tx);
     });
 
-    // Legend keying region colours/numbers to problems.
+    // Legend: colour swatch + problem name (a backup for tiny/overlapping regions).
     var legend = el('ul', { class: 'aft-chart-legend' });
     self.problems.forEach(function (p, idx) {
       var color = PALETTE[idx % PALETTE.length];
-      var badge = el('span', { class: 'aft-legend-num', text: String(idx + 1) });
-      badge.style.borderColor = color;
-      badge.style.color = color;
-      legend.appendChild(el('li', {}, [badge, ' ' + (self.problemByKey[p.type] ? self.problemByKey[p.type].label : '')]));
+      var sw = el('span', { class: 'aft-legend-swatch' });
+      sw.style.background = color;
+      legend.appendChild(el('li', {}, [sw, ' ' + (self.problemByKey[p.type] ? self.problemByKey[p.type].label : '')]));
     });
     var wrap = el('div', { class: 'aft-chart-wrap' });
     wrap.appendChild(svg);

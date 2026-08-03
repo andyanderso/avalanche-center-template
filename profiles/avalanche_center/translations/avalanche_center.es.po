@@ -1256,3 +1256,6 @@ msgstr "Arrastre los controles para definir un rango"
 
 msgid "5 ft"
 msgstr "5 ft"
+
+msgid "Record on the form as:"
+msgstr "Registrar en el formulario como:"
