@@ -23,6 +23,10 @@
         let map = new L.Map(id, itemSettings.map_options);
         new L.Control.Zoom({ position: 'topright' }).addTo(map);
 
+        // Let other behaviors (e.g. forecast-region outline overlays) hook this
+        // widget's map the same way they hook leaflet.backdrop.js maps.
+        $(document).trigger('leaflet.map', [{ map_id: id, widget: true }, map]);
+
         let editableItems = new L.FeatureGroup().addTo(map);
 
         // Expose editable group to global space.

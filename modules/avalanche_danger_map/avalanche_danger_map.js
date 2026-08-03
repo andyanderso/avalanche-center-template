@@ -103,6 +103,13 @@
           var ranked = bounds.map(function (b, idx) {
             return { idx: idx, dist: here.distanceTo(b.getCenter()) };
           }).sort(function (a, b) { return a.dist - b.dist; });
+          // Only recenter on the visitor when they're reasonably close to a
+          // forecast region. If the nearest region is more than 100 miles
+          // (~160,934 m) away, keep the configured site-default center/zoom so
+          // a distant visitor isn't thrown across the map to a zone they're
+          // nowhere near.
+          var HUNDRED_MILES_M = 160934;
+          if (ranked[0].dist > HUNDRED_MILES_M) return;
           var k = Math.min(3, ranked.length);
           var near = L.latLngBounds(
             bounds[ranked[0].idx].getSouthWest(),
