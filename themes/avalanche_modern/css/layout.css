@@ -642,6 +642,13 @@ html.admin-bar .am-header .tb-megamenu .nav-collapse {
     color: var(--am-primary) !important;
     background: #edf0f4 !important;
   }
+
+  /* Collapsed submenus must stay fully hidden until their parent item is
+     tapped. tb-megamenu-touch.js adds .open to the tapped <li>; without this
+     gate every dropdown panel renders as a thin always-visible padding strip
+     ("ghost" boxes) behind the top-level items. */
+  .am-header .tb-megamenu .nav-collapse .dropdown-menu { display: none !important; }
+  .am-header .tb-megamenu .nav-collapse li.open > .dropdown-menu { display: block !important; }
 }
 @media (max-width: 560px) {
   #footer-columns, .am-footer-columns { grid-template-columns: 1fr; }
