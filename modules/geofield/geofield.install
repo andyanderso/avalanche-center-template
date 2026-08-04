@@ -1,0 +1,95 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the geofield module.
+ */
+
+/**
+ * Implements hook_field_schema().
+ */
+function geofield_field_schema($field) {
+
+  $schema_callback = '';
+  /**
+   * Edge case, during an update between 7.x-1.x and 7.x-2.x, if ctools is enabled,
+   * ctools will not see the geofield plugin without manually truncating the cache
+   * tables. To bypass, we manually seed the $backend array directly if
+   * $backend['schema'] still isn't declared.
+   **/
+  module_load_include('inc', 'geofield', 'includes/geofield_backend/default');
+  $schema_callback = 'geofield_backend_default_schema';
+
+  $geom_schema = $schema_callback($field);
+
+  return array(
+    'columns' => array(
+      'geom' => $geom_schema, // Defined by the backend plugin
+      'geo_type' => array(
+        'type' => 'varchar',
+        'default' => '',
+        'length' => 64,
+      ),
+      'lat' => array(
+        'type' => 'numeric',
+        'precision' => 18,
+        'scale' => 12,
+        'not null' => FALSE,
+      ),
+      'lon' => array(
+        'type' => 'numeric',
+        'precision' => 18,
+        'scale' => 12,
+        'not null' => FALSE,
+      ),
+      'left' => array(
+        'type' => 'numeric',
+        'precision' => 18,
+        'scale' => 12,
+        'not null' => FALSE,
+      ),
+      'top' => array(
+        'type' => 'numeric',
+        'precision' => 18,
+        'scale' => 12,
+        'not null' => FALSE,
+      ),
+      'right' => array(
+        'type' => 'numeric',
+        'precision' => 18,
+        'scale' => 12,
+        'not null' => FALSE,
+      ),
+      'bottom' => array(
+        'type' => 'numeric',
+        'precision' => 18,
+        'scale' => 12,
+        'not null' => FALSE,
+      ),
+      'geohash' => array(
+        'type' => 'varchar',
+        'length' => GEOFIELD_GEOHASH_LENGTH,
+        'not null' => FALSE,
+      ),
+    ),
+    'indexes' => array(
+      //'geo_type' => array('geo_type'),
+      'lat' => array('lat'),
+      'lon' => array('lon'),
+      'top' => array('top'),
+      'bottom' => array('bottom'),
+      'left' => array('left'),
+      'right' => array('right'),
+      'geohash' => array('geohash'),
+      'centroid' => array('lat','lon'),
+      'bbox' => array('top','bottom','left','right'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_update_last_removed().
+ */
+function geofield_update_last_removed() {
+  return 7202;
+}

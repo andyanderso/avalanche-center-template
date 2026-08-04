@@ -1,0 +1,24 @@
+{
+    "_config_name": "field.field.field_poster",
+    "field_name": "field_poster",
+    "type": "file",
+    "module": "file",
+    "active": 1,
+    "locked": "0",
+    "cardinality": "-1",
+    "translatable": "0",
+    "deleted": "0",
+    "entity_types": [],
+    "settings": {
+        "display_field": 0,
+        "display_default": 1,
+        "uri_scheme": "public",
+        "description_field": "0"
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "module": "field_sql_storage",
+        "active": 1,
+        "settings": []
+    }
+}

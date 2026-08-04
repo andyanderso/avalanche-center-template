@@ -1,0 +1,1042 @@
+/* Override the global height:auto !important rule for advisory images with fixed heights */
+.rose img{
+  height: 75px !important;
+  top: -27px !important;
+}
+.mtn img{
+  height: 50px !important;
+}
+.switch-button img{
+  text-align: right;
+}
+
+div.switch-button{
+  color:#eee;
+  font-weight:bold;
+}
+div#title-date-row {
+  color: #eee;
+  margin-bottom: 21px;
+  float: right;
+  height: 24px;
+  background: #444;
+  width:100%;
+  max-width: 260px;
+  padding: 3px 13px;
+  margin-right: 0px;
+}
+
+h3#simple-avalanche-danger-title {
+  font-weight:bold;
+}
+/*General advisory styling*/
+div.advisory-div {
+  padding: 10px 5px 5px;
+  clear:both;
+  min-height: 100px;
+}
+
+div.advisory-div-icon {
+  float:left;
+  width: 140px;
+}
+
+#avalanche-text-discussion-div .advisory-div-text {
+  padding:0px;
+}
+div.advisory-div-text {
+  padding-left:160px;
+}
+
+div.disc-advisory-div-text {
+  padding:10px;
+}
+.advisory-div-text span.uppercase {
+  font-size: 17px;
+  line-height: 2em;
+  text-transform:uppercase;
+}
+
+.txt-advisory-div-text span.uppercase{
+  font-size: 17px;
+  line-height: 2em;
+  text-transform:uppercase;
+}
+/*End general*/
+
+span a.toggle-advisory img {
+  float: right;
+  position: relative;
+  top: -17px;
+}
+
+div#advisory-published-date {
+  font-size: 17px;
+  text-transform: uppercase;
+  padding-left: 5px;
+  font-weight:bold;
+  float:left;
+}
+
+div#forecaster-name {
+  text-align: right;
+  padding-right: 5px;
+  font-size: 14px;
+  float:right;
+}
+
+span#timeToExp {
+  text-transform:none;
+  font-weight:normal;
+  font-size:15px;
+}
+
+
+/*Advanced bottom line view*/
+div.adv-bottom-line {
+  padding: 0px;
+  margin:0px !important;
+}
+
+div#overall-rose{
+  float:left;
+  width:220px;
+}
+
+ul#danger-rating-bar-advanced {
+  width:auto;
+  background:#fff !important;
+  list-style:none;
+  text-align:center;
+}
+
+#danger-rating-bar-advanced li {
+  border: 1px solid #aaaaaa;
+  font-size: 13px;
+  background:#fff;
+  display: inline-block;
+  padding: 0px 2px 0px 5px;
+  height: 70px;
+  vertical-align: top;
+  max-width:545px;
+}
+
+img#danger-rating-bar-advanced-img {
+  width:210px;
+  padding-top:6px !important;
+}
+
+#danger-rating-bar-advanced div{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 70px;
+}
+
+#how-to-read-advisory {
+  text-align:right;
+  text-transform: uppercase;
+}
+
+/*Basic bottom line view with elevation danger ratings and mountain icon*/
+
+div#bottom-line-container {
+    border: 5px solid #444;
+    border-radius: 15px;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+#bottom-line {
+  padding:20px 10px 10px 10px;
+}
+
+div.ta-container {
+  height: 56px;
+  display: flex;
+  padding: 0px 15px 0px 500px;
+  margin: auto;
+  color: #fff;
+  font-size: 13px;
+  border-bottom: 1px solid #777777;
+}
+div.upper-container {
+  position: absolute;
+  top: 34px;
+}
+div.mid-container {
+  position: absolute;
+  top: 96px;
+}
+div.lower-container {
+  position: absolute;
+  top: 160px;
+}
+div.ta-text {
+  margin: auto;
+}
+
+div#basic-danger-bar {
+  display:none;
+}
+div#danger-scale-bar-container {
+  width: 100%;
+  background: #454545;
+  padding: 6px 0;
+  margin-bottom: 10px;
+}
+
+ul#danger-scale-bar {
+  list-style-type: none;
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: stretch;
+}
+
+/* The <li> items are wrapped in an <a> tag; make it flex so items display horizontally */
+ul#danger-scale-bar > a {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+  justify-content: center;
+  text-decoration: none;
+}
+
+li.danger-scale-rating-item {
+  flex: 0 0 auto;
+  padding: 4px 16px;
+  text-transform: uppercase;
+  border-right: 1px solid #000;
+  font-weight: bold;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+li#extr-li-item {
+  color: #eee;
+  background-color: #000;
+}
+
+li#high-li-item {
+  color: #000;
+  background-color: #cc0000;
+}
+
+li#cons-li-item {
+  color: #000;
+  background-color: #ffaa33;
+}
+
+li#mod-li-item {
+  color: #000;
+  background-color: #ffff33;
+}
+
+li#low-li-item {
+  color: #000;
+  background-color: #00cc00;
+}
+
+li#nr-li-item {
+  color: #000;
+  background-color: #777;
+}
+
+div.advisory .darkbg h3,
+.darkbg h3#simple-avalanche-danger-title,
+#avalanche-danger-row h3,
+#subtitle-date-row h3 {
+  color: #eee;
+  text-transform: uppercase;
+  font-size: 17px;
+  padding: 7px;
+  margin: 3px 0 -5px;
+  background: none;
+}
+
+/* Bottom Line header bar: flex row so h3 and link are on the same horizontal line */
+#avalanche-danger-row.darkbg {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+#avalanche-danger-row.darkbg h3 {
+  margin: 0;
+  padding: 7px 0;
+  flex: 1;
+}
+
+#how-to-read-advisory-simple {
+  position: static !important;
+  font-size: 14px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #018fe2;
+}
+
+img#mountain-icon {
+  position:relative;
+  z-index:3;
+}
+
+div#avalanche-danger-row { position: relative; }
+
+div#elevation-ratings-div { position: relative; }
+
+div#elevation-ratings-div {
+  background: #444444;
+  /*float: left;
+  width: 57%;
+  */
+  height: 231px;
+}
+
+div#elevation-ratings-div h2 {
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 17px;
+  background:none;
+  text-indent:0px;
+  color:#000000;
+  padding:0px;
+  margin-bottom:2px;
+}
+
+div#upper-rating-text { top: 90px; }
+div#mid-rating-text { top: 150px; }
+div#lower-rating-text { top: 212px; }
+
+div#upper-rating-text,
+div#mid-rating-text,
+div#lower-rating-text {
+  color: #ddd;
+  height: 55px;
+  min-width: 250px;
+  z-index: 12;
+  float: left;
+  position: absolute;
+  line-height: 1.25em;
+  left: 600px;
+}
+
+div#elevation-ratings-div div#lower-rating,
+div#elevation-ratings-div div#mid-rating,
+div#elevation-ratings-div div#upper-rating {
+  position: absolute;
+  float: left;
+  top: 10px;
+  left: 165px;
+  height: 56px;
+  width: 290px;
+  margin: 0;
+  padding: 0;
+  border-radius: 10px;
+}
+
+div#avalanche-danger-row div#lower-rating div.rating {
+  text-transform: uppercase;
+  font-size: 25px;
+}
+
+div#elevation-ratings-div div#upper-rating span {
+  position: relative;
+  top: -11px;
+  left: 65px;
+  float: left;
+}
+
+div#elevation-ratings-div div#mid-rating span {
+  position: relative;
+  top: -10px;
+  left: 90px;
+  float: left;
+}
+
+div#elevation-ratings-div div#lower-rating span {
+  position: relative;
+  top: -10px;
+  left: 120px;
+  float: left;
+}
+
+div#elevation-ratings-div > div.rating-5 {
+  color: #eee;
+  background-color: #000;
+}
+
+div#elevation-ratings-div > div.rating-5 h2 {
+  color: #eee !important;
+  background-color: #000;
+}
+
+div#elevation-ratings-div > div.rating-4 {
+  color: #000;
+  background-color: #cc0000;
+}
+
+div#elevation-ratings-div > div.rating-3 {
+  color: #000;
+  background-color: #ffaa33;
+}
+
+div#elevation-ratings-div > div.rating-2 {
+  color: #000;
+  background-color: #ffff33;
+}
+
+div#elevation-ratings-div > div.rating-1 {
+  color: #000;
+  background-color: #00cc00;
+}
+
+div#elevation-ratings-div > div.rating-0 {
+  color: #000;
+  background-color: #777;
+}
+
+div#elevation-ratings-div img.dli {
+  left:265px;
+  position: absolute;
+  top:3px;
+}
+
+div#bottom-line-basic {
+  overflow: hidden;
+  height: 211px;
+  padding-top: 20px;
+  /*font-size: 14px;*/
+  line-height: 16px;
+  font-weight: bold;
+  background: #444444;
+  color: #fff;
+  float: right;
+  width: 43%;
+}
+
+div#bottom-line-basic p {
+  padding: 10px;
+}
+
+div#basic-danger-bar {
+  background: #444444;
+  color: #fff;
+  float: right;
+  margin-bottom:0px;
+  width:100%;
+  text-align:center;
+}
+
+#danger-rating-bar-simple li {
+  color: white;
+  font-size: 13px;
+  border: 1px solid white;
+  display: inline-block;
+  padding: 0px 5px 0px 5px;
+  height: 70px;
+  vertical-align: middle;
+  max-width:600px;
+}
+#danger-rating-bar-simple div{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 70px;
+  font-size:1em;
+}
+
+
+ul#danger-rating-bar-simple {
+  list-style:none;
+}
+
+/*Avalanche Problems*/
+
+div.avalanche-problem-row {
+  color: #444;
+  margin-bottom:5px;
+  border:1px solid #ddd;
+}
+
+span.title {
+  color: #eee;
+  padding: 7px;
+  margin: 0px;
+  margin-left: -1px;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 17px;
+  background-color: #444;
+}
+
+li#problem-type{
+  width:190px;
+}
+
+li#problem-type img {
+  height: 175px !important;
+  width: auto !important;
+  max-width: none !important;
+}
+#content li#problem-type img,
+.node-advisory li#problem-type img {
+  height: 175px !important;
+  width: auto !important;
+  max-width: none !important;
+}
+
+.avalanche-problem-row ul {
+  text-align:center;
+  list-style:none;
+  font-size:17px;
+  transform:translateX(-10px);
+}
+.avalanche-problem-row li {
+  display:inline-block;
+  width:180px;
+  vertical-align: top;
+  padding: 0px 35px;
+}
+
+#problem-rose img {
+  margin: 0px;
+  padding: 0px;
+}
+
+li#problem-rose{
+  width:200px;
+}
+
+div.problem-type{
+  padding-top:10px;
+  height:185px !important;
+}
+
+div.problem-char-label {
+  border-bottom: 1px solid #ddd;
+  text-transform:uppercase;
+}
+
+div.char-symbol-label {
+  font-size:14px;
+  text-transform:uppercase;
+}
+
+div.problem-char-wrapper {
+  margin: 0px -3px;
+  height:195px;
+  position:relative;
+}
+
+li#trend div.problem-char-wrapper {
+  border-right:none !important;
+}
+
+div.problem-char-wrapper img {
+  height: 190px !important;
+  width: auto !important;
+  max-width: none !important;
+}
+/* Higher-specificity overrides needed because #content img { height: auto !important } has an ID selector */
+#content div.problem-char-wrapper img,
+.node-advisory div.problem-char-wrapper img {
+  height: 190px !important;
+  width: auto !important;
+  max-width: none !important;
+}
+
+li#trend img {
+  padding-top:70px
+}
+
+div.middle-data-graph-text {
+  color: #333;
+  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  position:relative;
+  top:25px;
+}
+div.middle-data-overlay {
+  width: 30px;
+  background-color: #999;
+  height: 12px;
+  position:relative;
+  right:-27px;
+  border: 1px solid;
+}
+
+div.likelihood-overlay-0 { display: none; }
+div.likelihood-overlay-1 {
+  margin-top: -26px;
+}
+
+div.likelihood-overlay-2 {
+  margin-top: -66px;
+}
+
+div.likelihood-overlay-3 {
+  margin-top: -108px;
+}
+
+div.likelihood-overlay-4 {
+  margin-top: -150px;
+
+}
+
+div.likelihood-overlay-5 {
+  margin-top: -190px;
+}
+
+div.size-overlay-0 { display: none; }
+div.size-overlay-10 {
+  background-color: #999;
+  border: 1px solid;
+  height: 40px;
+  margin-top: -54px;
+  position: absolute;
+  right: 134px;
+  width:17px;
+}
+
+div.size-overlay-20 {
+  background-color: #999;
+  border: 1px solid;
+  height: 54px;
+  margin-top: -102px;
+  position: absolute;
+  right: 134px;
+  width:17px;
+}
+
+div.size-overlay-30 {
+  background-color: #999;
+  border: 1px solid;
+  height: 54px;
+  margin-top: -156px;
+  position: absolute;
+  right: 134px;
+  width:17px;
+}
+
+div.size-overlay-40 {
+  background-color: #999;
+  border: 1px solid;
+  height: 40px;
+  margin-top: -191px;
+  position: absolute;
+  right: 134px;
+  width:17px;
+}
+
+div.size-overlay-50 {
+  background-color: #999;
+  border: 1px solid;
+  height: 40px;
+  margin-top: -191px;
+  position: absolute;
+  right: 134px;
+  width:17px;
+}
+
+div.size-overlay-12 {
+  background-color: #999;
+  border: 1px solid;
+  height: 87px;
+  margin-top: -103px;
+  position: absolute;
+  right: 134px;
+  width:17px;
+}
+div.size-overlay-23 {
+  background-color: #999;
+  border: 1px solid;
+  height: 108px;
+  margin-top: -158px;
+  position: absolute;
+  right: 134px;
+  width:17px;
+}
+div.size-overlay-34 {
+  background-color: #999;
+  border: 1px solid;
+  height: 87px;
+  margin-top: -191px;
+  position: absolute;
+  right: 134px;
+  width:17px;
+}
+
+div.size-overlay-45 {
+  background-color: #999;
+  border: 1px solid;
+  height: 40px;
+  margin-top: -191px;
+  position: absolute;
+  right: 134px;
+  width:17px;
+}
+
+
+
+div#problem-description{
+  line-height: 1.5em;
+  padding: 10px;
+}
+
+
+
+
+
+div.avalanche-problem-row span.sub-title {
+  padding: 5px;
+  color: #777;
+  font-style: italic;
+  text-transform: uppercase;
+}
+
+
+div#subtitle-date-row {
+  color: #eee;
+  display: inline-block;
+  padding: 5px;
+  width: 99.2%;
+  margin: 0px 0px 0px -1px;
+}
+
+div#avalanche-danger-row div.rating { color: #eee; }
+div#elevation-ratings-div div#lower-rating div.rating.description { font-size: 13px; }
+div#elevation-ratings-div div#lower-rating { top: 160px; }
+div#elevation-ratings-div div#mid-rating { top: 97px; }
+div#elevation-ratings-div div#upper-rating { top: 35px; }
+.one-sidebar #content.advisory { width: 100%; }
+
+
+div#avalanche-danger-row {
+  /*font-size: 14px;*/
+    margin: -13px -10px 0px;
+}
+
+
+
+.clearbg { background-color: transparent; }
+
+div.likelihood-size-label {
+  color: #aaa;
+  font-size: 14px;
+  padding: 10px;
+  position: absolute;
+  left: 60px;
+  text-transform:lowercase;
+}
+
+div.label-bold{
+  font-weight:bold;
+  text-transform:uppercase;
+  color: #333;
+}
+
+
+div.top-label {
+  top: -8px;
+}
+
+div.very-large-size-label {
+  top: 47px;
+}
+
+div.large-size-label {
+  top: 101px;
+}
+
+div.bottom-label {
+  top: 157px;
+}
+
+div.very-likely-label {
+  top: 32px;
+}
+
+div.likely-label {
+  top: 74px;
+}
+
+div.possible-label {
+  top: 116px;
+}
+
+table.row-sub-table {
+  padding: 5px;
+  margin: 0px;
+}
+
+table.row-sub-table td {
+  background-color: #fff;
+  vertical-align: top;
+  line-height: 1.5em;
+  font-size: 13px;
+}
+
+div.middle-data {
+  background-color: #ddd;
+  padding: 0px;
+  margin: 0px;
+  border: 1px solid #ddd;
+  height: 126px;
+  width: 16px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+table#Wx-obs {
+  width:80%;
+  padding:5px;
+  border:none;
+}
+
+
+span.advisory-page-title {
+  padding: 9px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #eee;
+  background-color: #ffffff;
+}
+
+div.advisory-div-icon img {
+  width:100%;
+}
+/*Snowpack Summary*/
+div.snowpack-summary-div-text {
+  padding:20px;
+}
+
+.snowpack-summary-div-text span.uppercase {
+  font-size: 17px;
+  line-height: 2em;
+  text-transform:uppercase;
+}
+
+div.snowpack-summary {
+  text-align:left;
+  margin:17px 0px;
+}
+div.snowpack-summary img {
+  height:175px;
+  padding: 0px 10px;
+}
+div#problem-canned-text {
+  margin: 0px 20px 0px 200px;
+}
+div.snowpack-summary #problem-type {
+  float: left;
+  padding: 0px 10px;
+  width: 190px;
+}
+
+.snowpack-summary .problem-char-label {
+  text-align:center;
+}
+
+div.problem-text {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 175px;
+  padding: 0px 10px;
+}
+/* Weather table */
+.wx-sub-title {
+    padding: 5px;
+    color: #333;
+    font-style: italic;
+    text-transform: uppercase;
+    border-bottom: 1px solid #ddd;
+    font-size: 13px;
+}
+#wx-summary {
+    padding-top:10px;
+}
+table#wxforecast td {
+  text-align: center;
+  vertical-align: middle;
+}
+table#wxforecast th {
+    color: #3B3B3B;
+    background-color: #fff;
+    text-align: center;
+    color: #333;
+    font-style: italic;
+    text-transform: uppercase;
+    font-size: 13px;
+}
+
+div.wxfxelevations {
+    width: 100%;
+    text-align: center;
+    padding: 20px 25px 5px 12%;
+    font-weight: normal;
+    color: #333;
+    font-style: italic;
+    text-transform: uppercase;
+    font-size: 13px;
+}
+/* DIRTY Responsive pricing table CSS */
+
+/*
+- make mobile switch sticky
+*/
+
+article {
+  width:100%;
+  max-width:1000px;
+  margin:0 auto;
+  height: auto;
+  position:relative;
+}
+ul#wxfx {
+  display:flex;
+  top:0px;
+  z-index:10;
+  padding-bottom:14px;
+}
+li.wxbuttons {
+  list-style:none;
+  flex:1;
+  padding:0px;
+}
+li.wxbuttons:last-child {
+  border-right:1px solid #DDD;
+}
+.wxbuttons button {
+  width:100%;
+  border: 1px solid #DDD;
+  border-right:0;
+  border-top:0;
+  padding: 10px;
+  background:#FFF;
+  font-size:13px;
+  font-weight:bold;
+  height:50px;
+  color:#999
+}
+li.active button {
+  background:#F5F5F5;
+  color:#444;
+}
+table {
+	border-collapse:separate;
+	border-spacing:0px;
+}
+table#wxforecast { border-spacing:5px 0px; table-layout:fixed; width:100%; }
+#wxforecast th { display:none; }
+#wxforecast td, th {
+  height:53px
+}
+/*#wxforecast td,th { border:1px solid #DDD; padding:10px; empty-cells:show; }*/
+#wxforecast td,th {
+  text-align:left;
+}
+#wxforecast td+td, th+th {
+  text-align:center;
+  display:none;
+}
+#wxforecast td.default {
+  display:table-cell;
+}
+td.wxfirstcol {
+	border:none !important;
+}
+.wxtoprow th:nth-child(2) {
+    border-bottom: 1px solid #ddd;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    background: #ddd !important;
+    }
+.wxtoprow th:nth-child(3) {
+    border-top: 2px solid #ddd;
+    border-right: 2px solid #ddd;
+    border-left: 2px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    }
+.wxtoprow th:nth-child(4) {
+    border-bottom: 1px solid #ddd;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    background: #ddd  !important;
+    }
+
+.wxmidrow td:nth-child(2) {
+    background:#ddd;
+    }
+.wxmidrow td:nth-child(3) {
+    border-right: 2px solid #ddd;
+    border-left: 2px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    }
+.wxmidrow td:nth-child(4) {
+    background:#ddd;
+    }
+.wxbottomrow td:nth-child(2) {
+    background:#ddd;
+    }
+.wxbottomrow td:nth-child(3) {
+    border-bottom: 2px solid #ddd;
+    border-right: 2px solid #ddd;
+    border-left: 2px solid #ddd;
+    }
+.wxbottomrow td:nth-child(4) {
+    background:#ddd;
+    }
+
+.bg-dark {
+  border-top:3px solid #3B3B3B;
+}
+.bg-light {
+  border-top:3px solid #ddd;
+}
+.sep {
+  background:#F5F5F5;
+  font-weight:bold;
+}
+.txt-top { position:relative; top:-9px; left:-2px; }
+.hide {
+  border:0;
+  background:none;
+}
+
+@media (min-width: 640px) {
+  ul#wxfx {
+    display:none;
+  }
+  #wxforecast td,th {
+    display:table-cell !important;
+  }
+  #wxforecast td,th {
+    width:;
+
+  }
+  #wxforecast td+td, th+th {
+    width: auto;
+  }
+.wxbottomrow td:nth-child(2) {
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    }
+.wxbottomrow td:nth-child(4) {
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    }
+.wxbottomrow td:nth-child(3) {
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    }
+}

@@ -1,0 +1,28 @@
+{
+    "_config_name": "field.field.field_classes_offered",
+    "field_name": "field_classes_offered",
+    "type": "list_text",
+    "module": "list",
+    "active": 1,
+    "locked": "0",
+    "cardinality": "-1",
+    "translatable": "0",
+    "deleted": "0",
+    "entity_types": [],
+    "settings": {
+        "allowed_values": {
+            "Avalanche Awareness": "Avalanche Awareness",
+            "Refresher": "Refresher",
+            "Level 1": "Level 1",
+            "Level 2": "Level 2",
+            "Level 3": "Level 3"
+        },
+        "allowed_values_function": ""
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "module": "field_sql_storage",
+        "active": 1,
+        "settings": []
+    }
+}

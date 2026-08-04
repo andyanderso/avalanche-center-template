@@ -1,0 +1,10 @@
+{
+    "_config_name": "block.custom.18",
+    "delta": "18",
+    "info": "Submit Observations Buttons",
+    "title": "",
+    "body": {
+        "value": "<div style=\"text-align:center\"><span class=\"submit-obs-button\" style=\"display:inline-block;height:42px;\"><a href=\"/node/add/observation\">Submit Observations</a></span></div>\r\n",
+        "format": "full_html"
+    }
+}

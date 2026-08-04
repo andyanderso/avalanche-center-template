@@ -1,0 +1,1055 @@
+{
+    "_config_name": "views.view.considerable_sponsors",
+    "name": "considerable_sponsors",
+    "description": "",
+    "tag": "sponsors",
+    "base_table": "node",
+    "human_name": "Sponsors",
+    "core": "0",
+    "display": {
+        "default": {
+            "display_title": "Considerable Sponsors block",
+            "display_plugin": "default",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "title": "Sponsors",
+                "items_per_page": 0,
+                "use_more_always": false,
+                "access": {
+                    "type": "none"
+                },
+                "cache": {
+                    "type": "none"
+                },
+                "exposed_form": {
+                    "type": "basic"
+                },
+                "pager": {
+                    "type": "none",
+                    "options": {
+                        "offset": "0"
+                    }
+                },
+                "style_plugin": "responsive_grid",
+                "style_options": {
+                    "columns": "7",
+                    "wrapper_classes": ".sponsors-resp-grid",
+                    "column_classes": "sponsors-views-column",
+                    "first_column_classes": "",
+                    "last_column_classes": "",
+                    "row_classes": "sponsors-views-row",
+                    "first_row_classes": "",
+                    "last_row_classes": "sponsors-views-row-last",
+                    "default_classes": 1
+                },
+                "row_plugin": "fields",
+                "row_options": {
+                    "inline": {
+                        "field_sponsor_logo": "field_sponsor_logo"
+                    },
+                    "default_field_elements": false
+                },
+                "relationships": {
+                    "term_node_tid": {
+                        "id": "term_node_tid",
+                        "table": "node",
+                        "field": "term_node_tid",
+                        "vocabularies": {
+                            "sponsor_level": "sponsor_level",
+                            "region": 0
+                        }
+                    }
+                },
+                "fields": {
+                    "term_node_tid": {
+                        "id": "term_node_tid",
+                        "table": "node",
+                        "field": "term_node_tid",
+                        "label": "",
+                        "exclude": true,
+                        "element_label_colon": false,
+                        "link_to_taxonomy": false,
+                        "limit": true,
+                        "vocabularies": {
+                            "sponsor_level": "sponsor_level",
+                            "region": 0
+                        }
+                    },
+                    "field_sponsor_link": {
+                        "id": "field_sponsor_link",
+                        "table": "field_data_field_sponsor_link",
+                        "field": "field_sponsor_link",
+                        "label": "",
+                        "exclude": true,
+                        "element_label_colon": false,
+                        "click_sort_column": "url",
+                        "type": "link_plain"
+                    },
+                    "field_sponsor_logo": {
+                        "id": "field_sponsor_logo",
+                        "table": "field_data_field_sponsor_logo",
+                        "field": "field_sponsor_logo",
+                        "label": "",
+                        "alter": {
+                            "make_link": true,
+                            "path": "[field_sponsor_link]",
+                            "absolute": true,
+                            "external": true
+                        },
+                        "element_label_colon": false,
+                        "hide_empty": true,
+                        "click_sort_column": "fid",
+                        "settings": {
+                            "image_style": "sponsor_logos",
+                            "image_link": ""
+                        }
+                    },
+                    "field_sponsor_name": {
+                        "id": "field_sponsor_name",
+                        "table": "field_data_field_sponsor_name",
+                        "field": "field_sponsor_name",
+                        "label": "",
+                        "alter": {
+                            "make_link": true,
+                            "path": "[field_sponsor_link]",
+                            "absolute": true,
+                            "external": true
+                        },
+                        "element_label_colon": false,
+                        "hide_empty": true
+                    }
+                },
+                "sorts": {
+                    "random": {
+                        "id": "random",
+                        "table": "views",
+                        "field": "random"
+                    }
+                },
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "sponsor": "sponsor"
+                        },
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": 1,
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "name": {
+                        "id": "name",
+                        "table": "taxonomy_term_data",
+                        "field": "name",
+                        "relationship": "term_node_tid",
+                        "value": "Considerable",
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    }
+                }
+            }
+        },
+        "block_8": {
+            "display_title": "Summit",
+            "display_plugin": "block",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "title": false,
+                    "filter_groups": false,
+                    "filters": false
+                },
+                "title": "Summit Sponsors",
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "sponsor": "sponsor"
+                        },
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": 1,
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "tid": {
+                        "id": "tid",
+                        "table": "taxonomy_index",
+                        "field": "tid",
+                        "value": [
+                            "17"
+                        ],
+                        "vocabulary": "sponsor_level"
+                    },
+                    "field_expiration_date_value": {
+                        "id": "field_expiration_date_value",
+                        "table": "field_data_field_expiration_date",
+                        "field": "field_expiration_date_value",
+                        "operator": ">=",
+                        "default_date": "now"
+                    }
+                }
+            }
+        },
+        "block_1": {
+            "display_title": "Extreme",
+            "display_plugin": "block",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "title": false,
+                    "filter_groups": false,
+                    "filters": false
+                },
+                "title": "Extreme Sponsors",
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "sponsor": "sponsor"
+                        },
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": 1,
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "tid": {
+                        "id": "tid",
+                        "table": "taxonomy_index",
+                        "field": "tid",
+                        "value": [
+                            "2"
+                        ],
+                        "vocabulary": "sponsor_level"
+                    },
+                    "field_expiration_date_value": {
+                        "id": "field_expiration_date_value",
+                        "table": "field_data_field_expiration_date",
+                        "field": "field_expiration_date_value",
+                        "operator": ">=",
+                        "default_date": "now"
+                    }
+                }
+            }
+        },
+        "block_2": {
+            "display_title": "High",
+            "display_plugin": "block",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "title": false,
+                    "filter_groups": false,
+                    "filters": false
+                },
+                "title": "High Sponsors",
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "sponsor": "sponsor"
+                        },
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": 1,
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "tid": {
+                        "id": "tid",
+                        "table": "taxonomy_index",
+                        "field": "tid",
+                        "value": [
+                            "3"
+                        ],
+                        "vocabulary": "sponsor_level"
+                    },
+                    "field_expiration_date_value": {
+                        "id": "field_expiration_date_value",
+                        "table": "field_data_field_expiration_date",
+                        "field": "field_expiration_date_value",
+                        "operator": ">=",
+                        "default_date": "now"
+                    }
+                }
+            }
+        },
+        "block_3": {
+            "display_title": "Considerable",
+            "display_plugin": "block",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "title": false,
+                    "filter_groups": false,
+                    "filters": false
+                },
+                "title": "Considerable Sponsors",
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "sponsor": "sponsor"
+                        },
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": 1,
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "tid": {
+                        "id": "tid",
+                        "table": "taxonomy_index",
+                        "field": "tid",
+                        "value": [
+                            "4"
+                        ],
+                        "vocabulary": "sponsor_level"
+                    },
+                    "field_expiration_date_value": {
+                        "id": "field_expiration_date_value",
+                        "table": "field_data_field_expiration_date",
+                        "field": "field_expiration_date_value",
+                        "operator": ">=",
+                        "default_date": "now"
+                    }
+                }
+            }
+        },
+        "block_4": {
+            "display_title": "Moderate",
+            "display_plugin": "block",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "title": false,
+                    "fields": false,
+                    "filter_groups": false,
+                    "filters": false
+                },
+                "title": "Moderate Sponsors",
+                "fields": {
+                    "term_node_tid": {
+                        "id": "term_node_tid",
+                        "table": "node",
+                        "field": "term_node_tid",
+                        "label": "",
+                        "exclude": true,
+                        "element_label_colon": false,
+                        "link_to_taxonomy": false,
+                        "limit": true,
+                        "vocabularies": {
+                            "sponsor_level": "sponsor_level",
+                            "region": 0
+                        }
+                    },
+                    "field_sponsor_link": {
+                        "id": "field_sponsor_link",
+                        "table": "field_data_field_sponsor_link",
+                        "field": "field_sponsor_link",
+                        "label": "",
+                        "exclude": true,
+                        "element_label_colon": false,
+                        "click_sort_column": "url",
+                        "type": "link_absolute"
+                    },
+                    "field_sponsor_logo": {
+                        "id": "field_sponsor_logo",
+                        "table": "field_data_field_sponsor_logo",
+                        "field": "field_sponsor_logo",
+                        "label": "",
+                        "alter": {
+                            "make_link": true,
+                            "path": "[field_sponsor_link]",
+                            "absolute": true
+                        },
+                        "element_label_colon": false,
+                        "hide_empty": true,
+                        "click_sort_column": "fid",
+                        "settings": {
+                            "image_style": "sponsor_logos",
+                            "image_link": ""
+                        }
+                    },
+                    "field_sponsor_name": {
+                        "id": "field_sponsor_name",
+                        "table": "field_data_field_sponsor_name",
+                        "field": "field_sponsor_name",
+                        "label": "",
+                        "element_label_colon": false,
+                        "hide_empty": true
+                    }
+                },
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "sponsor": "sponsor"
+                        },
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": 1,
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "tid": {
+                        "id": "tid",
+                        "table": "taxonomy_index",
+                        "field": "tid",
+                        "value": [
+                            "5"
+                        ],
+                        "vocabulary": "sponsor_level"
+                    },
+                    "field_expiration_date_value": {
+                        "id": "field_expiration_date_value",
+                        "table": "field_data_field_expiration_date",
+                        "field": "field_expiration_date_value",
+                        "operator": ">=",
+                        "default_date": "now"
+                    }
+                }
+            }
+        },
+        "block_5": {
+            "display_title": "Low",
+            "display_plugin": "block",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "title": false,
+                    "fields": false,
+                    "filter_groups": false,
+                    "filters": false
+                },
+                "title": "Low Sponsors",
+                "fields": {
+                    "term_node_tid": {
+                        "id": "term_node_tid",
+                        "table": "node",
+                        "field": "term_node_tid",
+                        "label": "",
+                        "exclude": true,
+                        "element_label_colon": false,
+                        "link_to_taxonomy": false,
+                        "limit": true,
+                        "vocabularies": {
+                            "sponsor_level": "sponsor_level",
+                            "region": 0
+                        }
+                    },
+                    "field_sponsor_name": {
+                        "id": "field_sponsor_name",
+                        "table": "field_data_field_sponsor_name",
+                        "field": "field_sponsor_name",
+                        "label": "",
+                        "element_label_colon": false
+                    }
+                },
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "sponsor": "sponsor"
+                        },
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": 1,
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "tid": {
+                        "id": "tid",
+                        "table": "taxonomy_index",
+                        "field": "tid",
+                        "value": [
+                            "6"
+                        ],
+                        "vocabulary": "sponsor_level"
+                    },
+                    "field_expiration_date_value": {
+                        "id": "field_expiration_date_value",
+                        "table": "field_data_field_expiration_date",
+                        "field": "field_expiration_date_value",
+                        "operator": ">=",
+                        "default_date": "now"
+                    }
+                }
+            }
+        },
+        "block_6": {
+            "display_title": "Extreme - Footer Column",
+            "display_plugin": "block",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "title": false,
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false,
+                    "filter_groups": false,
+                    "filters": false
+                },
+                "title": "Summit Sponsors",
+                "style_plugin": "responsive_grid",
+                "style_options": {
+                    "columns": "5",
+                    "wrapper_classes": ".sponsors-resp-grid",
+                    "column_classes": "sponsors-views-column",
+                    "first_column_classes": "",
+                    "last_column_classes": "",
+                    "row_classes": "sponsors-views-row",
+                    "first_row_classes": "",
+                    "last_row_classes": "sponsors-views-row-last",
+                    "default_classes": 1
+                },
+                "row_plugin": "fields",
+                "row_options": {
+                    "default_field_elements": false
+                },
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "sponsor": "sponsor"
+                        },
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": 1,
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "tid": {
+                        "id": "tid",
+                        "table": "taxonomy_index",
+                        "field": "tid",
+                        "value": [
+                            "2",
+                            "17"
+                        ],
+                        "vocabulary": "sponsor_level"
+                    },
+                    "field_expiration_date_value": {
+                        "id": "field_expiration_date_value",
+                        "table": "field_data_field_expiration_date",
+                        "field": "field_expiration_date_value",
+                        "operator": ">=",
+                        "default_date": "now"
+                    }
+                }
+            }
+        },
+        "block_7": {
+            "display_title": "Extreme - Home Page Slide Show",
+            "display_plugin": "block",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "title": false,
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false,
+                    "filter_groups": false,
+                    "filters": false
+                },
+                "title": "Summit Sponsors",
+                "style_plugin": "slick",
+                "style_options": {
+                    "grouping": [],
+                    "optionset": "slide_carousel_bar",
+                    "skin": "fullwidth",
+                    "optionset_thumbnail": "",
+                    "skin_thumbnail": "",
+                    "skin_arrows": "",
+                    "skin_dots": "",
+                    "asnavfor_main": "",
+                    "asnavfor_thumbnail": "",
+                    "asnavfor_auto": 0,
+                    "grid": "",
+                    "grid_medium": "",
+                    "grid_small": "",
+                    "visible_slides": "",
+                    "preserve_keys": 0,
+                    "slide_field_wrapper": 0,
+                    "slide_layout": "",
+                    "slide_title": "",
+                    "slide_image": "",
+                    "slide_thumbnail": "",
+                    "thumbnail_caption": "",
+                    "slide_overlay": "",
+                    "slide_link": "",
+                    "editor_link": "",
+                    "slide_caption": {
+                        "term_node_tid": 0,
+                        "field_sponsor_link": 0,
+                        "field_sponsor_logo": 0,
+                        "field_sponsor_name": 0
+                    },
+                    "slide_classes": "",
+                    "id": "",
+                    "cache": "",
+                    "override": 0,
+                    "overridables": {
+                        "arrows": 0,
+                        "autoplay": 0,
+                        "dots": 0,
+                        "draggable": 0
+                    }
+                },
+                "row_plugin": "fields",
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "sponsor": "sponsor"
+                        },
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": 1,
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "tid": {
+                        "id": "tid",
+                        "table": "taxonomy_index",
+                        "field": "tid",
+                        "value": [
+                            "2",
+                            "17"
+                        ],
+                        "vocabulary": "sponsor_level"
+                    },
+                    "field_expiration_date_value": {
+                        "id": "field_expiration_date_value",
+                        "table": "field_data_field_expiration_date",
+                        "field": "field_expiration_date_value",
+                        "operator": ">=",
+                        "default_date": "now"
+                    }
+                }
+            }
+        },
+        "page_1": {
+            "display_title": "Page",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "title": false,
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false,
+                    "fields": false,
+                    "sorts": false,
+                    "filter_groups": false,
+                    "filters": false
+                },
+                "title": "Sponsors List",
+                "style_plugin": "table",
+                "style_options": {
+                    "columns": {
+                        "views_bulk_operations": "views_bulk_operations",
+                        "field_sponsor_logo": "field_sponsor_logo",
+                        "term_node_tid": "term_node_tid",
+                        "field_sponsor_link": "field_sponsor_link",
+                        "field_sponsor_name": "field_sponsor_name",
+                        "field_expiration_date": "field_expiration_date"
+                    },
+                    "default": "field_expiration_date",
+                    "info": {
+                        "views_bulk_operations": {
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "field_sponsor_logo": {
+                            "sortable": 0,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "term_node_tid": {
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "field_sponsor_link": {
+                            "sortable": 0,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "field_sponsor_name": {
+                            "sortable": 0,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "field_expiration_date": {
+                            "sortable": 1,
+                            "default_sort_order": "desc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        }
+                    }
+                },
+                "fields": {
+                    "views_bulk_operations": {
+                        "id": "views_bulk_operations",
+                        "table": "views_entity_node",
+                        "field": "views_bulk_operations",
+                        "vbo_settings": {
+                            "display_type": "0",
+                            "enable_select_all_pages": 1,
+                            "row_clickable": 1,
+                            "force_single": 0,
+                            "entity_load_capacity": "10"
+                        },
+                        "vbo_operations": {
+                            "action::node_assign_owner_action": {
+                                "selected": 1,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            },
+                            "action::node_publish_action": {
+                                "selected": 1,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            },
+                            "action::node_save_action": {
+                                "selected": 1,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            },
+                            "action::node_unpublish_action": {
+                                "selected": 1,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            },
+                            "action::views_bulk_operations_delete_item_vboaction": {
+                                "selected": 1,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            },
+                            "action::views_bulk_operations_script_vboaction": {
+                                "selected": 1,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            },
+                            "action::views_bulk_operations_modify_vboaction": {
+                                "selected": 1,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": "",
+                                "settings": {
+                                    "show_all_tokens": 1,
+                                    "display_values": {
+                                        "_all_": "_all_"
+                                    }
+                                }
+                            },
+                            "action::views_bulk_operations_argument_selector_vboaction": {
+                                "selected": 1,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": "",
+                                "settings": {
+                                    "url": ""
+                                }
+                            },
+                            "action::path_node_update_action": {
+                                "selected": 1,
+                                "postpone_processing": 0,
+                                "skip_confirmation": 0,
+                                "override_label": 0,
+                                "label": ""
+                            }
+                        }
+                    },
+                    "field_sponsor_logo": {
+                        "id": "field_sponsor_logo",
+                        "table": "field_data_field_sponsor_logo",
+                        "field": "field_sponsor_logo",
+                        "label": "",
+                        "alter": {
+                            "make_link": true,
+                            "path": "[field_sponsor_link]",
+                            "absolute": true,
+                            "external": true
+                        },
+                        "element_label_colon": false,
+                        "hide_empty": true,
+                        "click_sort_column": "fid",
+                        "settings": {
+                            "image_style": "sponsor_logos",
+                            "image_link": ""
+                        }
+                    },
+                    "term_node_tid": {
+                        "id": "term_node_tid",
+                        "table": "node",
+                        "field": "term_node_tid",
+                        "label": "",
+                        "element_label_colon": false,
+                        "link_to_taxonomy": false,
+                        "limit": true,
+                        "vocabularies": {
+                            "sponsor_level": "sponsor_level",
+                            "avalanche_terms": 0,
+                            "class_type": 0,
+                            "region": 0,
+                            "gallery_collections": 0,
+                            "newsletter": 0,
+                            "page_category": 0,
+                            "tags": 0
+                        }
+                    },
+                    "field_sponsor_link": {
+                        "id": "field_sponsor_link",
+                        "table": "field_data_field_sponsor_link",
+                        "field": "field_sponsor_link",
+                        "label": "",
+                        "exclude": true,
+                        "element_label_colon": false,
+                        "click_sort_column": "url",
+                        "type": "link_plain"
+                    },
+                    "field_sponsor_name": {
+                        "id": "field_sponsor_name",
+                        "table": "field_data_field_sponsor_name",
+                        "field": "field_sponsor_name",
+                        "label": "",
+                        "alter": {
+                            "make_link": true,
+                            "path": "[field_sponsor_link]",
+                            "absolute": true,
+                            "external": true
+                        },
+                        "element_label_colon": false,
+                        "hide_empty": true
+                    },
+                    "field_expiration_date": {
+                        "id": "field_expiration_date",
+                        "table": "field_data_field_expiration_date",
+                        "field": "field_expiration_date",
+                        "settings": {
+                            "format_type": "short",
+                            "fromto": "both",
+                            "multiple_number": "",
+                            "multiple_from": "",
+                            "multiple_to": "",
+                            "show_remaining_days": 0,
+                            "show_repeat_rule": "show"
+                        }
+                    }
+                },
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "sponsor": "sponsor"
+                        },
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": 1,
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "term_node_tid_depth": {
+                        "id": "term_node_tid_depth",
+                        "table": "node",
+                        "field": "term_node_tid_depth",
+                        "exposed": true,
+                        "expose": {
+                            "operator_id": "term_node_tid_depth_op",
+                            "label": "Has taxonomy terms (with depth)",
+                            "use_operator": true,
+                            "operator": "term_node_tid_depth_op",
+                            "identifier": "term_node_tid_depth",
+                            "remember_roles": {
+                                "2": "2",
+                                "4": 0,
+                                "1": 0,
+                                "5": 0,
+                                "6": 0,
+                                "7": 0,
+                                "8": 0,
+                                "3": 0,
+                                "9": 0,
+                                "10": 0
+                            }
+                        },
+                        "type": "select",
+                        "vocabulary": "sponsor_level",
+                        "depth": "0"
+                    }
+                },
+                "path": "sponsors-list"
+            }
+        }
+    }
+}

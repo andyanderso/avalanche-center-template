@@ -1,0 +1,597 @@
+<?php
+/**
+ * @file
+ * Leaflet widget module for Geofield.
+ */
+
+/**
+ * Implements hook_field_widget_info().
+ */
+function leaflet_widget_field_widget_info() {
+  $widgets = array();
+
+  $widgets['leaflet_widget_widget'] = array(
+    'label' => 'Leaflet.widget',
+    'description' => t('Provides a map powered by Leaflet and Leaflet.draw.'),
+    'field types' => array('geofield'),
+    'settings' => array(
+      'map' => array(
+        'base_layer' => 'osm_mapnik_base',
+        'center' => array(
+          'lat' => 0.0,
+          'lng' => 0.0,
+        ),
+        'min_zoom' => 2,
+        'max_zoom' => 18,
+        'auto_center' => TRUE,
+        'zoom' => 10,
+        'height' => 400,
+        'feature_types' => array(
+          'marker' => 'marker',
+          'polyline' => 'polyline',
+          'polygon' => 'polygon',
+          'rectangle' => 'rectangle',
+        ),
+        'search_widget' => FALSE,
+      ),
+    ),
+    'behaviors' => array(
+      'multiple values' => FIELD_BEHAVIOR_CUSTOM,
+      'default value' => FIELD_BEHAVIOR_NONE,
+    ),
+  );
+
+  return $widgets;
+}
+
+/**
+ * Implements hook_field_widget_settings_form().
+ */
+function leaflet_widget_field_widget_settings_form($field, $instance) {
+  $form = array();
+  $settings = $instance['widget']['settings'];
+
+  switch ($instance['widget']['type']) {
+    case 'leaflet_widget_widget':
+      $form['map'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Default map settings'),
+      );
+      $form['map']['base_layer'] = array(
+        '#type' => 'select',
+        '#title' => t('Leaflet.draw layer type'),
+        '#default_value' => !empty($settings['map']['base_layer']) ? $settings['map']['base_layer'] : 'osm_mapnik_base',
+        '#options' => leaflet_widget_base_layers_form_options(),
+      );
+      $collapsed = FALSE;
+      if ($settings['map']['center']['lat'] || $settings['map']['center']['lng']) {
+        $collapsed = TRUE;
+      }
+      $form['map']['center'] = array(
+        '#type' => 'fieldset',
+        '#collapsed' => $collapsed,
+        '#collapsible' => TRUE,
+        '#title' => t('Default map center'),
+      );
+      if (module_exists('geoip_tokens')) {
+        $form['map']['center']['geoip'] = array(
+          '#type' => 'checkbox',
+          '#title' => t('Automatically center based on GeoIP'),
+          '#default_value' => isset($settings['map']['center']['geoip']) ? $settings['map']['center']['geoip'] : FALSE,
+          '#description' => t('If checked, below values act as a fallback, if coordinates could not be determined.'),
+        );
+      }
+      if ($country_code = config_get('system.date', 'default_country')) {
+        // Add a JavaScript widget to set center coords based on the site's
+        // default country setting.
+        include_once BACKDROP_ROOT . '/core/includes/standard.inc';
+        $country_list = standard_country_list();
+        if (isset($country_list[$country_code])) {
+          $help = t('Sets the coordinates based on site wide default country setting using <a href="!url">Nominatim</a> for geocoding.', array(
+            '!url' => 'https://nominatim.org/',
+          ));
+          $form['map']['center']['centerbutton'] = array(
+            '#type' => 'button',
+            '#input' => FALSE,
+            '#value' => t('Set to center of !country', array(
+              '!country' => $country_list[$country_code],
+            )),
+            '#limit_validation_errors' => array(),
+            '#id' => 'leaflet-geocode-center-button',
+            '#weight' => 1,
+            '#suffix' => '<div class="description">' . $help . '</div>',
+          );
+          $form['map']['#attached']['js'][] = array(
+            'type' => 'setting',
+            'data' => array(
+              'leaflet_widget' => array(
+                'countryCode' => $country_code,
+              ),
+            ),
+          );
+          $form['map']['#attached']['js'][] = backdrop_get_path('module', 'leaflet_widget') . '/js/leaflet-widget-defaultcenter.js';
+        }
+      }
+      $form['map']['center']['lat'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Latitude'),
+        '#default_value' => $settings['map']['center']['lat'],
+        '#required' => TRUE,
+      );
+      $form['map']['center']['lng'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Longtitude'),
+        '#default_value' => $settings['map']['center']['lng'],
+        '#required' => TRUE,
+      );
+      $form['map']['auto_center'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Automatically center map on existing features'),
+        '#description' => t("This option overrides the widget's default center."),
+        '#default_value' => $settings['map']['auto_center'],
+      );
+      $form['map']['zoom'] = array(
+        '#type' => 'number',
+        '#title' => t('Default zoom level'),
+        '#min' => '0',
+        '#max' => '21',
+        '#default_value' => $settings['map']['zoom'],
+        '#required' => TRUE,
+      );
+      $form['map']['min_zoom'] = array(
+        '#type' => 'number',
+        '#title' => t('Minimum zoom level'),
+        '#min' => '0',
+        '#max' => '18',
+        '#default_value' => isset($settings['map']['min_zoom']) ? $settings['map']['min_zoom'] : '2',
+        '#required' => TRUE,
+      );
+      $form['map']['max_zoom'] = array(
+        '#type' => 'number',
+        '#title' => t('Maximum zoom level'),
+        '#min' => '4',
+        '#max' => '21',
+        '#default_value' => isset($settings['map']['max_zoom']) ? $settings['map']['max_zoom'] : '18',
+        '#required' => TRUE,
+        '#description' => t('How close you can get in. Consider that not all map types support high values.'),
+      );
+      $form['map']['height'] = array(
+        '#type' => 'number',
+        '#title' => t('Height (px)'),
+        '#min' => '100',
+        '#max' => '800',
+        '#step' => '10',
+        '#default_value' => $settings['map']['height'],
+        '#required' => TRUE,
+        '#description' => t('Height of the map container in pixels.'),
+      );
+      $feature_types = array(
+        'marker' => t('Marker'),
+        'polyline' => t('Polyline'),
+        'polygon' => t('Polygon'),
+        'rectangle' => t('Rectangle'),
+      );
+      $feature_default_types = backdrop_map_assoc(array_keys($feature_types));
+      $form['map']['feature_types'] = array(
+        '#type' => 'checkboxes',
+        '#title' => t('Available feature types'),
+        '#options' => $feature_types,
+        '#default_value' => isset($settings['map']['feature_types']) ? $settings['map']['feature_types'] : $feature_default_types,
+        '#description' => t('Which types of shapes are available in the draw toolbar.'),
+        '#required' => TRUE,
+      );
+      $form['map']['search_widget'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Add search widget'),
+        '#default_value' => !empty($settings['map']['search_widget']),
+        '#description' => t('Provde a location search widget above the map, to add markers based on text search results, if markers are enabled.'),
+      );
+
+      break;
+  }
+
+  return $form;
+}
+
+/**
+ * Implements hook_field_widget_form().
+ */
+function leaflet_widget_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  $settings = $instance['widget']['settings'];
+
+  $element['#type'] = 'fieldset';
+
+  // $element['input_format'] is not a db field, but we use it determine how to
+  // parse/calculate values in our widget.
+  $element['input_format'] = array(
+    '#type' => 'value',
+    '#attributes' => array('class' => array('geofield_input_format')),
+    '#value' => GEOFIELD_INPUT_AUTO_DISCOVER,
+  );
+
+  switch ($instance['widget']['type']) {
+    case 'leaflet_widget_widget':
+      $module_path = backdrop_get_path('module', 'leaflet_widget');
+      $id = 'leaflet-widget_' . backdrop_html_id(str_replace('_', '-', $instance['field_name']));
+      if (!empty($settings['map']['search_widget']) && $settings['map']['feature_types']['marker']) {
+        // Make sure, this script gets loaded after the main widget.
+        $element['#attached']['js'][$module_path . '/js/leaflet-widget-geocode.js'] = array(
+          'weight' => 1,
+        );
+        $element['search_widget'] = array(
+          '#type' => 'markup',
+          '#markup' => _leaflet_widget_geocode_widget($id),
+        );
+      }
+      $class = 'leaflet-widget';
+      $style = 'height: ' . $settings['map']['height'] . 'px;';
+      $input_id = $id . '-input';
+
+      // Provide container markup for map form element.
+      $container = "<div id=\"$id\" class=\"$class\" style=\"$style\"></div>";
+      $element['leaflet_widget'] = array('#markup' => $container);
+      $element['input_format']['#value'] = GEOFIELD_INPUT_GEOJSON;
+
+      // Overriding Geofield's validation handler.
+      $element['#element_validate'] = array('leaflet_widget_widget_validate');
+
+      // Prepare existing field values to be rendered in widget.
+      $geom_type = 'wkt';
+
+      // If coming back from node preview, the geom type has been converted to
+      // WKB. We can not rely on a GET param alone, so we let geophp autodetect
+      // the type. It's either WKT or WKB.
+      if (isset($_GET['node_tempstore_id'])) {
+        $geom_type = NULL;
+      }
+      $collection = leaflet_widget_widget_prepare_items($items, $geom_type);
+
+      $element['geom'] = array(
+        '#type' => 'hidden',
+        '#title' => check_plain($instance['label']),
+        '#description' => check_plain($instance['description']),
+        '#default_value' => backdrop_json_encode($collection),
+        '#required' => $instance['required'],
+        '#attributes' => array('id' => $input_id),
+      );
+
+      // Convert field settings to Javascript settings.
+      $widget_settings = array();
+      $widget_settings['widget'] = array(
+        'cardinality' => $field['cardinality'],
+        'autoCenter' => $settings['map']['auto_center'],
+        'featureTypes' => array_filter($settings['map']['feature_types']),
+      );
+      $widget_settings['map_options'] = array(
+        'center' => array(
+          0 => $settings['map']['center']['lat'],
+          1 => $settings['map']['center']['lng'],
+        ),
+        'zoom' => $settings['map']['zoom'],
+        'minZoom' => $settings['map']['min_zoom'],
+        'maxZoom' => $settings['map']['max_zoom'],
+      );
+      if (module_exists('geoip_tokens') && !empty($settings['map']['center']['geoip'])) {
+        $coords = geoip_tokens_get_geoip_info('latlon');
+        // Coordinates are numeric and could also be 0. But these are also the
+        // fallback values from module geoip_tokens, if the request failed.
+        if (($coords['latitude'] + $coords['longitude']) !== 0) {
+          $widget_settings['map_options']['center'][0] = $coords['latitude'];
+          $widget_settings['map_options']['center'][1] = $coords['longitude'];
+        }
+      }
+
+      $layer_settings = leaflet_widget_get_layer_setting($settings['map']['base_layer']);
+      $widget_settings['layer'] = array(
+        0 => $layer_settings['url_template'],
+        1 => $layer_settings['layer_options'],
+      );
+
+      $element['#attached']['library'][] = array('leaflet_widget', 'Leaflet.draw');
+      $element['#attached']['js'][] = $module_path . '/js/leaflet-widget-l10n.js';
+      $element['#attached']['js'][] = $module_path . '/js/leaflet-widget.js';
+      $element['#attached']['js'][] = array(
+        'type' => 'setting',
+        'data' => array('leaflet_geofield_widget' => array($id => $widget_settings)),
+      );
+      $element['#attached']['css'][] = $module_path . '/css/leaflet-widget.css';
+
+      break;
+  }
+  _leaflet_widget_trigger_translations();
+  return $element;
+}
+
+/**
+ * Helper function to populate translatable strings.
+ */
+function _leaflet_widget_trigger_translations() {
+  // Apparently this does nothing, but it triggers t(). It can be cumbersome to
+  // get translations into locale tables using JS function Backdrop.t() alone.
+  // @see leaflet-widget-l10n.js
+  $strings = array(
+    t('Cancel drawing'),
+    t('Cancel'),
+    t('Finish drawing'),
+    t('Finish'),
+    t('Delete last point drawn'),
+    t('Delete last point'),
+    t('Draw a polyline'),
+    t('Draw a polygon'),
+    t('Draw a rectangle'),
+    t('Draw a marker'),
+    t('Click map to place marker.'),
+    t('Click to start drawing shape.'),
+    t('Click to continue drawing shape.'),
+    t('Click first point to close this shape.'),
+    t('Error: shape edges cannot cross!'),
+    t('Click to start drawing line.'),
+    t('Click to continue drawing line.'),
+    t('Click last point to finish line.'),
+    t('Click and drag to draw rectangle.'),
+    t('Save changes'),
+    t('Save'),
+    t('Cancel editing, discards all changes'),
+    t('Cancel'),
+    t('Clear all layers'),
+    t('Clear all'),
+    t('Edit layers'),
+    t('No layers to edit'),
+    t('Delete layers'),
+    t('No layers to delete'),
+    t('Drag handles or markers to edit features.'),
+    t('Click cancel to undo changes.'),
+    t('Click on a feature to remove.'),
+  );
+}
+
+/**
+ * Custom callback that returns markup for the geocoding widget.
+ *
+ * We do not need this in the form_state, only the markup.
+ *
+ * @param string $id
+ *   Map container HTML id.
+ * @return string
+ *   Rendered markup.
+ */
+function _leaflet_widget_geocode_widget($id) {
+  $items = array();
+  $items['wrap'] = array(
+    '#type' => 'container',
+    '#attributes' => array(
+      'class' => array('leaflet-widget-geocode'),
+      'data-map-id' => $id,
+      'id' => $id . '-geocode',
+    ),
+  );
+  $items['wrap']['search'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Location search'),
+    '#title_display' => 'invisible',
+    '#size' => 45,
+    '#id' => $id . '-geoinput',
+    '#attributes' => array(
+      'placeholder' => t('Location name or address'),
+    ),
+  );
+  $items['wrap']['submit'] = array(
+    '#type' => 'markup',
+    '#markup' => '<button class="form-submit button-primary geocode-button" type="button">' . t('Search') . '</button>',
+  );
+  $items['wrap']['message'] = array(
+    '#type' => 'markup',
+    '#markup' => '<div class="message"></div>',
+  );
+  $items['wrap']['credits'] = array(
+    '#type' => 'markup',
+    '#markup' => '<div class="credits">Location search powered by <a href="https://nominatim.org/">Nominatim</a></div>',
+  );
+  return backdrop_render($items);
+}
+
+/**
+ * Prepares the field items - return a geoJSON FeatureCollection.
+ *
+ * @param array $items
+ *   The items to prepare as provided by hook_field_widget_form().
+ * @param string|NULL $geom_type
+ *   The geometry type the geometry data are given. Set to NULL to use
+ *   autodetect. It's recommended to define the type to speed up processing.
+ *
+ * @return array
+ *   A geoJSON FeatureCollection.
+ */
+function leaflet_widget_widget_prepare_items(array $items, $geom_type = 'wkt') {
+  $features = array();
+  foreach ($items as $item) {
+    if (isset($item['geom'])) {
+      // Set geom type to NULL - it can be wkt or wkb depending on the form
+      // state.
+      $features[] = leaflet_widget_geojson_feature($item['geom'], array(), $geom_type);
+    }
+  }
+  return leaflet_widget_geojson_feature_collection($features);
+}
+
+/**
+ * Widget validation callback.
+ *
+ * This is used to process the posted values to proper geofield values.
+ */
+function leaflet_widget_widget_validate($element, &$form_state) {
+  module_load_include('inc', 'geofield', 'libraries/geophp/geoPHP');
+
+  $geojson = $element['geom']['#value'];
+  $results = array(leaflet_widget_process_geojson($geojson));
+
+  form_set_value($element, $results, $form_state);
+}
+
+/**
+ * Ensures the posted values match the geofield values.
+ *
+ * @param string $geojson
+ *   The geoJSON values.
+ *
+ * @return array
+ *   List of geofield compatible values.
+ */
+function leaflet_widget_process_geojson($geojson) {
+  $geom = geoPHP::load($geojson, 'json');
+  // Avoid throwing a notice if there was a failure.
+  if (!$geom) {
+    return array();
+  }
+  $type = $geom->geometryType();
+  $result = array(
+    'geom' => $geom->out('wkt'),
+    'input_format' => 'wkt',
+  );
+  return geofield_compute_values($result);
+}
+
+/**
+ * Implements hook_library_info().
+ */
+function leaflet_widget_library_info() {
+  $path = backdrop_get_path('module', 'leaflet_widget');
+
+  $libraries['Leaflet.draw'] = array(
+    'title' => t('Leaflet Draw Library'),
+    'version' => '1.0.4+p005',
+    'website' => 'https://github.com/Leaflet/Leaflet.draw',
+    // Patched version of Leaflet.draw for compatibility with newer Leaflet
+    // versions. Based on original src file from dist folder, compressed using:
+    // "uglifyjs -c -m -o leaflet.draw.js leaflet.draw-src.js".
+    'js' => array(
+      $path . '/libraries/Leaflet.draw/patched/leaflet.draw.js' => array(
+        'type' => 'file',
+        'group' => JS_LIBRARY,
+      ),
+    ),
+    'css' => array(
+      $path . '/libraries/Leaflet.draw/dist/leaflet.draw.css' => array(
+        'type' => 'file',
+        'media' => 'all',
+      ),
+    ),
+    'dependencies' => array(
+      array('leaflet', 'leaflet'),
+    ),
+  );
+
+  return $libraries;
+}
+
+/**
+ * Creates a geoJSON FeatureCollection out of an array of features.
+ *
+ * @param array $features
+ *   The features to pack into the FeatureCollection.
+ *
+ * @return array
+ *   A geoJSON FeatureCollection.
+ */
+function leaflet_widget_geojson_feature_collection($features) {
+  if (!is_array($features)) {
+    $features = array($features);
+  }
+
+  return array(
+    'type' => 'FeatureCollection',
+    'features' => $features,
+  );
+}
+
+/**
+ * Creates a geoJSON feature from a geofield geom value.
+ *
+ * @param string $geom
+ *   Well known text value.
+ * @param array $properties
+ *   Properties for the geoJSON feature.
+ * @param string|NULL $geom_type
+ *   The geometry type the geometry data are given. Set to NULL to use
+ *   autodetect. It's recommended to define the type to speed up processing.
+ *
+ * @return array|bool
+ *   Returns a geoJSON feature or FALSE on failure.
+ */
+function leaflet_widget_geojson_feature($geom, array $properties = array(), $geom_type = 'wkt') {
+  module_load_include('inc', 'geofield', 'libraries/geophp/geoPHP');
+  $geometry = geoPHP::load($geom, $geom_type);
+  // Avoid notice on error.
+  if (!$geometry) {
+    return FALSE;
+  }
+
+  return array(
+    'type' => 'Feature',
+    'geometry' => json_decode($geometry->out('json')),
+    'properties' => $properties,
+  );
+}
+
+/**
+ * Implements hook_leaflet_widget_base_layers().
+ */
+function leaflet_widget_leaflet_widget_base_layers() {
+  $layertypes = array(
+    'osm_mapnik_base' => array(
+      'label' => t('OSM Mapnik'),
+      'url_template' => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+      'layer_options' => array(
+        'attribution' => '<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap </a> contributors',
+        'maxZoom' => 19,
+      ),
+    ),
+  );
+
+  return $layertypes;
+}
+
+/**
+ * Helper function that returns available base layers usable as option list.
+ */
+function leaflet_widget_base_layers_form_options() {
+  $form_options = array();
+  $available = leaflet_widget_base_layers();
+  foreach ($available as $machine_name => $options) {
+    $form_options[$machine_name] = $options['label'];
+  }
+  return $form_options;
+}
+
+/**
+ * Helper function to retrieve layer settings by name.
+ *
+ * @param string $layer_name
+ *   The name of the layer as defined in leaflet_widget_base_layers().
+ *
+ * @return array
+ *   Array of layer settings.
+ */
+function leaflet_widget_get_layer_setting($layer_name) {
+  $available = leaflet_widget_base_layers();
+  if (isset($available[$layer_name])) {
+    return $available[$layer_name];
+  }
+  // Fallback if layer definition is missing.
+  return $available['osm_mapnik_base'];
+}
+
+/**
+ * Returns the available leaflet base layers.
+ *
+ * Invokes hook_leaflet_widget_base_layers() to allow modules adding additional
+ * layers just for the widget.
+ *
+ * @return array
+ *   A list of leaflet layers to use.
+ */
+function leaflet_widget_base_layers() {
+  $options = array();
+
+  return array_merge($options, module_invoke_all('leaflet_widget_base_layers'));
+}

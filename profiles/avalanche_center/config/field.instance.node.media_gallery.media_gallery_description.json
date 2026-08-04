@@ -1,0 +1,50 @@
+{
+    "_config_name": "field.instance.node.media_gallery.media_gallery_description",
+    "field_name": "media_gallery_description",
+    "entity_type": "node",
+    "bundle": "media_gallery",
+    "deleted": "0",
+    "label": "Description",
+    "widget": {
+        "type": "text_textarea",
+        "settings": {
+            "rows": 4
+        },
+        "weight": 31,
+        "module": "text"
+    },
+    "settings": {
+        "text_processing": 1,
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "type": "text_default",
+            "label": "hidden",
+            "weight": 0,
+            "settings": [],
+            "module": "text"
+        },
+        "full": {
+            "type": "text_default",
+            "label": "hidden",
+            "weight": 0,
+            "settings": [],
+            "module": "text"
+        },
+        "teaser": {
+            "type": "hidden",
+            "label": "hidden",
+            "weight": 0,
+            "settings": []
+        },
+        "media_gallery_block": {
+            "type": "hidden",
+            "label": "hidden",
+            "weight": 0,
+            "settings": []
+        }
+    },
+    "required": false,
+    "description": ""
+}

@@ -1,0 +1,352 @@
+{
+    "_config_name": "views.view.email_subscribers",
+    "name": "email_subscribers",
+    "description": "",
+    "tag": "default",
+    "base_table": "simplenews_subscriber",
+    "human_name": "email subscribers",
+    "core": "7",
+    "display": {
+        "default": {
+            "display_title": "Master",
+            "display_plugin": "default",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "title": "email-subscribers",
+                "use_more_always": false,
+                "access": {
+                    "type": "none"
+                },
+                "cache": {
+                    "type": "none"
+                },
+                "exposed_form": {
+                    "type": "basic"
+                },
+                "pager": {
+                    "type": "full",
+                    "options": {
+                        "items_per_page": "0",
+                        "offset": "0",
+                        "id": "0",
+                        "quantity": "9"
+                    }
+                },
+                "style_plugin": "table",
+                "fields": {
+                    "snid": {
+                        "id": "snid",
+                        "table": "simplenews_subscriber",
+                        "field": "snid"
+                    },
+                    "activated": {
+                        "id": "activated",
+                        "table": "simplenews_subscriber",
+                        "field": "activated",
+                        "not": 0
+                    },
+                    "mail": {
+                        "id": "mail",
+                        "table": "simplenews_subscriber",
+                        "field": "mail"
+                    },
+                    "uid": {
+                        "id": "uid",
+                        "table": "simplenews_subscriber",
+                        "field": "uid"
+                    },
+                    "source": {
+                        "id": "source",
+                        "table": "simplenews_subscription",
+                        "field": "source"
+                    },
+                    "timestamp": {
+                        "id": "timestamp",
+                        "table": "simplenews_subscription",
+                        "field": "timestamp",
+                        "date_format": "long",
+                        "second_date_format": "long"
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "simplenews_subscription",
+                        "field": "status",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "Status",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": 1,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "type": "yes-no",
+                        "type_custom_true": "",
+                        "type_custom_false": "",
+                        "not": 0
+                    },
+                    "tid": {
+                        "id": "tid",
+                        "table": "simplenews_subscription",
+                        "field": "tid",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "Term ID",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": 1,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "set_precision": false,
+                        "precision": 0,
+                        "decimal": ".",
+                        "separator": ",",
+                        "format_plural": 0,
+                        "format_plural_singular": "1",
+                        "format_plural_plural": "@count",
+                        "prefix": "",
+                        "suffix": ""
+                    }
+                },
+                "sorts": {
+                    "timestamp": {
+                        "id": "timestamp",
+                        "table": "simplenews_subscription",
+                        "field": "timestamp",
+                        "exposed": true,
+                        "expose": {
+                            "label": "Timestamp"
+                        }
+                    }
+                },
+                "filters": {
+                    "activated": {
+                        "id": "activated",
+                        "table": "simplenews_subscriber",
+                        "field": "activated",
+                        "value": "All",
+                        "exposed": true,
+                        "expose": {
+                            "operator_id": "",
+                            "label": "Activated",
+                            "operator": "activated_op",
+                            "identifier": "activated",
+                            "remember_roles": {
+                                "2": "2",
+                                "4": 0,
+                                "1": 0,
+                                "5": 0,
+                                "6": 0,
+                                "7": 0,
+                                "8": 0,
+                                "3": 0,
+                                "9": 0,
+                                "11": 0,
+                                "12": 0
+                            }
+                        }
+                    },
+                    "source": {
+                        "id": "source",
+                        "table": "simplenews_subscription",
+                        "field": "source",
+                        "exposed": true,
+                        "expose": {
+                            "operator_id": "source_op",
+                            "label": "Source",
+                            "use_operator": true,
+                            "operator": "source_op",
+                            "identifier": "source",
+                            "remember_roles": {
+                                "2": "2",
+                                "4": 0,
+                                "1": 0,
+                                "5": 0,
+                                "6": 0,
+                                "7": 0,
+                                "8": 0,
+                                "3": 0,
+                                "9": 0,
+                                "11": 0,
+                                "12": 0
+                            }
+                        }
+                    },
+                    "timestamp": {
+                        "id": "timestamp",
+                        "table": "simplenews_subscription",
+                        "field": "timestamp",
+                        "exposed": true,
+                        "expose": {
+                            "operator_id": "timestamp_op",
+                            "label": "Timestamp",
+                            "use_operator": true,
+                            "operator": "timestamp_op",
+                            "identifier": "timestamp",
+                            "remember_roles": {
+                                "2": "2",
+                                "4": 0,
+                                "1": 0,
+                                "5": 0,
+                                "6": 0,
+                                "7": 0,
+                                "8": 0,
+                                "3": 0,
+                                "9": 0,
+                                "11": 0,
+                                "12": 0
+                            }
+                        }
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "simplenews_subscription",
+                        "field": "status",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "=",
+                        "value": false,
+                        "group": "1",
+                        "exposed": true,
+                        "expose": {
+                            "operator_id": "",
+                            "label": "True",
+                            "description": "",
+                            "use_operator": false,
+                            "operator_label": "",
+                            "operator": "status_op",
+                            "identifier": "status",
+                            "required": 1,
+                            "remember": 0,
+                            "multiple": false,
+                            "remember_roles": {
+                                "2": "2",
+                                "4": 0,
+                                "1": 0,
+                                "5": 0,
+                                "6": 0,
+                                "7": 0,
+                                "8": 0,
+                                "3": 0,
+                                "9": 0,
+                                "10": 0
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
+                    }
+                }
+            }
+        },
+        "page": {
+            "display_title": "Page",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "path": "email-subscribers-distinct"
+            }
+        },
+        "page_1": {
+            "display_title": "Page",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "path": "email-subscribers-timesubscribed"
+            }
+        }
+    }
+}

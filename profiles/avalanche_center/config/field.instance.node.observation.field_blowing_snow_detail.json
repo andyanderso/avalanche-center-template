@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.instance.node.observation.field_blowing_snow_detail",
+    "field_name": "field_blowing_snow_detail",
+    "entity_type": "node",
+    "bundle": "observation",
+    "deleted": "0",
+    "label": "Blowing Snow",
+    "widget": {
+        "weight": "239",
+        "type": "options_select",
+        "module": "options",
+        "active": 1,
+        "settings": {
+            "apply_chosen": ""
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "list_default",
+            "weight": "403",
+            "settings": [],
+            "module": "list"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value_label_token": 0,
+    "default_value": null
+}

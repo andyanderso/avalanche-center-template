@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.instance.node.observation.field_ob_air_temp",
+    "field_name": "field_ob_air_temp",
+    "entity_type": "node",
+    "bundle": "observation",
+    "deleted": "0",
+    "label": "Air temperature",
+    "widget": {
+        "weight": "242",
+        "type": "options_select",
+        "module": "options",
+        "active": 1,
+        "settings": {
+            "apply_chosen": ""
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "list_default",
+            "weight": "409",
+            "settings": [],
+            "module": "list"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value_label_token": 0,
+    "default_value": null
+}

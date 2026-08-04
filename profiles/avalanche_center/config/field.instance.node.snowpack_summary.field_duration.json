@@ -1,0 +1,49 @@
+{
+    "_config_name": "field.instance.node.snowpack_summary.field_duration",
+    "field_name": "field_duration",
+    "entity_type": "node",
+    "bundle": "snowpack_summary",
+    "deleted": "0",
+    "label": "Duration in hours",
+    "widget": {
+        "weight": "2",
+        "type": "number",
+        "module": "number",
+        "active": 0,
+        "settings": []
+    },
+    "settings": {
+        "min": "",
+        "max": "",
+        "prefix": "",
+        "suffix": "",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "number_integer",
+            "settings": {
+                "thousand_separator": " ",
+                "decimal_separator": ".",
+                "scale": 0,
+                "prefix_suffix": true
+            },
+            "module": "number",
+            "weight": 14
+        },
+        "teaser": {
+            "type": "hidden",
+            "label": "above",
+            "settings": [],
+            "weight": 0
+        }
+    },
+    "required": 1,
+    "description": "If you set this to greater than 120 no expiration time will show.",
+    "default_value": [
+        {
+            "value": "48"
+        }
+    ]
+}

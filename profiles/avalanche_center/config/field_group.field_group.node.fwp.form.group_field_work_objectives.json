@@ -1,0 +1,23 @@
+{
+    "_config_name": "field_group.field_group.node.fwp.form.group_field_work_objectives",
+    "group_name": "group_field_work_objectives",
+    "entity_type": "node",
+    "bundle": "fwp",
+    "mode": "form",
+    "parent_name": "",
+    "label": "Field Work Objectives",
+    "weight": "8",
+    "children": [
+        "field_data_wanted",
+        "field_terrain_choice"
+    ],
+    "format_type": "fieldset",
+    "format_settings": {
+        "formatter": "collapsible",
+        "instance_settings": {
+            "description": "",
+            "classes": "group-field-work-objectives field-group-fieldset",
+            "required_fields": 1
+        }
+    }
+}

@@ -1,0 +1,134 @@
+<?php
+
+/**
+ * @file
+ * Installation file for Scheduler module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function scheduler_schema() {
+  return array(
+    'scheduler' => array(
+      'description' => 'The main table to hold the scheduler data.',
+      'fields' => array(
+        'nid' => array(
+          'description' => 'The foreign key to node.nid',
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        'publish_on' => array(
+          'description' => 'The UNIX UTC timestamp when to publish',
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'default' => 0,
+        ),
+        'unpublish_on' => array(
+          'description' => 'The UNIX UTC timestamp when to unpublish',
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'default' => 0,
+        ),
+      ),
+      'indexes' => array(
+        'scheduler_publish_on' => array('publish_on'),
+        'scheduler_unpublish_on' => array('unpublish_on'),
+      ),
+      'primary key' => array('nid'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_update_last_removed().
+ */
+function scheduler_update_last_removed() {
+  return 7103;
+}
+
+/**
+ * Convert variables to config.
+ */
+function scheduler_update_1000() {
+  $config = config('scheduler.settings');
+  $config->set('scheduler_allow_date_only', update_variable_get('scheduler_allow_date_only', 0));
+  $config->set('scheduler_cache_clear_all', update_variable_get('scheduler_cache_clear_all', 0));
+  $config->set('scheduler_date_format', update_variable_get('scheduler_date_format', 'Y-m-d H:i:s'));
+  $config->set('scheduler_date_only_format', update_variable_get('scheduler_date_only_format', 'Y-m-d'));
+  $config->set('scheduler_default_time', update_variable_get('scheduler_default_time', '00:00:00'));
+  $config->set('scheduler_extra_info', update_variable_get('scheduler_extra_info', ''));
+  $config->set('scheduler_field_type', update_variable_get('scheduler_field_type', 0));
+  $config->set('scheduler_lightweight_access_key', update_variable_get('scheduler_lightweight_access_key', 0));
+  $config->set('scheduler_lightweight_log', update_variable_get('scheduler_lightweight_log', 0));
+  $config->set('scheduler_time_only_format', update_variable_get('scheduler_time_only_format', 'H:i:s'));
+
+  $types = node_type_get_types();
+  foreach ($types as $type_name => $type_label) {
+    $config = config('node.type.' . $type_name);
+    $config->set('scheduler_expand_fieldset', update_variable_get('scheduler_expand_fieldset_' . $type_name, 0));
+    $config->set('scheduler_publish_enable', update_variable_get('scheduler_publish_enable_' . $type_name, 0));
+    $config->set('scheduler_publish_touch', update_variable_get('scheduler_publish_touch_' . $type_name, 0));
+    $config->set('scheduler_publish_required', update_variable_get('scheduler_publish_required_' . $type_name, 0));
+    $config->set('scheduler_publish_revision', update_variable_get('scheduler_publish_revision_' . $type_name, 0));
+    $config->set('scheduler_publish_past_date', update_variable_get('scheduler_publish_past_date_' . $type_name, 0));
+    $config->set('scheduler_unpublish_enable', update_variable_get('scheduler_unpublish_enable_' . $type_name, 0));
+    $config->set('scheduler_unpublish_required', update_variable_get('scheduler_unpublish_required_' . $type_name, 0));
+    $config->set('scheduler_unpublish_revision', update_variable_get('scheduler_unpublish_revision_' . $type_name, 0));
+    $config->set('scheduler_use_vertical_tabs', update_variable_get('scheduler_use_vertical_tabs_' . $type_name, 0));
+    update_variable_del('scheduler_expand_fieldset_' . $type_name);
+    update_variable_del('scheduler_publish_enable_' . $type_name);
+    update_variable_del('scheduler_publish_touch_' . $type_name);
+    update_variable_del('scheduler_publish_required_' . $type_name);
+    update_variable_del('scheduler_publish_revision_' . $type_name);
+    update_variable_del('scheduler_publish_past_date_' . $type_name);
+    update_variable_del('scheduler_unpublish_enable_' . $type_name);
+    update_variable_del('scheduler_unpublish_required_' . $type_name);
+    update_variable_del('scheduler_unpublish_revision_' . $type_name);
+    update_variable_del('scheduler_use_vertical_tabs_' . $type_name);
+  }
+
+  $config->save();
+
+  update_variable_del('scheduler_allow_date_only');
+  update_variable_del('scheduler_cache_clear_all');
+  update_variable_del('scheduler_date_format');
+  update_variable_del('scheduler_date_only_format');
+  update_variable_del('scheduler_default_time');
+  update_variable_del('scheduler_extra_info');
+  update_variable_del('scheduler_field_type');
+  update_variable_del('scheduler_lightweight_access_key');
+  update_variable_del('scheduler_lightweight_log');
+  update_variable_del('scheduler_time_only_format');
+}
+
+/**
+ * Clean up configuration keys.
+ */
+function scheduler_update_1001() {
+  $config = config('scheduler.settings');
+  $config->set('allow_date_only', $config->get('scheduler_allow_date_only'));
+  $config->clear('scheduler_allow_date_only');
+  $config->set('cache_clear_all', $config->get('scheduler_cache_clear_all'));
+  $config->clear('scheduler_cache_clear_all');
+  $config->set('date_format', $config->get('scheduler_date_format'));
+  $config->clear('scheduler_date_format');
+  $config->set('date_only_format', $config->get('scheduler_date_only_format'));
+  $config->clear('scheduler_date_only_format');
+  $config->set('default_time', $config->get('scheduler_default_time'));
+  $config->clear('scheduler_default_time');
+  $config->set('extra_info', $config->get('scheduler_extra_info'));
+  $config->clear('scheduler_extra_info');
+  $config->set('field_type', $config->get('scheduler_field_type'));
+  $config->clear('scheduler_field_type');
+  $config->set('lightweight_access_key', $config->get('scheduler_lightweight_access_key'));
+  $config->clear('scheduler_lightweight_access_key');
+  $config->set('lightweight_log', $config->get('scheduler_lightweight_log'));
+  $config->clear('scheduler_lightweight_log');
+  $config->set('time_only_format', $config->get('scheduler_time_only_format'));
+  $config->clear('scheduler_time_only_format');
+  $config->save();
+}

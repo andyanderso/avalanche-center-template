@@ -1,0 +1,8 @@
+name = Twilio
+description = Integration of Twilio cloud communication service with Backdrop 
+backdrop = 1.x
+package = Twilio
+version = "1.x-1.11"
+type = module
+
+

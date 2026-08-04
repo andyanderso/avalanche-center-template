@@ -1,0 +1,42 @@
+{
+    "_config_name": "field.instance.node.announcements.field_advisory_announcement",
+    "field_name": "field_advisory_announcement",
+    "entity_type": "node",
+    "bundle": "announcements",
+    "deleted": "0",
+    "default_value": [
+        {
+            "value": 0
+        }
+    ],
+    "description": "",
+    "display": {
+        "default": {
+            "label": "above",
+            "module": "list",
+            "settings": [],
+            "type": "list_default",
+            "weight": 1
+        },
+        "teaser": {
+            "label": "above",
+            "settings": [],
+            "type": "hidden",
+            "weight": 0
+        }
+    },
+    "label": "Forecast Announcement",
+    "required": 0,
+    "settings": {
+        "user_register_form": false
+    },
+    "widget": {
+        "weight": "1",
+        "type": "options_onoff",
+        "module": "options",
+        "active": 1,
+        "settings": {
+            "display_label": 0
+        }
+    }
+}

@@ -1,0 +1,25 @@
+{
+    "_config_name": "field_group.field_group.node.observation.form.group_trigger",
+    "group_name": "group_trigger",
+    "entity_type": "node",
+    "bundle": "observation",
+    "mode": "form",
+    "parent_name": "group_avalanche_det",
+    "label": "Trigger",
+    "weight": "109",
+    "children": [
+        "field_trigger",
+        "field_trigger_modifier"
+    ],
+    "format_type": "fieldset",
+    "format_settings": {
+        "label": "Trigger",
+        "instance_settings": {
+            "required_fields": 1,
+            "id": "",
+            "classes": "group-trigger field-group-fieldset",
+            "description": ""
+        },
+        "formatter": "collapsible"
+    }
+}

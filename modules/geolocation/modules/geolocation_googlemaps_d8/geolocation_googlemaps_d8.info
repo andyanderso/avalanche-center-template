@@ -1,0 +1,9 @@
+name = Geolocation Google Maps D8
+description = Backport of the new Drupal 8 Google Maps widget for geolocation field.
+package = Geolocation
+core = 7.x
+
+; Added by Backdrop CMS packaging script on 2017-11-03
+project = geolocation
+version = 1.x-1.6.1
+timestamp = 1509728467

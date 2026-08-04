@@ -1,0 +1,30 @@
+{
+    "_config_name": "field.instance.node.avalanche_education.field_classes_offered",
+    "field_name": "field_classes_offered",
+    "entity_type": "node",
+    "bundle": "avalanche_education",
+    "deleted": "0",
+    "label": "Classes offered",
+    "widget": {
+        "weight": "-3",
+        "type": "options_buttons",
+        "module": "options",
+        "active": 1,
+        "settings": []
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "list_default",
+            "weight": "1",
+            "settings": [],
+            "module": "list"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": null
+}

@@ -1,0 +1,11 @@
+name = Field Permissions
+description = Set field-level permissions to create, update or view fields.
+package = Fields
+backdrop = 1.x
+type = module
+configure = admin/reports/fields/permissions
+
+; Added by Backdrop CMS packaging script on 2023-04-17
+project = field_permissions
+version = 1.x-1.0.6
+timestamp = 1681748503

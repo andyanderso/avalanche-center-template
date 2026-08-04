@@ -1,0 +1,242 @@
+.home-bottom-line {
+  float:left;
+  padding-right:30px;
+  text-align:left;
+}
+
+.home-bottom-line-text {
+  text-align:left;
+}
+
+
+div#danger-ratings-content div#title-row span.title h2 {
+  padding: 9px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #eee;
+  background-color: #444;
+  width: 315px;
+  font-size: 21px;
+}
+
+div#danger-ratings-content div.column {
+  margin: 10px 0px 0px 0px;
+  padding: 0px;
+}
+
+div#danger-ratings-content div#sidebar-first { width: 55%; float: right; margin-left: 0; }
+div#danger-ratings-content div#content {
+    font-weight: bold;
+    text-indent: 0px;
+    width: 40%;
+    margin:0px 35px 0px 10px;
+}
+
+div#danger-ratings-content div#content div.section {
+    background-color: #FFFFFF;
+    color: #3B3B3B;
+    /*margin: 0;*/
+    padding: 1px;
+    text-align: center;
+}
+
+div#danger-ratings-content div#bottom-map-note {
+  padding: 5px;
+  line-height: 11px;
+  font-size: 11px;
+}
+
+div#danger-ratings-content div#sidebar-first div.block,
+div#danger-ratings-content div#sidebar-first div.section {
+    background-color: #FFFFFF;
+    border: medium none;
+    color: #3B3B3B;
+    font-size: 15px;
+}
+
+div#danger-ratings-content div#sidebar-first div.block { padding-bottom: 10px; }
+
+div#danger-ratings-content div#sidebar-first div.block h2 {
+  font-size: 19px;
+  border: 0px;
+  text-shadow: none;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+div#danger-ratings-content div#sidebar-first div.block a { color: #018FE2; }
+
+div#danger-ratings-content div#sidebar-first div.block ul {
+  list-style-type: none;
+  margin-left: 0px;
+  padding-left: 3px;
+}
+
+div#danger-ratings-content div#sidebar-first div.block ul li { padding-bottom: 7px; }
+
+div.current-advisory {
+  text-align: center;
+  margin: 15px auto 10px auto;
+  background-color: #4cb7f7;
+  border-radius: 30px;
+  max-width: 350px;
+  padding: 10px;
+}
+
+.current-advisory span {
+  font-size: x-large;
+  font-weight: bold;
+}
+
+.current-advisory a {
+  color:#ffffff !important;
+}
+
+/* Backdrop: advisory_views block_4 uses 'default' style (no .current-advisory wrapper) */
+.block-views-advisory-views-block-4 .view-content {
+  text-align: center;
+  margin: 15px auto 10px auto;
+  background-color: #4cb7f7;
+  border-radius: 30px;
+  max-width: 350px;
+  padding: 10px;
+}
+
+.block-views-advisory-views-block-4 .view-content .views-row {
+  font-size: x-large;
+  font-weight: bold;
+}
+
+.block-views-advisory-views-block-4 .view-content a,
+.block-views-advisory-views-block-4 .view-content .current-advisory-link a {
+  color: #ffffff !important;
+  text-decoration: none;
+}
+
+/* ==========================================================================
+   Recent Observations block - streamlined "cool" gallery
+   ========================================================================== */
+.block-views-media-gallery-block .view-content > .views-view-grid,
+.block-views-media-gallery-block .views-view-responsive-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 8px !important;
+}
+
+.block-views-media-gallery-block .views-grid-box {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: auto !important;
+  border: 0 !important;
+}
+
+/* Each thumbnail becomes a compact card with an overlaid caption */
+.block-views-media-gallery-block .ob-thumb-wrap {
+  position: relative;
+  display: block;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #1c1c1c;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.block-views-media-gallery-block .ob-thumb-wrap:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+}
+
+/* Whole card links to the observation; keep it looking like a card. */
+.block-views-media-gallery-block a.ob-card-link {
+  display: block;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+.block-views-media-gallery-block a.ob-card-link:hover {
+  text-decoration: none;
+  color: inherit;
+}
+
+.block-views-media-gallery-block .ob-thumb {
+  line-height: 0;
+}
+/* No-image observations: drop the empty thumbnail box. */
+.block-views-media-gallery-block .ob-thumb:empty {
+  display: none;
+}
+
+.block-views-media-gallery-block .ob-thumb img {
+  width: 100% !important;
+  height: 96px !important;
+  max-width: none !important;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.block-views-media-gallery-block .ob-thumb-wrap:hover .ob-thumb img {
+  transform: scale(1.08);
+}
+
+/* Caption overlaid on the bottom of the image */
+.block-views-media-gallery-block .ob-labels {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 16px 7px 6px;
+  color: #fff;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 10%, rgba(0, 0, 0, 0) 100%);
+  pointer-events: none;
+}
+
+.block-views-media-gallery-block .ob-labels strong {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.block-views-media-gallery-block .ob-labels .date-display-single,
+.block-views-media-gallery-block .ob-labels br + * {
+  display: block;
+  font-size: 10px;
+  opacity: 0.85;
+  margin-top: 2px;
+}
+
+/* Image-less observations: the caption cannot overlay a (missing) image, so
+   render it as a normal solid card with the same height instead of an absolute
+   overlay that would collapse to nothing. */
+.block-views-media-gallery-block .ob-thumb:empty + .ob-labels {
+  position: static;
+  background: #1c1c1c;
+  min-height: 96px;
+  padding: 14px 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Make whole card clickable visual; links already wrap the image */
+.block-views-media-gallery-block .ob-thumb a {
+  display: block;
+}
+
+/* "MORE" link styling */
+.block-views-media-gallery-block .more-link {
+  margin-top: 8px;
+  text-align: right;
+}
+
+@media (max-width: 480px) {
+  .block-views-media-gallery-block .view-content > .views-view-grid,
+  .block-views-media-gallery-block .views-view-responsive-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}

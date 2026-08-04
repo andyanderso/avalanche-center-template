@@ -1,0 +1,25 @@
+{
+    "_config_name": "field.field.field_share_this_observation_",
+    "field_name": "field_share_this_observation_",
+    "type": "list_text",
+    "module": "list",
+    "active": 1,
+    "locked": "0",
+    "cardinality": "1",
+    "translatable": "0",
+    "deleted": "0",
+    "entity_types": [],
+    "settings": {
+        "allowed_values": {
+            "yes": "Yes",
+            "no": "No"
+        },
+        "allowed_values_function": ""
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "module": "field_sql_storage",
+        "active": 1,
+        "settings": []
+    }
+}

@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.instance.user.user.field_display_name",
+    "field_name": "field_display_name",
+    "entity_type": "user",
+    "bundle": "user",
+    "deleted": "0",
+    "label": "Name (as displayed on the website)",
+    "widget": {
+        "weight": "1",
+        "type": "text_textfield",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "size": 40
+        }
+    },
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": true
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "text_default",
+            "weight": "1",
+            "settings": [],
+            "module": "text"
+        }
+    },
+    "required": 0,
+    "description": "Your name as it should appear publicly (e.g. on forecasts, observations, and field work plans). If blank, your username is shown.",
+    "default_value": null
+}

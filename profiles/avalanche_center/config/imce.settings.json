@@ -1,0 +1,170 @@
+{
+    "_config_name": "imce.settings",
+    "imce_profiles": {
+        "1": {
+            "name": "User-1",
+            "usertab": 1,
+            "filesize": 0,
+            "quota": 0,
+            "tuquota": 0,
+            "extensions": "*",
+            "dimensions": "1200x1200",
+            "filenum": 0,
+            "directories": [
+                {
+                    "name": ".",
+                    "subnav": 1,
+                    "browse": 1,
+                    "upload": 1,
+                    "thumb": 1,
+                    "delete": 1,
+                    "resize": 1
+                }
+            ],
+            "thumbnails": [
+                {
+                    "name": "Small",
+                    "dimensions": "90x90",
+                    "prefix": "small_",
+                    "suffix": ""
+                },
+                {
+                    "name": "Medium",
+                    "dimensions": "120x120",
+                    "prefix": "medium_",
+                    "suffix": ""
+                },
+                {
+                    "name": "Large",
+                    "dimensions": "180x180",
+                    "prefix": "large_",
+                    "suffix": ""
+                }
+            ]
+        },
+        "2": {
+            "name": "Sample profile",
+            "usertab": 1,
+            "filesize": 1,
+            "quota": 2,
+            "tuquota": 0,
+            "extensions": "gif png jpg jpeg",
+            "dimensions": "800x600",
+            "filenum": 1,
+            "directories": [
+                {
+                    "name": "u%uid",
+                    "subnav": 0,
+                    "browse": 1,
+                    "upload": 1,
+                    "thumb": 1,
+                    "delete": 0,
+                    "resize": 0
+                }
+            ],
+            "thumbnails": [
+                {
+                    "name": "Thumb",
+                    "dimensions": "90x90",
+                    "prefix": "thumb_",
+                    "suffix": ""
+                }
+            ]
+        },
+        "3": {
+            "name": "All Users",
+            "usertab": 1,
+            "filesize": "0",
+            "quota": "0",
+            "tuquota": "0",
+            "extensions": "gif png jpg jpeg pdf",
+            "dimensions": "0",
+            "filenum": "5",
+            "directories": [
+                {
+                    "name": ".",
+                    "subnav": 0,
+                    "browse": 1,
+                    "upload": 1,
+                    "thumb": 1,
+                    "delete": 1,
+                    "resize": 1
+                }
+            ],
+            "thumbnails": [
+                {
+                    "name": "Thumb",
+                    "dimensions": "90x90",
+                    "prefix": "thumb_",
+                    "suffix": ""
+                }
+            ]
+        }
+    },
+    "imce_roles_profiles": {
+        "6": {
+            "weight": "0",
+            "vimeo_pid": "3",
+            "youtube_pid": "3",
+            "public_pid": "3"
+        },
+        "5": {
+            "weight": "0",
+            "vimeo_pid": "3",
+            "youtube_pid": "3",
+            "public_pid": "3"
+        },
+        "8": {
+            "weight": "0",
+            "vimeo_pid": "3",
+            "youtube_pid": "3",
+            "public_pid": "3"
+        },
+        "7": {
+            "weight": "0",
+            "vimeo_pid": "3",
+            "youtube_pid": "3",
+            "public_pid": "3"
+        },
+        "4": {
+            "weight": "0",
+            "vimeo_pid": "3",
+            "youtube_pid": "3",
+            "public_pid": "3"
+        },
+        "3": {
+            "weight": "0",
+            "vimeo_pid": "3",
+            "youtube_pid": "3",
+            "public_pid": "3"
+        },
+        "9": {
+            "weight": "0",
+            "vimeo_pid": "3",
+            "youtube_pid": "3",
+            "public_pid": "3"
+        },
+        "2": {
+            "weight": 11,
+            "vimeo_pid": "3",
+            "youtube_pid": "3",
+            "public_pid": "3"
+        },
+        "1": {
+            "weight": 12,
+            "vimeo_pid": "3",
+            "youtube_pid": "3",
+            "public_pid": "3"
+        }
+    },
+    "imce_settings_textarea": "",
+    "imce_settings_absurls": 0,
+    "imce_settings_replace": "0",
+    "imce_settings_thumb_method": "scale_and_crop",
+    "imce_settings_disable_private": 1,
+    "imce_custom_content": [],
+    "imce_custom_process": [],
+    "imce_custom_init": [],
+    "imce_custom_scan": "",
+    "imce_custom_response": []
+}

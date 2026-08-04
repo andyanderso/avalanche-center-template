@@ -1,0 +1,23 @@
+{
+    "_config_name": "field.field.field_destination_and_route",
+    "field_name": "field_destination_and_route",
+    "type": "field_collection",
+    "module": "field_collection",
+    "active": 1,
+    "locked": "0",
+    "cardinality": "1",
+    "translatable": "0",
+    "deleted": "0",
+    "entity_types": [],
+    "settings": {
+        "hide_blank_items": 1,
+        "path": "",
+        "hide_initial_item": false
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "module": "field_sql_storage",
+        "active": 1,
+        "settings": []
+    }
+}

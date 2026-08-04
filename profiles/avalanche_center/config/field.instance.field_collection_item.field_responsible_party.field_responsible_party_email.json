@@ -1,0 +1,40 @@
+{
+    "_config_name": "field.instance.field_collection_item.field_responsible_party.field_responsible_party_email",
+    "field_name": "field_responsible_party_email",
+    "entity_type": "field_collection_item",
+    "bundle": "field_responsible_party",
+    "deleted": "0",
+    "label": "Responsible Party Email",
+    "widget": {
+        "weight": "3",
+        "type": "text_textfield",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "size": 40
+        }
+    },
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "text_default",
+            "weight": "3",
+            "settings": [],
+            "module": "text"
+        },
+        "token": {
+            "label": "above",
+            "type": "text_default",
+            "weight": "3",
+            "settings": [],
+            "module": "text"
+        }
+    },
+    "required": 0,
+    "description": "Used to email safe-return notifications to the responsible party.",
+    "default_value": null
+}

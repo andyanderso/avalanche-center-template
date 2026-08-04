@@ -1,0 +1,43 @@
+{
+    "_config_name": "field.instance.node.avalanche_education.field_logo",
+    "field_name": "field_logo",
+    "entity_type": "node",
+    "bundle": "avalanche_education",
+    "deleted": "0",
+    "label": "Logo",
+    "widget": {
+        "weight": "0",
+        "type": "image_image",
+        "module": "image",
+        "active": 1,
+        "settings": {
+            "progress_indicator": "throbber",
+            "preview_image_style": "thumbnail"
+        }
+    },
+    "settings": {
+        "file_directory": "",
+        "file_extensions": "png gif jpg jpeg",
+        "max_filesize": "2M",
+        "alt_field": 0,
+        "title_field": 0,
+        "default_image": 0,
+        "user_register_form": false,
+        "max_dimensions": "",
+        "min_dimensions": ""
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "image",
+            "weight": "4",
+            "settings": {
+                "image_style": "medium",
+                "image_link": ""
+            },
+            "module": "image"
+        }
+    },
+    "required": 0,
+    "description": ""
+}

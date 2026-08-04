@@ -1,0 +1,10 @@
+{
+    "_config_name": "block.custom.4",
+    "delta": "4",
+    "info": "Forecast Resources",
+    "title": "",
+    "body": {
+        "value": "<div><a href=\"/how-to-read-avalanche-forecast\">How to Read the Forecast</a></div>\n<div><a href=\"/avalanche-danger-scale\">The Danger Scale</a></div>\n<div><a href=\"/avalanche-problems\">Avalanche Problems</a></div>\n",
+        "format": "full_html"
+    }
+}

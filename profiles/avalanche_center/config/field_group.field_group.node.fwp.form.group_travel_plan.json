@@ -1,0 +1,25 @@
+{
+    "_config_name": "field_group.field_group.node.fwp.form.group_travel_plan",
+    "group_name": "group_travel_plan",
+    "entity_type": "node",
+    "bundle": "fwp",
+    "mode": "form",
+    "parent_name": "",
+    "label": "Proposed Travel Plan",
+    "weight": "9",
+    "children": [
+        "field_tracking_link",
+        "field_vehicle_location_and_infor",
+        "field_hazard_mitigation_measures",
+        "field_destination_and_route"
+    ],
+    "format_type": "fieldset",
+    "format_settings": {
+        "formatter": "collapsible",
+        "instance_settings": {
+            "description": "",
+            "classes": "group-travel-plan field-group-fieldset",
+            "required_fields": 1
+        }
+    }
+}

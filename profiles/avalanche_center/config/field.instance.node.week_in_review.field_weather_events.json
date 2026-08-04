@@ -1,0 +1,80 @@
+{
+    "_config_name": "field.instance.node.week_in_review.field_weather_events",
+    "field_name": "field_weather_events",
+    "entity_type": "node",
+    "bundle": "week_in_review",
+    "deleted": "0",
+    "label": "Weather Events",
+    "widget": {
+        "weight": "3",
+        "type": "text_textarea",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "rows": "5"
+        }
+    },
+    "settings": {
+        "text_processing": "1",
+        "better_formats": {
+            "allowed_formats_toggle": 1,
+            "allowed_formats": {
+                "filtered_html": "filtered_html",
+                "full_html": "full_html",
+                "full_html_mark_glossary_terms": "full_html_mark_glossary_terms",
+                "plain_text": 0,
+                "gmap": 0,
+                "gmap_macro_expander": 0,
+                "php_code": 0,
+                "mailchimp_campaign": 0
+            },
+            "default_order_toggle": 1,
+            "default_order_wrapper": {
+                "formats": {
+                    "filtered_html": {
+                        "weight": "-48"
+                    },
+                    "full_html": {
+                        "weight": "-49"
+                    },
+                    "full_html_mark_glossary_terms": {
+                        "weight": "-50"
+                    },
+                    "plain_text": {
+                        "weight": "-47"
+                    },
+                    "gmap": {
+                        "weight": "-46"
+                    },
+                    "gmap_macro_expander": {
+                        "weight": "-45"
+                    },
+                    "php_code": {
+                        "weight": "-44"
+                    },
+                    "mailchimp_campaign": {
+                        "weight": "-43"
+                    }
+                }
+            }
+        },
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "text_default",
+            "weight": "3",
+            "settings": [],
+            "module": "text"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": [
+        {
+            "value": "Summary of the week's significant weather events. For example:\r\n<ul>\r\n<li>High pressure early in the week</li>\r\n<li>Ongoing storm cycle late week</li>\r\n<li>Gale force SW winds</li>\r\n</ul>",
+            "format": "filtered_html"
+        }
+    ]
+}

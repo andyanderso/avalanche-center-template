@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.instance.node.observation.field_destructive_size",
+    "field_name": "field_destructive_size",
+    "entity_type": "node",
+    "bundle": "observation",
+    "deleted": "0",
+    "label": "Destructive Size",
+    "widget": {
+        "weight": "238",
+        "type": "options_select",
+        "module": "options",
+        "active": 1,
+        "settings": {
+            "apply_chosen": ""
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "list_default",
+            "weight": "331",
+            "settings": [],
+            "module": "list"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value_label_token": 0,
+    "default_value": null
+}

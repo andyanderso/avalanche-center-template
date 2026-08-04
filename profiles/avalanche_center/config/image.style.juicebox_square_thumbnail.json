@@ -1,0 +1,17 @@
+{
+    "_config_name": "image.style.juicebox_square_thumbnail",
+    "overridden": false,
+    "module": null,
+    "label": "Juicebox Square Thumbnail (400x400)",
+    "name": "juicebox_square_thumbnail",
+    "effects": [
+        {
+            "name": "image_scale_and_crop",
+            "data": {
+                "width": 400,
+                "height": 400
+            },
+            "weight": 1
+        }
+    ]
+}

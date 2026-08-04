@@ -1,0 +1,8 @@
+{
+    "_config_name": "taxonomy.vocabulary.gallery_collections",
+    "name": "Gallery collections",
+    "machine_name": "gallery_collections",
+    "description": "Groups of rich media galleries",
+    "hierarchy": "0",
+    "weight": "0"
+}

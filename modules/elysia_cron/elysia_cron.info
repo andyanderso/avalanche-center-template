@@ -1,0 +1,11 @@
+name = "Elysia Cron"
+description = "Extended cron support with crontab-like scheduling and other features."
+backdrop = 1.x
+type = module
+
+configure = admin/config/system/cron
+
+; Added by Backdrop CMS packaging script on 2025-05-14
+project = elysia_cron
+version = 1.x-2.8.4
+timestamp = 1747249535

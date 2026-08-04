@@ -1,0 +1,112 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the field_collection module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function field_collection_schema() {
+
+  $schema['field_collection_item'] = array(
+    'description' => 'Stores information about field collection items.',
+    'fields' => array(
+      'item_id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique field collection item ID.',
+      ),
+      'revision_id' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'description' => 'Default revision ID.',
+      ),
+      'field_name' => array(
+        'description' => 'The name of the field on the host entity embedding this entity.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+      ),
+      'archived' => array(
+        'description' => 'Boolean indicating whether the field collection item is archived.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('item_id'),
+  );
+  $schema['field_collection_item_revision'] = array(
+    'description' => 'Stores revision information about field collection items.',
+    'fields' => array(
+      'revision_id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique revision ID.',
+      ),
+      'item_id' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'description' => 'Field collection item ID.',
+      ),
+    ),
+    'primary key' => array('revision_id'),
+    'indexes' => array(
+      'item_id' => array('item_id'),
+    ),
+    'foreign keys' => array(
+      'versioned_field_collection_item' => array(
+        'table' => 'field_collection_item',
+        'columns' => array('item_id' => 'item_id'),
+      ),
+    ),
+  );
+
+  $schema['cache_entity_field_collection_item'] = backdrop_get_schema_unprocessed('system', 'cache');
+  $schema['cache_entity_field_collection_item']['description'] = 'Cache table used to store Field Collection item entity records.';
+
+  return $schema;
+}
+
+/**
+ * Implements hook_field_schema().
+ */
+function field_collection_field_schema($field) {
+  $columns = array(
+    'value' => array(
+      'type' => 'int',
+      'not null' => FALSE,
+      'description' => 'The field collection item id.',
+    ),
+    'revision_id' => array(
+      'type' => 'int',
+      'not null' => FALSE,
+      'description' => 'The field collection item revision id.',
+    ),
+  );
+  return array(
+    'columns' => $columns,
+    'indexes' => array(
+      'value' => array('value'),
+      'revision_id' => array('revision_id'),
+    ),
+  );
+}
+
+/**
+ * Creates the table to enable caching of Field Collection item entities.
+ */
+function field_collection_update_1000() {
+  $table = backdrop_get_schema_unprocessed('system', 'cache');
+  $table['description'] = 'Cache table used to store Field Collection item entity records.';
+  if (db_table_exists('cache_entity_field_collection_item')) {
+    db_drop_table('cache_entity_field_collection_item');
+  }
+  db_create_table('cache_entity_field_collection_item', $table);
+}
+
+function field_collection_update_last_removed() {
+  return 7009;
+}

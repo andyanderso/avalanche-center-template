@@ -1,0 +1,12 @@
+name = Leaflet
+description = Integration with the Leaflet map scripting library.
+backdrop = 1.x
+type = module
+package = Leaflet
+
+dependencies[] = image
+
+; Added by Backdrop CMS packaging script on 2026-02-06
+project = leaflet
+version = 1.x-1.2.3
+timestamp = 1770382366

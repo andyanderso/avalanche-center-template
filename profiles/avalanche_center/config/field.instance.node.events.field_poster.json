@@ -1,0 +1,83 @@
+{
+    "_config_name": "field.instance.node.events.field_poster",
+    "field_name": "field_poster",
+    "entity_type": "node",
+    "bundle": "events",
+    "deleted": "0",
+    "default_value": "",
+    "description": "",
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "file_rendered",
+            "weight": "6",
+            "settings": {
+                "file_view_mode": "default"
+            },
+            "module": "file_entity"
+        },
+        "full": {
+            "label": "hidden",
+            "module": "file",
+            "settings": [],
+            "type": "file_default",
+            "weight": "0"
+        },
+        "rss": {
+            "label": "hidden",
+            "settings": [],
+            "type": "hidden",
+            "weight": "0"
+        },
+        "search_index": {
+            "label": "hidden",
+            "module": "file",
+            "settings": [],
+            "type": "file_default",
+            "weight": "0"
+        },
+        "search_result": {
+            "label": "hidden",
+            "module": "file",
+            "settings": [],
+            "type": "file_default",
+            "weight": "0"
+        },
+        "teaser": {
+            "label": "hidden",
+            "module": "file",
+            "settings": [],
+            "type": "file_default",
+            "weight": "0"
+        },
+        "ical": {
+            "label": "hidden",
+            "type": "file_rendered",
+            "weight": "6",
+            "settings": {
+                "file_view_mode": "default"
+            },
+            "module": "file_entity"
+        }
+    },
+    "label": "Poster",
+    "required": 0,
+    "settings": {
+        "file_directory": "",
+        "file_extensions": "png gif jpg jpeg",
+        "max_filesize": "",
+        "description_field": 0,
+        "user_register_form": false
+    },
+    "weight": "0",
+    "widget": {
+        "weight": "4",
+        "type": "file_generic",
+        "module": "file",
+        "active": 1,
+        "settings": {
+            "progress_indicator": "bar"
+        }
+    },
+    "widget_type": "filefield_widget"
+}

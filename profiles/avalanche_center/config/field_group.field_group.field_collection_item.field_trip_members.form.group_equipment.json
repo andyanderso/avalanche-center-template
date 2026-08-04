@@ -1,0 +1,26 @@
+{
+    "_config_name": "field_group.field_group.field_collection_item.field_trip_members.form.group_equipment",
+    "group_name": "group_equipment",
+    "entity_type": "field_collection_item",
+    "bundle": "field_trip_members",
+    "mode": "form",
+    "parent_name": "",
+    "label": "Equipment",
+    "weight": "4",
+    "children": [
+        "field_avalanche_safety_equipment",
+        "field_communication_equipment",
+        "field_other_equipment",
+        "field_clothing"
+    ],
+    "format_type": "fieldset",
+    "format_settings": {
+        "label": "Equipment",
+        "instance_settings": {
+            "required_fields": 1,
+            "classes": "group-equipment",
+            "description": ""
+        },
+        "formatter": "collapsible"
+    }
+}

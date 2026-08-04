@@ -1,0 +1,18 @@
+name = Pathauto
+description = Provides a mechanism for modules to automatically generate aliases for the content they manage.
+configure = admin/config/search/path/patterns
+backdrop = 1.x
+type = module
+
+dependencies[] = path
+dependencies[] = token
+dependencies[] = system (< 1.1.0)
+
+files[] = pathauto.test
+
+recommends[] = redirect
+
+; Added by Backdrop CMS packaging script on 2019-08-07
+project = pathauto
+version = 1.x-1.2.3
+timestamp = 1565179879

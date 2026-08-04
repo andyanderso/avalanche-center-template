@@ -1,0 +1,36 @@
+{
+    "_config_name": "field.instance.user.user.field_emergency_contact",
+    "field_name": "field_emergency_contact",
+    "entity_type": "user",
+    "bundle": "user",
+    "deleted": "0",
+    "label": "Emergency Contact",
+    "widget": {
+        "weight": "3",
+        "type": "field_collection_embed",
+        "module": "field_collection",
+        "active": 0,
+        "settings": []
+    },
+    "settings": {
+        "user_register_form": 1
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "field_collection_view",
+            "settings": {
+                "edit": "Edit",
+                "delete": "Delete",
+                "add": "Add",
+                "description": true,
+                "view_mode": "full"
+            },
+            "module": "field_collection",
+            "weight": 5
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": null
+}

@@ -1,0 +1,49 @@
+{
+    "_config_name": "field.instance.field_collection_item.field_trip_members.field_emergency_contact",
+    "field_name": "field_emergency_contact",
+    "entity_type": "field_collection_item",
+    "bundle": "field_trip_members",
+    "deleted": "0",
+    "label": "Emergency Contact",
+    "widget": {
+        "weight": "3",
+        "type": "field_collection_embed",
+        "module": "field_collection",
+        "active": 0,
+        "settings": []
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "field_collection_view",
+            "weight": "3",
+            "settings": {
+                "edit": "",
+                "delete": "",
+                "add": "",
+                "description": 0,
+                "view_mode": "full"
+            },
+            "module": "field_collection"
+        },
+        "token": {
+            "label": "hidden",
+            "type": "field_collection_view",
+            "weight": "3",
+            "settings": {
+                "edit": "",
+                "delete": "",
+                "add": "",
+                "description": 0,
+                "view_mode": "full"
+            },
+            "module": "field_collection"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": null
+}

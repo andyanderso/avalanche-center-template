@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.instance.node.people.field_display_order",
+    "field_name": "field_display_order",
+    "entity_type": "node",
+    "bundle": "people",
+    "deleted": "0",
+    "label": "Position",
+    "widget": {
+        "weight": "2",
+        "type": "options_select",
+        "module": "options",
+        "active": 1,
+        "settings": {
+            "apply_chosen": ""
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "list_default",
+            "settings": [],
+            "module": "list",
+            "weight": 1
+        }
+    },
+    "required": 1,
+    "description": "What do you do for sac",
+    "default_value": null,
+    "default_value_label_token": 0
+}

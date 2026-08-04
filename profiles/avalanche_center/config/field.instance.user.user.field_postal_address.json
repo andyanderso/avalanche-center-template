@@ -1,0 +1,58 @@
+{
+    "_config_name": "field.instance.user.user.field_postal_address",
+    "field_name": "field_postal_address",
+    "entity_type": "user",
+    "bundle": "user",
+    "deleted": "0",
+    "label": "Postal Address",
+    "widget": {
+        "weight": 0,
+        "type": "addressfield_standard",
+        "module": "addressfield",
+        "active": 1,
+        "settings": {
+            "available_countries": {
+                "CA": "CA",
+                "US": "US"
+            },
+            "default_country": "US",
+            "format_handlers": {
+                "address": "address",
+                "phone": "phone",
+                "name-full": "name-full",
+                "address-hide-postal-code": 0,
+                "address-hide-street": 0,
+                "address-hide-country": 0,
+                "organisation": 0,
+                "name-oneline": 0,
+                "address-optional": 0
+            },
+            "phone_number_fields": {
+                "phone": "phone",
+                "extension": 0,
+                "mobile": 0,
+                "fax": 0
+            }
+        }
+    },
+    "settings": {
+        "user_register_form": 1
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "addressfield_default",
+            "settings": {
+                "use_widget_handlers": 1,
+                "format_handlers": [
+                    "address"
+                ]
+            },
+            "module": "addressfield",
+            "weight": 7
+        }
+    },
+    "required": 1,
+    "description": "",
+    "default_value": null
+}

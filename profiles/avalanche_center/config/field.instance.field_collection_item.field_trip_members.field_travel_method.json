@@ -1,0 +1,50 @@
+{
+    "_config_name": "field.instance.field_collection_item.field_trip_members.field_travel_method",
+    "field_name": "field_travel_method",
+    "entity_type": "field_collection_item",
+    "bundle": "field_trip_members",
+    "deleted": "0",
+    "label": "Travel Method",
+    "widget": {
+        "weight": "2",
+        "type": "select_or_other_buttons",
+        "module": "select_or_other",
+        "active": 1,
+        "settings": {
+            "available_options": "Skis|Skis\nSnowmobile|Snowmobile\nSplitboard|Splitboard\nSnowshoes|Snowshoes\nFoot|Foot",
+            "available_options_php": "",
+            "other": "Other",
+            "other_title": "Other",
+            "other_unknown_defaults": "other",
+            "other_size": "60",
+            "sort_options": 0,
+            "markup_available_options_php": "&lt;none&gt;"
+        }
+    },
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "text_default",
+            "weight": "2",
+            "settings": [],
+            "module": "text"
+        },
+        "token": {
+            "label": "inline",
+            "type": "hidden",
+            "weight": "2",
+            "settings": []
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": [
+        {
+            "value": "Skis"
+        }
+    ]
+}

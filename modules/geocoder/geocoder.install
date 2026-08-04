@@ -1,0 +1,15 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the Geocoder module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function geocoder_schema() {
+  $schema['cache_geocoder'] = backdrop_get_schema_unprocessed('system', 'cache');
+  $schema['cache_geocoder']['description'] = 'Cache table for the geocoder module to store geocoded locations.';
+
+  return $schema;
+}

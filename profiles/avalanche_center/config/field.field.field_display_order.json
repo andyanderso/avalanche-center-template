@@ -1,0 +1,35 @@
+{
+    "_config_name": "field.field.field_display_order",
+    "field_name": "field_display_order",
+    "type": "list_integer",
+    "module": "list",
+    "active": 1,
+    "locked": "0",
+    "cardinality": "-1",
+    "translatable": "0",
+    "deleted": "0",
+    "entity_types": [],
+    "settings": {
+        "allowed_values": {
+            "1": "President",
+            "2": "Vice President",
+            "3": "Secretary",
+            "4": "Treasurer",
+            "5": "Director",
+            "6": "Executive Director",
+            "7": "Program Manager",
+            "8": "Professional Observer",
+            "9": "Forecaster",
+            "10": "Advisory Board",
+            "11": "Interim Executive Director",
+            "12": "Education Coordinator"
+        },
+        "allowed_values_function": ""
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "module": "field_sql_storage",
+        "active": 1,
+        "settings": []
+    }
+}

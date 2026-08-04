@@ -1,0 +1,216 @@
+@media screen and (min-width: 1291px) {
+div.region-header-middle {
+       float:right;
+     }
+}
+@media screen and (max-width: 1290px) {
+     div#block-block-1 {
+       float:none;
+     }
+     div.region-header-middle {
+       display:flex;
+     }
+
+}
+@media screen and (max-width: 999px) {
+      div#danger-ratings-content div#sidebar-first {
+       width:99% !important;
+      }
+      #site-slogan {
+      left:0px;
+      width:100%;
+      }
+      div#content {
+       width:100% !important;
+      }
+      div#site-slogan {
+       width:100%;
+      }
+
+      .obs-pages td, .obs-pages th{
+       display: inline-table;
+       width:100% !important;
+      }
+      
+      .stability-table-header {
+      	display:none !important;
+      }
+
+      .node-fwp-form td {
+       display: block;
+      }
+
+      fieldset {
+       min-width: 0;
+    /*no idea why fieldset has a set width bigger than mobile*/
+      }
+
+     .form-item input {
+       /*width: 25em; remove*/
+       max-width: 100%;
+       box-sizing: border-box;
+      }
+      tr.odd .form-item, tr.even .form-item {
+       white-space: inherit;
+      }
+      div#block-tb-megamenu-main-menu {
+      min-width:80%;
+      }
+}
+
+@media screen and (max-width: 925px) {
+      .node-advisory-form tr td, .node-advisory-form tr th {
+       display: block;
+      }
+}
+
+@media screen and (max-width: 890px) {
+      div#elevation-ratings-div{
+         width:100% !important;
+      }
+      div#bottom-line-basic {
+         width:100% !important;
+         height:auto !important;
+      }
+}
+
+@media screen and (max-width: 500px) {
+      div#elevation-ratings-div{
+         width:100% !important;
+      }
+      img#mountain-icon {
+         width:50% !important;
+         height:226px !important;
+      }
+      div#elevation-ratings-div div#lower-rating, div#elevation-ratings-div div#mid-rating, div#elevation-ratings-div div#upper-rating {
+        left:22% !important;
+        width:71% !important;
+      }
+      a#how-to-read-advisory-simple{
+         position:static !important;
+      }
+      div.advisory-div-icon {
+        float:none !important;
+      }
+      div.advisory-div-text {
+    padding:0px !important;
+      }
+     div#block-tb-megamenu-main-menu {
+      min-width:95%;
+     }
+}
+
+@media screen and (max-width: 400px) {
+      div#elevation-ratings-div img.dli {
+        display:none !important;
+      }
+      div#overall-rose {
+      float:none !important;
+      }
+      #block-tb-megamenu-main-menu img {
+      display:none;
+      }
+      #block-tb-megamenu-main-menu iframe {
+      display:none;
+      }
+
+}
+
+@media screen and (max-width: 360px) {
+      div#elevation-ratings-div div#lower-rating, div#elevation-ratings-div div#mid-rating, div#elevation-ratings-div div#upper-rating {
+         left:15% !important;
+         width:83% !important;
+      }
+      div#elevation-ratings-div div#lower-rating span {
+        left:40% !important;
+      }
+      div#elevation-ratings-div div#mid-rating span {
+        left:32% !important;
+      }
+      div#elevation-ratings-div div#upper-rating span {
+        left:25% !important;
+      }
+      div#title-date-row {
+        margin-bottom: 2px !important;
+        float: none !important;
+        height: auto !important;
+      }
+      span a.toggle-advisory img {
+      top: -2px !important;
+      }
+}
+@media screen and (max-width: 830px) {
+    .field-name-field-ob-snowpit-photo .even img,
+    .field-name-field-ob-snowpit-photo .odd img {
+	max-width:100% !important;
+    }
+    div.ta-container {
+         display:none !important;
+    }
+    div#basic-danger-bar {
+        display:block !important;
+    }
+    li.danger-scale-rating-item {
+    padding: 4px 4px !important;
+    font-size: 8px !important;
+    }
+}
+
+@media screen and (max-width: 510px) {
+        /*photos and videos grid*/
+    .field-name-field-ob-snowpack-photo .field-item.even img,
+    .field-name-field-ob-snowpack-photo .field-item.odd img,
+    .field-name-field-ob-avy-photos .field-item.even img,
+    .field-name-field-ob-avy-photos .field-item.odd img {
+	max-width:100% !important;
+    }
+
+    div.media-youtube-outer-wrapper {
+	max-width:100% !important;
+    }
+}
+
+@media screen and (max-width: 720px) {
+div.snowpack-summary #problem-type {
+    float: none !important;
+    }
+div#problem-canned-text {
+    margin: 0px 20px 0px 0px!important;
+    padding: 0px 10px;
+    min-width: 190px;
+    }
+div.problem-text {
+    height:270px !important;
+    }
+div.snowpack-summary .problem-char-wrapper {
+    height: auto !important;
+    }
+}
+@media screen and (min-width: 980px) {
+    #block-menu-menu-responsive-links,
+    .block-menu-menu-responsive-links {
+	display:none !important;
+	}
+}
+
+@media screen and (max-width: 320px) {
+    #block-menu-menu-responsive-links,
+    .block-menu-menu-responsive-links {
+	top:0px !important;
+	}
+}
+@media (max-width: 979px) {
+  .iframe-wrapper {
+     -webkit-overflow-scrolling: touch;
+      overflow-x: scroll;
+  }
+  /*fixing alignment of map on home page*/
+  div#danger-ratings-content div#content {
+    text-indent: 0; /*or delete this*/
+    margin: 0px 35px 0px 0;
+  }
+  #header {
+    position: relative;
+    z-index: 2;
+  }
+}

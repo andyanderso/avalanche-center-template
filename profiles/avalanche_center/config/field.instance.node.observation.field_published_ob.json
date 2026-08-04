@@ -1,0 +1,37 @@
+{
+    "_config_name": "field.instance.node.observation.field_published_ob",
+    "field_name": "field_published_ob",
+    "entity_type": "node",
+    "bundle": "observation",
+    "deleted": "0",
+    "label": "Publish this observation on the website?",
+    "widget": {
+        "weight": "4",
+        "type": "options_select",
+        "module": "options",
+        "active": 1,
+        "settings": {
+            "apply_chosen": ""
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "list_default",
+            "weight": "4",
+            "settings": [],
+            "module": "list"
+        }
+    },
+    "required": 1,
+    "description": "Your contact info will remain anonymous.",
+    "default_value_label_token": 0,
+    "default_value": [
+        {
+            "value": "yes"
+        }
+    ]
+}

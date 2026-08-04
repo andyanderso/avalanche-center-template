@@ -1,0 +1,50 @@
+{
+    "_config_name": "field.instance.node.banner_ad.field_expiration_date",
+    "field_name": "field_expiration_date",
+    "entity_type": "node",
+    "bundle": "banner_ad",
+    "deleted": "0",
+    "label": "Expiration Date",
+    "widget": {
+        "weight": "7",
+        "type": "date_popup",
+        "module": "date",
+        "active": 1,
+        "settings": {
+            "input_format": "m/d/Y - H:i:s",
+            "input_format_custom": "",
+            "year_range": "-3:+3",
+            "increment": "15",
+            "label_position": "above",
+            "text_parts": [],
+            "display_all_day": 0,
+            "maxlength_js_label": "Content limited to @limit characters, remaining: <strong>@remaining</strong>",
+            "repeat_collapsed": 0
+        }
+    },
+    "settings": {
+        "default_value": "strtotime",
+        "default_value_code": "+2 weeks",
+        "default_value2": "same",
+        "default_value_code2": "",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "date_default",
+            "weight": "1",
+            "settings": {
+                "format_type": "long",
+                "multiple_number": "",
+                "multiple_from": "",
+                "multiple_to": "",
+                "fromto": "both",
+                "show_repeat_rule": "show"
+            },
+            "module": "date"
+        }
+    },
+    "required": 1,
+    "description": ""
+}

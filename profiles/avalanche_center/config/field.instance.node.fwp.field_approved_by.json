@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.instance.node.fwp.field_approved_by",
+    "field_name": "field_approved_by",
+    "entity_type": "node",
+    "bundle": "fwp",
+    "deleted": "0",
+    "label": "Approved By",
+    "widget": {
+        "weight": "30",
+        "type": "text_textfield",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "size": 40
+        }
+    },
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "text_default",
+            "weight": "30",
+            "settings": [],
+            "module": "text"
+        }
+    },
+    "required": 0,
+    "description": "The supervisor or forecaster who approved this field work plan.",
+    "default_value": null
+}

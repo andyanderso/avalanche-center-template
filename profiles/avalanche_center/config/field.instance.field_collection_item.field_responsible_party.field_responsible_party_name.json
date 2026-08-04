@@ -1,0 +1,40 @@
+{
+    "_config_name": "field.instance.field_collection_item.field_responsible_party.field_responsible_party_name",
+    "field_name": "field_responsible_party_name",
+    "entity_type": "field_collection_item",
+    "bundle": "field_responsible_party",
+    "deleted": "0",
+    "label": "Responsible Party Name",
+    "widget": {
+        "weight": "1",
+        "type": "text_textfield",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "size": "40"
+        }
+    },
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "text_default",
+            "weight": 0,
+            "settings": [],
+            "module": "text"
+        },
+        "token": {
+            "label": "above",
+            "type": "text_default",
+            "weight": 0,
+            "settings": [],
+            "module": "text"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": null
+}

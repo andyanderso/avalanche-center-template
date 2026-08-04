@@ -1,0 +1,28 @@
+{
+    "_config_name": "field.field.field_size_1",
+    "field_name": "field_size_1",
+    "type": "list_text",
+    "module": "list",
+    "active": 1,
+    "locked": "0",
+    "cardinality": "2",
+    "translatable": "0",
+    "deleted": "0",
+    "entity_types": [],
+    "settings": {
+        "allowed_values": {
+            "1": "D1",
+            "2": "D2",
+            "3": "D3",
+            "4": "D4",
+            "5": "D5"
+        },
+        "allowed_values_function": ""
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "module": "field_sql_storage",
+        "active": 1,
+        "settings": []
+    }
+}

@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.instance.node.fwp.field_other_environmental_hazard",
+    "field_name": "field_other_environmental_hazard",
+    "entity_type": "node",
+    "bundle": "fwp",
+    "deleted": "0",
+    "label": "Other Environmental Hazards",
+    "widget": {
+        "weight": "20",
+        "type": "text_textarea",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "rows": "3"
+        }
+    },
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "text_default",
+            "weight": "8",
+            "settings": [],
+            "module": "text"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": null
+}

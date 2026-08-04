@@ -1,0 +1,200 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&display=swap');
+
+/**
+ * Footer restyle to match the avalanche_modern theme.
+ * Loaded last in responsive_sac.info so it wins over the older footer rules.
+ */
+
+/* Footer shell */
+#footer-wrapper {
+  background: #333333 !important;
+  color: #c7d2dc;
+}
+#footer-wrapper .section { padding: 0; }
+#footer-wrapper a { color: #c9d4dd; }
+
+#footer-columns {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 26px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px 28px;
+  text-align: left;
+}
+
+/* Neutralise the old fixed-width / floated / boxed footer regions */
+#footer-columns .region,
+.region-footer-firstcolumn,
+.region-footer-secondcolumn,
+.region-footer-thirdcolumn,
+.region-footer-fourthcolumn,
+.region-footer-fifthcolumn {
+  width: auto !important;
+  float: none !important;
+  display: block !important;
+  position: static !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  text-align: left !important;
+  box-sizing: border-box;
+}
+#footer-columns .region .block,
+#footer-columns .block,
+#footer-columns nav.block,
+#footer-columns .block .content {
+  border: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+/* Column headings: white, uppercase, with a short red accent underline */
+#footer-columns h2,
+#footer-columns .block-title,
+.region-footer-fifthcolumn h2,
+.region-footer-fifthcolumn .block-title {
+  background: none !important;
+  color: #fff !important;
+  font-family: 'Barlow Semi Condensed', 'PT Sans Narrow', 'Arial Narrow', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  text-indent: 0;
+  border: 0 !important;
+  padding: 0 0 8px !important;
+  margin: 0 0 12px !important;
+  position: relative;
+}
+#footer-columns h2::after,
+#footer-columns .block-title::after,
+.region-footer-fifthcolumn h2::after,
+.region-footer-fifthcolumn .block-title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 30px;
+  height: 2px;
+  background: #ce4141;
+}
+
+/* Footer menu links */
+#footer-columns .menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+#footer-columns .menu li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: none;
+  border: 0;
+}
+#footer-columns .menu li a {
+  display: inline-block;
+  color: #b8c4cf;
+  font-size: 0.92rem;
+  line-height: 2;
+  text-decoration: none;
+  border: 0 !important;
+  box-shadow: none !important;
+  transition: color 0.18s ease, padding-left 0.18s ease;
+}
+#footer-columns .menu li a:hover {
+  color: #fff !important;
+  padding-left: 4px;
+  text-decoration: none !important;
+}
+
+/* Fifth column blocks: drop the boxed borders */
+.region-footer-fifthcolumn .block {
+  border: 0 !important;
+  padding: 0 !important;
+  margin-bottom: 18px !important;
+  text-align: left !important;
+}
+
+/* Search form — single-line white pill with a red icon button */
+#footer-wrapper .block-search-form .block-content form {
+  display: flex;
+  align-items: stretch;
+  height: 42px;
+  max-width: 240px;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .35);
+  gap: 0;
+}
+#footer-wrapper .block-search-form .block-content form > div { display: contents; }
+#footer-wrapper .block-search-form .form-item {
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+}
+#footer-wrapper .block-search-form input.form-search {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  padding: 0 12px;
+  background: #fff;
+  color: #333;
+  font-size: 0.9rem;
+}
+#footer-wrapper .block-search-form .form-actions {
+  margin: 0;
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+}
+#footer-wrapper .block-search-form input.form-submit {
+  position: relative;
+  top: -12px;
+  right: -3px;
+  width: 46px;
+  height: 100%;
+  align-self: stretch;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  border-radius: 0;
+  background-color: #ce4141;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='21' y1='21' x2='16.5' y2='16.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 56% 56%;
+  color: transparent;
+  font-size: 0;
+  text-indent: -9999px;
+  box-shadow: none;
+  text-shadow: none;
+}
+#footer-wrapper .block-search-form input.form-submit:hover { background-color: #b53636; }
+
+/* Social icons */
+#footer-columns .social-media-links.platforms.inline,
+.social-media-links.platforms.inline { margin: 0; padding: 0; }
+.social-media-links.platforms.inline li {
+  display: inline-block;
+  margin: 4px 4px 0 0;
+}
+.social-media-links.platforms.inline li a img {
+  max-width: 34px;
+  height: auto;
+  display: block;
+}
+
+/* Responsive: collapse the 5-up grid */
+@media (max-width: 900px) {
+  #footer-columns { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  #footer-columns { grid-template-columns: 1fr; }
+}

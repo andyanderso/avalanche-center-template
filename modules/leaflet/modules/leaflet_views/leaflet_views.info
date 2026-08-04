@@ -1,0 +1,15 @@
+name = Leaflet views
+description = Views integration for the Leaflet module.
+backdrop = 1.x
+type = module
+package = Leaflet
+
+dependencies[] = leaflet
+dependencies[] = geofield
+dependencies[] = views
+dependencies[] = entity
+
+; Added by Backdrop CMS packaging script on 2026-02-06
+project = leaflet
+version = 1.x-1.2.3
+timestamp = 1770382366

@@ -1,0 +1,23 @@
+{
+    "_config_name": "field.bundle.node.map",
+    "entity_type": "node",
+    "bundle": "map",
+    "view_modes": [],
+    "extra_fields": {
+        "form": {
+            "locations": {
+                "weight": "30"
+            },
+            "metatags": {
+                "weight": "40"
+            },
+            "title": {
+                "weight": "-5"
+            },
+            "path": {
+                "weight": "30"
+            }
+        },
+        "display": []
+    }
+}

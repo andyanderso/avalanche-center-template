@@ -1,0 +1,31 @@
+{
+    "_config_name": "file.type.audio",
+    "_module": "file",
+    "type": "audio",
+    "name": "Audio",
+    "description": "An <em>Audio</em> file is a sound recording.",
+    "mimetypes": [
+        "audio/mpeg",
+        "audio/ogg",
+        "audio/x-ms-wma",
+        "audio/basic",
+        "audio/midi",
+        "audio/mp4",
+        "audio/prs.sid",
+        "audio/webm",
+        "audio/x-aiff",
+        "audio/x-gsm",
+        "audio/x-matroska",
+        "audio/x-mpegurl",
+        "audio/x-ms-wax",
+        "audio/x-pn-realaudio",
+        "audio/x-realaudio",
+        "audio/x-scpls",
+        "audio/x-sd2",
+        "audio/x-wav",
+        "audio/*"
+    ],
+    "disabled": false,
+    "storage": 2,
+    "module": "file"
+}

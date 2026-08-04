@@ -1,0 +1,35 @@
+{
+    "_config_name": "field.field.field_overalldanger",
+    "field_name": "field_overalldanger",
+    "type": "list_integer",
+    "module": "list",
+    "active": 1,
+    "locked": "0",
+    "cardinality": "1",
+    "translatable": "0",
+    "deleted": "0",
+    "entity_types": [],
+    "settings": {
+        "allowed_values": [
+            "No Rating",
+            "Low",
+            "Moderate",
+            "Considerable",
+            "High",
+            "Extreme",
+            "Summer"
+        ],
+        "allowed_values_function": "",
+        "allowed_values_php": "",
+        "max": "",
+        "min": "",
+        "prefix": "",
+        "suffix": ""
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "module": "field_sql_storage",
+        "active": 1,
+        "settings": []
+    }
+}

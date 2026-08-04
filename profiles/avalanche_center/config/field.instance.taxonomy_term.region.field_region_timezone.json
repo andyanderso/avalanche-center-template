@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.instance.taxonomy_term.region.field_region_timezone",
+    "field_name": "field_region_timezone",
+    "entity_type": "taxonomy_term",
+    "bundle": "region",
+    "deleted": "0",
+    "label": "Timezone",
+    "widget": {
+        "weight": "5",
+        "type": "text_textfield",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "size": 40
+        }
+    },
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "text_default",
+            "weight": "5",
+            "settings": [],
+            "module": "text"
+        }
+    },
+    "required": 0,
+    "description": "IANA timezone (e.g. America/Santiago). Auto-filled from the region's location on save; you may override it. Forecast times for this region are shown in this zone.",
+    "default_value": null
+}

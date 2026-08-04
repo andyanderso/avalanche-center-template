@@ -1,0 +1,1261 @@
+# Spanish (es) translation for the Avalanche Center distribution's own strings.
+# These cover the strings this profile itself emits through t() - demo content,
+# navigation labels, and reference page titles - which the core/contrib UI
+# extract in es.po does not include. Kept center-agnostic so any Spanish
+# install (e.g. a future Chilean center) reuses them.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: avalanche_center 1.x\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+# --- Navigation / page titles ---
+msgid "Forecast"
+msgstr "Pronóstico"
+
+msgid "Observations"
+msgstr "Observaciones"
+
+msgid "Submit Observations"
+msgstr "Enviar Observaciones"
+
+msgid "Submit Professional Observations"
+msgstr "Enviar Observaciones Profesionales"
+
+msgid "Incidents"
+msgstr "Incidentes"
+
+msgid "Education"
+msgstr "Educación"
+
+msgid "Avalanche Terms"
+msgstr "Términos de Avalancha"
+
+msgid "Events"
+msgstr "Eventos"
+
+msgid "Sponsors"
+msgstr "Auspiciantes"
+
+msgid "About Us"
+msgstr "Quiénes Somos"
+
+msgid "Donate"
+msgstr "Donar"
+
+msgid "Contact Us"
+msgstr "Contacto"
+
+msgid "Frequently Asked Questions"
+msgstr "Preguntas Frecuentes"
+
+msgid "News and Announcements"
+msgstr "Noticias y Anuncios"
+
+msgid "Forecasters"
+msgstr "Pronosticadores"
+
+msgid "Board of Directors"
+msgstr "Comisión Directiva"
+
+msgid "Non Profit Staff"
+msgstr "Equipo"
+
+msgid "RSS Feed"
+msgstr "Fuente RSS"
+
+msgid "Email Subscriptions"
+msgstr "Suscripciones por Correo Electrónico"
+
+# --- Forecast zones ---
+msgid "North Zone"
+msgstr "Zona Norte"
+
+msgid "South Zone"
+msgstr "Zona Sur"
+
+# --- Demo advisory ---
+msgid "Demo Avalanche Forecast"
+msgstr "Pronóstico de Avalancha de Demostración"
+
+msgid "This is a demo avalanche forecast created automatically at install so the danger map has something to show. Watch for wind slab and cornice hazards on steep, wind-loaded slopes. Replace it with a real forecast, or delete it."
+msgstr "Este es un pronóstico de avalancha de demostración creado automáticamente durante la instalación para que el mapa de peligro tenga algo que mostrar. Preste atención a los peligros de placas de viento y cornisas en laderas empinadas cargadas por el viento. Reemplácelo con un pronóstico real, o elimínelo."
+
+msgid "A second demo avalanche forecast for the second demo forecast zone. Evaluate the snowpack carefully for persistent slab instabilities before entering avalanche terrain. Replace it with a real forecast, or delete it."
+msgstr "Un segundo pronóstico de avalancha de demostración para la segunda zona de pronóstico. Evalúe cuidadosamente el manto nivoso en busca de inestabilidades de placa persistente antes de ingresar a terreno de avalanchas. Reemplácelo con un pronóstico real, o elimínelo."
+
+# --- Demo pages ---
+msgid "Tell visitors who your center is and what you do. Replace this placeholder page with your own About page."
+msgstr "Cuénteles a los visitantes quién es su centro y qué hace. Reemplace esta página de ejemplo con su propia página institucional."
+
+msgid "Add your center's contact details here. Replace this placeholder with your own page."
+msgstr "Agregue aquí los datos de contacto de su centro. Reemplace esta página de ejemplo con la suya."
+
+msgid "Answer the questions your visitors ask most. Replace this placeholder with your own page."
+msgstr "Responda las preguntas más frecuentes de sus visitantes. Reemplace esta página de ejemplo con la suya."
+
+msgid "Welcome to Our New Website"
+msgstr "Bienvenidos a Nuestro Nuevo Sitio Web"
+
+msgid "This is a demo announcement. Replace it with your own site news."
+msgstr "Este es un anuncio de demostración. Reemplácelo con las novedades de su propio sitio."
+
+# --- Reference page titles ---
+msgid "How to Read the Avalanche Forecast"
+msgstr "Cómo Leer el Pronóstico de Avalanchas"
+
+msgid "North American Avalanche Danger Scale"
+msgstr "Escala Norteamericana de Peligro de Avalanchas"
+
+msgid "South American Avalanche Danger Scale"
+msgstr "Escala Sudamericana de Peligro de Avalanchas"
+
+msgid "Avalanche Problems"
+msgstr "Problemas de Avalancha"
+
+# --- Danger scale labels (shared NAC/SAC source strings) ---
+msgid "No Rating"
+msgstr "Sin Clasificación"
+
+msgid "1 - Low"
+msgstr "1 - Bajo"
+
+msgid "2 - Moderate"
+msgstr "2 - Moderado"
+
+msgid "3 - Considerable"
+msgstr "3 - Considerable"
+
+msgid "4 - High"
+msgstr "4 - Alto"
+
+msgid "5 - Extreme"
+msgstr "5 - Extremo"
+
+# --- Danger scale travel advice ---
+msgid "<strong>Generally safe avalanche conditions.</strong> Watch for unstable snow on isolated terrain features."
+msgstr "<strong>Condiciones de avalancha generalmente seguras.</strong> Preste atención a la nieve inestable en sectores aislados del terreno."
+
+msgid "<strong>Heightened avalanche conditions on specific terrain features.</strong> Evaluate snow and terrain carefully; identify features of concern."
+msgstr "<strong>Condiciones de avalancha elevadas en sectores específicos del terreno.</strong> Evalúe la nieve y el terreno cuidadosamente; identifique los sectores de riesgo."
+
+msgid "<strong>Dangerous avalanche conditions.</strong> Careful snowpack evaluation, cautious route-finding, and conservative decision-making essential."
+msgstr "<strong>Condiciones de avalancha peligrosas.</strong> Es esencial una evaluación cuidadosa del manto nivoso, una elección de ruta prudente y una toma de decisiones conservadora."
+
+msgid "<strong>Very dangerous avalanche conditions.</strong> Travel in avalanche terrain not recommended."
+msgstr "<strong>Condiciones de avalancha muy peligrosas.</strong> No se recomienda transitar por terreno de avalanchas."
+
+msgid "<strong>Extraordinarily dangerous avalanche conditions.</strong> Avoid all avalanche terrain."
+msgstr "<strong>Condiciones de avalancha extraordinariamente peligrosas.</strong> Evite todo terreno de avalanchas."
+
+# --- Danger map / advisory page UI ---
+msgid "Avalanche Danger"
+msgstr "Peligro de Avalancha"
+
+msgid "Avalanche Danger Rating"
+msgstr "Grado de Peligro de Avalancha"
+
+msgid "Avalanche Danger Rating Map"
+msgstr "Mapa de Grado de Peligro de Avalancha"
+
+msgid "Avalanche Forecast"
+msgstr "Pronóstico de Avalancha"
+
+msgid "Avalanche Forecasts"
+msgstr "Pronósticos de Avalancha"
+
+msgid "All Forecasts"
+msgstr "Todos los Pronósticos"
+
+msgid "Forecast Archives"
+msgstr "Archivo de Pronósticos"
+
+msgid "Author"
+msgstr "Autor"
+
+msgid "Issued"
+msgstr "Emitido"
+
+msgid "Expires"
+msgstr "Vence"
+
+msgid "Get more information"
+msgstr "Más información"
+
+msgid "Read Full Forecast"
+msgstr "Leer Pronóstico Completo"
+
+msgid "Travel Advice:"
+msgstr "Recomendación para el Terreno:"
+
+msgid "Insufficient data exists to issue a danger rating."
+msgstr "No existen datos suficientes para emitir una clasificación de peligro."
+
+msgid "No current avalanche forecast is available. Please check back soon."
+msgstr "No hay ningún pronóstico de avalancha vigente. Vuelva a consultar pronto."
+
+msgid "No current avalanche forecast available."
+msgstr "No hay ningún pronóstico de avalancha vigente."
+
+msgid "No current forecast for this zone."
+msgstr "No hay pronóstico vigente para esta zona."
+
+msgid "Avalanche danger scale reference"
+msgstr "Referencia de la escala de peligro de avalanchas"
+
+# --- Donate page (avalanche_center_demo_donate_body) ---
+msgid "This is a placeholder Donate page. Replace the example text below with your own donation information, and drop your real donation button or embed into the \"Donate Online\" box."
+msgstr "Esta es una página de donación de ejemplo. Reemplace el texto de ejemplo a continuación con su propia información de donación, y coloque su botón o código de donación real en el recuadro \"Donar en Línea\"."
+
+msgid "Support the Avalanche Center"
+msgstr "Apoye al Centro de Avalanchas"
+
+msgid "Our avalanche center is a nonprofit organization. We rely on donations, memberships, and fundraising to keep producing daily avalanche forecasts, observations, and education for our community. Please consider making a tax-deductible gift - every contribution helps keep this service free for everyone who travels in avalanche terrain."
+msgstr "Nuestro centro de avalanchas es una organización sin fines de lucro. Dependemos de donaciones, membresías y recaudación de fondos para seguir produciendo pronósticos de avalanchas diarios, observaciones y educación para nuestra comunidad. Por favor considere hacer una donación deducible de impuestos - cada contribución ayuda a mantener este servicio gratuito para todos quienes se desplazan por terreno de avalanchas."
+
+msgid "Donate Online"
+msgstr "Donar en Línea"
+
+msgid "Add your donation button or embed here."
+msgstr "Agregue aquí su botón o código de donación."
+
+msgid "Paste the embed code from your payment provider (PayPal, Stripe, Donorbox, Fundly, GoFundMe, etc.) in place of this box - for example a PayPal \"Donate\" button, or a simple link like the one below."
+msgstr "Pegue el código de inserción de su proveedor de pagos (PayPal, Stripe, Donorbox, Fundly, GoFundMe, etc.) en lugar de este recuadro - por ejemplo un botón \"Donar\" de PayPal, o un simple enlace como el de abajo."
+
+msgid "Donate with PayPal"
+msgstr "Donar con PayPal"
+
+msgid "Other Ways to Give"
+msgstr "Otras Formas de Donar"
+
+msgid "By Mail"
+msgstr "Por Correo Postal"
+
+msgid "Prefer to mail a check? Send donations to:"
+msgstr "¿Prefiere enviar un cheque por correo? Envíe las donaciones a:"
+
+msgid "Corporate Giving &amp; Sponsorship"
+msgstr "Donaciones Corporativas y Auspicios"
+
+msgid "We rely on the generous support of individuals, corporate partners, resorts, and foundations who share our vision. Corporate contributions and sponsorships directly support our forecasting and education programs. See our current sponsors or contact us to discuss partnership opportunities."
+msgstr "Dependemos del generoso apoyo de individuos, socios corporativos, centros de esquí y fundaciones que comparten nuestra visión. Las contribuciones corporativas y los auspicios apoyan directamente nuestros programas de pronóstico y educación. Vea nuestros auspiciantes actuales o contáctenos para conversar sobre oportunidades de colaboración."
+
+msgid "Endowment Fund"
+msgstr "Fondo Patrimonial"
+
+msgid "An endowment fund helps ensure the long-term sustainability of avalanche forecasting and awareness in our region. Contact us to learn how you can contribute."
+msgstr "Un fondo patrimonial ayuda a asegurar la sostenibilidad a largo plazo del pronóstico y la concientización sobre avalanchas en nuestra región. Contáctenos para saber cómo puede contribuir."
+
+msgid "Memorial &amp; Tribute Gifts"
+msgstr "Donaciones en Memoria y Homenaje"
+
+msgid "Honor a friend, family member, or fellow backcountry traveler with a memorial or tribute gift supporting avalanche awareness and education."
+msgstr "Honre a un amigo, familiar o compañero de backcountry con una donación en memoria u homenaje que apoye la concientización y educación sobre avalanchas."
+
+msgid "Planned Giving"
+msgstr "Donaciones Planificadas"
+
+msgid "Have you thought of including the avalanche center in your estate planning? By naming a nonprofit as a beneficiary of your will or life insurance, you can leave behind a lasting legacy of avalanche safety. Talk to your estate-planning professional for details."
+msgstr "¿Ha pensado en incluir al centro de avalanchas en su planificación patrimonial? Al nombrar a una organización sin fines de lucro como beneficiaria de su testamento o seguro de vida, puede dejar un legado duradero de seguridad ante avalanchas. Consulte a su asesor de planificación patrimonial para más detalles."
+
+msgid "Tax Information"
+msgstr "Información Impositiva"
+
+msgid "We are a 501(c)(3) nonprofit organization and donations are tax-deductible to the extent allowed by law. Our tax ID (EIN) is <strong>[your EIN here]</strong>. Recognition on our website is available for individual and corporate donors - email us for details."
+msgstr "Somos una organización sin fines de lucro y las donaciones son deducibles de impuestos en la medida permitida por la ley. Nuestro número de identificación fiscal es <strong>[su identificación fiscal aquí]</strong>. Ofrecemos reconocimiento en nuestro sitio web para donantes individuales y corporativos - escríbanos para más detalles."
+
+msgid "Thank you for your support - we cannot operate without you!"
+msgstr "¡Gracias por su apoyo - no podemos operar sin usted!"
+
+# Demo content strings (added for full Spanish parity).
+
+msgid "A demo avalanche safety class for snowmobilers."
+msgstr "Una clase demostrativa de seguridad ante avalanchas para quienes usan motos de nieve."
+
+msgid "A demo avalanche watch, issued ahead of a forecast when conditions may warrant one."
+msgstr "Una alerta demostrativa de avalancha, emitida antes de un pronóstico cuando las condiciones puedan justificarla."
+
+msgid "A demo blog-style post."
+msgstr "Una publicación demostrativa tipo blog."
+
+msgid "A demo community ski day event."
+msgstr "Un evento demostrativo de día comunitario de esquí."
+
+msgid "A demo featured content card."
+msgstr "Una tarjeta demostrativa de contenido destacado."
+
+msgid "A demo feed item description."
+msgstr "Una descripción demostrativa de elemento de feed."
+
+msgid "A demo introductory avalanche safety class."
+msgstr "Una clase demostrativa introductoria de seguridad ante avalanchas."
+
+msgid "A demo newsletter issue."
+msgstr "Un número demostrativo del boletín."
+
+msgid "A demo overview of your education program."
+msgstr "Un resumen demostrativo de su programa de educación."
+
+msgid "A demo public awareness event."
+msgstr "Un evento demostrativo de concientización pública."
+
+msgid "A demo site map page."
+msgstr "Una página demostrativa de mapa del sitio."
+
+msgid "A demo snowpack summary bottom line."
+msgstr "Un resumen demostrativo de lo más importante del manto de nieve."
+
+msgid "A demo sponsor banner ad."
+msgstr "Un banner publicitario demostrativo de patrocinador."
+
+msgid "A demo weekly summary of conditions and observations."
+msgstr "Un resumen semanal demostrativo de condiciones y observaciones."
+
+msgid "Avalanche Awareness Night"
+msgstr "Noche de Concientización sobre Avalanchas"
+
+msgid "Avalanche Education Program"
+msgstr "Programa de Educación sobre Avalanchas"
+
+msgid "Avalanche Watch"
+msgstr "Alerta de Avalancha"
+
+msgid "Community Ski Day"
+msgstr "Día Comunitario de Esquí"
+
+msgid "Custom Map Example"
+msgstr "Ejemplo de Mapa Personalizado"
+
+msgid "Demo Observation"
+msgstr "Observación Demostrativa"
+
+msgid "Demo disclaimer text."
+msgstr "Texto demostrativo de descargo de responsabilidad."
+
+msgid "Demo terrain choice notes."
+msgstr "Notas demostrativas de elección de terreno."
+
+msgid "Example Sponsor"
+msgstr "Patrocinador de Ejemplo"
+
+msgid "Example Sponsor Banner"
+msgstr "Banner de Patrocinador de Ejemplo"
+
+msgid "Featured Card"
+msgstr "Tarjeta Destacada"
+
+msgid "Feed Example"
+msgstr "Ejemplo de Feed"
+
+msgid "Feed Item Example"
+msgstr "Ejemplo de Elemento de Feed"
+
+msgid "Field Work Plan Example"
+msgstr "Ejemplo de Plan de Trabajo de Campo"
+
+msgid "Home"
+msgstr "Inicio"
+
+msgid "Introduction to Avalanche Safety"
+msgstr "Introducción a la Seguridad ante Avalanchas"
+
+msgid "Know Before You Go"
+msgstr "Conozca Antes de Ir"
+
+msgid "Near the demo forecast zone"
+msgstr "Cerca de la zona de pronóstico demostrativa"
+
+msgid "Photo Gallery Example"
+msgstr "Ejemplo de Galería de Fotos"
+
+msgid "Placeholder forecast zone created at install. Replace with your real forecast zones, or delete this one."
+msgstr "Zona de pronóstico de marcador de posición creada durante la instalación. Reemplácela con sus zonas de pronóstico reales, o elimínela."
+
+msgid "Sample Blog Post"
+msgstr "Publicación de Blog de Ejemplo"
+
+msgid "Sample Newsletter Issue"
+msgstr "Número de Boletín de Ejemplo"
+
+msgid "Site Map"
+msgstr "Mapa del Sitio"
+
+msgid "Snowmobiler Avalanche Awareness"
+msgstr "Concientización sobre Avalanchas para Motonieve"
+
+msgid "Snowpack Summary Example"
+msgstr "Ejemplo de Resumen del Manto de Nieve"
+
+msgid "Week in Review"
+msgstr "Resumen Semanal"
+
+# Forecast-page strings (node--advisory template, theme label helpers,
+# danger-map module): avalanche problem types match /avalanche-problems.
+
+msgid "The Bottom Line"
+msgstr "Lo Más Importante"
+
+msgid "Read the Full Forecast"
+msgstr "Leer el Pronóstico Completo"
+
+msgid "Text Forecast"
+msgstr "Pronóstico en Texto"
+
+msgid "Today's Avalanche Forecast"
+msgstr "Pronóstico de Avalancha de Hoy"
+
+msgid "Above Treeline"
+msgstr "Sobre el Límite Arbóreo"
+
+msgid "Near Treeline"
+msgstr "Cerca del Límite Arbóreo"
+
+msgid "Below Treeline"
+msgstr "Bajo el Límite Arbóreo"
+
+msgid "Danger Scale"
+msgstr "Escala de Peligro"
+
+msgid "Avalanche Problems (@count)"
+msgstr "Problemas de Avalancha (@count)"
+
+msgid "Problem #@number: @type"
+msgstr "Problema #@number: @type"
+
+msgid "Problem Type"
+msgstr "Tipo de Problema"
+
+msgid "Aspect/Elevation"
+msgstr "Aspecto/Elevación"
+
+msgid "Likelihood"
+msgstr "Probabilidad"
+
+msgid "Size"
+msgstr "Tamaño"
+
+msgid "Unlikely"
+msgstr "Improbable"
+
+msgid "Possible"
+msgstr "Posible"
+
+msgid "Likely"
+msgstr "Probable"
+
+msgid "Very Likely"
+msgstr "Muy Probable"
+
+msgid "Certain"
+msgstr "Seguro"
+
+msgid "Small (D1)"
+msgstr "Pequeña (D1)"
+
+msgid "Large (D2)"
+msgstr "Grande (D2)"
+
+msgid "Very Large (D3)"
+msgstr "Muy Grande (D3)"
+
+msgid "Historic (D4-5)"
+msgstr "Histórica (D4-5)"
+
+msgid "Low"
+msgstr "Bajo"
+
+msgid "Moderate"
+msgstr "Moderado"
+
+msgid "Considerable"
+msgstr "Considerable"
+
+msgid "High"
+msgstr "Alto"
+
+msgid "Extreme"
+msgstr "Extremo"
+
+msgid "Storm Slab"
+msgstr "Placa de Tormenta"
+
+msgid "Deep Slab"
+msgstr "Placa Persistente Profunda"
+
+msgid "Wind Slab"
+msgstr "Placa de Viento"
+
+msgid "Wet Slab"
+msgstr "Placa Húmeda"
+
+msgid "Persistent Slab"
+msgstr "Placa Persistente"
+
+msgid "Loose Wet"
+msgstr "Nieve Húmeda Suelta"
+
+msgid "Loose Dry"
+msgstr "Nieve Seca Suelta"
+
+msgid "Normal Caution"
+msgstr "Precaución Normal"
+
+msgid "Cornice"
+msgstr "Caída de Cornisa"
+
+msgid "Glide"
+msgstr "Avalancha de Placa Glide"
+
+msgid "Esri Satellite Imagery"
+msgstr "Imágenes Satelitales Esri"
+
+msgid "Esri World Topo Map"
+msgstr "Mapa Topográfico Mundial Esri"
+
+msgid "Forecast menu links (zone-aware)"
+msgstr "Enlaces del menú de pronóstico (según zona)"
+
+# Core Views exposed date-range filter labels (incidents/observations).
+
+msgid "Start date"
+msgstr "Fecha de inicio"
+
+msgid "End date"
+msgstr "Fecha de fin"
+
+
+# Forecast node: weather tables, section headings, expiry notices.
+
+msgid "0600 temperature"
+msgstr "Temperatura a las 0600"
+
+msgid "Average wind direction during the last 24 hours"
+msgstr "Dirección media del viento en las últimas 24 horas"
+
+msgid "Average wind speed during the last 24 hours"
+msgstr "Velocidad media del viento en las últimas 24 horas"
+
+msgid "Expected snowfall"
+msgstr "Nevada esperada"
+
+msgid "Forecast Discussion"
+msgstr "Discusión del Pronóstico"
+
+msgid "Get more information &raquo;"
+msgstr "Más información &raquo;"
+
+msgid "It was issued @date and is no longer current."
+msgstr "Se emitió el @date y ya no está vigente."
+
+msgid "Max. temperature in the last 24 hours"
+msgstr "Temperatura máxima en las últimas 24 horas"
+
+msgid "Maximum wind gust in the last 24 hours"
+msgstr "Racha máxima de viento en las últimas 24 horas"
+
+msgid "Mountain Weather"
+msgstr "Clima de Montaña"
+
+msgid "New snowfall in the last 24 hours"
+msgstr "Nieve nueva en las últimas 24 horas"
+
+msgid "Recent Avalanche Activity"
+msgstr "Actividad Reciente de Avalanchas"
+
+msgid "THE BOTTOM LINE"
+msgstr "LO MÁS IMPORTANTE"
+
+msgid "Temperatures"
+msgstr "Temperaturas"
+
+msgid "This forecast has expired."
+msgstr "Este pronóstico ha expirado."
+
+msgid "Today"
+msgstr "Hoy"
+
+msgid "Tomorrow"
+msgstr "Mañana"
+
+msgid "Tonight"
+msgstr "Esta Noche"
+
+msgid "Total snow depth"
+msgstr "Profundidad total de nieve"
+
+msgid "Two-Day Mountain Weather Forecast"
+msgstr "Pronóstico Meteorológico de Montaña a Dos Días"
+
+msgid "Weather"
+msgstr "Clima"
+
+msgid "Wind Direction"
+msgstr "Dirección del Viento"
+
+msgid "Wind Speed"
+msgstr "Velocidad del Viento"
+
+msgid "produced in partnership with"
+msgstr "elaborado en colaboración con"
+
+# Core filter tips (shown under body fields).
+
+msgid "Web page addresses and email addresses turn into links automatically, unless the parent tag has the 'nolink' class."
+msgstr "Las direcciones de páginas web y de correo electrónico se convierten automáticamente en enlaces, a menos que la etiqueta contenedora tenga la clase 'nolink'."
+
+msgid "Lines and paragraphs break automatically."
+msgstr "Las líneas y los párrafos se separan automáticamente."
+
+msgid "No HTML tags allowed."
+msgstr "No se permiten etiquetas HTML."
+
+# Field Work Plan check-in (avalanche_fwp)
+
+msgid "I'm back safe — check in"
+msgstr "Ya regresé — registrar mi regreso"
+
+msgid "Checked in safely on @when by @who."
+msgstr "Regreso registrado el @when por @who."
+
+msgid "Checked in safely on @when."
+msgstr "Regreso registrado el @when."
+
+msgid "Checked in — glad you made it back safely."
+msgstr "Regreso registrado — nos alegra que haya vuelto sano y salvo."
+
+msgid "This Field Work Plan is already checked in."
+msgstr "Este Plan de Trabajo de Campo ya tiene el regreso registrado."
+
+msgid "That check-in link was invalid or expired. Please try again."
+msgstr "Ese enlace de registro no era válido o expiró. Inténtelo de nuevo."
+
+msgid "Check in own Field Work Plan"
+msgstr "Registrar el regreso de su propio Plan de Trabajo de Campo"
+
+msgid "Check in any Field Work Plan"
+msgstr "Registrar el regreso de cualquier Plan de Trabajo de Campo"
+
+# Field Work Plan notifications (avalanche_fwp Phase C)
+
+msgid "Field work check-in due soon: @who"
+msgstr "Registro de regreso próximo: @who"
+
+msgid "@who is due back from the field at @when. You are their responsible party. If you do not hear a check-in, follow your protocol."
+msgstr "@who debe regresar del terreno a las @when. Usted es su persona responsable. Si no recibe un aviso de regreso, siga su protocolo."
+
+msgid "Plan: @url"
+msgstr "Plan: @url"
+
+msgid "Live tracking: @t"
+msgstr "Seguimiento en vivo: @t"
+
+msgid "Field worker OVERDUE — no check-in: @who"
+msgstr "Persona ATRASADA — sin registro de regreso: @who"
+
+msgid "@who was due back at @when and has NOT checked in. Please follow your response protocol."
+msgstr "@who debía regresar a las @when y NO ha registrado su regreso. Siga su protocolo de respuesta."
+
+msgid "Time to check in from the field"
+msgstr "Hora de registrar su regreso del terreno"
+
+msgid "You were due back at @when. Please check in so your responsible party knows you are safe: @url"
+msgstr "Debía regresar a las @when. Registre su regreso para que su persona responsable sepa que está a salvo: @url"
+
+msgid "Checked in safely: @who"
+msgstr "Regreso registrado: @who"
+
+msgid "@who has checked in safely from the field."
+msgstr "@who ha registrado su regreso del terreno sano y salvo."
+
+msgid "A field worker"
+msgstr "Una persona en terreno"
+
+msgid "the planned time"
+msgstr "la hora prevista"
+
+msgid "That check-in link was invalid. Please use the button on the plan."
+msgstr "Ese enlace de registro no era válido. Utilice el botón en el plan."
+
+msgid "Responsible Party Email"
+msgstr "Correo de la Persona Responsable"
+
+msgid "Used to email safe-return notifications to the responsible party."
+msgstr "Se usa para enviar por correo los avisos de regreso a la persona responsable."
+
+msgid "Live Tracking Link"
+msgstr "Enlace de Seguimiento en Vivo"
+
+# FWP on-submit notification
+
+msgid "Field work plan filed: @who"
+msgstr "Plan de trabajo de campo presentado: @who"
+
+msgid "@who has filed a field work plan and is heading into the field, due back at @when. You are listed as their responsible party."
+msgstr "@who ha presentado un plan de trabajo de campo y se dirige al terreno, con regreso previsto a las @when. Usted figura como su persona responsable."
+
+# FWP title, emergency link, access-password gate
+
+msgid "Field Work Plan"
+msgstr "Plan de Trabajo de Campo"
+
+msgid "Field Work Plans are password protected. Enter the access password to continue, or <a href=\"@login\">log in</a>."
+msgstr "Los Planes de Trabajo de Campo están protegidos con contraseña. Ingrese la contraseña de acceso para continuar, o <a href=\"@login\">inicie sesión</a>."
+
+msgid "Access password"
+msgstr "Contraseña de acceso"
+
+msgid "Continue"
+msgstr "Continuar"
+
+msgid "That password is not correct."
+msgstr "Esa contraseña no es correcta."
+
+msgid "Emergency Response Plan"
+msgstr "Plan de Respuesta ante Emergencias"
+
+# FWP dashboard links block
+
+msgid "All Field Work Plans"
+msgstr "Todos los Planes de Trabajo de Campo"
+
+msgid "Search Field Work Plans"
+msgstr "Buscar Planes de Trabajo de Campo"
+
+msgid "Create a Field Work Plan"
+msgstr "Crear un Plan de Trabajo de Campo"
+
+# FWP partner picker (Phase E)
+
+msgid "— Select a saved person —"
+msgstr "— Seleccione una persona guardada —"
+
+msgid "Add a saved person"
+msgstr "Agregar una persona guardada"
+
+msgid "Pick a teammate or a partner you have listed before to fill in their details."
+msgstr "Elija a un compañero o a una persona que haya registrado antes para completar sus datos."
+
+# FWP approved-by dropdown
+
+msgid "- None -"
+msgstr "- Ninguno -"
+
+msgid "Approver roles"
+msgstr "Roles de aprobador"
+
+msgid "Users with any of these roles appear in the \"Approved By\" dropdown when filling out a Field Work Plan."
+msgstr "Los usuarios con cualquiera de estos roles aparecen en el menú «Aprobado Por» al completar un Plan de Trabajo de Campo."
+
+msgid "Plan approval"
+msgstr "Aprobación del plan"
+
+# --- Avalanche Forecast Tool (guided wizard) ---
+msgid "1. What are you seeing?"
+msgstr "1. ¿Qué está observando?"
+
+msgid "A buried persistent weak layer that is reactive"
+msgstr "Una capa débil persistente enterrada que está reactiva"
+
+msgid "Access the guided wizard that helps build an avalanche forecast."
+msgstr "Acceder al asistente guiado que ayuda a elaborar un pronóstico de avalanchas."
+
+msgid "Add a justification for the flagged pairing above to continue."
+msgstr "Agregue una justificación para la combinación señalada más arriba para continuar."
+
+msgid "Add problem"
+msgstr "Agregar problema"
+
+msgid "A deep, hard slab (~@d+) on a basal weak layer; stubborn, produces large avalanches"
+msgstr "Una placa profunda y dura (~@d o más) sobre una capa débil basal; terca, produce avalanchas grandes"
+
+msgid "Approve & pre-fill the forecast form"
+msgstr "Aprobar y precompletar el formulario de pronóstico"
+
+msgid "A suggestion from the hazard chart — danger is a judgment call, so review it and enter the actual rating yourself on the forecast form."
+msgstr "Una sugerencia a partir del gráfico de peligro: el peligro es un juicio experto, así que revíselo e ingrese usted mismo la clasificación real en el formulario de pronóstico."
+
+msgid "Because they overlap in location, likelihood and size, please explain why you are forecasting both:"
+msgstr "Debido a que se superponen en ubicación, probabilidad y tamaño, explique por qué está pronosticando ambos:"
+
+msgid "Build this forecast with the guided tool?"
+msgstr "¿Elaborar este pronóstico con la herramienta guiada?"
+
+msgid "Check the conditions you have evidence for. The tool suggests the matching avalanche problems — you decide which to add."
+msgstr "Marque las condiciones para las que tiene evidencia. La herramienta sugiere los problemas de avalancha correspondientes; usted decide cuáles agregar."
+
+msgid "Check this pairing: @a + @b"
+msgstr "Revise esta combinación: @a + @b"
+
+msgid "— choose a problem —"
+msgstr "— elija un problema —"
+
+msgid "Cohesive slab formed by wind-drifted snow."
+msgstr "Placa cohesiva formada por nieve transportada por el viento."
+
+msgid "Cohesive slab released by free water reaching a buried layer."
+msgstr "Placa cohesiva liberada por agua libre que alcanza una capa enterrada."
+
+msgid "Could not save. Please try again."
+msgstr "No se pudo guardar. Inténtelo nuevamente."
+
+msgid "Deep Persistent Slab"
+msgstr "Placa Persistente Profunda"
+
+msgid "Destructive size"
+msgstr "Tamaño destructivo"
+
+msgid "Dry, loose surface snow sluffing on steep terrain"
+msgstr "Nieve superficial seca y suelta que se desliza en terreno empinado"
+
+msgid "Each problem plotted by likelihood and size (Statham Fig 3). Shading shows the danger the hazard chart implies."
+msgstr "Cada problema se ubica según su probabilidad y tamaño (Statham Fig. 3). El sombreado muestra el peligro que implica el gráfico."
+
+msgid "Expected size (destructive)"
+msgstr "Tamaño esperado (destructivo)"
+
+msgid "Features with common characteristics; evidence exists but is not obvious."
+msgstr "Rasgos con características comunes; la evidencia existe pero no es obvia."
+
+msgid "Few or no natural avalanches; Human triggered avalanches are tough to trigger unless a person finds a trigger point like a thin or weak spot — larger triggers like multiple people on a slope, large cornices, or explosives may still trigger avalanches."
+msgstr "Pocas o ninguna avalancha natural; las avalanchas gatilladas por personas son difíciles de gatillar a menos que se encuentre un punto de gatillado, como un sector delgado o débil — gatillantes mayores como varias personas en una ladera, grandes cornisas o explosivos aún pueden gatillar avalanchas."
+
+msgid "Finish each problem (location, likelihood, size) to continue."
+msgstr "Complete cada problema (ubicación, probabilidad, tamaño) para continuar."
+
+msgid "Free water at the snow surface (melt or rain), loose wet snow"
+msgstr "Agua libre en la superficie de la nieve (derretimiento o lluvia), nieve húmeda suelta"
+
+msgid "Free water percolating down to a buried layer (wet slab release)"
+msgstr "Agua libre que percola hacia una capa enterrada (liberación de placa húmeda)"
+
+msgid "Full-depth glide release, often preceded by glide cracks."
+msgstr "Liberación de deslizamiento a espesor completo, a menudo precedida por grietas de deslizamiento."
+
+msgid "Glide cracks or recent glide-avalanche activity"
+msgstr "Grietas de deslizamiento o actividad reciente de avalanchas de deslizamiento"
+
+msgid "Hazard chart"
+msgstr "Gráfico de peligro"
+
+msgid "Historic — could destroy a rail car or several buildings."
+msgstr "Histórica: podría destruir un vagón de tren o varios edificios."
+
+msgid "How the tool is offered"
+msgstr "Cómo se ofrece la herramienta"
+
+msgid "Isolated"
+msgstr "Aislada"
+
+msgid "It walks you through the avalanche problems, likelihood, size and a suggested danger rating, then fills in the form for you — helping ratings stay consistent across regions and forecasters. You can also just fill out the form below."
+msgstr "Lo guía a través de los problemas de avalancha, la probabilidad, el tamaño y una clasificación de peligro sugerida, y luego completa el formulario por usted, ayudando a que las clasificaciones sean consistentes entre regiones y pronosticadores. También puede simplemente completar el formulario a continuación."
+
+msgid "Large — could bury, injure or kill a person."
+msgstr "Grande: podría enterrar, herir o matar a una persona."
+
+msgid "Large or failing cornices"
+msgstr "Cornisas grandes o que están colapsando"
+
+msgid "Largest expected"
+msgstr "Tamaño máximo esperado"
+
+msgid "Largest known — could gouge terrain, destroy a village."
+msgstr "La más grande conocida: podría erosionar el terreno, destruir un pueblo."
+
+msgid "likelihood"
+msgstr "probabilidad"
+
+msgid "Likelihood: set the sensitivity and distribution ranges"
+msgstr "Probabilidad: defina los rangos de sensibilidad y distribución"
+
+msgid "Likelihood (from the Fig 2 matrix): "
+msgstr "Probabilidad (según la matriz de la Fig. 2): "
+
+msgid "location"
+msgstr "ubicación"
+
+msgid "Loose Dry and Loose Wet are the same loose-snow problem in different states; you would not normally have both at once."
+msgstr "Nieve Seca Suelta y Nieve Húmeda Suelta son el mismo problema de nieve suelta en distintos estados; normalmente no tendría ambos a la vez."
+
+msgid "Loose Wet and Wet Slab are both wet problems; pair them only when they differ meaningfully in distribution, likelihood or size."
+msgstr "Nieve Húmeda Suelta y Placa Húmeda son ambos problemas húmedos; combínelos solo cuando difieran de forma significativa en distribución, probabilidad o tamaño."
+
+msgid "Loose, wet, cohesionless snow from melt or rain."
+msgstr "Nieve suelta, húmeda y sin cohesión por derretimiento o lluvia."
+
+msgid "Many locations and features; evidence is everywhere and easy to find."
+msgstr "Muchas ubicaciones y rasgos; la evidencia está en todas partes y es fácil de encontrar."
+
+msgid "New snow in the last 24–48 hours forming a slab"
+msgstr "Nieve nueva en las últimas 24–48 horas que forma una placa"
+
+msgid "Human and natural avalanches are unlikely, and very hard to trigger — even large explosives and large cornices do not trigger avalanches."
+msgstr "Las avalanchas humanas y naturales son improbables, y muy difíciles de gatillar — incluso grandes explosivos y grandes cornisas no gatillan avalanchas."
+
+msgid "No problems added yet. Check conditions above or add one manually."
+msgstr "Aún no se han agregado problemas. Marque condiciones más arriba o agregue uno manualmente."
+
+msgid "No significant instability observed"
+msgstr "No se observa inestabilidad significativa"
+
+msgid "No specific avalanche problem; general caution only."
+msgstr "Sin problema de avalancha específico; solo precaución general."
+
+msgid "Widespread natural avalanches; Human triggering is almost certain — look for remote triggers, collapsing \"whumpfs\" and shooting cracks. Small explosives or cornice failures may trigger multiple avalanches."
+msgstr "Avalanchas naturales generalizadas; el gatillado por personas es casi seguro — busque gatillados a distancia, colapsos (\"whumpfs\") y grietas que se propagan. Pequeños explosivos o caídas de cornisa pueden gatillar múltiples avalanchas."
+
+msgid "Opening the forecast form…"
+msgstr "Abriendo el formulario de pronóstico…"
+
+msgid "Or add a problem manually:"
+msgstr "O agregue un problema manualmente:"
+
+msgid "Overall"
+msgstr "General"
+
+msgid "Overhanging cornice failure, which may also trigger a slab below."
+msgstr "Colapso de una cornisa saliente, que también puede gatillar una placa más abajo."
+
+msgid "Pairing justification you noted: "
+msgstr "Justificación de la combinación que anotó: "
+
+msgid "Persistent Slab and Deep Persistent Slab describe the same family of buried weak layers; pair them only when they differ meaningfully in distribution, likelihood or size."
+msgstr "Placa Persistente y Placa Persistente Profunda describen la misma familia de capas débiles enterradas; combínelas solo cuando difieran de forma significativa en distribución, probabilidad o tamaño."
+
+msgid "Please review everything, then set the danger rating yourself."
+msgstr "Revise todo y luego establezca usted mismo la clasificación de peligro."
+
+msgid "Problem @n: "
+msgstr "Problema @n: "
+
+msgid "Reactive"
+msgstr "Reactiva"
+
+msgid "Recent wind-loading / blowing snow (last ~3 days)"
+msgstr "Carga de viento reciente / nieve arrastrada por el viento (últimos ~3 días)"
+
+msgid "Require the guided tool for new forecasts"
+msgstr "Exigir la herramienta guiada para nuevos pronósticos"
+
+msgid "Sensitivity & distribution"
+msgstr "Sensibilidad y distribución"
+
+msgid "Sensitivity to triggers"
+msgstr "Sensibilidad a los gatillantes"
+
+msgid "Several natural avalanches; Human triggered avalanches are easy to trigger — a ski cut or a single rider on the slope can set one off. Single hand charges easily trigger avalanches."
+msgstr "Varias avalanchas naturales; las avalanchas gatilladas por personas son fáciles de gatillar — un corte de esquí o una sola persona en la ladera puede desencadenar una. Cargas de mano individuales gatillan avalanchas fácilmente."
+
+msgid "size"
+msgstr "tamaño"
+
+msgid "Slab resting on a buried, persistent weak layer."
+msgstr "Placa que descansa sobre una capa débil persistente enterrada."
+
+msgid "Sluffing of dry, cohesionless surface snow."
+msgstr "Deslizamiento de nieve superficial seca y sin cohesión."
+
+msgid "Smallest expected"
+msgstr "Tamaño mínimo esperado"
+
+msgid "Small — relatively harmless to people."
+msgstr "Pequeña: relativamente inofensiva para las personas."
+
+msgid "Soft slab of recent storm snow (last ~24–48h)."
+msgstr "Placa blanda de nieve reciente de tormenta (últimas ~24–48 h)."
+
+msgid "Spatial distribution"
+msgstr "Distribución espacial"
+
+msgid "Specific"
+msgstr "Específica"
+
+msgid "Spotty; a few specific features; evidence is rare and hard to find."
+msgstr "Irregular; unos pocos rasgos específicos; la evidencia es escasa y difícil de encontrar."
+
+msgid "Start the guided forecast tool"
+msgstr "Iniciar la herramienta guiada de pronóstico"
+
+msgid "Storm Slab and Wind Slab are both new-snow slabs; the guidance suggests not pairing them unless they differ meaningfully in distribution, likelihood or size."
+msgstr "Placa de Tormenta y Placa de Viento son ambas placas de nieve nueva; la guía sugiere no combinarlas a menos que difieran de forma significativa en distribución, probabilidad o tamaño."
+
+msgid "Stubborn"
+msgstr "Terca"
+
+msgid "Suggested danger rating"
+msgstr "Clasificación de peligro sugerida"
+
+msgid "Suggested danger rating (for your consideration — not entered): "
+msgstr "Clasificación de peligro sugerida (para su consideración, no ingresada): "
+
+msgid "Suggested problems:"
+msgstr "Problemas sugeridos:"
+
+msgid "The guided forecast tool needs JavaScript enabled."
+msgstr "La herramienta guiada de pronóstico necesita JavaScript habilitado."
+
+msgid "The guided tool filled in the problem type, likelihood, size and location fields below."
+msgstr "La herramienta guiada completó los campos de tipo de problema, probabilidad, tamaño y ubicación a continuación."
+
+msgid "These two currently overlap in: "
+msgstr "Estos dos actualmente se superponen en: "
+
+msgid "Thick, hard slab on a deeply buried basal weak layer; stubborn but large."
+msgstr "Placa gruesa y dura sobre una capa débil basal profundamente enterrada; terca pero grande."
+
+msgid "This site is configured to build forecasts with the guided tool."
+msgstr "Este sitio está configurado para elaborar pronósticos con la herramienta guiada."
+
+msgid "This tool walks you through each avalanche problem — where it is, how sensitive and how widespread it is (which sets the likelihood), and how big it could get — then shows a hazard chart and a suggested danger rating for each elevation band. Nothing is saved until you approve it and review the forecast form."
+msgstr "Esta herramienta lo guía a través de cada problema de avalancha: dónde está, cuán sensible y cuán extendido está (lo que define la probabilidad) y cuán grande podría llegar a ser; luego muestra un gráfico de peligro y una clasificación de peligro sugerida para cada banda de elevación. No se guarda nada hasta que lo apruebe y revise el formulario de pronóstico."
+
+msgid "Touchy"
+msgstr "Muy sensible"
+
+msgid "Unreactive"
+msgstr "No reactiva"
+
+msgid "Use the guided avalanche forecast tool"
+msgstr "Usar la herramienta guiada de pronóstico de avalanchas"
+
+msgid "Very large — could bury a car, destroy a house."
+msgstr "Muy grande: podría enterrar un automóvil, destruir una casa."
+
+msgid "When off (default), forecasters see a prompt at the top of the forecast form offering the guided tool, and can still fill the form by hand. When on, the forecast form leads with the guided tool. Turn this on once your forecasters are comfortable with the tool."
+msgstr "Cuando está desactivado (predeterminado), los pronosticadores ven un aviso en la parte superior del formulario que ofrece la herramienta guiada y aún pueden completar el formulario a mano. Cuando está activado, el formulario comienza con la herramienta guiada. Actívelo una vez que sus pronosticadores estén cómodos con la herramienta."
+
+msgid "When you approve, the forecast form opens with the problems, likelihood and size filled in. Review everything and enter the danger rating before saving."
+msgstr "Cuando apruebe, el formulario de pronóstico se abre con los problemas, la probabilidad y el tamaño completados. Revise todo e ingrese la clasificación de peligro antes de guardar."
+
+msgid "Why are both problems needed here?"
+msgstr "¿Por qué se necesitan ambos problemas aquí?"
+
+msgid "Widespread"
+msgstr "Generalizada"
+
+msgid "You can add up to @n avalanche problems."
+msgstr "Puede agregar hasta @n problemas de avalancha."
+
+
+# --- Avalanche Forecast Tool: AI review layer ---
+msgid "Adds an optional \"AI review\" tab on each forecast that sends the saved forecast to an AI model for writing and consistency suggestions. It is advisory only — it never sets the danger rating or the avalanche problems. The forecast text is sent to the external AI service, and API usage is billed to the key you provide."
+msgstr "Agrega una pestaña opcional de «revisión con IA» en cada pronóstico que envía el pronóstico guardado a un modelo de IA para obtener sugerencias de redacción y consistencia. Es solo un consejo: nunca establece la clasificación de peligro ni los problemas de avalancha. El texto del pronóstico se envía al servicio de IA externo, y el uso de la API se cobra a la clave que usted proporcione."
+
+msgid "AI review is enabled but no API key is configured. Add one on the <a href=\"@url\">forecast tool settings page</a>."
+msgstr "La revisión con IA está habilitada pero no hay ninguna clave de API configurada. Agregue una en la <a href=\"@url\">página de configuración de la herramienta de pronóstico</a>."
+
+msgid "AI review (optional)"
+msgstr "Revisión con IA (opcional)"
+
+msgid "AI review: @title"
+msgstr "Revisión con IA: @title"
+
+msgid "A key is currently set in settings.php, which takes precedence over anything entered here."
+msgstr "Actualmente hay una clave configurada en settings.php, que tiene prioridad sobre lo que se ingrese aquí."
+
+msgid "Anthropic API key"
+msgstr "Clave de API de Anthropic"
+
+msgid "@band danger: @v"
+msgstr "Peligro @band: @v"
+
+msgid "Bottom line: @t"
+msgstr "Resumen: @t"
+
+msgid "Could not reach the AI service (@e)."
+msgstr "No se pudo conectar con el servicio de IA (@e)."
+
+msgid "Discussion: @t"
+msgstr "Discusión: @t"
+
+msgid "Enable AI review"
+msgstr "Habilitar revisión con IA"
+
+msgid "Model"
+msgstr "Modelo"
+
+msgid "No API key configured."
+msgstr "No hay ninguna clave de API configurada."
+
+msgid "Overall danger: @t"
+msgstr "Peligro general: @t"
+
+msgid "Problem @n: @type (likelihood: @l, size: @s)"
+msgstr "Problema @n: @type (probabilidad: @l, tamaño: @s)"
+
+msgid "Review forecasts with AI"
+msgstr "Revisar pronósticos con IA"
+
+msgid "Review this forecast with AI"
+msgstr "Revisar este pronóstico con IA"
+
+msgid "Run the optional AI writing/consistency review on a saved forecast. Requires AI review to be enabled and an API key configured."
+msgstr "Ejecutar la revisión opcional de redacción/consistencia con IA sobre un pronóstico guardado. Requiere que la revisión con IA esté habilitada y una clave de API configurada."
+
+msgid "The AI service returned an error: @m"
+msgstr "El servicio de IA devolvió un error: @m"
+
+msgid "The AI service returned no review text."
+msgstr "El servicio de IA no devolvió ningún texto de revisión."
+
+msgid "The Anthropic model to use. Defaults to the current most capable model."
+msgstr "El modelo de Anthropic a utilizar. Por defecto, el modelo más capaz disponible."
+
+msgid "This sends the saved forecast to an AI model for a writing and consistency review. The suggestions below are advisory only — they do not change your forecast, and the danger rating is always yours to set. The forecast text is sent to the external AI service."
+msgstr "Esto envía el pronóstico guardado a un modelo de IA para una revisión de redacción y consistencia. Las sugerencias a continuación son solo un consejo: no modifican su pronóstico, y la clasificación de peligro siempre la establece usted. El texto del pronóstico se envía al servicio de IA externo."
+
+msgid "Title: @t"
+msgstr "Título: @t"
+
+msgid "Your Anthropic API key. For better security you can instead set it in settings.php as <code>$settings[\"avalanche_forecast_tool_api_key\"]</code>, which then takes precedence and keeps it out of exported configuration."
+msgstr "Su clave de API de Anthropic. Para mayor seguridad, puede establecerla en settings.php como <code>$settings[\"avalanche_forecast_tool_api_key\"]</code>, que entonces tiene prioridad y la mantiene fuera de la configuración exportada."
+
+
+# --- Forecast tool: rose/pyramid + Statham 2018 help popups ---
+msgid "Click sectors to mark where the problem exists. Outer ring = below treeline, middle = near treeline, centre = above treeline; north is up."
+msgstr "Haga clic en los sectores para marcar dónde existe el problema. Anillo exterior = bajo el límite arbóreo, medio = cerca del límite arbóreo, centro = sobre el límite arbóreo; el norte está arriba."
+
+msgid "Danger is a judgment that summarises the problems for an elevation band — it is not a direct calculation. This suggestion follows the hazard chart, but you weigh the problems, the terrain and the day, and set the rating yourself. — Statham et al. (2018)"
+msgstr "El peligro es un juicio que resume los problemas para una banda de elevación; no es un cálculo directo. Esta sugerencia sigue el gráfico de peligro, pero usted pondera los problemas, el terreno y el día, y establece la clasificación usted mismo. — Statham et al. (2018)"
+
+msgid "Destructive size uses the D-scale, from D1 (relatively harmless to people) to D5 (could destroy a village). Assess the largest avalanche the problem could produce, and keep the range to about two sizes. — Statham et al. (2018)"
+msgstr "El tamaño destructivo usa la escala D, de D1 (relativamente inofensiva para las personas) a D5 (podría destruir un pueblo). Evalúe la avalancha más grande que el problema podría producir, y mantenga el rango en unos dos tamaños. — Statham et al. (2018)"
+
+msgid "Likelihood of avalanches combines sensitivity and distribution on a fixed matrix — a widespread, touchy problem is almost certain; an isolated, unreactive one is unlikely. This tool reads the value straight from that matrix. — Statham et al. (2018), Fig. 2"
+msgstr "La probabilidad de avalanchas combina la sensibilidad y la distribución en una matriz fija: un problema generalizado y muy sensible es casi seguro; uno aislado y no reactivo es improbable. Esta herramienta lee el valor directamente de esa matriz. — Statham et al. (2018), Fig. 2"
+
+msgid "Location (aspect & elevation)"
+msgstr "Ubicación (orientación y elevación)"
+
+msgid "Sensitivity to triggers is how easily the problem releases: from Unreactive (no natural or human triggering) through Stubborn and Reactive to Touchy (natural avalanches numerous, triggering almost certain). — Statham et al. (2018), Table 5"
+msgstr "La sensibilidad a los gatillantes es cuán fácilmente se libera el problema: desde No reactiva (sin activación natural ni humana), pasando por Terca y Reactiva, hasta Muy sensible (avalanchas naturales numerosas, activación casi segura). — Statham et al. (2018), Tabla 5"
+
+msgid "Spatial distribution is how widely the problem is found: from Isolated (a few specific features, evidence hard to find) through Specific to Widespread (many features, evidence everywhere). — Statham et al. (2018), Table 6"
+msgstr "La distribución espacial es cuán ampliamente se encuentra el problema: desde Aislada (unos pocos rasgos específicos, evidencia difícil de encontrar), pasando por Específica, hasta Generalizada (muchos rasgos, evidencia en todas partes). — Statham et al. (2018), Tabla 6"
+
+msgid "The conceptual model assesses each avalanche problem on its own by four factors — its type, its location (aspect and elevation), its likelihood of triggering, and its destructive size — then combines them into the avalanche hazard. About three problems describe a forecast. — Statham et al. (2018), Fig. 1"
+msgstr "El modelo conceptual evalúa cada problema de avalancha por separado según cuatro factores — su tipo, su ubicación (orientación y elevación), su probabilidad de activación y su tamaño destructivo — y luego los combina en el peligro de avalancha. Alrededor de tres problemas describen un pronóstico. — Statham et al. (2018), Fig. 1"
+
+msgid "The hazard chart plots each problem by its likelihood (vertical) and destructive size (horizontal). Problems toward the upper right represent greater avalanche hazard. — Statham et al. (2018), Fig. 3"
+msgstr "El gráfico de peligro ubica cada problema según su probabilidad (vertical) y su tamaño destructivo (horizontal). Los problemas hacia la parte superior derecha representan un mayor peligro de avalancha. — Statham et al. (2018), Fig. 3"
+
+
+# --- Forecast tool: rose shortcuts + overall danger ---
+msgid "Click a sector to toggle it, an aspect label for a whole aspect, or a band button (or Alt-click a sector) for a whole elevation band. Outer ring = below treeline, centre = above; north is up."
+msgstr "Haga clic en un sector para activarlo, en una etiqueta de orientación para toda una orientación, o en un botón de banda (o Alt-clic en un sector) para toda una banda de elevación. Anillo exterior = bajo el límite arbóreo, centro = sobre el límite arbóreo; el norte está arriba."
+
+msgid "Overall danger"
+msgstr "Peligro general"
+
+
+# --- Forecast tool: reworded Storm/Wind pairing ---
+msgid "Storm Slab and Wind Slab can overlap where storm snow has been wind-affected; the guidance suggests not pairing them unless they differ meaningfully in distribution, likelihood or size (for example, wind slab confined to specific lee features versus a storm slab across many aspects)."
+msgstr "Placa de Tormenta y Placa de Viento pueden superponerse donde la nieve de tormenta ha sido afectada por el viento; la guía sugiere no combinarlas a menos que difieran de forma significativa en distribución, probabilidad o tamaño (por ejemplo, una placa de viento limitada a rasgos específicos de sotavento frente a una placa de tormenta en muchas orientaciones)."
+
+
+# --- Forecast tool: refined Storm/Wind pairing language ---
+msgid "Storm Slab and Wind Slab overlap where storm snow gets wind-drifted onto leeward features. The key difference is distribution: during a storm the Storm Slab is usually the more widespread problem — unstable snow across many aspects, including sheltered terrain — while a Wind Slab is limited to specific wind-loaded features (leeward ridges, cross-loaded gullies). Only forecast both when they differ meaningfully in distribution, likelihood or size; if both are confined to the same wind-loaded areas with similar likelihood and size, it is probably a single problem."
+msgstr "Placa de Tormenta y Placa de Viento se superponen donde la nieve de tormenta es transportada por el viento hacia rasgos de sotavento. La diferencia clave es la distribución: durante una tormenta, la Placa de Tormenta suele ser el problema más extendido — nieve inestable en muchas orientaciones, incluido el terreno protegido — mientras que una Placa de Viento se limita a rasgos específicos cargados por el viento (cornisas de sotavento, canaletas con carga cruzada). Pronostique ambos solo cuando difieran de forma significativa en distribución, probabilidad o tamaño; si ambos se limitan a las mismas zonas cargadas por el viento con probabilidad y tamaño similares, probablemente sea un único problema."
+
+
+# --- Forecast tool: problem transition help + final Storm/Wind pairing ---
+msgid "Storm slabs form during storms and often exist in both exposed and sheltered terrain. Wind slabs only exist in wind-loaded terrain. If the slabs exist in both sheltered and wind-loaded terrain and formed during a storm, use storm slabs. If the slabs exist in wind-loaded areas (ie not enough new snow to produce slabs in sheltered areas or the slabs are only formed by wind blowing old snow around), use wind slabs."
+msgstr "Las placas de tormenta se forman durante las tormentas y a menudo existen tanto en terreno expuesto como protegido. Las placas de viento solo existen en terreno cargado por el viento. Si las placas existen tanto en terreno protegido como cargado por el viento y se formaron durante una tormenta, use placas de tormenta. Si las placas existen en zonas cargadas por el viento (es decir, no hubo suficiente nieve nueva para producir placas en zonas protegidas, o las placas se formaron solo por el viento transportando nieve vieja), use placas de viento."
+
+msgid "Storm Slabs release a cohesive layer of new storm snow, breaking within the storm snow or at the old/new interface. They form during storms and are usually widespread across terrain that received similar snowfall. Transitions: storm slabs that formed in wind-loaded areas may become Wind Slabs as the sheltered storm snow stabilises; if they overlie a persistent weak layer (surface hoar, depth hoar, near-surface facets) they may develop into — or be forecast from the start as — Persistent Slabs."
+msgstr "Las Placas de Tormenta liberan una capa cohesiva de nieve nueva de tormenta, que se rompe dentro de la nieve de tormenta o en la interfaz entre nieve nueva y vieja. Se forman durante las tormentas y suelen estar ampliamente distribuidas en el terreno que recibió una nevada similar. Transiciones: las placas de tormenta formadas en zonas cargadas por el viento pueden convertirse en Placas de Viento a medida que la nieve de tormenta en zonas protegidas se estabiliza; si se apoyan sobre una capa débil persistente (escarcha de superficie, escarcha profunda, facetas cerca de la superficie) pueden desarrollarse en —o pronosticarse desde el inicio como— Placas Persistentes."
+
+msgid "Wind Slabs release a cohesive layer of wind-drifted snow. They form in specific, somewhat predictable locations — leeward of ridges, in cross-loaded gullies — and can be soft to hard, often smooth or sounding hollow. Transitions: a Wind Slab that overlies a persistent weak layer may be termed a Persistent Slab, or develop into one, with longer-lasting instability."
+msgstr "Las Placas de Viento liberan una capa cohesiva de nieve transportada por el viento. Se forman en lugares específicos y algo predecibles — a sotavento de las cornisas, en canaletas con carga cruzada — y pueden ser blandas o duras, a menudo lisas o de sonido hueco. Transiciones: una Placa de Viento que se apoya sobre una capa débil persistente puede denominarse Placa Persistente, o desarrollarse en una, con una inestabilidad más duradera."
+
+msgid "Persistent Slabs release when the bond to a buried persistent weak layer (surface hoar, depth hoar, near-surface facets, faceted crusts) breaks. They are hard to predict, can be triggered remotely or long after a storm, and can propagate widely. Transitions: a Persistent Slab can build into a Deep Persistent Slab as additional snow and wind events thicken the slab over the same weak layer."
+msgstr "Las Placas Persistentes liberan cuando se rompe el enlace con una capa débil persistente enterrada (escarcha de superficie, escarcha profunda, facetas cerca de la superficie, costras facetadas). Son difíciles de predecir, pueden gatillarse a distancia o mucho después de una tormenta, y pueden propagarse ampliamente. Transiciones: una Placa Persistente puede convertirse en una Placa Persistente Profunda a medida que nevadas y eventos de viento adicionales engrosan la placa sobre la misma capa débil."
+
+msgid "Deep Persistent Slabs release a thick, hard slab on a deeply buried basal weak layer. They are stubborn to trigger but produce large, destructive avalanches. They commonly evolve from a Persistent Slab as successive snow and wind events build a thicker slab over the same weak layer."
+msgstr "Las Placas Persistentes Profundas liberan una placa gruesa y dura sobre una capa débil basal profundamente enterrada. Son tercas de gatillar pero producen avalanchas grandes y destructivas. Comúnmente evolucionan a partir de una Placa Persistente a medida que sucesivos eventos de nieve y viento construyen una placa más gruesa sobre la misma capa débil."
+
+
+# --- Forecast tool: danger scale reference ---
+msgid "Danger scale"
+msgstr "Escala de peligro"
+
+msgid "The North American Avalanche Danger Scale. The hazard chart above is shaded with these colours."
+msgstr "La Escala Norteamericana de Peligro de Avalanchas. El gráfico de peligro de arriba está sombreado con estos colores."
+
+
+# Forecast tool: enable/disable toggle + units (added 2026-08-02)
+msgid "1.5 m"
+msgstr "1,5 m"
+
+msgid "The guided forecast tool is turned off."
+msgstr "La herramienta de pronóstico guiada está desactivada."
+
+msgid "Forecasters see only the plain form below."
+msgstr "Los pronosticadores solo ven el formulario simple a continuación."
+
+msgid "Turn it on"
+msgstr "Activarla"
+
+msgid "Turn off the guided tool"
+msgstr "Desactivar la herramienta guiada"
+
+msgid "The guided forecast tool is now on."
+msgstr "La herramienta de pronóstico guiada ahora está activada."
+
+msgid "The guided forecast tool is now off. You can turn it back on from the forecast form or under Configuration &raquo; Avalanche Forecast Tool."
+msgstr "La herramienta de pronóstico guiada ahora está desactivada. Puede volver a activarla desde el formulario de pronóstico o en Configuración &raquo; Herramienta de Pronóstico de Avalanchas."
+
+msgid "Enable the guided forecast tool"
+msgstr "Activar la herramienta de pronóstico guiada"
+
+msgid "When off, forecasters no longer see the guided-tool prompt on the forecast form and cannot open the wizard — the form works as a plain form. You can also toggle this straight from the forecast form. This is a lighter switch than disabling the whole module on the modules page."
+msgstr "Cuando está desactivada, los pronosticadores ya no ven la propuesta de la herramienta guiada en el formulario de pronóstico y no pueden abrir el asistente; el formulario funciona como un formulario simple. También puede alternarla directamente desde el formulario de pronóstico. Este es un interruptor más ligero que desactivar todo el módulo en la página de módulos."
+
+msgid "Display"
+msgstr "Visualización"
+
+msgid "Measurement units"
+msgstr "Unidades de medida"
+
+msgid "Metric (m, t)"
+msgstr "Métricas (m, t)"
+
+msgid "Imperial (ft, tons)"
+msgstr "Imperiales (ft, tons)"
+
+msgid "Both (metric with imperial in parentheses)"
+msgstr "Ambas (métricas con imperiales entre paréntesis)"
+
+msgid "Units used where the tool shows measurements — e.g. the typical size (path length and mass) of each avalanche size class. Defaults from the site language (Spanish → metric, otherwise both) until you set it here."
+msgstr "Unidades usadas donde la herramienta muestra medidas, por ejemplo el tamaño típico (longitud del recorrido y masa) de cada clase de tamaño de avalancha. Por defecto según el idioma del sitio (español → métricas, de lo contrario ambas) hasta que la configure aquí."
+
+# Forecast tool: range sliders + region hazard chart (added 2026-08-02)
+msgid "Drag the two handles to set how easily it could be triggered — widen them if you are unsure."
+msgstr "Arrastre los dos controles para definir con qué facilidad podría gatillarse — sepárelos si no está seguro."
+
+msgid "Drag the two handles to set how widespread it is — widen them if you are unsure."
+msgstr "Arrastre los dos controles para definir qué tan generalizado está — sepárelos si no está seguro."
+
+msgid "Drag the two handles to set the smallest and largest expected size."
+msgstr "Arrastre los dos controles para definir el tamaño mínimo y máximo esperado."
+
+msgid "Drag or tap to set a range"
+msgstr "Arrastre o toque para definir un rango"
+
+msgid "Each problem is a region spanning its size and likelihood ranges (Statham Fig 3) — a bigger region means more uncertainty. Background shading shows the danger the hazard chart implies."
+msgstr "Cada problema es una región que abarca sus rangos de tamaño y probabilidad (Statham Fig. 3) — una región más grande significa más incertidumbre. El sombreado de fondo muestra el peligro que implica el gráfico de peligro."
+
+# Forecast tool: fractional likelihood + vertical sliders (added 2026-08-02)
+msgid "part of @lvl"
+msgstr "parte de @lvl"
+
+msgid "Drag the handles to set a range"
+msgstr "Arrastre los controles para definir un rango"
+
+msgid "5 ft"
+msgstr "5 ft"
+
+msgid "Record on the form as:"
+msgstr "Registrar en el formulario como:"

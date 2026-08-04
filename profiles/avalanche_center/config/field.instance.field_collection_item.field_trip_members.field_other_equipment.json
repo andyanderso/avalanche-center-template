@@ -1,0 +1,80 @@
+{
+    "_config_name": "field.instance.field_collection_item.field_trip_members.field_other_equipment",
+    "field_name": "field_other_equipment",
+    "entity_type": "field_collection_item",
+    "bundle": "field_trip_members",
+    "deleted": "0",
+    "label": "Other Equipment",
+    "widget": {
+        "weight": "7",
+        "type": "options_buttons",
+        "module": "options",
+        "active": 1,
+        "settings": []
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "list_default",
+            "weight": "6",
+            "settings": [],
+            "module": "list"
+        },
+        "token": {
+            "label": "above",
+            "type": "hidden",
+            "weight": "6",
+            "settings": []
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": [
+        {
+            "value": "Helmet"
+        },
+        {
+            "value": "First Aid Kit"
+        },
+        {
+            "value": "Water"
+        },
+        {
+            "value": "Food"
+        },
+        {
+            "value": "Emergency Shelter"
+        },
+        {
+            "value": "Repair Kit"
+        },
+        {
+            "value": "Snow Saw"
+        },
+        {
+            "value": "Snow Study Kit"
+        },
+        {
+            "value": "Skins"
+        },
+        {
+            "value": "Headlamp"
+        },
+        {
+            "value": "Extra Batteries"
+        },
+        {
+            "value": "Knife"
+        },
+        {
+            "value": "Fire Starter"
+        },
+        {
+            "value": "Signalling Device"
+        }
+    ],
+    "default_value_label_token": 0
+}

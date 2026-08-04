@@ -1,0 +1,8 @@
+{
+    "_config_name": "taxonomy.vocabulary.page_category",
+    "name": "Page Category",
+    "machine_name": "page_category",
+    "description": "Use these to categorize pages",
+    "hierarchy": "0",
+    "weight": "0"
+}

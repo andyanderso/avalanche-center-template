@@ -1,0 +1,8 @@
+name = TB Mega Menu
+description = Megamenu solutions for Drupal
+package = Menu
+version = VERSION
+backdrop = 1.x
+type = module
+
+configure = admin/structure/tb-megamenu

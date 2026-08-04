@@ -1,0 +1,38 @@
+{
+    "_config_name": "field.instance.node.media_gallery.media_gallery_collection",
+    "field_name": "media_gallery_collection",
+    "entity_type": "node",
+    "bundle": "media_gallery",
+    "deleted": "0",
+    "label": "Gallery collection",
+    "default_value": [
+        {
+            "tid": "14"
+        }
+    ],
+    "display": {
+        "default": {
+            "type": "hidden",
+            "label": "hidden",
+            "settings": [],
+            "weight": 12
+        },
+        "teaser": {
+            "type": "hidden",
+            "label": "hidden",
+            "settings": [],
+            "weight": 12
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "widget": {
+        "type": "options_select",
+        "settings": [],
+        "weight": 42,
+        "module": "options"
+    },
+    "required": false,
+    "description": ""
+}

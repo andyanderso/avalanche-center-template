@@ -1,0 +1,10 @@
+{
+    "_config_name": "block.custom.5",
+    "delta": "5",
+    "info": "Observations",
+    "title": "",
+    "body": {
+        "value": "<div><a href=\"/observations\">Observations - List View</a></div>\n<div><a href=\"/observations-map\">Observations - Map View</a></div>\n<div><a href=\"/observations-archive\">Archived Observations - List View</a></div>\n<div><a href=\"/observations-map-archive\">Archived Observations - Map View</a></div>\n",
+        "format": "full_html"
+    }
+}

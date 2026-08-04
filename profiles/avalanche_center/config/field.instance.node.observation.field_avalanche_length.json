@@ -1,0 +1,39 @@
+{
+    "_config_name": "field.instance.node.observation.field_avalanche_length",
+    "field_name": "field_avalanche_length",
+    "entity_type": "node",
+    "bundle": "observation",
+    "deleted": "0",
+    "label": "Avalanche Length (Vertical Run)",
+    "widget": {
+        "weight": "242",
+        "type": "number",
+        "module": "number",
+        "active": 0,
+        "settings": []
+    },
+    "settings": {
+        "min": "",
+        "max": "",
+        "prefix": "",
+        "suffix": "ft.",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "number_integer",
+            "weight": "336",
+            "settings": {
+                "thousand_separator": "",
+                "decimal_separator": ".",
+                "scale": 0,
+                "prefix_suffix": true
+            },
+            "module": "number"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": null
+}

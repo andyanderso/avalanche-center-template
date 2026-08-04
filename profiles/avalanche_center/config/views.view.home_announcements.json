@@ -1,0 +1,447 @@
+{
+    "_config_name": "views.view.home_announcements",
+    "name": "home_announcements",
+    "description": "",
+    "tag": "announcements",
+    "base_table": "node",
+    "human_name": "Announcements",
+    "core": "0",
+    "display": {
+        "default": {
+            "display_title": "Home page announcements",
+            "display_plugin": "default",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "title": "Annoucements and News:",
+                "use_more": true,
+                "use_more_always": false,
+                "use_more_text": "MORE",
+                "link_display": "page_1",
+                "access": {
+                    "type": "none"
+                },
+                "cache": {
+                    "type": "none"
+                },
+                "exposed_form": {
+                    "type": "basic"
+                },
+                "pager": {
+                    "type": "some",
+                    "options": {
+                        "items_per_page": 5
+                    }
+                },
+                "style_plugin": "table",
+                "style_options": {
+                    "columns": {
+                        "body": "title",
+                        "title": "title"
+                    },
+                    "default": "-1",
+                    "info": {
+                        "body": {
+                            "sortable": 0,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "title": {
+                            "sortable": 0,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        }
+                    }
+                },
+                "fields": {
+                    "title": {
+                        "id": "title",
+                        "table": "node",
+                        "field": "title",
+                        "label": "",
+                        "element_label_colon": false
+                    },
+                    "body": {
+                        "id": "body",
+                        "table": "field_data_body",
+                        "field": "body",
+                        "label": "",
+                        "element_label_colon": false
+                    }
+                },
+                "sorts": {
+                    "created": {
+                        "id": "created",
+                        "table": "node",
+                        "field": "created",
+                        "order": "DESC"
+                    }
+                },
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "announcements": "announcements"
+                        },
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": "1",
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    }
+                }
+            }
+        },
+        "block_1": {
+            "display_title": "home page announcements",
+            "display_plugin": "block",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "pager": false,
+                    "fields": false,
+                    "title": false
+                },
+                "pager": {
+                    "type": "some",
+                    "options": {
+                        "items_per_page": "2",
+                        "offset": "0"
+                    }
+                },
+                "fields": {
+                    "path": {
+                        "id": "path",
+                        "table": "node",
+                        "field": "path",
+                        "label": "",
+                        "exclude": true,
+                        "element_label_colon": false
+                    },
+                    "title": {
+                        "id": "title",
+                        "table": "node",
+                        "field": "title",
+                        "label": "",
+                        "element_label_colon": false
+                    },
+                    "body": {
+                        "id": "body",
+                        "table": "field_data_body",
+                        "field": "body",
+                        "label": "",
+                        "alter": {
+                            "max_length": "220",
+                            "more_link": true,
+                            "more_link_text": "More",
+                            "more_link_path": "[path]",
+                            "trim": true,
+                            "html": true
+                        },
+                        "element_label_colon": false,
+                        "settings": {
+                            "trim_length": "400"
+                        }
+                    }
+                },
+                "title": "Announcements and News:"
+            }
+        },
+        "page_1": {
+            "display_title": "Announcements and News",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "path": "news",
+                "pager": {
+                    "type": "full",
+                    "options": {
+                        "items_per_page": "5",
+                        "offset": "0",
+                        "id": "0",
+                        "total_pages": "",
+                        "quantity": "9",
+                        "tags": {
+                            "first": "« first",
+                            "previous": "‹ previous",
+                            "next": "next ›",
+                            "last": "last »"
+                        },
+                        "expose": {
+                            "items_per_page": 0,
+                            "items_per_page_label": "Items per page",
+                            "items_per_page_options": "5, 10, 20, 40, 60",
+                            "items_per_page_options_all": 0,
+                            "items_per_page_options_all_label": "- All -",
+                            "offset": 0,
+                            "offset_label": "Offset"
+                        }
+                    }
+                },
+                "defaults": {
+                    "pager": false,
+                    "pager_options": false,
+                    "title": false
+                },
+                "pager_options": null,
+                "title": "Announcements and News:"
+            }
+        },
+        "block_2": {
+            "display_title": "advisory page announcements",
+            "display_plugin": "block",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "title": false,
+                    "pager": false,
+                    "fields": false,
+                    "filter_groups": false,
+                    "filters": false,
+                    "css_class": false,
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false
+                },
+                "pager": {
+                    "type": "some",
+                    "options": {
+                        "items_per_page": "1",
+                        "offset": "0"
+                    }
+                },
+                "fields": {
+                    "body": {
+                        "id": "body",
+                        "table": "field_data_body",
+                        "field": "body",
+                        "label": "",
+                        "alter": {
+                            "max_length": "200"
+                        },
+                        "element_label_colon": false,
+                        "settings": {
+                            "trim_length": "200"
+                        }
+                    }
+                },
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "announcements": "announcements"
+                        },
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": "1",
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "field_advisory_announcement_value": {
+                        "id": "field_advisory_announcement_value",
+                        "table": "field_data_field_advisory_announcement",
+                        "field": "field_advisory_announcement_value",
+                        "value": {
+                            "1": "1"
+                        }
+                    }
+                },
+                "css_class": "",
+                "style_plugin": "list",
+                "style_options": {
+                    "grouping": [],
+                    "row_class": "",
+                    "default_row_class": 1,
+                    "row_class_special": 1,
+                    "type": "ul",
+                    "wrapper_class": "item-list",
+                    "class": "advisory-announcement"
+                },
+                "row_plugin": "fields",
+                "row_options": []
+            }
+        },
+        "feed_1": {
+            "display_title": "Feed",
+            "display_plugin": "feed",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "pager": {
+                    "type": "some"
+                },
+                "style_plugin": "rss",
+                "row_plugin": "node_rss",
+                "path": "news-rss.xml",
+                "displays": {
+                    "default": "default",
+                    "block_1": "block_1"
+                }
+            }
+        },
+        "block_3": {
+            "display_title": "Email announcements",
+            "display_plugin": "block",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "pager": false,
+                    "fields": false,
+                    "title": false,
+                    "pager_options": false,
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false
+                },
+                "pager": {
+                    "type": "some",
+                    "options": {
+                        "items_per_page": "3",
+                        "offset": "0"
+                    }
+                },
+                "fields": {
+                    "path": {
+                        "id": "path",
+                        "table": "node",
+                        "field": "path",
+                        "label": "",
+                        "exclude": true,
+                        "element_label_colon": false
+                    },
+                    "title": {
+                        "id": "title",
+                        "table": "node",
+                        "field": "title",
+                        "label": "",
+                        "element_label_colon": false
+                    },
+                    "body": {
+                        "id": "body",
+                        "table": "field_data_body",
+                        "field": "body",
+                        "label": "",
+                        "alter": {
+                            "max_length": "220",
+                            "more_link": true,
+                            "more_link_text": "More",
+                            "more_link_path": "[path]",
+                            "trim": true,
+                            "html": true
+                        },
+                        "element_label_colon": false,
+                        "settings": {
+                            "trim_length": "400"
+                        }
+                    },
+                    "nothing": {
+                        "id": "nothing",
+                        "table": "views",
+                        "field": "nothing",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": true,
+                            "text": "<hr>",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 0
+                    }
+                },
+                "title": "Announcements and News:",
+                "display_description": "",
+                "pager_options": null,
+                "style_plugin": "default",
+                "style_options": {
+                    "grouping": [],
+                    "row_class": "",
+                    "default_row_class": 1,
+                    "row_class_special": 1
+                },
+                "row_plugin": "fields",
+                "row_options": []
+            }
+        }
+    }
+}

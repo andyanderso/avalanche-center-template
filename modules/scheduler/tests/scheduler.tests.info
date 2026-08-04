@@ -1,0 +1,29 @@
+[SchedulerApiTestCase]
+name = Scheduler API
+description = Tests for the Scheduler API.
+group = Scheduler
+file = scheduler_api.test
+
+[SchedulerFunctionalTest]
+name = Scheduler functionality
+description = Tests the Scheduler functions which do not require other modules.
+group = Scheduler
+file = scheduler.test
+
+[SchedulerDateModuleTest]
+name = Scheduler and Date module
+description = Tests the functionality which needs the Date module.
+group = Scheduler
+file = scheduler.test
+
+[SchedulerRulesTest]
+name = Scheduler and Rules Integration
+description = Tests the Rules actions and conditions provided by Scheduler.
+group = Scheduler
+file = scheduler.test
+
+
+; Added by Backdrop CMS packaging script on 2025-08-06
+project = scheduler
+version = 1.x-1.7.2
+timestamp = 1754514724

@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.instance.taxonomy_term.gallery_collections.field_license",
+    "field_name": "field_license",
+    "entity_type": "taxonomy_term",
+    "bundle": "gallery_collections",
+    "deleted": "0",
+    "label": "Default license settings",
+    "required": true,
+    "default_value": [
+        {
+            "value": "nothing"
+        }
+    ],
+    "description": "Choose a default <a href=\"http://creativecommons.org\">Creative Commons</a> license for all Gallery media. Later you can change the license for each piece of media.",
+    "weight": 14,
+    "display": {
+        "default": {
+            "type": "hidden",
+            "label": "hidden",
+            "settings": [],
+            "weight": 3
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "widget": {
+        "type": "options_select",
+        "settings": [],
+        "weight": 34,
+        "module": "options"
+    }
+}

@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.instance.node.observation.field_trigger_modifier",
+    "field_name": "field_trigger_modifier",
+    "entity_type": "node",
+    "bundle": "observation",
+    "deleted": "0",
+    "label": "Trigger Modifier",
+    "widget": {
+        "weight": "110",
+        "type": "options_select",
+        "module": "options",
+        "active": 1,
+        "settings": {
+            "apply_chosen": ""
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "list_default",
+            "weight": "336",
+            "settings": [],
+            "module": "list"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value_label_token": 0,
+    "default_value": null
+}

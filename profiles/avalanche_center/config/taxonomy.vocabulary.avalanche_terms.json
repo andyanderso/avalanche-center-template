@@ -1,0 +1,8 @@
+{
+    "_config_name": "taxonomy.vocabulary.avalanche_terms",
+    "name": "Avalanche Terms",
+    "machine_name": "avalanche_terms",
+    "description": "A glossary of avalanche terms.",
+    "hierarchy": "0",
+    "weight": "0"
+}

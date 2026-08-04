@@ -1,0 +1,64 @@
+/* iATS Donate Page CSS */
+
+#IATSPaymentBoxForm {
+    font-family:PT Sans;
+}
+
+label.IATS_EventTitle {
+    background: none repeat scroll 0 0 #333333;
+    color: #FFFFFF;
+    font-size: 25px;
+    text-indent: 8px;
+    margin-bottom: 10px;
+    padding:8px;
+    font-weight:bold;
+}
+
+
+div.IATS_Div {
+border:none;
+padding:0px;
+}
+
+div.IATS_AmountItemDiv {
+    background-color: #CCE8F9;
+    border-radius: 10px;
+    box-shadow: 5px 5px 5px #888888;
+    font-family: pt sans narrow;
+    font-size: 20px;
+    height: 38px;
+    margin: 0.5em 0 1em 1em;
+    padding: 6px;
+}
+
+
+span.IATS_AmountSectionTitle, span.IATS_PaymentSectionTitle {
+    border:none;
+    padding:0px;
+}
+
+button.IATS_Action {
+    background: none repeat scroll 0 0 #CE4141;
+    border: medium none;
+    border-radius: 20px 10px 20px 10px;
+    font-family: pt sans narrow;
+    font-size: 25px;
+    font-weight: bold;
+    padding: 4px 15px;
+    text-transform: uppercase;
+    color: #ffffff;
+}
+
+button.IATS_Action:hover {
+    text-decoration: underline;
+    cursor:pointer;
+ }
+
+div.IATS_PaymentFrequencyItemDiv, div.IATS_PaymentTypeItemDiv {
+    font-size:1.5em;
+}
+
+div.IATS_SocialMediaDiv {
+  clear:both;
+  text-align:center;
+}

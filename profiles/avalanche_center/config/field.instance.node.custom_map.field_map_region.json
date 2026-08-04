@@ -1,0 +1,75 @@
+{
+    "_config_name": "field.instance.node.custom_map.field_map_region",
+    "field_name": "field_map_region",
+    "entity_type": "node",
+    "bundle": "custom_map",
+    "deleted": "0",
+    "label": "Map Region",
+    "widget": {
+        "weight": "44",
+        "type": "leaflet_widget_widget",
+        "module": "leaflet_widget",
+        "active": 1,
+        "settings": {
+            "map": {
+                "base_layer": "esri_world_topo",
+                "center": {
+                    "lat": 0,
+                    "lng": 0
+                },
+                "min_zoom": 2,
+                "max_zoom": 18,
+                "auto_center": true,
+                "zoom": 10,
+                "height": 400,
+                "feature_types": {
+                    "marker": 0,
+                    "polyline": 0,
+                    "polygon": "polygon",
+                    "rectangle": 0
+                },
+                "search_widget": false
+            }
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "geofield_map_map",
+            "weight": "3",
+            "settings": {
+                "geofield_map_width": "100%",
+                "geofield_map_height": "500px",
+                "geofield_map_center": {
+                    "lat": "",
+                    "lon": "",
+                    "geocode": "Find my location"
+                },
+                "geofield_map_zoom": "8",
+                "geofield_map_min_zoom": "0",
+                "geofield_map_max_zoom": "0",
+                "geofield_map_controltype": "default",
+                "geofield_map_mtc": "standard",
+                "geofield_map_pancontrol": 1,
+                "geofield_map_maptype": "physical",
+                "geofield_map_baselayers_map": 1,
+                "geofield_map_baselayers_satellite": 1,
+                "geofield_map_baselayers_hybrid": 1,
+                "geofield_map_baselayers_physical": 1,
+                "geofield_map_scale": 0,
+                "geofield_map_overview": 0,
+                "geofield_map_overview_opened": 0,
+                "geofield_map_scrollwheel": 0,
+                "geofield_map_draggable": 0,
+                "geofield_map_streetview_show": 0
+            },
+            "module": "geofield_map"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": []
+}

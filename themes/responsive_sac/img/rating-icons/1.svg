@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   width="252.90569"
+   height="70"
+   id="svg3090"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="1.svg"
+   inkscape:export-filename="/home/andy/sac-d7/sites/all/themes/sac/img/rating-icons/1.png"
+   inkscape:export-xdpi="90.033562"
+   inkscape:export-ydpi="90.033562">
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview3075"
+     showgrid="false"
+     inkscape:zoom="1.3404206"
+     inkscape:cx="126.45284"
+     inkscape:cy="35"
+     inkscape:window-x="59"
+     inkscape:window-y="24"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg3090" />
+  <defs
+     id="defs3092" />
+  <metadata
+     id="metadata3095">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <path
+     inkscape:connector-curvature="0"
+     style="fill:#4dbd38;fill-opacity:1;fill-rule:nonzero;stroke:none"
+     id="path12"
+     d="M 180.77409,70 0,70 0,0 l 180.77409,0 0,70 z" />
+  <g
+     id="g30"
+     transform="matrix(2.1239153,0,0,-2.1239153,252.74689,34.21201)">
+    <path
+       inkscape:connector-curvature="0"
+       style="fill:#110f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path32"
+       d="m 0,0 -15.955,15.955 c -0.204,0.204 -0.536,0.204 -0.741,0 L -32.651,0 c -0.099,-0.098 -0.15,-0.231 -0.15,-0.372 0,-0.138 0.059,-0.271 0.157,-0.369 l 15.955,-15.955 c 0.098,-0.099 0.231,-0.154 0.371,-0.154 0.138,0 0.272,0.055 0.371,0.154 L 0.006,-0.741 C 0.211,-0.536 0.205,-0.205 0,0" />
+  </g>
+  <g
+     id="g34"
+     transform="matrix(2.1239153,0,0,-2.1239153,242.17299,25.55663)">
+    <path
+       inkscape:connector-curvature="0"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path36"
+       d="M 0,0 -1.953,1.953 -1.95,1.951 -8.086,8.089 c 0,0.002 0,0.002 -10e-4,0.003 l -2.092,2.091 -0.625,0.624 -0.394,0.396 c -0.039,0.04 -0.094,0.062 -0.149,0.062 -0.055,0 -0.108,-0.022 -0.148,-0.062 l -0.296,-0.296 -0.002,0 -8.955,-8.956 5.102,2.897 3.729,-1.757 4.075,3.162 0.174,-0.127 6.897,-6.898 c 0.212,-0.21 0.556,-0.21 0.771,0 0.214,0.214 0.214,0.558 0,0.772" />
+  </g>
+  <g
+     id="g38"
+     transform="matrix(2.1239153,0,0,-2.1239153,184.89163,35.24891)">
+    <path
+       inkscape:connector-curvature="0"
+       style="fill:#4dbd38;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path40"
+       d="m 0,0 15.476,-15.477 c 0.04,-0.04 0.092,-0.062 0.147,-0.062 0.054,0 0.106,0.022 0.145,0.062 L 31.245,0 c 0.037,0.036 0.054,0.082 0.057,0.13 l -31.36,0 C -0.055,0.082 -0.036,0.036 0,0" />
+  </g>
+  <g
+     id="g42"
+     transform="matrix(2.1239153,0,0,-2.1239153,237.99992,39.60061)">
+    <path
+       inkscape:connector-curvature="0"
+       style="fill:#110f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path44"
+       d="m 0,0 c 0.188,-0.355 -1.491,-1.549 -3.64,-3.695 -2.424,-2.426 -5.389,-5.828 -5.831,-6.112 -0.477,-0.302 -1.117,-0.075 -1.323,0.236 -0.109,0.165 -2.411,3.901 -2.411,4.051 0,0.31 0.18,0.594 0.54,0.85 0.361,0.26 0.728,0.612 1.064,0.449 0.103,-0.049 1.561,-2.538 1.956,-2.532 0.791,0.017 6.549,7.132 7.676,7.239 C -1.711,0.513 -0.326,0.65 0,0" />
+  </g>
+  <text
+     sodipodi:linespacing="125%"
+     style="font-size:24px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:PT Sans Narrow;-inkscape-font-specification:PT Sans Narrow Bold Condensed"
+     xml:space="preserve"
+     id="text3614"
+     y="43.388027"
+     x="64.292671"><tspan
+       id="tspan3616"
+       y="43.388027"
+       x="64.292671">1 Low</tspan></text>
+</svg>

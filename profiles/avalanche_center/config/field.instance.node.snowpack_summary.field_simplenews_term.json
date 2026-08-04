@@ -1,0 +1,59 @@
+{
+    "_config_name": "field.instance.node.snowpack_summary.field_simplenews_term",
+    "field_name": "field_simplenews_term",
+    "entity_type": "node",
+    "bundle": "snowpack_summary",
+    "deleted": "0",
+    "label": "Newsletter category",
+    "required": 1,
+    "widget": {
+        "weight": "52",
+        "type": "options_buttons",
+        "module": "options",
+        "active": 1,
+        "settings": []
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "taxonomy_term_reference_link",
+            "settings": [],
+            "module": "taxonomy",
+            "weight": 12
+        },
+        "teaser": {
+            "label": "hidden",
+            "type": "hidden",
+            "settings": [],
+            "weight": 1
+        },
+        "email_plain": {
+            "label": "hidden",
+            "type": "hidden",
+            "settings": [],
+            "weight": 0
+        },
+        "email_html": {
+            "label": "hidden",
+            "type": "hidden",
+            "settings": [],
+            "weight": 0
+        },
+        "email_textalt": {
+            "label": "hidden",
+            "type": "hidden",
+            "settings": [],
+            "weight": 0
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "description": "",
+    "default_value": [
+        {
+            "tid": "108"
+        }
+    ],
+    "default_value_label_token": 0
+}

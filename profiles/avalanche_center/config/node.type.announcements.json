@@ -1,0 +1,37 @@
+{
+    "_config_name": "node.type.announcements",
+    "type": "announcements",
+    "name": "Announcements",
+    "base": "node_content",
+    "module": "node",
+    "description": "<p>Use this to create announcements for the home page or the top of the forecast page.</p>",
+    "help": "<p>Keep these short and to the point. We do not want to overuse the announcements either. The less of these we put on the forecast page the more effective they are.</p>",
+    "has_title": true,
+    "title_label": "Title",
+    "modified": true,
+    "disabled": false,
+    "orig_type": "announcements",
+    "settings": {
+        "status_default": 1,
+        "sticky_enabled": true,
+        "sticky_default": false,
+        "promote_enabled": true,
+        "promote_default": false,
+        "revision_enabled": true,
+        "revision_default": false,
+        "node_preview": "1",
+        "node_submitted": 0,
+        "node_user_picture": true,
+        "language": null,
+        "menu_default": false,
+        "menu_options": [
+            "main-menu"
+        ],
+        "menu_parent": "main-menu:0",
+        "scheduling_enabled": true,
+        "node_submitted_format": "[node:created:medium] by [node:author]",
+        "hidden_path": "0",
+        "node_permissions": true
+    },
+    "node_preview": 1
+}

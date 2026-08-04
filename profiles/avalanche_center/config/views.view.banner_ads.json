@@ -1,0 +1,467 @@
+{
+    "_config_name": "views.view.banner_ads",
+    "name": "banner_ads",
+    "description": "",
+    "tag": "ads",
+    "base_table": "node",
+    "human_name": "Banner Ads",
+    "core": "0",
+    "display": {
+        "default": {
+            "display_title": "Home page announcements",
+            "display_plugin": "default",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "title": "Annoucements and News:",
+                "use_more": true,
+                "use_more_always": false,
+                "use_more_text": "MORE",
+                "link_display": "page_1",
+                "access": {
+                    "type": "none"
+                },
+                "cache": {
+                    "type": "none"
+                },
+                "exposed_form": {
+                    "type": "basic"
+                },
+                "pager": {
+                    "type": "some",
+                    "options": {
+                        "items_per_page": 5
+                    }
+                },
+                "style_plugin": "table",
+                "style_options": {
+                    "columns": {
+                        "body": "title",
+                        "title": "title"
+                    },
+                    "default": "-1",
+                    "info": {
+                        "body": {
+                            "sortable": 0,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "title": {
+                            "sortable": 0,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        }
+                    }
+                },
+                "fields": {
+                    "title": {
+                        "id": "title",
+                        "table": "node",
+                        "field": "title",
+                        "label": "",
+                        "element_label_colon": false
+                    },
+                    "body": {
+                        "id": "body",
+                        "table": "field_data_body",
+                        "field": "body",
+                        "label": "",
+                        "element_label_colon": false
+                    }
+                },
+                "sorts": {
+                    "random": {
+                        "id": "random",
+                        "table": "views",
+                        "field": "random",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "order": "ASC",
+                        "exposed": false,
+                        "expose": {
+                            "label": ""
+                        }
+                    }
+                },
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "announcements": "announcements"
+                        },
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": "1",
+                        "group": "0",
+                        "expose": {
+                            "operator": false
+                        }
+                    }
+                }
+            }
+        },
+        "block_2": {
+            "display_title": "Banner Ads Block for Header",
+            "display_plugin": "block",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "title": false,
+                    "pager": false,
+                    "fields": false,
+                    "filter_groups": false,
+                    "filters": false,
+                    "css_class": false,
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false
+                },
+                "pager": {
+                    "type": "some",
+                    "options": {
+                        "items_per_page": "1",
+                        "offset": "0"
+                    }
+                },
+                "fields": {
+                    "body": {
+                        "id": "body",
+                        "table": "field_data_body",
+                        "field": "body",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 1,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "click_sort_column": "value",
+                        "type": "text_default",
+                        "settings": [],
+                        "group_column": "value",
+                        "group_columns": [],
+                        "group_rows": true,
+                        "delta_limit": "all",
+                        "delta_offset": 0,
+                        "delta_reversed": false,
+                        "delta_first_last": false,
+                        "multi_type": "separator",
+                        "separator": ", ",
+                        "field_api_classes": 0
+                    },
+                    "field_banner_ad_link": {
+                        "id": "field_banner_ad_link",
+                        "table": "field_data_field_banner_ad_link",
+                        "field": "field_banner_ad_link",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": 1,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "click_sort_column": "url",
+                        "type": "link_plain",
+                        "settings": [],
+                        "group_column": "",
+                        "group_columns": [],
+                        "group_rows": true,
+                        "delta_limit": "all",
+                        "delta_offset": 0,
+                        "delta_reversed": false,
+                        "delta_first_last": false,
+                        "multi_type": "separator",
+                        "separator": ", ",
+                        "field_api_classes": 0
+                    },
+                    "field_banner_ad_image": {
+                        "id": "field_banner_ad_image",
+                        "table": "field_data_field_banner_ad_image",
+                        "field": "field_banner_ad_image",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 1,
+                            "path": "[field_banner_ad_link]",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 1,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "click_sort_column": "fid",
+                        "type": "image",
+                        "settings": {
+                            "image_style": "",
+                            "image_link": ""
+                        },
+                        "group_column": "",
+                        "group_columns": [],
+                        "group_rows": true,
+                        "delta_limit": "all",
+                        "delta_offset": 0,
+                        "delta_reversed": false,
+                        "delta_first_last": false,
+                        "delta_random": false,
+                        "multi_type": "separator",
+                        "separator": ", ",
+                        "field_api_classes": 0
+                    }
+                },
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "in",
+                        "value": {
+                            "banner_ad": "banner_ad"
+                        },
+                        "group": 1,
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator_label": "",
+                            "operator": false,
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "2": 2
+                            },
+                            "reduce": false
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": "1",
+                        "group": 1,
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "field_expiration_date_value": {
+                        "id": "field_expiration_date_value",
+                        "table": "field_data_field_expiration_date",
+                        "field": "field_expiration_date_value",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": ">=",
+                        "value": {
+                            "min": null,
+                            "max": null,
+                            "value": null,
+                            "type": "date"
+                        },
+                        "group": 1,
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator_label": "",
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "2": 2
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "granularity": "day",
+                        "form_type": "date_select",
+                        "default_date": "now",
+                        "default_to_date": "",
+                        "year_range": "-3:+3",
+                        "add_delta": ""
+                    }
+                },
+                "css_class": "",
+                "style_plugin": "default",
+                "style_options": {
+                    "grouping": [],
+                    "row_class": "",
+                    "default_row_class": 1,
+                    "row_class_special": 1
+                },
+                "row_plugin": "fields",
+                "row_options": [],
+                "display_description": "",
+                "filter_groups": {
+                    "operator": "AND",
+                    "groups": {
+                        "1": "AND"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,11 @@
+type = module
+name = Colorbox
+description = A light-weight, customizable lightbox plugin
+backdrop = 1.x
+
+configure = admin/config/media/colorbox
+
+; Added by Backdrop CMS packaging script on 2025-04-29
+project = colorbox
+version = 1.x-2.17.4
+timestamp = 1745937376

@@ -1,0 +1,13 @@
+name = "Scheduler tests"
+description = "Support module for Scheduler related testing."
+package = Testing
+backdrop = 1.x
+type = module
+hidden = TRUE
+dependencies[] = list
+dependencies[] = options
+
+; Added by Backdrop CMS packaging script on 2025-08-06
+project = scheduler
+version = 1.x-1.7.2
+timestamp = 1754514724

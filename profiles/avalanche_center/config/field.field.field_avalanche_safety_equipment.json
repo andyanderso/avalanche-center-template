@@ -1,0 +1,28 @@
+{
+    "_config_name": "field.field.field_avalanche_safety_equipment",
+    "field_name": "field_avalanche_safety_equipment",
+    "type": "list_text",
+    "module": "list",
+    "active": 1,
+    "locked": "0",
+    "cardinality": "-1",
+    "translatable": "0",
+    "deleted": "0",
+    "entity_types": [],
+    "settings": {
+        "allowed_values": {
+            "Beacon": "Beacon",
+            "Shovel": "Shovel",
+            "Probe": "Probe",
+            "Airbag": "Airbag",
+            "Avalung": "Avalung"
+        },
+        "allowed_values_function": ""
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "module": "field_sql_storage",
+        "active": 1,
+        "settings": []
+    }
+}

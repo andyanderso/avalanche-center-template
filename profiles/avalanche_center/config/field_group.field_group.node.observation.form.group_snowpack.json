@@ -1,0 +1,26 @@
+{
+    "_config_name": "field_group.field_group.node.observation.form.group_snowpack",
+    "group_name": "group_snowpack",
+    "entity_type": "node",
+    "bundle": "observation",
+    "mode": "form",
+    "parent_name": "group_observation",
+    "label": "Snowpack Details",
+    "weight": "17",
+    "children": [
+        "field_persistent_weak_layers",
+        "field_total_snow_depth",
+        "group_snowpack_terrain"
+    ],
+    "format_type": "fieldset",
+    "format_settings": {
+        "label": "Snowpack Details",
+        "instance_settings": {
+            "required_fields": 1,
+            "id": "",
+            "classes": "",
+            "description": ""
+        },
+        "formatter": "collapsed"
+    }
+}

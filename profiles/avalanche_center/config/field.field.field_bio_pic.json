@@ -1,0 +1,25 @@
+{
+    "_config_name": "field.field.field_bio_pic",
+    "field_name": "field_bio_pic",
+    "type": "image",
+    "module": "image",
+    "active": 1,
+    "locked": "0",
+    "cardinality": "1",
+    "translatable": "0",
+    "deleted": "0",
+    "entity_types": [],
+    "settings": {
+        "uri_scheme": "public",
+        "default_image": 0,
+        "description_field": "0",
+        "list_default": 1,
+        "list_field": "0"
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "module": "field_sql_storage",
+        "active": 1,
+        "settings": []
+    }
+}

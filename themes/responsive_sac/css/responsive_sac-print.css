@@ -1,0 +1,188 @@
+
+/* ---------- General Layout ---------- */
+
+body,
+input,
+textarea,
+select {
+  color: #000;
+  background: none;
+}
+
+body.two-sidebars,
+body.sidebar-first,
+body.sidebar-second,
+body {
+  width: 1016px;
+}
+#sidebar-first,
+#sidebar-second,
+.navigation,
+#toolbar,
+#footer-wrapper,
+.tabs,
+.add-or-remove-shortcuts {
+  display: none;
+}
+.one-sidebar #content,
+.two-sidebars #content {
+  width: 100%;
+}
+#triptych-wrapper {
+  width: 960px;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+#triptych-first, #triptych-middle, #triptych-last {
+  width: 250px;
+}
+
+/* ---------- Node Pages ---------- */
+
+#comments .title,
+#comments form,
+.comment_forbidden {
+  display: none;
+}
+/* custom sac print styling */
+#logo {
+ float:none;
+}
+
+div#avalanche-danger-row > div.rating-5 {
+  color: #eee;
+  background-color: #000;
+}
+
+div#avalanche-danger-row > div.rating-4 {
+  color: #000;
+  background-color: #cc0000;
+}
+
+div#avalanche-danger-row > div.rating-3 {
+  color: #000;
+  background-color: #ffaa33;
+}
+
+div#avalanche-danger-row > div.rating-2 {
+  color: #000;
+  background-color: #ffff33;
+}
+
+div#avalanche-danger-row > div.rating-1 {
+  color: #000;
+  background-color: #00cc00 !important;
+}
+
+div#avalanche-danger-row > div.rating-0 {
+  color: #000;
+  background-color: #777;
+}
+
+div#block-block-1 {
+  position:absolute;
+  top:0px;
+  right:5px;
+}
+#logo {
+  position:absolute;
+  top:-10px;
+  right:150px;
+}
+
+div.region-header-middle {
+  height:auto;
+}
+
+#name-and-slogan {
+  padding:25px 15px 55px;
+}
+img#mountain-icon {
+  height:192px;
+}
+
+div#elevation-ratings-div div#upper-rating {
+  top:25px;
+}
+div#elevation-ratings-div div#lower-rating, div#elevation-ratings-div div#mid-rating, div#elevation-ratings-div div#upper-rating {
+  height:52px;
+  left:135px;
+}
+
+div#elevation-ratings-div div#mid-rating {
+  top:79px;
+}
+
+div#elevation-ratings-div div#lower-rating {
+  top:133px;
+}
+
+div#bottom-line-basic {
+  height:180px;
+  margin: -5px 0px 0px 0px;
+}
+
+div#elevation-ratings-div {
+  height:200px;
+  margin: -5px 0px 0px 0px;
+}
+
+div.problem-type {
+  height:155px !important;
+}
+
+div.problem-type img {
+  height:145px;
+}
+
+#problem-rose img {
+  height:164px;
+}
+
+div#problem-description {
+  padding: 0px 0px 0px 10px;
+}
+div.problem-char-wrapper {
+  height:165px;
+}
+
+.avalanche-problem-row ul {
+  margin:10px 0px;
+}
+
+#featured {
+  display:none;
+}
+
+#danger-rating-bar-advanced img {
+  height:auto;
+}
+
+.toggle-advisory {
+  display:none;
+}
+
+div#title-date-row {
+  display:none;
+}
+
+div.middle-data {
+  height:96px;
+}
+
+div.middle-data-overlay-2 {
+  margin-top:25px;
+}
+
+div.middle-data-overlay-1 {
+  margin-top:55px;
+}
+
+div.top-label, div.bottom-label {
+  padding:5px;
+}
+
+li#trend img {
+  padding-top:40px;
+}

@@ -1,0 +1,16 @@
+name = "Geofield/Openlayers Integration tests"
+description = "Integration tests for Geofield and Openlayers"
+core = 7.x
+hidden = TRUE
+package = Testing
+type = module
+
+dependencies[] = geofield
+dependencies[] = openlayers
+
+files[] = geofield_openlayers.test
+
+; Added by Backdrop CMS packaging script on 2026-03-17
+project = geofield
+version = 1.x-1.0.7
+timestamp = 1773738135

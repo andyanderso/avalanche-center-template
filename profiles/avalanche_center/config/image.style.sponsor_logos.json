@@ -1,0 +1,25 @@
+{
+    "_config_name": "image.style.sponsor_logos",
+    "name": "sponsor_logos",
+    "label": "Sponsor logos",
+    "effects": [
+        {
+            "weight": "1",
+            "name": "image_scale",
+            "data": {
+                "width": "140",
+                "height": "",
+                "upscale": 0
+            }
+        },
+        {
+            "weight": "2",
+            "name": "image_scale",
+            "data": {
+                "width": "",
+                "height": "170",
+                "upscale": 0
+            }
+        }
+    ]
+}

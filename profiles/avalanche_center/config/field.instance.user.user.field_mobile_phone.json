@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.instance.user.user.field_mobile_phone",
+    "field_name": "field_mobile_phone",
+    "entity_type": "user",
+    "bundle": "user",
+    "deleted": "0",
+    "label": "Mobile Phone",
+    "widget": {
+        "weight": "2",
+        "type": "text_textfield",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "size": 20
+        }
+    },
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": true
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "text_default",
+            "weight": "2",
+            "settings": [],
+            "module": "text"
+        }
+    },
+    "required": 0,
+    "description": "Used for safe-return SMS text alerts, and pre-filled into your Field Work Plans.",
+    "default_value": null
+}

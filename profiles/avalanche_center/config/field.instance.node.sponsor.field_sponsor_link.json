@@ -1,0 +1,51 @@
+{
+    "_config_name": "field.instance.node.sponsor.field_sponsor_link",
+    "field_name": "field_sponsor_link",
+    "entity_type": "node",
+    "bundle": "sponsor",
+    "deleted": "0",
+    "label": "Sponsor Link",
+    "widget": {
+        "weight": "3",
+        "type": "link_field",
+        "module": "link",
+        "active": 0,
+        "settings": {
+            "maxlength_js_label": "Content limited to @limit characters, remaining: <strong>@remaining</strong>"
+        }
+    },
+    "settings": {
+        "validate_url": 1,
+        "url": 0,
+        "title": "none",
+        "title_value": "",
+        "title_maxlength": "128",
+        "enable_tokens": 1,
+        "display": {
+            "url_cutoff": "80"
+        },
+        "attributes": {
+            "target": "_blank",
+            "rel": "",
+            "class": "",
+            "configurable_title": 0,
+            "title": ""
+        },
+        "rel_remove": "default",
+        "user_register_form": false,
+        "title_label_use_field_label": false,
+        "absolute_url": 1
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "link_default",
+            "weight": "12",
+            "settings": [],
+            "module": "link"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": null
+}

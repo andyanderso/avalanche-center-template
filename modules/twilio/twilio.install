@@ -1,0 +1,98 @@
+<?php
+/**
+ * @file
+ * Install and uninstall functions for the twilio module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function twilio_install() {
+  $t = get_t();
+  backdrop_set_message($t("Twilio module settings are available under !link",
+    array( '!link' => l($t('Administer > Site configuration > Twilio'),  'admin/config/system/twilio'))
+  ));
+}
+
+/**
+ * Implements hook_install().
+ */
+function twilio_uninstall() {
+  // Remove all the twilio variables.
+  //  backdrop change, variable table not used
+  
+}
+
+/**
+ * Implements hook_schema().
+ */
+function twilio_schema() {
+  $schema['twilio_user'] = array(
+    'fields' => array(
+      'uid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'number' => array(
+        'type' => 'varchar',
+        'not null' => TRUE,
+        'length' => 32,
+      ),
+      'country' => array(
+        'type' => 'varchar',
+        'not null' => TRUE,
+        'length' => 32,
+        'default' => '1',
+      ),
+      'status' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'code' => array(
+        'type' => 'varchar',
+        'not null' => FALSE,
+        'length' => 16,
+        'default' => ''
+      ),
+    ),
+    'primary key' => array('number'),
+    'indexes' => array('uid' => array('uid')),
+  );
+  return $schema;
+}
+
+
+/**
+ * Implements hook_update_N()
+ * for backdrop
+ */
+function twilio_update_1000() {
+  // Migrate variables to config.
+  $config = config('twilio.settings');  
+  $config->set('twilio_number', update_variable_get('twilio_number', ""));
+  $config->set('twilio_account', update_variable_get('twilio_account', ""));
+  $config->set('twilio_token', update_variable_get('twilio_token', ""));
+  $config->set('twilio_long_sms', update_variable_get('twilio_long_sms', "1"));
+  $config->set('twilio_registration_form', update_variable_get('twilio_registration_form', "1"));
+  $config->set('twilio_country_codes', update_variable_get('twilio_country_codes', ""));  
+  $config->save();
+
+  // Delete variables.
+  update_variable_del('twilio_number');
+  update_variable_del('twilio_account');
+  update_variable_del('twilio_token');
+  update_variable_del('twilio_long_sms');
+  update_variable_del('twilio_registration_form');
+  update_variable_del('twilio_country_codes');
+}
+
+
+/**
+ * Implements hook_update_last_removed().
+ * for backdrop
+ */
+function twilio_update_last_removed() {
+  return 7002;
+}

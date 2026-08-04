@@ -1,0 +1,30 @@
+{
+    "_config_name": "field.instance.node.avalanche_education.field__locations",
+    "field_name": "field__locations",
+    "entity_type": "node",
+    "bundle": "avalanche_education",
+    "deleted": "0",
+    "label": " Locations",
+    "widget": {
+        "weight": "-2",
+        "type": "options_buttons",
+        "module": "options",
+        "active": 1,
+        "settings": []
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "list_default",
+            "weight": "2",
+            "settings": [],
+            "module": "list"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": null
+}

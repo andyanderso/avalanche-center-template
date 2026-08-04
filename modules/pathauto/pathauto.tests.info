@@ -1,0 +1,39 @@
+[PathautoUnitTestCase]
+name = 'Pathauto unit tests'
+description = 'Unit tests for Pathauto functions.'
+group = 'Pathauto'
+file=pathauto.test
+dependencies[] = token
+
+[PathautoFunctionalTestCase]
+name = 'Pathauto basic tests'
+description = 'Test basic pathauto functionality'
+group = 'Pathauto'
+file=pathauto.test
+dependencies[] = token
+
+[PathautoLocaleTestCase]
+name = 'Pathauto localization tests'
+description = 'Test pathauto functionality with localization and translation.'
+group = 'Pathauto'
+file=pathauto.test
+dependencies[] = token
+
+[PathautoBulkUpdateTestCase]
+name = 'Pathauto bulk updating'
+description = 'Tests bulk updating of URL aliases.'
+group = 'Pathauto'
+file=pathauto.test
+dependencies[] = token
+
+[PathautoTokenTestCase]
+name = 'Pathauto tokens'
+description = 'Tests tokens provided by Pathauto.'
+group = 'Pathauto'
+file=pathauto.test
+dependencies[] = token
+
+; Added by Backdrop CMS packaging script on 2019-08-07
+project = pathauto
+version = 1.x-1.2.3
+timestamp = 1565179879

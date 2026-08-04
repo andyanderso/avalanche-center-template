@@ -1,0 +1,598 @@
+/*Obs Slide Shows*/
+#home-media-gallery-labels, #advisory-media-gallery-labels{
+  clear:both;
+}
+
+.slick-arrow, .slick-down {
+    position: absolute;
+    top: 50px;
+    right: 10px;
+}
+
+.slick-slide img {
+  float:left;
+  padding: 0px 5px 0px 5px;
+}
+
+.slick-initialized .slick-slide {
+    display: block;
+    border: 1px solid #ddd;
+    margin: 5px;
+    text-align: center;
+    padding: 5px 1px;
+    border-radius: 5px;
+}
+
+.slick-arrow::before {
+    color: #333;
+    font-size: 36px;
+    font-size: 3.25rem;
+}
+
+.slick-arrow:hover::before {
+    color: #4cb7f7;
+}
+
+.more-link{
+    text-align: center;
+}
+/*End of Obs Slide Show*/
+
+#edit-field-ob-snowpit-photo-und legend {
+    overflow:hidden;
+}
+
+.field-name-field-ob-weather-comments{
+    border-top: 1px solid #DBDBDB;
+    clear: both;
+    padding-top: 10px;
+}
+
+fieldset.group-weather-obs div.fieldset-wrapper div {
+    float:left;
+    padding: 2px 10px;
+}
+
+fieldset.group-weather-obs div.fieldset-wrapper div.field-type-text-long, fieldset.group-weather-obs div.fieldset-wrapper div.field-type-text-long div {
+    float:none;
+    padding: 0px;
+}
+
+.field-name-field-ob-avy-comments{
+    border-top: 1px solid #DBDBDB;
+    clear: both;
+    padding-top: 10px;
+}
+
+
+fieldset.group-avalanche-obs div.fieldset-wrapper div {
+    float:left;
+    padding: 2px 10px;
+}
+
+fieldset.group-avalanche-obs div.fieldset-wrapper div.field-type-text-long, fieldset.group-avalanche-obs div.fieldset-wrapper div.field-type-text-long div {
+    float:none;
+    padding: 0px;
+}
+
+/*avy and weather obs display*/
+
+.group-avalanche-obs div.inline {
+    float: left;
+    margin-bottom: 5px;
+    width:25%;
+}
+
+.group-weather-obs div.inline{
+    float: left;
+    margin-bottom: 5px;
+    width:33%;
+}
+
+
+
+
+.field-name-field-ob-avy-photos{
+    border-top: 1px solid #DBDBDB;
+    clear: both;
+    padding-top: 10px;
+}
+
+/*photos and videos grid*/
+.field-name-field-ob-snowpack-photo .field-item.even,
+.field-name-field-ob-snowpack-photo .field-item.odd,
+.field-name-field-ob-avy-photos .field-item.even,
+.field-name-field-ob-avy-photos .field-item.odd
+{
+display: inline;
+margin: 0px 0px 2px 2px;
+}
+
+.views-field-field-ob-avy-vid-1 .field-item.even,
+.views-field-field-ob-avy-vid-1 .field-item.odd,
+.views-field-field-ob-snowpit-vid-1 .field-item.even,
+.views-field-field-ob-snowpit-vid-1 .field-item.odd
+{
+display: inline-block;
+margin: 0px 0px 2px 2px;
+}
+
+
+#ob-header {
+font-size:16px;
+width:600px;
+}
+
+#ob-header a{
+color: #4db8f8;
+}
+
+#position {
+  border: 1px solid #000;
+  padding: 5px;
+  font-size: 16px;
+}
+
+div.Public {
+  background-color: #FFFF00;
+}
+
+div.Forecaster, div.Professional {
+  background-color: #00CC00;
+
+}
+div.Guide, div.Educator {
+  background-color: #4CB8F7;
+}
+div.Educator a, div.Guide a{
+    color: white;
+    font-weight: bold;
+}
+.media-youtube-player {
+  max-width: 100%;
+}
+
+/*Submit Obs Buttons*/
+.submit-obs-button {
+  background-color: /*#2FB92F green*//*blue*/#4cb7f7;
+  border-radius: 5px;
+  font-weight:bold;
+  margin:5px;
+  padding: 2px;
+  text-align:center;
+  max-width:170px;
+}
+
+.submit-obs-button a {
+  color:#ffffff;
+  white-space:normal !important;
+}
+
+.stability-table {
+    font-size: 12.8px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(0, 0, 0);
+    border-collapse: collapse;
+    vertical-align: top;
+    text-align: center;
+    font-family: sans-serif;
+    background-color: rgb(255, 255, 255);
+}
+
+.stability-table-header {
+    border-color: rgb(131, 126, 124);
+    padding: 5px;
+    background-color: rgb(255, 248, 198);
+    width: 100px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.stability-table-term {
+    border-color: rgb(131, 126, 124);
+    padding: 5px;
+    font-weight: bold;
+    font-size: larger;
+}
+
+.stability-table-info {
+    border-color: rgb(131, 126, 124);
+    padding: 5px;
+}
+.field-name-field-conditions-alerts-tax-term ul.links li {
+	float:none;
+}
+.field-name-field-conditions-alerts-tax-term .field-label {
+    font-weight: bold;
+    font-size: 14px !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.field-name-field-conditions-alerts-tax-term ul.links {
+    font-size: 14px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #3b3b3b;
+}
+
+
+/*OLD CSS - REMOVE 2017*/
+/* Views Slideshow CSS OBSELETE
+
+
+#home-media-gallery-labels:hover {
+color:#018FE2;
+text-decoration:underline;
+}
+
+
+#views_slideshow_cycle_main_media_gallery-block  {
+text-align:center;
+}
+
+#views_slideshow_cycle_main_media_gallery-block:hover {
+color:#018FE2;
+text-decoration:underline;
+}
+
+
+#views_slideshow_controls_text_previous_media_gallery-block
+{
+    background-image: url("/themes/responsive_sac/css/css-img/previous.png");
+    background-repeat: no-repeat;
+    height: 34px;
+    position: relative;
+    left: 0px;
+    top: -115px;
+    width: 40px;
+    z-index: 999;
+    display:block;
+    margin-bottom:-34px
+}
+
+#views_slideshow_controls_text_previous_media_gallery-block:hover {
+border:1px solid #018FE2;
+}
+
+
+#views_slideshow_controls_text_previous_media_gallery-block a {
+display:none;
+}
+
+#views_slideshow_controls_text_pause_media_gallery-block {
+display:none;
+}
+
+#views_slideshow_controls_text_next_media_gallery-block {
+    background-image: url("/themes/responsive_sac/css/css-img/next.png");
+    background-repeat: no-repeat;
+    height: 34px;
+    position: relative;
+    right: 0px;
+    top: -115px;
+    width: 40px;
+    z-index: 999;
+    float:right;
+}
+
+#views_slideshow_controls_text_next_media_gallery-block:hover {
+border:1px solid #018FE2;
+}
+#views_slideshow_controls_text_next_media_gallery-block a {
+display:none;
+}
+
+.views_slideshow_cycle_slide {
+    width: 100% !important;
+    text-align: center !important;
+}
+
+.home-media-gallery-slides {
+    border: 1px solid white;
+    margin: 4px 4px 25px 4px;
+    display: inline-block;
+}
+#views_slideshow_cycle_teaser_section_media_gallery-block{
+height:149px !important;
+overflow:hidden;
+}
+/*end home Media Gallery*/
+/* Advisory Media Gallery
+
+#recent-obs {
+position:relative;
+}
+
+#advisory-media-gallery-labels {
+font-size:13px;
+}
+
+
+#views_slideshow_cycle_main_media_gallery-block_1  {
+text-align:center;
+height:151px;
+overflow:hidden;
+}
+
+#views_slideshow_cycle_main_media_gallery-block_1:hover {
+color:#018FE2;
+text-decoration:underline;
+}
+
+
+#views_slideshow_controls_text_previous_media_gallery-block_1
+{
+    background-image: url("/themes/responsive_sac/css/css-img/previous.png");
+    background-repeat: no-repeat;
+    height: 34px;
+    position: absolute;
+    left: 15px;
+    top: 50px;
+    width: 40px;
+    z-index: 1000;
+}
+
+#views_slideshow_controls_text_previous_media_gallery-block_1:hover {
+border:1px solid #018FE2;
+}
+
+
+#views_slideshow_controls_text_previous_media_gallery-block_1 a {
+display:none;
+}
+
+#views_slideshow_controls_text_pause_media_gallery-block_1 {
+display:none;
+}
+
+#views_slideshow_controls_text_next_media_gallery-block_1 {
+    background-image: url("/themes/responsive_sac/css/css-img/next.png");
+    background-repeat: no-repeat;
+    height: 34px;
+    position: absolute;
+    right: 15px;
+    top: 50px;
+    width: 40px;
+    z-index: 1000;
+}
+
+#views_slideshow_controls_text_next_media_gallery-block_1:hover {
+border:1px solid #018FE2;
+}
+#views_slideshow_controls_text_next_media_gallery-block_1 a {
+display:none;
+}
+
+#views_slideshow_cycle_teaser_section_media_gallery-block_1 {
+     width: 100% !important;
+}
+
+.advisory-media-gallery-slides {
+    border: 1px solid #dddddd;
+    margin: 4px;
+    display: inline-block;
+}
+
+/* end Advisory Media Gallery*/
+/* Wx obs form
+#edit-field-ob-blowing-snow {
+    position: relative;
+}
+
+
+#edit-field-ob-air-temp{
+position:absolute;
+top:23px;
+left:350px;
+}
+
+#edit-field-ob-air-temp-trend{
+position:absolute;
+top:85px;
+left:350px;
+}
+
+
+#edit-field-cloud-cover{
+position:absolute;
+top:23px;
+left:650px;
+}
+
+#edit-field-ob-precip{
+position:absolute;
+top:85px;
+left:650px;
+}
+
+#edit-field-ob-precip-rate{
+position:absolute;
+top:150px;
+left:650px;
+}
+
+#edit-field-ob-weather-comments{
+position:relative;
+top:0px;
+}
+
+ */
+/*Avy Obs form
+
+#edit-field-ob-trigger {
+    margin-bottom: 30px;
+    position: relative;
+    top: 14px;
+}
+
+#edit-field-slope {
+position:absolute;
+top:23px;
+left:240px;
+}
+
+#edit-field-ob-aspect {
+position:absolute;
+top:95px;
+left:240px;
+}
+
+#edit-field-elevation {
+position:absolute;
+top:179px;
+left:240px;
+}
+
+#edit-field-ob-terrain {
+position:absolute;
+top:23px;
+left:430px;
+}
+
+#edit-field-ob-bed-surface {
+position:absolute;
+top:179px;
+left:430px;
+}
+
+#edit-field-ob-weak-layer {
+position:absolute;
+top:95px;
+left:430px;
+}
+
+#edit-field-crown-height {
+position:absolute;
+top:23px;
+left:660px;
+}
+
+#edit-field-avalanche-width {
+position:absolute;
+top:75px;
+left:660px;
+}
+
+#edit-field-avalanche-length {
+position:absolute;
+top:127px;
+left:660px;
+}
+
+#edit-field-number-of-similar-avalanch {
+position:absolute;
+top:179px;
+left:660px;
+}
+
+#edit-field-number-of-people-caught {
+position:absolute;
+top:23px;
+left:850px;
+}
+
+#edit-field-number-of-partial-burials {
+position:absolute;
+top:95px;
+left:850px;
+}
+
+#edit-field-number-of-full-burials {
+position:absolute;
+top:179px;
+left:850px;
+}
+*/
+
+/* Leaflet map on observation node pages */
+#ob-header .field-name-field-location .leaflet-container {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+#ob-header .field-name-field-location [id^="leaflet-map-"] {
+  width: 100% !important;
+  height: 350px !important;
+  max-width: 100%;
+}
+/* Ensure layer control is usable */
+#ob-header .leaflet-control-layers {
+  font-size: 13px;
+}
+/* Layer control on danger map and all Leaflet maps */
+.leaflet-control-layers-expanded {
+  padding: 8px 10px;
+  background: rgba(255,255,255,0.92);
+  border-radius: 4px;
+}
+.leaflet-control-layers label {
+  font-size: 13px;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   Observation photo gallery (Colorbox thumbnails)
+   Inner divs are rendered without classes, so target by structure.
+   ========================================================================== */
+.field-name-field-snowpack-avalanche-weather > div {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin: 15px 0;
+}
+.field-name-field-snowpack-avalanche-weather > div > div {
+  display: block;
+  margin: 0;
+  float: none;
+}
+.field-name-field-snowpack-avalanche-weather a.colorbox {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+  background: #1a1a1a;
+  line-height: 0;
+}
+.field-name-field-snowpack-avalanche-weather a.colorbox img {
+  width: 100% !important;
+  height: 200px !important;
+  max-width: 100% !important;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease, opacity 0.35s ease;
+}
+.field-name-field-snowpack-avalanche-weather a.colorbox:hover img {
+  transform: scale(1.08);
+  opacity: 0.85;
+}
+/* Magnifier overlay icon on hover */
+.field-name-field-snowpack-avalanche-weather a.colorbox::after {
+  content: "\f00e"; /* font-awesome search-plus */
+  font-family: "FontAwesome";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.6);
+  color: #fff;
+  font-size: 30px;
+  opacity: 0;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  pointer-events: none;
+}
+.field-name-field-snowpack-avalanche-weather a.colorbox:hover::after {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Mobile: smaller tiles */
+@media (max-width: 600px) {
+  .field-name-field-snowpack-avalanche-weather > div {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 8px;
+  }
+  .field-name-field-snowpack-avalanche-weather a.colorbox img {
+    height: 130px !important;
+  }
+}

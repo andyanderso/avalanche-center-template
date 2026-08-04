@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.instance.field_collection_item.field_emergency_contact.field_emergency_contact_phone_nu",
+    "field_name": "field_emergency_contact_phone_nu",
+    "entity_type": "field_collection_item",
+    "bundle": "field_emergency_contact",
+    "deleted": "0",
+    "label": "Emergency Contact Phone Number",
+    "widget": {
+        "weight": "2",
+        "type": "text_textfield",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "size": "15"
+        }
+    },
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "text_default",
+            "settings": [],
+            "module": "text",
+            "weight": 1
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": null
+}

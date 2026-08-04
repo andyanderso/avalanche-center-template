@@ -1,0 +1,45 @@
+{
+    "_config_name": "field.instance.node.advisory.field_hr24winddir",
+    "field_name": "field_hr24winddir",
+    "entity_type": "node",
+    "bundle": "advisory",
+    "deleted": "0",
+    "default_value": null,
+    "description": "",
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "text_default",
+            "weight": "58",
+            "settings": [],
+            "module": "text"
+        },
+        "rss": {
+            "label": "above",
+            "settings": [],
+            "type": "hidden",
+            "weight": 0
+        },
+        "teaser": {
+            "label": "above",
+            "settings": [],
+            "type": "hidden",
+            "weight": 0
+        }
+    },
+    "label": "24hr Ave Wind Direction",
+    "required": 0,
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": false
+    },
+    "widget": {
+        "active": 1,
+        "module": "text",
+        "settings": {
+            "size": "20"
+        },
+        "type": "text_textfield",
+        "weight": "64"
+    }
+}

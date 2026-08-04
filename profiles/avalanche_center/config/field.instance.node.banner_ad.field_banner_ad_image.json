@@ -1,0 +1,44 @@
+{
+    "_config_name": "field.instance.node.banner_ad.field_banner_ad_image",
+    "field_name": "field_banner_ad_image",
+    "entity_type": "node",
+    "bundle": "banner_ad",
+    "deleted": "0",
+    "label": "Banner Ad Image",
+    "widget": {
+        "weight": "5",
+        "type": "image_image",
+        "module": "image",
+        "active": 1,
+        "settings": {
+            "progress_indicator": "throbber",
+            "preview_image_style": "thumbnail",
+            "maxlength_js_label": "Content limited to @limit characters, remaining: <strong>@remaining</strong>"
+        }
+    },
+    "settings": {
+        "file_directory": "banner-ads",
+        "file_extensions": "png gif jpg jpeg",
+        "max_filesize": "",
+        "alt_field": 0,
+        "title_field": 0,
+        "default_image": 0,
+        "user_register_form": false,
+        "max_dimensions": "",
+        "min_dimensions": ""
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "image",
+            "weight": "3",
+            "settings": {
+                "image_style": "banner_ad",
+                "image_link": ""
+            },
+            "module": "image"
+        }
+    },
+    "required": 0,
+    "description": "Use this field to upload banner ad images. The image dimensions should be width:625px, height:120px. Otherwise the image will be cropped an scaled to match those diminutions. "
+}

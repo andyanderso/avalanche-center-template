@@ -1,0 +1,36 @@
+{
+    "_config_name": "field.bundle.node.media_gallery",
+    "entity_type": "node",
+    "bundle": "media_gallery",
+    "view_modes": {
+        "media_gallery_block": {
+            "custom_settings": true
+        },
+        "full": {
+            "custom_settings": true
+        }
+    },
+    "extra_fields": {
+        "form": [],
+        "display": {
+            "add_media_link": {
+                "full": {
+                    "weight": 1,
+                    "visible": true
+                },
+                "default": {
+                    "visible": false,
+                    "weight": 1
+                },
+                "teaser": {
+                    "visible": false,
+                    "weight": 1
+                },
+                "media_gallery_block": {
+                    "visible": false,
+                    "weight": 1
+                }
+            }
+        }
+    }
+}

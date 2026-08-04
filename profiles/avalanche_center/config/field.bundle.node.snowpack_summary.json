@@ -1,0 +1,23 @@
+{
+    "_config_name": "field.bundle.node.snowpack_summary",
+    "entity_type": "node",
+    "bundle": "snowpack_summary",
+    "view_modes": [],
+    "extra_fields": {
+        "form": {
+            "locations": {
+                "weight": "54"
+            },
+            "metatags": {
+                "weight": "45"
+            },
+            "title": {
+                "weight": "0"
+            },
+            "path": {
+                "weight": "53"
+            }
+        },
+        "display": []
+    }
+}

@@ -1,0 +1,35 @@
+{
+    "_config_name": "field.instance.node.sponsor.field_sponsor_name",
+    "field_name": "field_sponsor_name",
+    "entity_type": "node",
+    "bundle": "sponsor",
+    "deleted": "0",
+    "label": "Sponsor Name",
+    "widget": {
+        "weight": "2",
+        "type": "text_textfield",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "size": "40",
+            "maxlength_js": 0,
+            "maxlength_js_label": "Content limited to @limit characters, remaining: <strong>@remaining</strong>"
+        }
+    },
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "text_default",
+            "weight": "14",
+            "settings": [],
+            "module": "text"
+        }
+    },
+    "required": 0,
+    "description": "If you want to put a sponsors name up instead of the logo fill in this field. If you want to put a logo up leave this field blank.",
+    "default_value": null
+}

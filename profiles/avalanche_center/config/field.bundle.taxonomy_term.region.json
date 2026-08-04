@@ -1,0 +1,23 @@
+{
+    "_config_name": "field.bundle.taxonomy_term.region",
+    "entity_type": "taxonomy_term",
+    "bundle": "region",
+    "view_modes": [],
+    "extra_fields": {
+        "form": {
+            "metatags": {
+                "weight": "40"
+            },
+            "path": {
+                "weight": "30"
+            },
+            "name": {
+                "weight": "-5"
+            },
+            "description": {
+                "weight": "0"
+            }
+        },
+        "display": []
+    }
+}

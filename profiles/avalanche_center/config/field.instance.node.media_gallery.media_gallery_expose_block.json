@@ -1,0 +1,52 @@
+{
+    "_config_name": "field.instance.node.media_gallery.media_gallery_expose_block",
+    "field_name": "media_gallery_expose_block",
+    "entity_type": "node",
+    "bundle": "media_gallery",
+    "deleted": "0",
+    "label": "Create a block of most recently added media",
+    "default_value": [
+        {
+            "value": 0
+        }
+    ],
+    "widget": {
+        "type": "options_onoff",
+        "settings": {
+            "display_label": 0
+        },
+        "weight": 39,
+        "module": "options"
+    },
+    "display": {
+        "default": {
+            "type": "hidden",
+            "label": "hidden",
+            "settings": [],
+            "weight": 9
+        },
+        "full": {
+            "type": "hidden",
+            "label": "hidden",
+            "settings": [],
+            "weight": 9
+        },
+        "teaser": {
+            "type": "hidden",
+            "label": "hidden",
+            "settings": [],
+            "weight": 9
+        },
+        "media_gallery_block": {
+            "type": "hidden",
+            "label": "hidden",
+            "settings": [],
+            "weight": 9
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "required": false,
+    "description": ""
+}

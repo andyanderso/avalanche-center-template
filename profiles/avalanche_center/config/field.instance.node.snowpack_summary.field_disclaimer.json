@@ -1,0 +1,86 @@
+{
+    "_config_name": "field.instance.node.snowpack_summary.field_disclaimer",
+    "field_name": "field_disclaimer",
+    "entity_type": "node",
+    "bundle": "snowpack_summary",
+    "deleted": "0",
+    "label": "Disclaimer",
+    "widget": {
+        "weight": "51",
+        "type": "text_textarea",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "rows": "5"
+        }
+    },
+    "settings": {
+        "text_processing": "1",
+        "better_formats": {
+            "allowed_formats_toggle": 0,
+            "allowed_formats": {
+                "filtered_html": "filtered_html",
+                "full_html": "full_html",
+                "full_html_mark_glossary_terms": "full_html_mark_glossary_terms",
+                "plain_text": "plain_text",
+                "gmap": "gmap",
+                "gmap_macro_expander": "gmap_macro_expander",
+                "php_code": "php_code",
+                "mailchimp_campaign": "mailchimp_campaign"
+            },
+            "default_order_toggle": 0,
+            "default_order_wrapper": {
+                "formats": {
+                    "filtered_html": {
+                        "weight": "-10"
+                    },
+                    "full_html": {
+                        "weight": "-9"
+                    },
+                    "full_html_mark_glossary_terms": {
+                        "weight": "-8"
+                    },
+                    "plain_text": {
+                        "weight": "-7"
+                    },
+                    "gmap": {
+                        "weight": "-6"
+                    },
+                    "gmap_macro_expander": {
+                        "weight": "-5"
+                    },
+                    "php_code": {
+                        "weight": "-4"
+                    },
+                    "mailchimp_campaign": {
+                        "weight": "-3"
+                    }
+                }
+            }
+        },
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "text_default",
+            "settings": [],
+            "module": "text",
+            "weight": 13
+        },
+        "teaser": {
+            "type": "hidden",
+            "label": "above",
+            "settings": [],
+            "weight": 0
+        }
+    },
+    "required": 1,
+    "description": "",
+    "default_value": [
+        {
+            "value": "<p>This snowpack summary applies only to backcountry areas. <a href=\"http://bridgeportavalanchecenter.org/forecast-area-map\">Click here for a map of the area.</a> This snowpack summary describes general avalanche conditions and local variations always occur. This&nbsp;snowpack summary expires <span style=\"color: rgb(55, 55, 55); font-family: Helvetica, sans-serif; font-size: 13px; line-height: 20.6719989776611px;\">in 48 hours</span> unless otherwise noted. The information in this snowpack summary is provided by the USDA Forest Service who is solely responsible for its content.</p>\r\n",
+            "format": "filtered_html"
+        }
+    ]
+}

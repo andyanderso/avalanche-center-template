@@ -1,0 +1,51 @@
+{
+    "_config_name": "field.instance.taxonomy_term.region.field_region_map",
+    "field_name": "field_region_map",
+    "entity_type": "taxonomy_term",
+    "bundle": "region",
+    "deleted": "0",
+    "label": "Region Map",
+    "widget": {
+        "weight": "41",
+        "type": "leaflet_widget_widget",
+        "module": "leaflet_widget",
+        "active": 1,
+        "settings": {
+            "map": {
+                "base_layer": "osm_mapnik_base",
+                "center": {
+                    "lat": 0,
+                    "lng": 0
+                },
+                "min_zoom": 2,
+                "max_zoom": 18,
+                "auto_center": true,
+                "zoom": 2,
+                "height": 400,
+                "feature_types": {
+                    "marker": 0,
+                    "polyline": 0,
+                    "polygon": "polygon",
+                    "rectangle": "rectangle"
+                },
+                "search_widget": false
+            }
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "geofield_wkt",
+            "settings": {
+                "data": "full"
+            },
+            "module": "geofield",
+            "weight": 0
+        }
+    },
+    "required": 0,
+    "description": ""
+}

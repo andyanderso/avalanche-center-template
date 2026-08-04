@@ -1,0 +1,25 @@
+{
+    "_config_name": "field_group.field_group.node.observation.default.group_pro_assess_dis",
+    "group_name": "group_pro_assess_dis",
+    "entity_type": "node",
+    "bundle": "observation",
+    "mode": "default",
+    "parent_name": "group_dis_tabs",
+    "label": "Professional Assesment",
+    "weight": "104",
+    "children": [
+        "field_today_s_assessed_hazard_be",
+        "field_today_s_assessed_hazard_ne",
+        "field_today_s_assessed_hazard_ab",
+        "field_comments_on_danger_rating_"
+    ],
+    "format_type": "htab",
+    "format_settings": {
+        "formatter": "closed",
+        "instance_settings": {
+            "description": "",
+            "classes": "",
+            "id": ""
+        }
+    }
+}

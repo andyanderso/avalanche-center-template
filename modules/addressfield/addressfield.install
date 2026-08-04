@@ -1,0 +1,187 @@
+<?php
+/**
+ * @file
+ * Install, update, and uninstall functions for the addressfield module.
+ */
+
+/**
+ * Implements hook_field_schema()
+ */
+function addressfield_field_schema() {
+  $columns = array(
+    'country' => array(
+      'description' => 'Two letter ISO country code of this address.',
+      'type' => 'varchar',
+      'length' => 2,
+      'not null' => FALSE,
+      'default' => '',
+    ),
+    'administrative_area' => array(
+      'description' => 'The administrative area of this address. (i.e. State/Province)',
+      'type' => 'varchar',
+      'length' => 255,
+      'default' => '',
+      'not null' => FALSE,
+    ),
+    'sub_administrative_area' => array(
+      'description' => 'The sub administrative area of this address.',
+      'type' => 'varchar',
+      'length' => 255,
+      'default' => '',
+      'not null' => FALSE,
+    ),
+    'locality' => array(
+      'description' => 'The locality of this address. (i.e. City)',
+      'type' => 'varchar',
+      'length' => 255,
+      'default' => '',
+      'not null' => FALSE,
+    ),
+    'dependent_locality' => array(
+      'description' => 'The dependent locality of this address.',
+      'type' => 'varchar',
+      'length' => 255,
+      'default' => '',
+      'not null' => FALSE,
+    ),
+    'postal_code' => array(
+      'description' => 'The postal code of this address.',
+      'type' => 'varchar',
+      'length' => 255,
+      'default' => '',
+      'not null' => FALSE,
+    ),
+    'thoroughfare' => array(
+      'description' => 'The thoroughfare of this address. (i.e. Street address)',
+      'type' => 'varchar',
+      'length' => 255,
+      'default' => '',
+      'not null' => FALSE,
+    ),
+    'premise' => array(
+      'description' => 'The premise of this address. (i.e. Apartment / Suite number)',
+      'type' => 'varchar',
+      'length' => 255,
+      'default' => '',
+      'not null' => FALSE,
+    ),
+    'sub_premise' => array(
+      'description' => 'The sub_premise of this address.',
+      'type' => 'varchar',
+      'length' => 255,
+      'default' => '',
+      'not null' => FALSE,
+    ),
+    'organisation_name' => array(
+      'description' => 'Contents of a primary OrganisationName element in the xNL XML.',
+      'type' => 'varchar',
+      'length' => 255,
+      'not null' => FALSE,
+      'default' => '',
+    ),
+    'name_line' => array(
+      'description' => 'Contents of a primary NameLine element in the xNL XML.',
+      'type' => 'varchar',
+      'length' => 255,
+      'not null' => FALSE,
+      'default' => '',
+    ),
+    'first_name' => array(
+      'description' => 'Contents of the FirstName element of a primary PersonName element in the xNL XML.',
+      'type' => 'varchar',
+      'length' => 255,
+      'not null' => FALSE,
+      'default' => '',
+    ),
+    'last_name' => array(
+      'description' => 'Contents of the LastName element of a primary PersonName element in the xNL XML.',
+      'type' => 'varchar',
+      'length' => 255,
+      'not null' => FALSE,
+      'default' => '',
+    ),
+    'data_serialized' => array(
+      'description' => 'Additional data for this address (serialized).',
+      'type' => 'text',
+      'size' => 'big',
+      'not null' => FALSE,
+      'serialize' => TRUE,
+    ),
+  );
+
+  return array(
+    'columns' => $columns,
+    // TODO Add indexes.
+  );
+}
+
+/**
+ * Rename the data column to data_serialized.
+ */
+function addressfield_update_1002() {
+  $spec = array(
+    'description' => 'Additional data for this address (serialized).',
+    'type' => 'text',
+    'size' => 'big',
+    'not null' => FALSE,
+    'serialize' => TRUE,
+    'initial' => serialize(array())
+  );
+  $fields = field_read_fields(array(
+    'module' => 'addressfield',
+  ));
+  foreach ($fields as $field_name => $field) {
+    if ($field['deleted']) {
+      $table = "field_deleted_data_{$field['id']}";
+      $revision_table = "field_deleted_revision_{$field['id']}";
+    }
+    else {
+      $table = "field_data_{$field['field_name']}";
+      $revision_table = "field_revision_{$field['field_name']}";
+    }
+    $column = $field['field_name'] . '_data';
+    $new_column = $field['field_name'] . '_data_serialized';
+    if (db_field_exists($table, $column)) {
+      db_change_field($table, $column, $new_column, $spec);
+      db_change_field($revision_table, $column, $new_column, $spec);
+    }
+  }
+}
+
+/**
+ * Serialize existing values in the data_serialized column.
+ */
+function addressfield_update_1003() {
+  $fields = field_read_fields(array(
+    'module' => 'addressfield',
+  ));
+  $serialized_false = serialize(false);
+
+  foreach ($fields as $field) {
+
+    $column = $field['field_name'] . '_data_serialized';
+    $columns = array('entity_type', 'entity_id', 'revision_id', 'delta', 'language', $column);
+
+    foreach (array('data', 'revision') as $table_type) {
+      $table = $field['deleted']
+        ? 'field_deleted_' . $table_type . '_' . $field['id']
+        : 'field_' . $table_type . '_' . $field['field_name'];
+      $result = db_select($table, 't')->fields('t', $columns)->execute();
+
+      foreach ($result as $row) {
+        $data = $row->$column;
+        $unserialized_data = @unserialize($data);
+        if ($unserialized_data === FALSE && $data !== $serialized_false) {
+          db_update($table)
+            ->fields(array($column => serialize($data)))
+            ->condition('entity_type', $row->entity_type)
+            ->condition('entity_id', $row->entity_id)
+            ->condition('revision_id', $row->revision_id)
+            ->condition('delta', $row->delta)
+            ->condition('language', $row->language)
+            ->execute();
+        }
+      }
+    }
+  }
+}

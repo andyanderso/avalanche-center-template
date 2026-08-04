@@ -1,0 +1,30 @@
+{
+    "_config_name": "field.instance.node.fwp.field_strategic_mind_set",
+    "field_name": "field_strategic_mind_set",
+    "entity_type": "node",
+    "bundle": "fwp",
+    "deleted": "0",
+    "label": "Strategic Mind-Set",
+    "widget": {
+        "weight": "20",
+        "type": "options_buttons",
+        "module": "options",
+        "active": 1,
+        "settings": []
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "list_default",
+            "weight": "15",
+            "settings": [],
+            "module": "list"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": null
+}

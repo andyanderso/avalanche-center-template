@@ -1,0 +1,17 @@
+name = CSS Injector
+description = Adds CSS to the page output based on configurable rules.
+type = module
+backdrop = 1.x
+configure = admin/config/development/css-injector
+
+maintainers[vstemen] = Vincent Stemen
+maintainers[klonos] = klonos
+maintainers[yorkshire-pudding] = Martin Price
+maintainers_wanted = TRUE
+
+package = Appearance
+tags[] = Theme Enhancements
+; Added by Backdrop CMS packaging script on 2026-05-15
+project = css_injector
+version = 1.x-1.12.2
+timestamp = 1778859725

@@ -1,0 +1,25 @@
+{
+    "_config_name": "user.role.board_member",
+    "name": "board_member",
+    "label": "Board Member",
+    "weight": "0",
+    "permissions": [
+        "access administration menu",
+        "create announcements content",
+        "create avalanche_education content",
+        "create sponsor content",
+        "delete any sponsor content",
+        "delete own announcements content",
+        "delete own avalanche_education content",
+        "delete own events content",
+        "delete own sponsor content",
+        "edit any sponsor content",
+        "edit own announcements content",
+        "edit own avalanche_education content",
+        "edit own sponsor content",
+        "use text format filtered_html",
+        "use text format gmap",
+        "view files"
+    ],
+    "description": ""
+}

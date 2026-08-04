@@ -1,0 +1,64 @@
+{
+    "_config_name": "field.instance.node.media_gallery.media_gallery_file",
+    "field_name": "media_gallery_file",
+    "entity_type": "node",
+    "bundle": "media_gallery",
+    "deleted": "0",
+    "label": "Gallery media",
+    "widget": {
+        "weight": 43,
+        "type": "file_generic",
+        "module": "file",
+        "active": 1,
+        "settings": {
+            "progress_indicator": "throbber"
+        }
+    },
+    "display": {
+        "default": {
+            "type": "media_gallery",
+            "settings": {
+                "file_view_mode": "media_gallery_thumbnail"
+            },
+            "label": "hidden",
+            "weight": 2,
+            "module": "media_gallery"
+        },
+        "full": {
+            "type": "media_gallery",
+            "settings": {
+                "file_view_mode": "media_gallery_thumbnail"
+            },
+            "label": "hidden",
+            "weight": 2,
+            "module": "media_gallery"
+        },
+        "teaser": {
+            "type": "media_gallery",
+            "settings": {
+                "file_view_mode": "media_gallery_collection_thumbnail"
+            },
+            "label": "hidden",
+            "weight": 2,
+            "module": "media_gallery"
+        },
+        "media_gallery_block": {
+            "type": "media_gallery",
+            "settings": {
+                "file_view_mode": "media_gallery_block_thumbnail"
+            },
+            "label": "hidden",
+            "weight": 2,
+            "module": "media_gallery"
+        }
+    },
+    "settings": {
+        "file_extensions": "txt",
+        "file_directory": "",
+        "max_filesize": "",
+        "description_field": 0,
+        "user_register_form": false
+    },
+    "required": false,
+    "description": ""
+}

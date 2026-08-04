@@ -1,0 +1,66 @@
+{
+    "_config_name": "field.instance.node.events.upload",
+    "field_name": "upload",
+    "entity_type": "node",
+    "bundle": "events",
+    "deleted": "0",
+    "description": "",
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "file_rendered",
+            "weight": "5",
+            "settings": {
+                "file_view_mode": "full"
+            },
+            "module": "file_entity"
+        },
+        "full": {
+            "label": "hidden",
+            "module": "file",
+            "settings": [],
+            "type": "file_table",
+            "weight": 0
+        },
+        "rss": {
+            "label": "hidden",
+            "module": "file",
+            "settings": [],
+            "type": "file_table",
+            "weight": 0
+        },
+        "teaser": {
+            "label": "hidden",
+            "module": null,
+            "settings": [],
+            "type": "hidden",
+            "weight": 0
+        },
+        "ical": {
+            "label": "hidden",
+            "type": "file_rendered",
+            "weight": "5",
+            "settings": {
+                "file_view_mode": "full"
+            },
+            "module": "file_entity"
+        }
+    },
+    "label": "File attachments",
+    "required": 0,
+    "settings": {
+        "description_field": 1,
+        "file_directory": "",
+        "file_extensions": "jpg jpeg gif png txt doc xls pdf ppt pps odt ods odp",
+        "max_filesize": "5 MB",
+        "user_register_form": false
+    },
+    "widget": {
+        "module": "file",
+        "settings": {
+            "progress_indicator": "throbber"
+        },
+        "type": "file_generic",
+        "weight": "5"
+    }
+}

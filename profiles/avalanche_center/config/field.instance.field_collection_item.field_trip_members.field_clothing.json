@@ -1,0 +1,74 @@
+{
+    "_config_name": "field.instance.field_collection_item.field_trip_members.field_clothing",
+    "field_name": "field_clothing",
+    "entity_type": "field_collection_item",
+    "bundle": "field_trip_members",
+    "deleted": "0",
+    "label": "Clothing",
+    "widget": {
+        "weight": "6",
+        "type": "select_or_other_buttons",
+        "module": "select_or_other",
+        "active": 1,
+        "settings": {
+            "available_options": "Synthetic or Wool Base Layers|Synthetic or Wool Base Layers\nSoft Shell Snow Pants|Soft Shell Snow Pants\nSoft Shell Snow Jacket|Soft Shell Snow Jacket\nWindbreaker|Windbreaker\n2 Pairs of Gloves|At Least 2 Pairs of Gloves\nHigh Loft Insulated Jacket|High Loft Insulated Jacket\nWarm Hat|Warm Hat\nAppropriate Eyewear|Appropriate Eyewear\nAppropriate Footwear|Appropriate Footwear\nWaterproof Jacket|Waterproof Jacket\nWaterproof Pants|Waterproof Pants\nFleece Jacket|Fleece Jacket\nInsulated Pants|Insulated Pants",
+            "available_options_php": "",
+            "other": "Other",
+            "other_title": "Other",
+            "other_unknown_defaults": "other",
+            "other_size": "60",
+            "sort_options": 0,
+            "markup_available_options_php": "&lt;none&gt;"
+        }
+    },
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "text_default",
+            "weight": "9",
+            "settings": [],
+            "module": "text"
+        },
+        "token": {
+            "label": "above",
+            "type": "hidden",
+            "weight": "9",
+            "settings": []
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": [
+        {
+            "value": "Synthetic or Wool Base Layers"
+        },
+        {
+            "value": "Soft Shell Snow Pants"
+        },
+        {
+            "value": "Soft Shell Snow Jacket"
+        },
+        {
+            "value": "Windbreaker"
+        },
+        {
+            "value": "2 Pairs of Gloves"
+        },
+        {
+            "value": "High Loft Insulated Jacket"
+        },
+        {
+            "value": "Warm Hat"
+        },
+        {
+            "value": "Appropriate Eyewear"
+        },
+        {
+            "value": "Appropriate Footwear"
+        }
+    ]
+}

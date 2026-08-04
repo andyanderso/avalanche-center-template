@@ -1,0 +1,42 @@
+.price {
+  text-align:center;
+}
+
+#block-views-events-upcoming-block-1 {
+color:#3b3b3b;
+background:#ffffff;
+}
+
+#block-views-home-announcements-block-1 {
+color:#3b3b3b;
+background:#ffffff;
+}
+
+#block-views-home-announcements-block-1 td {
+  border-bottom:1px solid #5b5b5b;
+  }
+  
+#block-views-events-upcoming-block-1 td {
+  border-bottom:1px solid #5b5b5b;
+  width:69%;
+  }
+  
+.item-list .pager {
+  position:relative;
+}
+
+.item-list .pager a {
+  display:inline;
+}
+
+/* Thin hr separator between announcement items */
+.block-views-home-announcements-block-1 .views-table tr:not(:last-child) td {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+}
+
+.block-views-home-announcements-block-1 .views-table tr td {
+    padding-top: 8px;
+    display: block;
+}

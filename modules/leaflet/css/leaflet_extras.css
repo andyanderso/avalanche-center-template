@@ -1,0 +1,75 @@
+/**
+ * @file
+ * Leaflet CSS
+ */
+
+/* More robust zoomslider styles re different themes */
+.leaflet-touch .leaflet-bar {
+  border-width: 3px;
+  border-color: #00000034;
+}
+.leaflet-control .leaflet-control-zoomslider-in::after {
+  content: "+";
+}
+.leaflet-control .leaflet-control-zoomslider-out::after {
+  content: "-";
+}
+.leaflet-control .leaflet-control-zoomslider-in,
+.leaflet-control .leaflet-control-zoomslider-out {
+  font-size: 1.5rem;
+  font-family: monospace;
+  position: relative;
+  transform: none;
+  transition: none;
+  position: static;
+}
+.leaflet-control .leaflet-control-zoomslider-in::after,
+.leaflet-control .leaflet-control-zoomslider-out::after {
+  display: block;
+  width: 100%;
+  border: none;
+  color: #555;
+  position: static;
+  transition: none;
+}
+.leaflet-control .leaflet-control-zoomslider-body {
+  box-sizing: content-box;
+  background-color: #555;
+}
+.leaflet-control .leaflet-control-zoomslider-knob {
+  margin: 0 !important;
+  left: -8px;
+  box-sizing: content-box;
+}
+.field-type-geofield.field-label-inline {
+  display: flex;
+}
+.field-type-geofield.field-label-inline .field-label,
+.field-type-geofield.field-label-inline .field-items {
+  float: none;
+}
+.field-type-geofield.field-label-inline .field-items {
+  flex-grow: 1;
+}
+.field-type-geofield.field-label-inline .leaflet-container {
+  min-width: 280px;
+}
+/**
+ * Workaround for the one-pixel-gap in Chrome.
+ *
+ * @see https://github.com/backdrop-contrib/leaflet/issues/19
+ */
+.leaflet-container .leaflet-pane img.leaflet-tile {
+  mix-blend-mode: normal;
+}
+@supports (-webkit-appearance:none) and (not (-moz-appearance:none)) {
+  .leaflet-container .leaflet-pane img.leaflet-tile {
+    mix-blend-mode: plus-lighter;
+  }
+}
+/**
+ * Push admin bar above leaflet control containers.
+ */
+#admin-bar {
+  z-index: 1000;
+}

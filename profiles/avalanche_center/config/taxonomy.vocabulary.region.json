@@ -1,0 +1,8 @@
+{
+    "_config_name": "taxonomy.vocabulary.region",
+    "name": "Forecast Region",
+    "machine_name": "region",
+    "description": "Region, Drainage, Sub Drainage",
+    "hierarchy": "0",
+    "weight": "0"
+}

@@ -1,0 +1,10 @@
+{
+    "_config_name": "block.custom.6",
+    "delta": "6",
+    "info": "Incidents",
+    "title": "",
+    "body": {
+        "value": "<div><a href=\"/incidents\">Incidents - List View</a></div>\n<div><a href=\"/incidents-map\">Incidents - Map View</a></div>\n<div><a href=\"/incidents-archive\">Archived Incidents - List View</a></div>\n<div><a href=\"/incidents-map-archive\">Archived Incidents - Map View</a></div>\n",
+        "format": "full_html"
+    }
+}

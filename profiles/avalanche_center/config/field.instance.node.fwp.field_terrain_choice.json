@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.instance.node.fwp.field_terrain_choice",
+    "field_name": "field_terrain_choice",
+    "entity_type": "node",
+    "bundle": "fwp",
+    "deleted": "0",
+    "label": "Terrain Choice",
+    "widget": {
+        "weight": "18",
+        "type": "text_textarea",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "rows": "5"
+        }
+    },
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "text_default",
+            "weight": "4",
+            "settings": [],
+            "module": "text"
+        }
+    },
+    "required": 0,
+    "description": "What kind of terrain do you need to go into to get the needed data?",
+    "default_value": null
+}

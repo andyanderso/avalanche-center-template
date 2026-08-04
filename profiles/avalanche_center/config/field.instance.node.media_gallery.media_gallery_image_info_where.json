@@ -1,0 +1,50 @@
+{
+    "_config_name": "field.instance.node.media_gallery.media_gallery_image_info_where",
+    "field_name": "media_gallery_image_info_where",
+    "entity_type": "node",
+    "bundle": "media_gallery",
+    "deleted": "0",
+    "label": "Media information",
+    "required": true,
+    "default_value": [
+        {
+            "value": "hover"
+        }
+    ],
+    "widget": {
+        "type": "options_select",
+        "settings": [],
+        "weight": 37,
+        "module": "options"
+    },
+    "display": {
+        "default": {
+            "type": "hidden",
+            "label": "hidden",
+            "settings": [],
+            "weight": 7
+        },
+        "full": {
+            "type": "hidden",
+            "label": "hidden",
+            "settings": [],
+            "weight": 7
+        },
+        "teaser": {
+            "type": "hidden",
+            "label": "hidden",
+            "settings": [],
+            "weight": 7
+        },
+        "media_gallery_block": {
+            "type": "hidden",
+            "label": "hidden",
+            "settings": [],
+            "weight": 7
+        }
+    },
+    "settings": {
+        "user_register_form": false
+    },
+    "description": ""
+}

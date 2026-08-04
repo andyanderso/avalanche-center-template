@@ -1,0 +1,14 @@
+name = Field Collection
+description = Provides a field collection field, to which any number of fields can be attached.
+backdrop = 1.x
+type = module
+dependencies[] = entity
+dependencies[] = entity_plus
+test_dependencies[] = entity_translation
+configure = admin/structure/field-collections
+package = Fields
+
+; Added by Backdrop CMS packaging script on 2026-02-20
+project = field_collection
+version = 1.x-1.0.0-beta1
+timestamp = 1771616056

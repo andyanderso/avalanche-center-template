@@ -1,0 +1,17 @@
+name = Scheduler
+description = This module allows content to be published and unpublished on specified dates and time.
+backdrop = 1.x
+type = module
+configure = admin/config/content/scheduler
+dependencies[] = node
+
+; TODO: Port tests
+; files[] = tests/scheduler.test
+; files[] = tests/scheduler_api.test
+; test_dependencies[] = date
+; test_dependencies[] = rules
+
+; Added by Backdrop CMS packaging script on 2025-08-06
+project = scheduler
+version = 1.x-1.7.2
+timestamp = 1754514724

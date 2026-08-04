@@ -1,0 +1,35 @@
+{
+    "_config_name": "field.instance.user.user.field_position",
+    "field_name": "field_position",
+    "entity_type": "user",
+    "bundle": "user",
+    "deleted": "0",
+    "label": "Position",
+    "widget": {
+        "weight": "1",
+        "type": "options_buttons",
+        "module": "options",
+        "active": 1,
+        "settings": []
+    },
+    "settings": {
+        "user_register_form": 1
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "list_default",
+            "settings": [],
+            "module": "list",
+            "weight": 6
+        }
+    },
+    "required": 1,
+    "description": "",
+    "default_value_label_token": 0,
+    "default_value": [
+        {
+            "value": "Public"
+        }
+    ]
+}

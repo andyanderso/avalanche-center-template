@@ -1,0 +1,36 @@
+{
+    "_config_name": "field.instance.user.user.field_vehicle_location_and_infor",
+    "field_name": "field_vehicle_location_and_infor",
+    "entity_type": "user",
+    "bundle": "user",
+    "deleted": "0",
+    "label": "Default Vehicle",
+    "widget": {
+        "weight": "12",
+        "type": "field_collection_embed",
+        "module": "field_collection",
+        "active": 0,
+        "settings": []
+    },
+    "settings": {
+        "user_register_form": 1
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "field_collection_view",
+            "settings": {
+                "edit": "Edit",
+                "delete": "Delete",
+                "add": "Add",
+                "description": true,
+                "view_mode": "full"
+            },
+            "module": "field_collection",
+            "weight": 3
+        }
+    },
+    "required": 0,
+    "description": "Your usual vehicle. Pre-filled into new Field Work Plans (you can still edit or set the parking location per trip).",
+    "default_value": null
+}

@@ -1,0 +1,128 @@
+/**
+ * Centered header for responsive_sac.
+ *
+ * Two-row header: a centred logo row and a full-width centred megamenu nav row.
+ * Loaded last so these rules win over the legacy float-based header CSS.
+ */
+
+/* ---------- Row 1: logo row ---------- */
+#header .rs-logo-row {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px 20px;
+  min-height: 80px;
+  float: none;
+  clear: both;
+  width: auto;
+}
+
+/* The system header block (logo + name/slogan) is the only thing in row 1. */
+#header .rs-logo-row #logo,
+#header .rs-logo-row a#logo {
+  float: none;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+}
+#header .rs-logo-row #logo img,
+#header .rs-logo-row img.logo {
+  float: none;
+  margin: 0;
+  height: auto;
+  width: auto;
+  min-height: 80px;
+  max-height: 120px;
+  max-width: 300px;
+  display: block;
+}
+
+/* Site name / slogan: keep centred under/near the logo when toggled on. */
+#header .rs-logo-row #name-and-slogan {
+  float: none;
+  margin: 0 0 0 16px;
+  text-align: center;
+}
+#header .rs-logo-row #site-name a { color: #fff; text-decoration: none; }
+
+/* Hide the plain system main menu in the header region — the megamenu (row 2)
+   is the navigation. Keep the mobile responsive-links block working as-is. */
+#header .rs-logo-row #main-menu,
+#header .rs-logo-row .block-system-main-menu { display: none; }
+
+/* ---------- Row 2: megamenu nav row ---------- */
+#header .rs-nav-row {
+  clear: both;
+  width: 100%;
+  background: #333;
+  display: block;
+}
+#header .rs-nav-row .section {
+  display: flex;
+  justify-content: center;
+}
+#header .rs-nav-row .tb-megamenu {
+  height: auto;
+  background: transparent;
+  width: 100%;
+  /* Positioning context for full-width "justify" mega dropdowns. Those items
+     have position:static (mega-align-justify), so their absolutely-positioned
+     panels otherwise anchor to #header (full browser width) and spill to the
+     far left. Anchoring them here aligns the panels to the centered nav. */
+  position: relative;
+}
+/* The .nav-collapse wraps the menu list; keep it full width so the centered
+   items and the justify dropdowns share the same coordinate system. */
+#header .rs-nav-row .tb-megamenu .nav-collapse {
+  width: 100%;
+}
+/* Center the top-level menu items within the bar. */
+#header .rs-nav-row .tb-megamenu .nav,
+#header .rs-nav-row ul.tb-megamenu-nav.nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  float: none;
+  margin: 0;
+  padding: 0;
+}
+#header .rs-nav-row .tb-megamenu .nav > li {
+  float: none;
+}
+
+/* "Justify" mega panels are a fixed pixel width (set inline) and, because their
+   parent <li> is position:static, they otherwise anchor to #header (full browser
+   width) at left:0 — so they spill to the far left, detached from the centered
+   menu. On desktop, center them horizontally under the centered nav instead,
+   clamped to the viewport so they never overflow. */
+@media screen and (min-width: 980px) {
+  #header .rs-nav-row .tb-megamenu .mega-align-justify > .dropdown-menu {
+    left: 50%;
+    right: auto;
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+    max-width: calc(100vw - 24px);
+  }
+}
+
+/* On mobile the megamenu collapses to its own hamburger button. Let the bar
+   shrink, the toggle behave normally, and reset the desktop centering so the
+   collapsed submenus stack inline. */
+@media screen and (max-width: 979px) {
+  #header .rs-logo-row { padding: 10px 16px; min-height: 60px; }
+  #header .rs-logo-row #logo img,
+  #header .rs-logo-row img.logo { min-height: 50px; max-height: 80px; max-width: 220px; }
+  #header .rs-nav-row .section { display: block; }
+  #header .rs-nav-row .tb-megamenu .nav,
+  #header .rs-nav-row ul.tb-megamenu-nav.nav { display: block; }
+  #header .rs-nav-row .tb-megamenu .mega-align-justify > .dropdown-menu {
+    left: auto;
+    -webkit-transform: none;
+    -moz-transform: none;
+    -ms-transform: none;
+    transform: none;
+  }
+}

@@ -1,0 +1,39 @@
+{
+    "_config_name": "field.instance.node.observation.field_slope",
+    "field_name": "field_slope",
+    "entity_type": "node",
+    "bundle": "observation",
+    "deleted": "0",
+    "label": "Start Zone Slope Angle",
+    "widget": {
+        "weight": "106",
+        "type": "number",
+        "module": "number",
+        "active": 0,
+        "settings": []
+    },
+    "settings": {
+        "min": "",
+        "max": "",
+        "prefix": "",
+        "suffix": "degrees",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "number_integer",
+            "weight": "321",
+            "settings": {
+                "thousand_separator": "",
+                "decimal_separator": ".",
+                "scale": 0,
+                "prefix_suffix": true
+            },
+            "module": "number"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": null
+}

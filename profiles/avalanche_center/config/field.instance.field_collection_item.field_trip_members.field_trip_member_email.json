@@ -1,0 +1,40 @@
+{
+    "_config_name": "field.instance.field_collection_item.field_trip_members.field_trip_member_email",
+    "field_name": "field_trip_member_email",
+    "entity_type": "field_collection_item",
+    "bundle": "field_trip_members",
+    "deleted": "0",
+    "label": "Trip Member Email",
+    "widget": {
+        "weight": "2",
+        "type": "text_textfield",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "size": "20"
+        }
+    },
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "text_default",
+            "weight": "2",
+            "settings": [],
+            "module": "text"
+        },
+        "token": {
+            "label": "inline",
+            "type": "text_default",
+            "weight": "2",
+            "settings": [],
+            "module": "text"
+        }
+    },
+    "required": 0,
+    "description": "For authenticated users this fills from their profile; others can enter it.",
+    "default_value": null
+}

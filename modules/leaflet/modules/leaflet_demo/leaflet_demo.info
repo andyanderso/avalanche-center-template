@@ -1,0 +1,12 @@
+name = Leaflet Demo
+description = Creates a block showcasing all Leaflet-powered maps available on your system.
+backdrop = 1.x
+package = Leaflet
+type = module
+
+dependencies[] = leaflet
+
+; Added by Backdrop CMS packaging script on 2026-02-06
+project = leaflet
+version = 1.x-1.2.3
+timestamp = 1770382366

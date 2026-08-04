@@ -1,0 +1,52 @@
+{
+    "_config_name": "field.instance.node.announcements.body",
+    "field_name": "body",
+    "entity_type": "node",
+    "bundle": "announcements",
+    "deleted": "0",
+    "default_value": null,
+    "description": "<p>Use this to create announcements for the home page or the top of the forecast page.</p>",
+    "display": {
+        "default": {
+            "label": "hidden",
+            "module": "text",
+            "settings": [],
+            "type": "text_default",
+            "weight": "-2"
+        },
+        "teaser": {
+            "label": "hidden",
+            "module": "text",
+            "settings": {
+                "trim_length": 600
+            },
+            "trim_length": "200",
+            "type": "text_summary_or_trimmed",
+            "weight": "-2"
+        },
+        "checkout_pane": {
+            "label": "hidden",
+            "module": "text",
+            "settings": [],
+            "type": "text_default",
+            "weight": "-2"
+        }
+    },
+    "label": "Announcement:",
+    "required": 0,
+    "settings": {
+        "text_processing": "1",
+        "display_summary": 1,
+        "user_register_form": false
+    },
+    "widget": {
+        "weight": "2",
+        "type": "text_textarea_with_summary",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "rows": "20",
+            "summary_rows": 5
+        }
+    }
+}

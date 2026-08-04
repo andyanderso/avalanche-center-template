@@ -1,0 +1,30 @@
+{
+    "_config_name": "field.field.field_strategic_mind_set",
+    "field_name": "field_strategic_mind_set",
+    "type": "list_text",
+    "module": "list",
+    "active": 1,
+    "locked": "0",
+    "cardinality": "1",
+    "translatable": "0",
+    "deleted": "0",
+    "entity_types": [],
+    "settings": {
+        "allowed_values": {
+            "Assessment": "Assessment",
+            "Stepping Out": "Stepping Out",
+            "Status Quo": "Status Quo",
+            "Stepping Back": "Stepping Back",
+            "Entrenchment": "Entrenchment",
+            "Open Season": "Open Season",
+            "Spring Diurnal": "Spring Diurnal"
+        },
+        "allowed_values_function": ""
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "module": "field_sql_storage",
+        "active": 1,
+        "settings": []
+    }
+}

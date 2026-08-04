@@ -1,0 +1,55 @@
+{
+    "_config_name": "field.instance.taxonomy_term.avalanche_terms.field_encyclopedia_link",
+    "field_name": "field_encyclopedia_link",
+    "entity_type": "taxonomy_term",
+    "bundle": "avalanche_terms",
+    "deleted": "0",
+    "label": "Encyclopedia Link",
+    "widget": {
+        "weight": "4",
+        "type": "link_field",
+        "module": "link",
+        "active": 0,
+        "settings": []
+    },
+    "settings": {
+        "absolute_url": 1,
+        "validate_url": 1,
+        "url": 0,
+        "title": "none",
+        "title_value": "",
+        "title_label_use_field_label": 0,
+        "title_maxlength": "128",
+        "enable_tokens": 1,
+        "display": {
+            "url_cutoff": "80"
+        },
+        "attributes": {
+            "target": "_blank",
+            "rel": "",
+            "configurable_class": 0,
+            "class": "",
+            "configurable_title": 0,
+            "title": ""
+        },
+        "rel_remove": "default",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "field_redirection",
+            "weight": "0",
+            "settings": {
+                "code": "301",
+                "404_if_empty": false,
+                "page_restrictions": 0,
+                "pages": ""
+            },
+            "module": "field_redirection"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": null
+}
