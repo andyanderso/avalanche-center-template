@@ -1,0 +1,139 @@
+<?php
+/**
+ * @file
+ * Install/schema for the Avalanche Field Work Plan module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function avalanche_fwp_schema() {
+  $schema['avalanche_fwp_status'] = array(
+    'description' => 'Safe-return check-in status for Field Work Plan nodes.',
+    'fields' => array(
+      'nid' => array(
+        'description' => 'The Field Work Plan node id.',
+        'type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE,
+      ),
+      'checked_in' => array(
+        'description' => '1 once the party has checked in safely.',
+        'type' => 'int', 'size' => 'tiny', 'not null' => TRUE, 'default' => 0,
+      ),
+      'check_in_time' => array(
+        'description' => 'Unix timestamp of the check-in.',
+        'type' => 'int', 'not null' => FALSE,
+      ),
+      'check_in_uid' => array(
+        'description' => 'The user who recorded the check-in.',
+        'type' => 'int', 'unsigned' => TRUE, 'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('nid'),
+    'indexes' => array('checked_in' => array('checked_in')),
+  );
+  $schema['avalanche_fwp_partner'] = array(
+    'description' => 'Reusable trip-member contacts (non-account partners) captured from plans, shared across all users. owner_uid records who last captured them.',
+    'fields' => array(
+      'pid' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE),
+      'owner_uid' => array(
+        'description' => 'The user this partner belongs to.',
+        'type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0,
+      ),
+      'name' => array('type' => 'varchar', 'length' => 255, 'not null' => TRUE, 'default' => ''),
+      'email' => array('type' => 'varchar', 'length' => 255, 'not null' => TRUE, 'default' => ''),
+      'phone' => array('type' => 'varchar', 'length' => 64, 'not null' => TRUE, 'default' => ''),
+      'emergency_name' => array('type' => 'varchar', 'length' => 255, 'not null' => TRUE, 'default' => ''),
+      'emergency_phone' => array('type' => 'varchar', 'length' => 64, 'not null' => TRUE, 'default' => ''),
+      'changed' => array('type' => 'int', 'not null' => TRUE, 'default' => 0),
+    ),
+    'primary key' => array('pid'),
+    'indexes' => array('owner' => array('owner_uid')),
+  );
+  $schema['avalanche_fwp_notification'] = array(
+    'description' => 'Log of Field Work Plan notifications already sent (idempotency for cron).',
+    'fields' => array(
+      'nid' => array(
+        'description' => 'The Field Work Plan node id.',
+        'type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE,
+      ),
+      'type' => array(
+        'description' => 'Notification type: rp_pre, rp_due, user_reminder, checkin.',
+        'type' => 'varchar', 'length' => 32, 'not null' => TRUE,
+      ),
+      'sent' => array(
+        'description' => 'Unix timestamp the notification was sent.',
+        'type' => 'int', 'not null' => TRUE, 'default' => 0,
+      ),
+    ),
+    'primary key' => array('nid', 'type'),
+  );
+  return $schema;
+}
+
+/**
+ * Add the notification-log table (for installs made before Phase C).
+ */
+function avalanche_fwp_update_1000() {
+  if (!db_table_exists('avalanche_fwp_notification')) {
+    $schema = backdrop_get_schema_unprocessed('avalanche_fwp', 'avalanche_fwp_notification');
+    db_create_table('avalanche_fwp_notification', $schema);
+  }
+}
+
+/**
+ * Implements hook_install().
+ *
+ * Generic, center-agnostic permission defaults. The profile additionally grants
+ * "check in any" to its own forecaster/director-type roles via shipped config;
+ * site admins can adjust everything on the permissions page.
+ */
+function avalanche_fwp_install() {
+  if (user_role_load('authenticated')) {
+    user_role_grant_permissions('authenticated', array('check in own field work plan'));
+  }
+  if (user_role_load('administrator')) {
+    user_role_grant_permissions('administrator', array('check in any field work plan'));
+  }
+  // URL alias pattern: fwp/<auto title>, matching the SAC convention. Core's
+  // path module builds the alias from this when a plan is saved.
+  config_set('path.settings', 'node_fwp_pattern', 'fwp/[node:title]');
+  // We do not use Twilio's per-user number registration (we text numbers from
+  // the plan itself), so suppress its phone field on the user forms — the
+  // profile's own "Mobile Phone" field is the single source.
+  config_set('twilio.settings', 'twilio_registration_form', 0);
+  // Place the Field Work Plans links block on the admin dashboard.
+  module_load_include('module', 'avalanche_fwp');
+  avalanche_fwp_place_dashboard_block();
+}
+
+/**
+ * Place the Field Work Plans links block on the dashboard.
+ */
+function avalanche_fwp_update_1003() {
+  module_load_include('module', 'avalanche_fwp');
+  avalanche_fwp_place_dashboard_block();
+}
+
+/**
+ * Add the reusable-partner table.
+ */
+function avalanche_fwp_update_1004() {
+  if (!db_table_exists('avalanche_fwp_partner')) {
+    $schema = backdrop_get_schema_unprocessed('avalanche_fwp', 'avalanche_fwp_partner');
+    db_create_table('avalanche_fwp_partner', $schema);
+  }
+}
+
+/**
+ * Set the Field Work Plan URL alias pattern (installs made before this).
+ */
+function avalanche_fwp_update_1001() {
+  config_set('path.settings', 'node_fwp_pattern', 'fwp/[node:title]');
+}
+
+/**
+ * Suppress Twilio's duplicate per-user phone field on the user forms.
+ */
+function avalanche_fwp_update_1002() {
+  config_set('twilio.settings', 'twilio_registration_form', 0);
+}

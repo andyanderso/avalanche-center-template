@@ -1,0 +1,10 @@
+type = module
+name = Danger Rose
+description = Provides a danger rose for use in avalanche forecasting
+backdrop = 1.x
+package = Avalanche Forecast
+configure = admin/config/danger_rose
+
+dependencies[] = field
+
+version = 1.x-1.x-dev

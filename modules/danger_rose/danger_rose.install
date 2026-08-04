@@ -1,0 +1,40 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the danger_rose module.
+ */
+
+/**
+ * Implements hook_field_schema().
+ *
+ * Store the data with each column as a point on the rose.
+ * Column 0 is the first data point starting from the outermost of the rose at N.
+ * 24 total columns cover all compass positions across three elevation bands.
+ */
+function danger_rose_field_schema($field) {
+  $columns = array();
+  for ($i = 0; $i < 24; $i++) {
+    $columns += array("$i" => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'length' => 1, 'default' => 0));
+  }
+
+  $columns += array(
+    'img_detailed_rose' => array('type' => 'varchar', 'length' => 255),
+    'img_simplified_rose' => array('type' => 'varchar', 'length' => 255),
+  );
+
+  return array(
+    'description' => 'Base table for danger rose data.',
+    'columns' => $columns,
+  );
+}
+
+/**
+ * Migrate variables to config.
+ *
+ * This module does not store its own module-specific variables; it relies
+ * only on the system file-path variable. No migration is required.
+ */
+function danger_rose_update_1000() {
+  // No module-specific variables to migrate.
+}

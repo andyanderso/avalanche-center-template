@@ -1,0 +1,11 @@
+type = module
+name = Avalanche Field Work Plan
+description = Adds workflow to the Field Work Plan content type: profile autofill, safe-return check-in, responsible-party notifications, and a trip-member partner picker.
+package = Avalanche Center
+backdrop = 1.x
+configure = admin/config/system/avalanche-fwp
+
+dependencies[] = node
+dependencies[] = field_collection
+dependencies[] = date
+dependencies[] = twilio

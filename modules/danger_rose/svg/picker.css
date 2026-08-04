@@ -1,0 +1,40 @@
+text {
+  font-family: sans-serif;
+  font-size: 16px;
+  fill: #666;
+}
+
+rect { stroke: #666; }
+
+path {
+  stroke: #666;
+  stroke-width: 2;
+}
+
+circle {
+  stroke: #666;
+  stroke-width: 0;
+}
+
+circle#active_color {
+  stroke-width: 1;
+}
+
+.background {
+  stroke: #eee;
+  fill: #eee;
+}
+
+.bold { font-weight: bold; }
+.small { font-size: 10px; }
+.medium { font-size: 11px; }
+.label { fill: #000; }
+
+.empty { fill: #999; }
+.extreme { fill: #000; }
+.high { fill: #f00; }
+.considerable { fill: #f93; }
+.moderate { fill: #ff3; }
+.low { fill: #0f0; }
+.location { fill: #4db8f8; }
+

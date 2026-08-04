@@ -1,0 +1,33 @@
+[
+  {
+    "name": "Avalanche Activity"
+  },
+  {
+    "name": "Other Signs of Instability (cracking, whumpfing, collapsing)",
+    "children": [
+      "Shooting Cracks",
+      "Collapsing / whumpfing noises"
+    ]
+  },
+  {
+    "name": "Persistent Problem"
+  },
+  {
+    "name": "Recent Loading",
+    "children": [
+      "More Than a Foot of New Snow",
+      "Snowfall Rates of More Than 1 in/hr",
+      "Blowing Snow",
+      "Rain on Snow"
+    ]
+  },
+  {
+    "name": "Rapid or Prolonged Warming",
+    "children": [
+      "Rain on Snow",
+      "Rollerballs / Pinwheels",
+      "Strong Sunshine",
+      "Warm Temperatures"
+    ]
+  }
+]

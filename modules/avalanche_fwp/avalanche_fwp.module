@@ -1,0 +1,1251 @@
+<?php
+/**
+ * @file
+ * Avalanche Field Work Plan: workflow on top of the fwp content type.
+ *
+ * Phase A: pre-fills a new Field Work Plan from the logged-in user's profile
+ * (name, responsible party, emergency contact, vehicle, default equipment,
+ * tracking link). The user's saved values live on their own user account as
+ * the same fields the fwp uses, so autofill is a value copy into the node's
+ * field-collection default items, which the embed widgets then render pre-filled.
+ */
+
+define('AVALANCHE_FWP_LANG', LANGUAGE_NONE);
+
+/**
+ * Implements hook_views_api().
+ */
+function avalanche_fwp_views_api() {
+  return array('api' => 3.0, 'path' => backdrop_get_path('module', 'avalanche_fwp'));
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function avalanche_fwp_block_info() {
+  return array(
+    'fwp_links' => array(
+      'info' => t('Field Work Plans links'),
+      'description' => t('Quick links to the Field Work Plan lists (for the dashboard).'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function avalanche_fwp_block_view($delta = '', $settings = array(), $contexts = array()) {
+  if ($delta !== 'fwp_links') {
+    return;
+  }
+  $links = array();
+  if (avalanche_fwp_menu_access('field-work-plans')) {
+    $links[] = l(t('All Field Work Plans'), 'field-work-plans');
+    $links[] = l(t('Search Field Work Plans'), 'fwp-search');
+  }
+  if (node_access('create', 'fwp')) {
+    $links[] = l(t('Create a Field Work Plan'), 'node/add/fwp');
+  }
+  if (!$links) {
+    return;
+  }
+  return array(
+    'subject' => t('Field Work Plans'),
+    'content' => theme('item_list', array('items' => $links)),
+  );
+}
+
+/**
+ * Whether the current user can reach a Views page path.
+ */
+function avalanche_fwp_menu_access($path) {
+  $item = menu_get_item($path);
+  return $item && !empty($item['access']);
+}
+
+/**
+ * Places the Field Work Plans links block on the admin dashboard, if not
+ * already present. Idempotent; safe to call on install/update.
+ */
+function avalanche_fwp_place_dashboard_block() {
+  $config = config('layout.layout.dashboard');
+  if ($config->isNew()) {
+    return;
+  }
+  $content = (array) $config->get('content');
+  foreach ($content as $block) {
+    if (isset($block['plugin']) && $block['plugin'] === 'avalanche_fwp:fwp_links') {
+      return;
+    }
+  }
+  $uuid = 'af90b1c2-fwp0-4a5b-8c6d-7e8f9a0b1c2d';
+  $content[$uuid] = array(
+    'plugin' => 'avalanche_fwp:fwp_links',
+    'data' => array(
+      'module' => 'avalanche_fwp',
+      'delta' => 'fwp_links',
+      'settings' => array(
+        'title_display' => 'default',
+        'title' => '',
+        'style' => 'default',
+        'block_settings' => array(),
+        'contexts' => array(),
+      ),
+      'uuid' => $uuid,
+      'style' => array('plugin' => 'default', 'data' => array('settings' => array('classes' => ''))),
+    ),
+  );
+  $config->set('content', $content);
+
+  $positions = (array) $config->get('positions');
+  $region = isset($positions['half2']) ? 'half2' : (isset($positions['sidebar']) ? 'sidebar' : key($positions));
+  $positions[$region][] = $uuid;
+  $config->set('positions', $positions);
+  $config->save();
+}
+
+/**
+ * Implements hook_user_format_name_alter().
+ *
+ * Displays a user's "Name (as displayed on the website)" wherever
+ * user_format_name() is used — forecast/observation author bylines, field work
+ * plans, comments, etc. — instead of their login name.
+ */
+function avalanche_fwp_user_format_name_alter(&$name, $account) {
+  if (empty($account->uid)) {
+    return;
+  }
+  // Use the field if the passed object already carries it; otherwise load.
+  if (!isset($account->field_display_name)) {
+    $account = user_load($account->uid);
+  }
+  if (!empty($account->field_display_name[AVALANCHE_FWP_LANG][0]['value'])) {
+    $name = $account->field_display_name[AVALANCHE_FWP_LANG][0]['value'];
+  }
+}
+
+/**
+ * Implements hook_node_presave().
+ *
+ * Auto-titles a Field Work Plan as
+ * "<work date m-d-Y>-<author display name>-Field Work Plan", matching the SAC
+ * convention. Uses the author's display name (username fallback).
+ */
+function avalanche_fwp_node_presave(Node $node) {
+  if ($node->type !== 'fwp') {
+    return;
+  }
+  $L = AVALANCHE_FWP_LANG;
+  $bits = array();
+  if (!empty($node->field_field_work_date[$L][0]['value'])) {
+    $ts = strtotime(str_replace('T', ' ', $node->field_field_work_date[$L][0]['value']) . ' UTC');
+    if ($ts) {
+      $bits[] = gmdate('m-d-Y', $ts);
+    }
+  }
+  $author = !empty($node->uid) ? user_load($node->uid) : NULL;
+  $name = $author ? user_format_name($author) : '';
+  if ($name !== '') {
+    $bits[] = $name;
+  }
+  $bits[] = t('Field Work Plan');
+  $node->title = implode('-', $bits);
+}
+
+/**
+ * Implements hook_node_prepare().
+ *
+ * Fires when a NEW node add form is prepared; does not fire on edit, so
+ * existing plans are never overwritten.
+ */
+function avalanche_fwp_node_prepare(Node $node) {
+  if ($node->type !== 'fwp' || !empty($node->nid) || !user_is_logged_in()) {
+    return;
+  }
+  global $user;
+  $account = user_load($user->uid);
+  if (!$account) {
+    return;
+  }
+  $L = AVALANCHE_FWP_LANG;
+
+  // --- Scalar: live tracking link ---
+  if (!empty($account->field_tracking_link[$L])) {
+    $node->field_tracking_link[$L] = $account->field_tracking_link[$L];
+  }
+
+  // --- Responsible Party (single field-collection) ---
+  $rp = _avalanche_fwp_user_fc_item($account, 'field_responsible_party');
+  _avalanche_fwp_default_fc($node, 'field_responsible_party', $rp, array(
+    'field_responsible_party_name', 'field_responsible_party_phone_nu',
+    'field_responsible_party_email',
+  ));
+
+  // --- Vehicle (single field-collection); skip the per-trip parking location ---
+  $veh = _avalanche_fwp_user_fc_item($account, 'field_vehicle_location_and_infor');
+  _avalanche_fwp_default_fc($node, 'field_vehicle_location_and_infor', $veh, array(
+    'field_vehicle_color', 'field_vehicle_description', 'field_fs_door_number_or_license_',
+  ));
+
+  // --- Trip member row 0 = the current user, with nested emergency contact ---
+  $member = entity_create('field_collection_item', array('field_name' => 'field_trip_members'));
+  $member_has = FALSE;
+
+  // Name: prefer the display name, then the contact-info addressfield name,
+  // then the username (format_username applies the same display-name logic).
+  $name = user_format_name($account);
+  if ($name !== '') {
+    $member->field_trip_member_name[$L][0]['value'] = $name;
+    $member_has = TRUE;
+  }
+
+  // Mobile phone -> the trip member's phone.
+  if (!empty($account->field_mobile_phone[$L][0]['value'])) {
+    $member->field_trip_member_phone_number[$L][0]['value'] = $account->field_mobile_phone[$L][0]['value'];
+    $member_has = TRUE;
+  }
+
+  // Account email -> the trip member's email.
+  if (!empty($account->mail)) {
+    $member->field_trip_member_email[$L][0]['value'] = $account->mail;
+    $member_has = TRUE;
+  }
+
+  // Default equipment / clothing carried on the user account.
+  foreach (array('field_avalanche_safety_equipment', 'field_communication_equipment', 'field_other_equipment', 'field_clothing') as $eq) {
+    if (!empty($account->{$eq}[$L])) {
+      $member->{$eq}[$L] = $account->{$eq}[$L];
+      $member_has = TRUE;
+    }
+  }
+
+  // Nested emergency contact from the user's profile.
+  $ec = _avalanche_fwp_user_fc_item($account, 'field_emergency_contact');
+  if ($ec) {
+    $ec_new = _avalanche_fwp_build_fc('field_emergency_contact', $ec, array(
+      'field_emergency_contact_name', 'field_emergency_contact_phone_nu',
+    ));
+    if ($ec_new) {
+      $ec_new->setHostEntity('field_collection_item', $member);
+      $member_has = TRUE;
+    }
+  }
+
+  if ($member_has) {
+    $member->setHostEntity('node', $node);
+  }
+}
+
+/**
+ * Loads a user's single-value field-collection item entity, or NULL.
+ */
+function _avalanche_fwp_user_fc_item($account, $field_name) {
+  $L = AVALANCHE_FWP_LANG;
+  if (empty($account->{$field_name}[$L][0]['value'])) {
+    return NULL;
+  }
+  $items = entity_load('field_collection_item', array($account->{$field_name}[$L][0]['value']));
+  return $items ? reset($items) : NULL;
+}
+
+/**
+ * Builds a new (unsaved) field-collection item copying the named sub-fields
+ * from a source item. Returns the new item, or NULL if nothing was copied.
+ */
+function _avalanche_fwp_build_fc($field_name, $source_item, array $subfields) {
+  $L = AVALANCHE_FWP_LANG;
+  if (!$source_item) {
+    return NULL;
+  }
+  $new = entity_create('field_collection_item', array('field_name' => $field_name));
+  $has = FALSE;
+  foreach ($subfields as $sf) {
+    if (!empty($source_item->{$sf}[$L])) {
+      $new->{$sf}[$L] = $source_item->{$sf}[$L];
+      $has = TRUE;
+    }
+  }
+  return $has ? $new : NULL;
+}
+
+/**
+ * Attaches a default (unsaved) field-collection item to a host node, copying
+ * the named sub-fields from a source item. No-op if source is empty.
+ */
+function _avalanche_fwp_default_fc(Node $node, $field_name, $source_item, array $subfields) {
+  $new = _avalanche_fwp_build_fc($field_name, $source_item, $subfields);
+  if ($new) {
+    $new->setHostEntity('node', $node);
+  }
+}
+
+/* ===========================================================================
+ * Phase B: safe-return check-in.
+ * ======================================================================== */
+
+/**
+ * Implements hook_permission().
+ */
+function avalanche_fwp_permission() {
+  return array(
+    'check in own field work plan' => array(
+      'title' => t('Check in own Field Work Plan'),
+      'description' => t('Mark a Field Work Plan you created as safely returned from the field.'),
+    ),
+    'check in any field work plan' => array(
+      'title' => t('Check in any Field Work Plan'),
+      'description' => t('Mark any Field Work Plan as safely returned (e.g. a dispatcher or responsible party).'),
+    ),
+    'administer avalanche fwp' => array(
+      'title' => t('Administer Field Work Plan settings'),
+      'description' => t('Configure notification timing and SMS.'),
+      'restrict access' => TRUE,
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function avalanche_fwp_menu() {
+  $items['node/%node/check-in'] = array(
+    'title' => 'Check in',
+    'page callback' => 'avalanche_fwp_checkin_page',
+    'page arguments' => array(1),
+    'access callback' => 'avalanche_fwp_checkin_access',
+    'access arguments' => array(1),
+    'type' => MENU_CALLBACK,
+  );
+  $items['admin/config/system/avalanche-fwp'] = array(
+    'title' => 'Field Work Plan',
+    'description' => 'Safe-return notification timing and SMS settings.',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('avalanche_fwp_settings_form'),
+    'access arguments' => array('administer avalanche fwp'),
+    'file' => 'avalanche_fwp.admin.inc',
+  );
+  $items['fwp-access'] = array(
+    'title' => 'Field Work Plan access',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('avalanche_fwp_unlock_form'),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+/* ===========================================================================
+ * Public-access password gate.
+ * ======================================================================== */
+
+/**
+ * Implements hook_init().
+ *
+ * When a view password is configured, anonymous visitors must unlock Field
+ * Work Plan pages first. Logged-in users are unaffected.
+ */
+function avalanche_fwp_init() {
+  $pw = config_get('avalanche_fwp.settings', 'view_password');
+  if (empty($pw) || user_is_logged_in() || !empty($_SESSION['avalanche_fwp_unlocked'])) {
+    return;
+  }
+  $path = current_path();
+  if ($path === 'fwp-access' || $path === 'user/login' || $path === 'user') {
+    return;
+  }
+  if (avalanche_fwp_is_protected_path($path)) {
+    $_SESSION['avalanche_fwp_destination'] = $_GET['q'];
+    backdrop_goto('fwp-access');
+  }
+}
+
+/**
+ * Is this internal path a Field Work Plan page (a plan node or a list page)?
+ */
+function avalanche_fwp_is_protected_path($path) {
+  if (preg_match('#^node/(\d+)$#', $path, $m)) {
+    $node = node_load($m[1]);
+    return $node && $node->type === 'fwp';
+  }
+  return in_array($path, array('field-work-plans', 'fwp-search'), TRUE);
+}
+
+/**
+ * The public-access password form.
+ */
+function avalanche_fwp_unlock_form($form, &$form_state) {
+  $form['intro'] = array(
+    '#markup' => '<p>' . t('Field Work Plans are password protected. Enter the access password to continue, or <a href="@login">log in</a>.', array('@login' => url('user/login', array('query' => backdrop_get_destination())))) . '</p>',
+  );
+  $form['password'] = array(
+    '#type' => 'password',
+    '#title' => t('Access password'),
+    '#required' => TRUE,
+  );
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array('#type' => 'submit', '#value' => t('Continue'));
+  return $form;
+}
+
+/**
+ * Validates the access password.
+ */
+function avalanche_fwp_unlock_form_validate($form, &$form_state) {
+  $pw = (string) config_get('avalanche_fwp.settings', 'view_password');
+  if (!hash_equals($pw, (string) $form_state['values']['password'])) {
+    form_set_error('password', t('That password is not correct.'));
+  }
+}
+
+/**
+ * Unlocks the session and returns to the requested plan page.
+ */
+function avalanche_fwp_unlock_form_submit($form, &$form_state) {
+  $_SESSION['avalanche_fwp_unlocked'] = TRUE;
+  $dest = !empty($_SESSION['avalanche_fwp_destination']) ? $_SESSION['avalanche_fwp_destination'] : 'field-work-plans';
+  unset($_SESSION['avalanche_fwp_destination']);
+  $form_state['redirect'] = $dest;
+}
+
+/**
+ * Returns a stable, session-independent check-in token for a node.
+ *
+ * Signed with the site's private key + hash salt so an emailed/texted "check
+ * in" link stays valid when clicked later, whether or not the recipient is
+ * logged in. It is a capability link for a low-risk action (marking a plan
+ * safely returned).
+ */
+function avalanche_fwp_signed_token($nid) {
+  return backdrop_hmac_base64('fwp-checkin:' . $nid, backdrop_get_private_key() . backdrop_get_hash_salt());
+}
+
+/**
+ * Absolute check-in URL carrying the signed token.
+ */
+function avalanche_fwp_checkin_url($node) {
+  return url('node/' . $node->nid . '/check-in', array(
+    'absolute' => TRUE,
+    'query' => array('t' => avalanche_fwp_signed_token($node->nid)),
+  ));
+}
+
+/**
+ * Access callback: a valid signed token authorizes (magic link); otherwise
+ * fall back to the permission model for the on-page button.
+ */
+function avalanche_fwp_checkin_access($node) {
+  if (!is_object($node) || $node->type !== 'fwp') {
+    return FALSE;
+  }
+  if (!empty($_GET['t']) && $_GET['t'] === avalanche_fwp_signed_token($node->nid)) {
+    return TRUE;
+  }
+  if (user_access('check in any field work plan')) {
+    return TRUE;
+  }
+  global $user;
+  return $user->uid && $node->uid == $user->uid && user_access('check in own field work plan');
+}
+
+/**
+ * Page callback: record a safe-return check-in, then return to the node.
+ */
+function avalanche_fwp_checkin_page($node) {
+  if (empty($_GET['t']) || $_GET['t'] !== avalanche_fwp_signed_token($node->nid)) {
+    backdrop_set_message(t('That check-in link was invalid. Please use the button on the plan.'), 'error');
+    backdrop_goto('node/' . $node->nid);
+  }
+  $status = avalanche_fwp_get_status($node->nid);
+  if (!empty($status->checked_in)) {
+    backdrop_set_message(t('This Field Work Plan is already checked in.'), 'warning');
+    backdrop_goto('node/' . $node->nid);
+  }
+  avalanche_fwp_set_checkin($node);
+  backdrop_set_message(t('Checked in — glad you made it back safely.'));
+  backdrop_goto('node/' . $node->nid);
+}
+
+/**
+ * Returns the check-in status row for a plan, or FALSE if none yet.
+ */
+function avalanche_fwp_get_status($nid) {
+  return db_query('SELECT nid, checked_in, check_in_time, check_in_uid FROM {avalanche_fwp_status} WHERE nid = :nid',
+    array(':nid' => $nid))->fetchObject();
+}
+
+/**
+ * Records a safe-return check-in and lets other modules react (Phase C:
+ * cancel pending notifications + send a check-in message).
+ */
+function avalanche_fwp_set_checkin($node, $account = NULL) {
+  if (!$account) {
+    global $user;
+    $account = $user;
+  }
+  db_merge('avalanche_fwp_status')
+    ->key(array('nid' => $node->nid))
+    ->fields(array(
+      'checked_in' => 1,
+      'check_in_time' => REQUEST_TIME,
+      'check_in_uid' => $account->uid,
+    ))
+    ->execute();
+  // Notify the responsible party that the party is back safe.
+  avalanche_fwp_notify($node, 'checkin');
+  module_invoke_all('avalanche_fwp_checked_in', $node, $account);
+}
+
+/**
+ * Implements hook_node_view().
+ *
+ * Shows either the "check in" button (permitted, not yet checked in) or the
+ * safe-return confirmation on the full node.
+ */
+function avalanche_fwp_node_view($node, $view_mode, $langcode) {
+  if ($node->type !== 'fwp' || $view_mode !== 'full') {
+    return;
+  }
+
+  // Emergency response plan banner at the very top of every plan.
+  $erp = config_get('avalanche_fwp.settings', 'emergency_response_link');
+  if (!empty($erp)) {
+    $text = config_get('avalanche_fwp.settings', 'emergency_response_text');
+    if (empty($text)) {
+      $text = t('Emergency Response Plan');
+    }
+    $node->content['avalanche_fwp_erp'] = array(
+      '#markup' => '<div class="fwp-emergency-response messages warning"><a href="'
+        . check_url(url($erp, array('absolute' => TRUE))) . '">' . check_plain($text) . '</a></div>',
+      '#weight' => -100,
+    );
+  }
+
+  $status = avalanche_fwp_get_status($node->nid);
+  if (!empty($status->checked_in)) {
+    $when = format_date($status->check_in_time, 'short');
+    $who = $status->check_in_uid ? user_format_name(user_load($status->check_in_uid)) : '';
+    $text = $who
+      ? t('Checked in safely on @when by @who.', array('@when' => $when, '@who' => $who))
+      : t('Checked in safely on @when.', array('@when' => $when));
+    $node->content['avalanche_fwp_checkin'] = array(
+      '#markup' => '<div class="fwp-checked-in messages status">' . check_plain($text) . '</div>',
+      '#weight' => -50,
+    );
+  }
+  elseif (avalanche_fwp_checkin_access($node)) {
+    $link = avalanche_fwp_checkin_url($node);
+    $node->content['avalanche_fwp_checkin'] = array(
+      '#markup' => '<div class="fwp-checkin-action"><a href="' . check_plain($link)
+        . '" class="button button-primary fwp-checkin-button">'
+        . t("I'm back safe — check in") . '</a></div>',
+      '#weight' => -50,
+    );
+  }
+}
+
+/* ===========================================================================
+ * Phase C: safe-return notifications (email always; Twilio SMS optional).
+ * ======================================================================== */
+
+/**
+ * The expected-return timestamp = end of the Field Work Date range, or NULL.
+ * Date fields store in UTC (timezone_db = UTC).
+ */
+function avalanche_fwp_return_timestamp($node) {
+  $L = AVALANCHE_FWP_LANG;
+  if (empty($node->field_field_work_date[$L][0]['value2'])) {
+    return NULL;
+  }
+  $str = str_replace('T', ' ', $node->field_field_work_date[$L][0]['value2']);
+  $ts = strtotime($str . ' UTC');
+  return $ts ? $ts : NULL;
+}
+
+/**
+ * Responsible-party contact (name/email/phone) from the node's RP collection.
+ */
+function _avalanche_fwp_rp_contact($node) {
+  $L = AVALANCHE_FWP_LANG;
+  $out = array('name' => '', 'email' => '', 'phone' => '');
+  if (!empty($node->field_responsible_party[$L][0]['value'])) {
+    $items = entity_load('field_collection_item', array($node->field_responsible_party[$L][0]['value']));
+    if ($items) {
+      $it = reset($items);
+      $out['name'] = isset($it->field_responsible_party_name[$L][0]['value']) ? $it->field_responsible_party_name[$L][0]['value'] : '';
+      $out['email'] = isset($it->field_responsible_party_email[$L][0]['value']) ? $it->field_responsible_party_email[$L][0]['value'] : '';
+      $out['phone'] = isset($it->field_responsible_party_phone_nu[$L][0]['value']) ? $it->field_responsible_party_phone_nu[$L][0]['value'] : '';
+    }
+  }
+  return $out;
+}
+
+/**
+ * Planner (node author) contact: email from the account, phone from their own
+ * trip-member row on the plan.
+ */
+function _avalanche_fwp_planner_contact($node) {
+  $L = AVALANCHE_FWP_LANG;
+  $acc = user_load($node->uid);
+  $out = array('name' => $acc ? user_format_name($acc) : '', 'email' => $acc ? $acc->mail : '', 'phone' => '');
+  // Phone: prefer the profile mobile, then the planner's trip-member row.
+  if ($acc && !empty($acc->field_mobile_phone[$L][0]['value'])) {
+    $out['phone'] = $acc->field_mobile_phone[$L][0]['value'];
+  }
+  if (!empty($node->field_trip_members[$L][0]['value'])) {
+    $items = entity_load('field_collection_item', array($node->field_trip_members[$L][0]['value']));
+    if ($items) {
+      $tm = reset($items);
+      if (!empty($tm->field_trip_member_name[$L][0]['value'])) {
+        $out['name'] = $tm->field_trip_member_name[$L][0]['value'];
+      }
+      if (!empty($tm->field_trip_member_phone_number[$L][0]['value'])) {
+        $out['phone'] = $tm->field_trip_member_phone_number[$L][0]['value'];
+      }
+    }
+  }
+  return $out;
+}
+
+/**
+ * Sends one notification of the given type for a plan. Email always; SMS only
+ * when enabled + Twilio present. Each channel is skipped if its address blank.
+ */
+function avalanche_fwp_notify($node, $type) {
+  $L = AVALANCHE_FWP_LANG;
+  $rp = _avalanche_fwp_rp_contact($node);
+  $planner = _avalanche_fwp_planner_contact($node);
+  $return_ts = avalanche_fwp_return_timestamp($node);
+  $when = $return_ts ? format_date($return_ts, 'short') : t('the planned time');
+  $who = $planner['name'] ? $planner['name'] : t('A field worker');
+  $node_url = url('node/' . $node->nid, array('absolute' => TRUE));
+  $tracking = !empty($node->field_tracking_link[$L][0]['value']) ? $node->field_tracking_link[$L][0]['value'] : '';
+
+  $email_to = $sms_to = $subject = $body = $sms = '';
+
+  switch ($type) {
+    case 'rp_pre':
+      $email_to = $rp['email'];
+      $sms_to = $rp['phone'];
+      $subject = t('Field work check-in due soon: @who', array('@who' => $who));
+      $sms = t('@who is due back from the field at @when. You are their responsible party. If you do not hear a check-in, follow your protocol.', array('@who' => $who, '@when' => $when));
+      $body = $sms . "\n\n" . t('Plan: @url', array('@url' => $node_url));
+      if ($tracking) {
+        $body .= "\n" . t('Live tracking: @t', array('@t' => $tracking));
+      }
+      break;
+
+    case 'rp_due':
+      $email_to = $rp['email'];
+      $sms_to = $rp['phone'];
+      $subject = t('Field worker OVERDUE — no check-in: @who', array('@who' => $who));
+      $sms = t('@who was due back at @when and has NOT checked in. Please follow your response protocol.', array('@who' => $who, '@when' => $when));
+      $body = $sms . "\n\n" . t('Plan: @url', array('@url' => $node_url));
+      if ($tracking) {
+        $body .= "\n" . t('Live tracking: @t', array('@t' => $tracking));
+      }
+      break;
+
+    case 'user_reminder':
+      $email_to = $planner['email'];
+      $sms_to = $planner['phone'];
+      $checkin = avalanche_fwp_checkin_url($node);
+      $subject = t('Time to check in from the field');
+      $sms = t('You were due back at @when. Please check in so your responsible party knows you are safe: @url', array('@when' => $when, '@url' => $checkin));
+      $body = $sms;
+      break;
+
+    case 'checkin':
+      $email_to = $rp['email'];
+      $sms_to = $rp['phone'];
+      $subject = t('Checked in safely: @who', array('@who' => $who));
+      $sms = t('@who has checked in safely from the field.', array('@who' => $who));
+      $body = $sms . "\n\n" . t('Plan: @url', array('@url' => $node_url));
+      break;
+
+    case 'submit':
+      $email_to = $rp['email'];
+      $sms_to = $rp['phone'];
+      $subject = t('Field work plan filed: @who', array('@who' => $who));
+      $sms = t('@who has filed a field work plan and is heading into the field, due back at @when. You are listed as their responsible party.', array('@who' => $who, '@when' => $when));
+      $body = $sms . "\n\n" . t('Plan: @url', array('@url' => $node_url));
+      if ($tracking) {
+        $body .= "\n" . t('Live tracking: @t', array('@t' => $tracking));
+      }
+      break;
+
+    default:
+      return;
+  }
+
+  if ($email_to) {
+    avalanche_fwp_send_email($email_to, $type, $subject, $body);
+  }
+  if ($sms_to && config_get('avalanche_fwp.settings', 'enable_sms')) {
+    avalanche_fwp_send_sms($sms_to, $sms);
+  }
+}
+
+/**
+ * Implements hook_node_insert().
+ */
+function avalanche_fwp_node_insert($node) {
+  if ($node->type === 'fwp') {
+    avalanche_fwp_maybe_notify_submit($node);
+    avalanche_fwp_capture_partners($node);
+  }
+}
+
+/**
+ * Implements hook_node_update().
+ *
+ * Covers plans created unpublished and published later.
+ */
+function avalanche_fwp_node_update($node) {
+  if ($node->type === 'fwp') {
+    avalanche_fwp_maybe_notify_submit($node);
+    avalanche_fwp_capture_partners($node);
+  }
+}
+
+/**
+ * Sends the "plan filed" notice to the responsible party once, if enabled and
+ * the plan is published.
+ */
+function avalanche_fwp_maybe_notify_submit($node) {
+  if (empty($node->status) || !config_get('avalanche_fwp.settings', 'notify_on_submit')) {
+    return;
+  }
+  $sent = avalanche_fwp_notifications_sent($node->nid);
+  if (!empty($sent['submit'])) {
+    return;
+  }
+  // Reload so field-collection references (responsible party) are resolved.
+  $fresh = node_load($node->nid, NULL, TRUE);
+  if ($fresh) {
+    avalanche_fwp_notify($fresh, 'submit');
+    avalanche_fwp_log_notification($node->nid, 'submit');
+  }
+}
+
+/**
+ * Implements hook_mail().
+ */
+function avalanche_fwp_mail($key, &$message, $params) {
+  $message['subject'] = $params['subject'];
+  $message['body'][] = $params['body'];
+}
+
+/**
+ * Sends a notification email via core mail.
+ */
+function avalanche_fwp_send_email($to, $key, $subject, $body) {
+  backdrop_mail('avalanche_fwp', $key, $to, language_default(), array(
+    'subject' => $subject,
+    'body' => $body,
+  ));
+}
+
+/**
+ * Sends an SMS via the Twilio module, if available.
+ */
+function avalanche_fwp_send_sms($number, $message) {
+  if (function_exists('twilio_send')) {
+    twilio_send($number, $message);
+  }
+}
+
+/**
+ * Implements hook_cron().
+ *
+ * Fires the pre-return and overdue notifications for plans not yet checked in.
+ * Each (plan, type) is logged so it sends at most once. Needs cron to run every
+ * few minutes for the lead-time to be accurate.
+ */
+function avalanche_fwp_cron() {
+  $lead = (int) config_get('avalanche_fwp.settings', 'lead_minutes');
+  if (!$lead) {
+    $lead = 15;
+  }
+  $now = REQUEST_TIME;
+
+  // Candidate plans: published fwp, not checked in, end date within +/- a day
+  // (string comparison on the UTC 'Y-m-d H:i:s' value2 is chronological).
+  $result = db_query("SELECT n.nid FROM {node} n
+    INNER JOIN {field_data_field_field_work_date} d
+      ON d.entity_type = 'node' AND d.entity_id = n.nid AND d.deleted = 0
+    LEFT JOIN {avalanche_fwp_status} s ON s.nid = n.nid
+    WHERE n.type = 'fwp' AND n.status = 1
+      AND (s.checked_in IS NULL OR s.checked_in = 0)
+      AND d.field_field_work_date_value2 IS NOT NULL
+      AND d.field_field_work_date_value2 BETWEEN :from AND :to",
+    array(
+      ':from' => gmdate('Y-m-d H:i:s', $now - 86400),
+      ':to' => gmdate('Y-m-d H:i:s', $now + 86400),
+    ));
+
+  foreach ($result as $row) {
+    $node = node_load($row->nid);
+    if (!$node) {
+      continue;
+    }
+    $return_ts = avalanche_fwp_return_timestamp($node);
+    if (!$return_ts) {
+      continue;
+    }
+    $sent = avalanche_fwp_notifications_sent($node->nid);
+
+    // Advance warning (skipped when lead is 0).
+    if ($lead > 0 && $now >= ($return_ts - $lead * 60) && empty($sent['rp_pre'])) {
+      avalanche_fwp_notify($node, 'rp_pre');
+      avalanche_fwp_log_notification($node->nid, 'rp_pre');
+    }
+    if ($now >= $return_ts) {
+      if (empty($sent['rp_due'])) {
+        avalanche_fwp_notify($node, 'rp_due');
+        avalanche_fwp_log_notification($node->nid, 'rp_due');
+      }
+      if (empty($sent['user_reminder'])) {
+        avalanche_fwp_notify($node, 'user_reminder');
+        avalanche_fwp_log_notification($node->nid, 'user_reminder');
+      }
+    }
+  }
+}
+
+/**
+ * Returns a map of notification types already sent for a plan.
+ */
+function avalanche_fwp_notifications_sent($nid) {
+  $out = array();
+  $result = db_query('SELECT type FROM {avalanche_fwp_notification} WHERE nid = :nid', array(':nid' => $nid));
+  foreach ($result as $row) {
+    $out[$row->type] = TRUE;
+  }
+  return $out;
+}
+
+/**
+ * Records that a notification type was sent for a plan.
+ */
+function avalanche_fwp_log_notification($nid, $type) {
+  db_merge('avalanche_fwp_notification')
+    ->key(array('nid' => $nid, 'type' => $type))
+    ->fields(array('sent' => REQUEST_TIME))
+    ->execute();
+}
+
+/* ===========================================================================
+ * Phase E: reusable trip-member partner picker.
+ * ======================================================================== */
+
+/**
+ * Looks up a user id by email, or FALSE.
+ */
+function _avalanche_fwp_user_by_email($email) {
+  if ($email === '') {
+    return FALSE;
+  }
+  return db_query('SELECT uid FROM {users} WHERE mail = :m', array(':m' => $email))->fetchField();
+}
+
+/**
+ * Captures non-account trip members from a saved plan into the author's
+ * reusable partner list, so they can be picked again. Idempotent (upsert).
+ */
+function avalanche_fwp_capture_partners($node) {
+  $L = AVALANCHE_FWP_LANG;
+  if (empty($node->field_trip_members[$L])) {
+    return;
+  }
+  $ids = array();
+  foreach ($node->field_trip_members[$L] as $item) {
+    if (!empty($item['value'])) {
+      $ids[] = $item['value'];
+    }
+  }
+  if (!$ids) {
+    return;
+  }
+  foreach (entity_load('field_collection_item', $ids) as $tm) {
+    $name = isset($tm->field_trip_member_name[$L][0]['value']) ? trim($tm->field_trip_member_name[$L][0]['value']) : '';
+    if ($name === '') {
+      continue;
+    }
+    $email = isset($tm->field_trip_member_email[$L][0]['value']) ? trim($tm->field_trip_member_email[$L][0]['value']) : '';
+    // Skip trip members who are their own account (incl. the plan author).
+    if ($email !== '' && _avalanche_fwp_user_by_email($email)) {
+      continue;
+    }
+    $phone = isset($tm->field_trip_member_phone_number[$L][0]['value']) ? trim($tm->field_trip_member_phone_number[$L][0]['value']) : '';
+    $em_name = $em_phone = '';
+    if (!empty($tm->field_emergency_contact[$L][0]['value'])) {
+      $ec = entity_load('field_collection_item', array($tm->field_emergency_contact[$L][0]['value']));
+      if ($ec) {
+        $ec = reset($ec);
+        $em_name = isset($ec->field_emergency_contact_name[$L][0]['value']) ? $ec->field_emergency_contact_name[$L][0]['value'] : '';
+        $em_phone = isset($ec->field_emergency_contact_phone_nu[$L][0]['value']) ? $ec->field_emergency_contact_phone_nu[$L][0]['value'] : '';
+      }
+    }
+    _avalanche_fwp_upsert_partner($node->uid, $name, $email, $phone, $em_name, $em_phone);
+  }
+}
+
+/**
+ * Inserts or updates one partner for an owner. Dedups by email when present,
+ * otherwise by name.
+ */
+function _avalanche_fwp_upsert_partner($owner, $name, $email, $phone, $em_name, $em_phone) {
+  // Partners are shared across all users, so dedup globally by email (else
+  // name); owner_uid just records who last captured them.
+  $query = db_select('avalanche_fwp_partner', 'p')->fields('p', array('pid'));
+  if ($email !== '') {
+    $query->condition('email', $email);
+  }
+  else {
+    $query->condition('name', $name);
+  }
+  $pid = $query->execute()->fetchField();
+  $fields = array(
+    'owner_uid' => $owner,
+    'name' => $name,
+    'email' => $email,
+    'phone' => $phone,
+    'emergency_name' => $em_name,
+    'emergency_phone' => $em_phone,
+    'changed' => REQUEST_TIME,
+  );
+  if ($pid) {
+    db_update('avalanche_fwp_partner')->fields($fields)->condition('pid', $pid)->execute();
+  }
+  else {
+    db_insert('avalanche_fwp_partner')->fields($fields)->execute();
+  }
+}
+
+/**
+ * Builds the people list for the partner picker: field-worker user accounts
+ * (excluding the current user) plus all shared saved partners (partners are
+ * shared across users, since teams often go out with the same people).
+ */
+function avalanche_fwp_people_for_user($account) {
+  $L = AVALANCHE_FWP_LANG;
+  $people = array();
+
+  $uids = db_query('SELECT uid FROM {users} WHERE status = 1 AND uid > 0')->fetchCol();
+  foreach (user_load_multiple($uids) as $u) {
+    if ($u->uid == $account->uid || !user_access('create fwp content', $u)) {
+      continue;
+    }
+    $em_name = $em_phone = '';
+    $ec = _avalanche_fwp_user_fc_item($u, 'field_emergency_contact');
+    if ($ec) {
+      $em_name = isset($ec->field_emergency_contact_name[$L][0]['value']) ? $ec->field_emergency_contact_name[$L][0]['value'] : '';
+      $em_phone = isset($ec->field_emergency_contact_phone_nu[$L][0]['value']) ? $ec->field_emergency_contact_phone_nu[$L][0]['value'] : '';
+    }
+    $people['u:' . $u->uid] = array(
+      'label' => user_format_name($u),
+      'name' => user_format_name($u),
+      'phone' => isset($u->field_mobile_phone[$L][0]['value']) ? $u->field_mobile_phone[$L][0]['value'] : '',
+      'email' => $u->mail,
+      'em_name' => $em_name,
+      'em_phone' => $em_phone,
+    );
+  }
+
+  // Partners are shared: every user can pick any saved partner.
+  $result = db_query('SELECT * FROM {avalanche_fwp_partner} ORDER BY name');
+  foreach ($result as $p) {
+    $people['p:' . $p->pid] = array(
+      'label' => $p->name,
+      'name' => $p->name,
+      'phone' => $p->phone,
+      'email' => $p->email,
+      'em_name' => $p->emergency_name,
+      'em_phone' => $p->emergency_phone,
+    );
+  }
+  return $people;
+}
+
+/**
+ * Options for the "Approved By" dropdown: display name => display name for every
+ * active user holding one of the configured approver roles. Keyed by the display
+ * name so the stored text value is the approver's name.
+ */
+function avalanche_fwp_approver_options() {
+  $roles = array_filter((array) config_get('avalanche_fwp.settings', 'approver_roles'));
+  if (!$roles) {
+    $roles = array('administrator', 'forecaster', 'program_manager');
+  }
+  $uids = db_query('SELECT DISTINCT ur.uid FROM {users_roles} ur WHERE ur.role IN (:roles)', array(':roles' => $roles))->fetchCol();
+  $options = array();
+  if ($uids) {
+    foreach (user_load_multiple($uids) as $u) {
+      if (!empty($u->status)) {
+        $options[user_format_name($u)] = user_format_name($u);
+      }
+    }
+    natcasesort($options);
+  }
+  return $options;
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter() for node_form.
+ *
+ * Adds a "pick a saved person" select to each trip-member row; a small JS then
+ * fills that row's fields (name/phone/email + emergency contact) client-side.
+ */
+function avalanche_fwp_form_node_form_alter(&$form, &$form_state, $form_id) {
+  if (empty($form['#node']) || $form['#node']->type !== 'fwp') {
+    return;
+  }
+  $L = AVALANCHE_FWP_LANG;
+
+  // On a NEW plan, the end date pre-fills to the start date (today) but the end
+  // time is left blank so the user enters their expected return time. Attach to
+  // the date-combo element (value2/time is built by its #process later).
+  if (empty($form['#node']->nid) && isset($form['field_field_work_date'][$L][0])) {
+    $form['field_field_work_date'][$L][0]['#after_build'][] = 'avalanche_fwp_blank_end_time';
+  }
+
+  // Turn "Approved By" into a dropdown of users holding an approver role.
+  if (isset($form['field_approved_by'][$L][0]['value'])) {
+    $approvers = avalanche_fwp_approver_options();
+    $el = &$form['field_approved_by'][$L][0]['value'];
+    $el['#type'] = 'select';
+    $el['#options'] = array('' => t('- None -')) + $approvers;
+    // Drop textfield-only properties that don't apply to a select.
+    unset($el['#size'], $el['#maxlength'], $el['#attributes']['maxlength']);
+  }
+
+  if (empty($form['field_trip_members'][$L])) {
+    return;
+  }
+  global $user;
+  $account = user_load($user->uid);
+  $people = avalanche_fwp_people_for_user($account);
+  if (!$people) {
+    return;
+  }
+
+  $options = array('' => t('— Select a saved person —'));
+  $data = array();
+  foreach ($people as $id => $p) {
+    $options[$id] = $p['label'];
+    $data[$id] = array(
+      'name' => $p['name'], 'phone' => $p['phone'], 'email' => $p['email'],
+      'em_name' => $p['em_name'], 'em_phone' => $p['em_phone'],
+    );
+  }
+
+  foreach (element_children($form['field_trip_members'][$L]) as $i) {
+    // Row 0 is the plan's author (auto-filled from their profile, still
+    // editable) — the picker is only for the "add another member" rows.
+    if (!is_numeric($i) || $i == 0) {
+      continue;
+    }
+    $form['field_trip_members'][$L][$i]['avalanche_fwp_picker'] = array(
+      '#type' => 'select',
+      '#title' => t('Add a saved person'),
+      '#options' => $options,
+      '#weight' => -50,
+      '#attributes' => array('class' => array('avalanche-fwp-picker')),
+      '#description' => t('Pick a teammate or a partner you have listed before to fill in their details.'),
+    );
+  }
+
+  $form['#attached']['js'][] = backdrop_get_path('module', 'avalanche_fwp') . '/js/partner-picker.js';
+  $form['#attached']['js'][] = array(
+    'type' => 'setting',
+    'data' => array('avalancheFwp' => array('people' => $data)),
+  );
+}
+
+/**
+ * #after_build for the Field Work Date end (value2): clears the time input so
+ * the user must enter their expected return time, keeping the pre-filled date.
+ */
+function avalanche_fwp_blank_end_time($element, &$form_state) {
+  if (isset($element['value2']['time'])) {
+    $element['value2']['time']['#value'] = '';
+    $element['value2']['time']['#default_value'] = '';
+  }
+  return $element;
+}
+
+/* ===========================================================================
+ * Timezone-from-coordinates (bundled IANA boundary lookup).
+ * ======================================================================== */
+
+/**
+ * Returns the IANA timezone id containing the given lat/lng, or NULL.
+ *
+ * Uses a bundled, simplified "now" timezone-boundary dataset (a point resolves
+ * to a zone with the correct current UTC offset + DST rules). Ray-cast
+ * point-in-polygon, so it needs no GEOS. Intended for occasional lookups
+ * (site setup, saving a region), not per-request.
+ */
+function avalanche_fwp_timezone_from_coords($lat, $lng) {
+  $lat = (float) $lat;
+  $lng = (float) $lng;
+  $features = &backdrop_static(__FUNCTION__);
+  if ($features === NULL) {
+    $file = backdrop_get_path('module', 'avalanche_fwp') . '/data/timezones.geojson';
+    $data = is_file($file) ? json_decode(file_get_contents($file), TRUE) : NULL;
+    $features = ($data && !empty($data['features'])) ? $data['features'] : array();
+  }
+  foreach ($features as $f) {
+    $g = $f['geometry'];
+    if ($g['type'] === 'Polygon') {
+      $polys = array($g['coordinates']);
+    }
+    elseif ($g['type'] === 'MultiPolygon') {
+      $polys = $g['coordinates'];
+    }
+    else {
+      continue;
+    }
+    foreach ($polys as $poly) {
+      if (_avalanche_fwp_point_in_ring($lng, $lat, $poly[0])) {
+        $in_hole = FALSE;
+        for ($h = 1, $c = count($poly); $h < $c; $h++) {
+          if (_avalanche_fwp_point_in_ring($lng, $lat, $poly[$h])) {
+            $in_hole = TRUE;
+            break;
+          }
+        }
+        if (!$in_hole) {
+          return $f['properties']['tzid'];
+        }
+      }
+    }
+  }
+  return NULL;
+}
+
+/**
+ * Ray-casting point-in-ring test. $ring is an array of [lng, lat] pairs.
+ */
+function _avalanche_fwp_point_in_ring($x, $y, $ring) {
+  $inside = FALSE;
+  $n = count($ring);
+  for ($i = 0, $j = $n - 1; $i < $n; $j = $i++) {
+    $xi = $ring[$i][0];
+    $yi = $ring[$i][1];
+    $xj = $ring[$j][0];
+    $yj = $ring[$j][1];
+    if ((($yi > $y) != ($yj > $y)) && ($x < ($xj - $xi) * ($y - $yi) / ($yj - $yi) + $xi)) {
+      $inside = !$inside;
+    }
+  }
+  return $inside;
+}
+
+/* ===========================================================================
+ * Per-region timezones (forecasts render in their region's local time).
+ * ======================================================================== */
+
+/**
+ * Implements hook_taxonomy_term_presave().
+ *
+ * Auto-fills a forecast region's timezone from its polygon location. Only when
+ * empty, so an admin override sticks.
+ */
+function avalanche_fwp_taxonomy_term_presave($term) {
+  if (empty($term->vocabulary) || $term->vocabulary !== 'region') {
+    return;
+  }
+  $L = AVALANCHE_FWP_LANG;
+  if (!empty($term->field_region_timezone[$L][0]['value'])) {
+    return;
+  }
+  if (empty($term->field_region_map[$L][0])) {
+    return;
+  }
+  $pt = _avalanche_fwp_region_point($term->field_region_map[$L][0]);
+  if ($pt) {
+    $tz = avalanche_fwp_derive_region_timezone($pt[0], $pt[1]);
+    if ($tz) {
+      $term->field_region_timezone[$L][0]['value'] = $tz;
+    }
+  }
+}
+
+/**
+ * The timezone for a region at [lat, lng], country-constrained to the site.
+ *
+ * Coordinate timezone-boundary data merges neighbouring zones with identical
+ * current rules, so a point in the far reaches of the center's country can
+ * resolve to a neighbouring country's representative zone (e.g. southern Chile
+ * -> America/Sao_Paulo). Since a center's forecast regions are all within its
+ * own country, snap any cross-border result back to the site timezone.
+ */
+function avalanche_fwp_derive_region_timezone($lat, $lng) {
+  $tz = avalanche_fwp_timezone_from_coords($lat, $lng);
+  if (!$tz) {
+    return NULL;
+  }
+  $site_tz = config_get('system.date', 'default_timezone');
+  if ($site_tz) {
+    $site_country = avalanche_fwp_country_of_tz($site_tz);
+    if ($site_country && avalanche_fwp_country_of_tz($tz) !== $site_country) {
+      return $site_tz;
+    }
+  }
+  return $tz;
+}
+
+/**
+ * ISO country code for an IANA timezone id, or '' if unknown.
+ */
+function avalanche_fwp_country_of_tz($tz) {
+  try {
+    $loc = timezone_open($tz)->getLocation();
+    return !empty($loc['country_code']) ? $loc['country_code'] : '';
+  }
+  catch (Exception $e) {
+    return '';
+  }
+}
+
+/**
+ * A representative [lat, lng] point for a geofield value: the computed centroid
+ * if present, else the bounding-box centre parsed from the WKT.
+ */
+function _avalanche_fwp_region_point($geo) {
+  if (isset($geo['lat'], $geo['lon']) && $geo['lat'] !== '' && $geo['lon'] !== '') {
+    return array((float) $geo['lat'], (float) $geo['lon']);
+  }
+  if (!empty($geo['geom']) && preg_match_all('/(-?\d+\.?\d*)\s+(-?\d+\.?\d*)/', $geo['geom'], $m)) {
+    $lngs = array_map('floatval', $m[1]);
+    $lats = array_map('floatval', $m[2]);
+    return array((min($lats) + max($lats)) / 2, (min($lngs) + max($lngs)) / 2);
+  }
+  return NULL;
+}
+
+/**
+ * The timezone a forecast (advisory) node should display in: its region's
+ * timezone, or NULL to fall back to the site default.
+ */
+function avalanche_fwp_forecast_timezone($node) {
+  $L = AVALANCHE_FWP_LANG;
+  if (empty($node->field_forecast_region[$L][0]['tid'])) {
+    return NULL;
+  }
+  $term = taxonomy_term_load($node->field_forecast_region[$L][0]['tid']);
+  if ($term && !empty($term->field_region_timezone[$L][0]['value'])) {
+    return $term->field_region_timezone[$L][0]['value'];
+  }
+  return NULL;
+}
+
+/**
+ * Implements hook_autoload_info().
+ */
+function avalanche_fwp_autoload_info() {
+  return array(
+    'avalanche_fwp_handler_field_forecast_date' => 'views/avalanche_fwp_handler_field_forecast_date.inc',
+  );
+}

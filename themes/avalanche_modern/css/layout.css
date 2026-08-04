@@ -1,0 +1,667 @@
+/**
+ * Avalanche Center Modern - layout shell: header, nav, footer, main grid
+ */
+
+/* ---------- Header ---------- */
+#header {
+  background: linear-gradient(135deg, var(--am-dark-2) 0%, var(--am-dark) 100%);
+}
+
+.am-header {
+  position: sticky;
+  top: 0;
+  z-index: 600;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+}
+/* When Backdrop's admin bar is present (#admin-bar z-index:999, html.admin-bar),
+   body gets border-top equal to the bar height. Sticky top:0 would slide under
+   the bar when scrolling — offset by the same CSS variable the admin bar publishes. */
+html.admin-bar .am-header {
+  top: var(--admin-bar-height);
+}
+/*
+html.admin-bar .am-header .tb-megamenu .nav-collapse {
+  top: calc(68px + var(--admin-bar-height));
+}
+*/
+/* ---- Row 1: logo row — logo centred, social actions pinned right ---- */
+.am-logo-row {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px 20px;
+  min-height: 80px;
+}
+
+/* .am-brand wraps the system:header block (logo + name; megamenu moved to Row 2) */
+.am-brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 0 0 auto;
+}
+.am-header .block-system-header { flex: 0 0 auto; }
+/* Main-menu and responsive-links blocks stay hidden on all screens */
+.am-header .block-system-main-menu,
+.am-header .block-menu-menu-responsive-links { display: none; }
+
+/* The system:header block's inner container: logo + name/slogan, centred */
+.am-brand .block-system-header .block-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+}
+/* Site name / slogan visibility is controlled by the Header block's own
+   settings in the layout (Manage layouts), not by the theme. */
+.am-brand .block-system-header .name-and-slogan { text-align: center; }
+.am-brand #site-name,
+.am-brand .site-name,
+.am-brand h1 { margin: 0; }
+.am-brand a,
+.am-brand #site-name a {
+  font-family: var(--am-font-head);
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.05;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #fff;
+  text-decoration: none;
+}
+.am-brand a:hover { color: #cfe0ee; }
+.am-brand #site-slogan,
+.am-brand .site-slogan { display: none; }
+
+/* Native site logo (rendered by the system-header block) — preserve the
+   uploaded image's natural shape and aspect ratio, bounded to the standard
+   header size (max 120px tall / 300px wide). */
+.am-brand .block-system-header .logo { flex: 0 0 auto; display: inline-flex; align-items: center; }
+.am-brand .block-system-header .logo img {
+  height: auto;
+  width: auto;
+  max-height: 120px;
+  max-width: 300px;
+  object-fit: contain;
+  display: block;
+}
+
+/* Social actions — absolutely pinned to the right of the logo row */
+.am-header-actions {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.am-social {
+  color: #c7d2dc;
+  width: 34px; height: 34px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  font-size: 1rem;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+.am-social:hover { background: rgba(255,255,255,0.12); color: #fff; text-decoration: none; }
+
+/* ---- Row 2: nav bar — megamenu centred ---- */
+.am-nav-row {
+  background: rgba(0, 0, 0, 0.22);
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
+
+/* Legacy stubs — not used with the two-row structure */
+.am-nav, .am-nav-toggle { display: none; }
+
+/* ---------- Navigation (restyled TB mega menu) ---------- */
+.am-header .tb-megamenu,
+.am-header .tb-megamenu .nav-collapse { background: transparent; border: 0; box-shadow: none; }
+.am-header .tb-megamenu-nav,
+.am-header ul.tb-megamenu-nav.nav {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 2px;
+  margin: 0; padding: 0;
+  list-style: none;
+  background: transparent;
+  float: none;
+}
+.am-header .tb-megamenu-nav > li {
+  list-style: none;
+  margin: 0;
+  position: relative;
+  background: transparent;
+}
+.am-header .tb-megamenu-nav > li > a,
+.am-header .tb-megamenu-nav > li > span {
+  display: block;
+  font-family: var(--am-font-head);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.95rem;
+  color: #d7e0e8;
+  padding: 24px 13px;
+  background: transparent;
+  border: 0;
+  text-decoration: none;
+  transition: color 0.18s ease, box-shadow 0.18s ease;
+}
+.am-header .tb-megamenu-nav > li > a:hover,
+.am-header .tb-megamenu-nav > li.open > a {
+  color: #fff;
+  background: transparent;
+  box-shadow: inset 0 -3px 0 var(--am-accent);
+}
+.am-header .tb-megamenu-nav > li > a .caret { display: none; }
+
+/* The mega menu module paints active/active-trail top-level items red with a
+   persistent underline. Make the active item look like any other item; the
+   accent underline only shows on hover. The red is reserved for Donate. */
+.am-header .tb-megamenu .nav > li.active > a,
+.am-header .tb-megamenu .nav > li.active > a:focus,
+.am-header .tb-megamenu .nav > li.active.dropdown > .dropdown-toggle {
+  background-color: transparent !important;
+  background-image: none !important;
+  color: #d7e0e8 !important;
+  box-shadow: none !important;
+}
+.am-header .tb-megamenu .nav > li.active > a:hover {
+  color: #fff !important;
+  box-shadow: inset 0 -3px 0 var(--am-accent) !important;
+}
+
+/* Highlight the Donate link by default. */
+.am-header .tb-megamenu-nav > li.donate-menu > a,
+.am-header .tb-megamenu .nav > li.donate-menu > a {
+  background-color: var(--am-accent) !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+.am-header .tb-megamenu-nav > li.donate-menu > a:hover,
+.am-header .tb-megamenu .nav > li.donate-menu > a:hover {
+  background-color: #b53636 !important;
+  box-shadow: none !important;
+}
+
+/* Dropdown panels */
+.am-header .tb-megamenu .dropdown-menu,
+.am-header .tb-megamenu .tb-megamenu-submenu {
+  background: #fff;
+  border: 0;
+  border-radius: 0 0 var(--am-radius-sm) var(--am-radius-sm);
+  box-shadow: var(--am-shadow);
+  padding: 14px;
+}
+/* Keep wide panels from overflowing the viewport edge */
+.am-header .tb-megamenu .mega-dropdown-menu {
+  max-width: min(560px, calc(100vw - 24px));
+}
+.am-header .tb-megamenu .mega-dropdown-inner { width: auto !important; }
+
+/* Lay columns out with flexbox so they never overlap (the menu's Bootstrap
+   float grid collapses under the restyle). Column widths follow the span#. */
+.am-header .tb-megamenu .tb-megamenu-row.row-fluid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  width: auto;
+  margin: 0;
+}
+.am-header .tb-megamenu .tb-megamenu-row.row-fluid > .tb-megamenu-column {
+  float: none !important;
+  margin: 0 !important;
+  width: auto !important;
+  min-width: 150px;
+  flex: 1 1 0;
+}
+.am-header .tb-megamenu .tb-megamenu-column-inner { padding: 0; }
+
+/* Dropdown headings + links */
+.am-header .tb-megamenu .tb-megamenu-submenu .block-title,
+.am-header .tb-megamenu .tb-megamenu-submenu h2 {
+  color: var(--am-muted);
+  font-family: var(--am-font-head);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin: 0 0 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--am-line);
+}
+.am-header .tb-megamenu .tb-megamenu-submenu .content > div { margin: 0; }
+.am-header .tb-megamenu .tb-megamenu-submenu a,
+.am-header .tb-megamenu .tb-megamenu-submenu .mega-nav > li > a {
+  display: block;
+  color: var(--am-ink);
+  font-family: var(--am-font-body);
+  font-size: 0.92rem;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  padding: 6px 8px;
+  border-radius: var(--am-radius-sm);
+  text-decoration: none;
+  white-space: normal;
+}
+.am-header .tb-megamenu .tb-megamenu-submenu a:hover,
+.am-header .tb-megamenu .tb-megamenu-submenu .mega-nav > li > a:hover {
+  color: var(--am-primary);
+  background: var(--am-surface-2, #f1f5f8);
+}
+/* The "Submit Observations" pill inside a dropdown column */
+.am-header .tb-megamenu .tb-megamenu-submenu .submit-obs-button a {
+  display: inline-block;
+  color: #fff;
+  background: var(--am-accent);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+.am-header .tb-megamenu .tb-megamenu-submenu .submit-obs-button a:hover { background: #b53636; color: #fff; }
+
+/* The custom toggle isn't used (mega menu has its own responsive control). */
+.am-nav, .am-nav-toggle { display: none; }
+
+/* ---------- Main grid ---------- */
+.am-main-wrapper { padding: 28px 0 44px; }
+.am-main { display: block; }
+.am-main.has-sidebar {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 28px;
+  align-items: start;
+}
+.am-content { min-width: 0; }
+.am-sidebar { min-width: 0; }
+.am-page-title {
+  font-size: 2rem;
+  margin: 0 0 18px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--am-line);
+}
+
+/* On the front page, content spans full width; homepage CSS handles columns */
+.am-main-wrapper.is-front .am-main { display: block; }
+
+/* ---------- Footer ---------- */
+#footer-wrapper,
+.am-footer {
+  background: var(--am-dark);
+  color: #c7d2dc;
+  margin-top: 40px;
+}
+#footer-wrapper a,
+.am-footer a { color: #c9d4dd; }
+#footer-wrapper .section { padding: 0; }
+
+#footer-columns,
+.am-footer-columns {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 26px;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 40px 20px 28px;
+}
+
+/* Neutralise inherited fixed-width / floated regions */
+#footer-columns .region,
+.region-footer-firstcolumn,
+.region-footer-secondcolumn,
+.region-footer-thirdcolumn,
+.region-footer-fourthcolumn,
+.region-footer-fifthcolumn {
+  width: auto !important;
+  float: none !important;
+  display: block !important;
+  position: static !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  text-align: left !important;
+  box-sizing: border-box;
+}
+#footer-columns .block,
+#footer-columns nav.block,
+#footer-columns .block .content {
+  border: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+/* Column headings */
+#footer-columns h2,
+#footer-columns .block-title,
+.am-footer-columns h2,
+.am-footer-columns .block-title {
+  font-family: var(--am-font-head);
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #fff !important;
+  background: none !important;
+  padding: 0 0 8px !important;
+  margin: 0 0 12px !important;
+  position: relative;
+  border: 0 !important;
+}
+#footer-columns h2::after,
+#footer-columns .block-title::after,
+.am-footer-columns h2::after,
+.am-footer-columns .block-title::after {
+  content: "";
+  position: absolute; left: 0; bottom: 0;
+  width: 30px; height: 2px; background: var(--am-accent);
+}
+
+/* Footer menu links */
+#footer-columns .menu,
+.am-footer-columns .menu { list-style: none; margin: 0; padding: 0; }
+#footer-columns .menu li,
+.am-footer-columns .menu li { margin: 0; padding: 0; list-style: none; background: none; border: 0 !important; }
+#footer-columns .menu li a,
+.am-footer-columns .menu li a {
+  display: inline-block;
+  color: #b8c4cf;
+  font-size: 0.92rem;
+  line-height: 2;
+  border: 0 !important;
+  box-shadow: none !important;
+  text-decoration: none;
+  transition: color 0.18s ease, padding-left 0.18s ease;
+}
+#footer-columns .menu li a:hover,
+.am-footer-columns .menu li a:hover { color: #fff; padding-left: 4px; text-decoration: none; }
+
+/* Footer search + social (fifth column) */
+.region-footer-fifthcolumn .block { border: 0 !important; padding: 0 !important; margin-bottom: 18px !important; text-align: left !important; }
+#footer-wrapper .block-search-form .block-content form {
+  display: flex; align-items: stretch;
+  height: 42px; max-width: 240px; background: #fff;
+  border-radius: var(--am-radius-sm); overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,.35);
+  gap: 0;
+}
+#footer-wrapper .block-search-form .block-content form > div { display: contents; }
+#footer-wrapper .block-search-form .form-item { margin: 0; flex: 1 1 auto; min-width: 0; height: 100%; }
+#footer-wrapper .block-search-form input.form-search { width: 100%; height: 100%; border: 0; border-radius: 0; padding: 0 12px; background: #fff; color: #333; font-size: 0.9rem; }
+#footer-wrapper .block-search-form .form-actions { margin: 0; height: 100%; display: flex; align-items: stretch; }
+#footer-wrapper .block-search-form input.form-submit {
+  position: relative;
+  top: -12px;
+  right: -3px;
+  width: 46px; height: 100%; align-self: stretch; padding: 0; border: 0; cursor: pointer; border-radius: 0;
+  background-color: var(--am-accent);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='21' y1='21' x2='16.5' y2='16.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: center; background-size: 56% 56%;
+  color: transparent; font-size: 0; text-indent: -9999px;
+}
+#footer-wrapper .block-search-form input.form-submit:hover { background-color: #b53636; }
+.social-media-links.platforms.inline { margin: 0; padding: 0; }
+.social-media-links.platforms.inline li { display: inline-block; margin: 4px 4px 0 0; }
+.social-media-links.platforms.inline li a img { max-width: 34px; height: auto; display: block; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .am-main.has-sidebar { grid-template-columns: 1fr; }
+  #footer-columns, .am-footer-columns { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Mobile / tablet header: hamburger + quick links, full menu in a drawer.
+   979px matches the mega menu's own Bootstrap collapse breakpoint. */
+@media (max-width: 979px) {
+  /* Mobile safety net: never let a wide child (media-gallery images, the
+     danger-scale table, the map) force the page layout wider than the phone
+     and push the header/menu off-screen. An oversized image with no
+     max-width was inflating the layout viewport (e.g. 360px phone -> 429px
+     layout), which shifted the whole page — and the menu drawer with it. */
+  html, body { overflow-x: hidden; max-width: 100%; }
+  img { max-width: 100%; height: auto; }
+
+  /* The whole header lives in one region (.am-brand). On mobile lay it out as
+     two rows: the logo/site-name is a full-width first row; the hamburger (left)
+     and the quick-link buttons (right) share the second row — like
+     archive.sierraavalanchecenter.org. Position relative so the full-width menu
+     drawer can drop below. */
+  /* .am-logo-row is full-bleed (0..viewport) and its padding-box therefore
+     reaches the screen edges; make it position:relative so it — not the
+     padded-in .no-tabs — is the menu drawer's offset parent. That lets the
+     drawer span the full viewport with a plain left/right:0 (no 100vw/-50vw
+     trickery that risked clipping the link text on real mobile browsers). */
+  .am-logo-row { display: block; padding: 8px 14px; min-height: 0; position: relative; }
+  .am-brand { display: block; width: 100%; }
+  /* The header blocks sit inside the region's .no-tabs wrapper — make IT the
+     flex row so the blocks become flex items we can order. */
+  .am-brand .no-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    column-gap: 8px;
+    row-gap: 4px;
+    width: 100%;
+    /* static so the drawer's offset parent falls through to .am-logo-row
+       (full-bleed), not this padded-in wrapper. */
+    position: static;
+  }
+  /* Row 1: logo / site name — full width, centred */
+  .am-brand .no-tabs > .block-system-header { order: 0; flex: 1 1 100%; display: flex; justify-content: center; }
+  /* Row 2 left: hamburger block. (Quick-links block set to the right below.) */
+  .am-brand .no-tabs > .block-tb-megamenu-main-menu { order: 1; flex: 0 0 auto; }
+  .am-brand .no-tabs > .block-system-main-menu { display: none !important; }
+
+  /* Hide social in the header (still available in the footer) */
+  .am-header-actions { display: none; }
+
+  /* Logo: smaller on mobile but still legible — keep natural aspect ratio.
+     No width cap: the logo sizes to the mobile height and keeps its ratio,
+     with a 75px floor so it stays readable. */
+  .am-brand .block-system-header .logo img { height: auto; width: auto; min-height: 75px; max-height: 80px; }
+  .am-brand #site-name a, .am-brand .site-name a { font-size: 20px; }
+
+  /* Hamburger button — a bare white icon on the left (SAC-style, no label). */
+  .am-header .block-tb-megamenu-main-menu .tb-megamenu { position: static; background: transparent; }
+  .am-header .tb-megamenu-button {
+    display: inline-flex !important; align-items: center; justify-content: center;
+    float: none !important; position: static !important;
+    width: auto !important; height: auto !important; margin: 0 !important; padding: 6px 8px !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: var(--am-radius-sm) !important;
+    color: #fff !important; cursor: pointer; box-shadow: none !important; text-shadow: none !important;
+  }
+  .am-header .tb-megamenu-button:hover,
+  .am-header .tb-megamenu-button.active,
+  .am-header .tb-megamenu-button:active,
+  .am-header .tb-megamenu-button:focus {
+    background: rgba(255, 255, 255, 0.14) !important;
+    box-shadow: none !important; outline: none !important;
+  }
+  .am-header .tb-megamenu-button i, .am-header .tb-megamenu-button .fa {
+    display: inline-block !important; color: #fff !important; font-size: 30px !important; line-height: 1 !important;
+  }
+
+  /* Quick links: Advisory / Observations / Donate — pushed to the right, on the
+     same line as the hamburger. Plain text; the last (Donate) is the red accent. */
+  /* Row 2 right: quick-link buttons (order after the hamburger). */
+  .am-header .block-menu-menu-responsive-links {
+    display: block; order: 2; margin: 0 0 0 auto; min-width: 0;
+  }
+  .am-header .block-menu-menu-responsive-links > h2 { display: none; }
+  .am-header .block-menu-menu-responsive-links .menu {
+    display: flex; flex-wrap: nowrap; justify-content: flex-end; align-items: center;
+    gap: 4px; margin: 0; padding: 0;
+  }
+  .am-header .block-menu-menu-responsive-links .menu li { list-style: none; margin: 0; }
+  .am-header .block-menu-menu-responsive-links .menu a {
+    display: block; color: #fff; text-decoration: none; white-space: nowrap;
+    font-family: var(--am-font-head); font-weight: 700; font-size: 0.72rem;
+    text-transform: uppercase; letter-spacing: 0.3px;
+    padding: 8px 9px; border-radius: var(--am-radius-sm);
+    background: transparent;
+  }
+  .am-header .block-menu-menu-responsive-links .menu a:hover { background: rgba(255, 255, 255, 0.14); }
+  .am-header .block-menu-menu-responsive-links .menu li.last a,
+  .am-header .block-menu-menu-responsive-links .menu a[href*="donate"] { background: var(--am-accent); }
+  .am-header .block-menu-menu-responsive-links .menu li.last a:hover,
+  .am-header .block-menu-menu-responsive-links .menu a[href*="donate"]:hover { background: #b53636; }
+
+  /* The full mega menu drops down below the header when toggled.
+     Bootstrap 2 hides .nav-collapse with height:0 + overflow:hidden.
+     We restore scrolling on the open state and keep the container
+     clipped horizontally so nothing spills outside the viewport. */
+  .am-header .tb-megamenu .nav-collapse {
+    position: absolute;
+    top: 100%;
+    /* Anchored to .am-logo-row (full-bleed offset parent), so left/right:0
+       spans the whole viewport edge-to-edge — no viewport-unit math. */
+    left: 0;
+    right: 0;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+    z-index: 1200;
+    overflow-x: hidden !important; /* prevent any child from widening past viewport */
+  }
+  .am-header .tb-megamenu .nav-collapse.in {
+    display: block !important;
+    overflow-y: auto;
+    max-height: 80vh;
+  }
+
+  /* Top-level nav items — stacked, zero-gap, full-width rows */
+  .am-header .tb-megamenu-nav,
+  .am-header ul.tb-megamenu-nav.nav {
+    flex-direction: column !important;
+    gap: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .am-header .tb-megamenu-nav > li {
+    width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .am-header .tb-megamenu-nav > li > a,
+  .am-header .tb-megamenu-nav > li > span {
+    color: var(--am-ink) !important;
+    padding: 13px 20px !important;
+    box-shadow: none !important;
+    border-top: 1px solid var(--am-line);
+    border-bottom: 0 !important;
+    background: transparent !important;
+    text-shadow: none !important;
+    display: block !important;
+  }
+  /* Override the desktop active/active-trail colour (#d7e0e8) which has
+     higher specificity and wins even inside this media query. */
+  .am-header .tb-megamenu .nav > li.active > a,
+  .am-header .tb-megamenu .nav > li.active-trail > a,
+  .am-header .tb-megamenu .nav > li.active.dropdown > .dropdown-toggle,
+  .am-header .tb-megamenu .nav > li.active-trail.dropdown > .dropdown-toggle {
+    color: var(--am-ink) !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+  .am-header .tb-megamenu-nav > li > a:hover,
+  .am-header .tb-megamenu-nav > li.open > a {
+    color: var(--am-primary) !important;
+    background: var(--am-bg) !important;
+    box-shadow: none !important;
+  }
+  .am-header .tb-megamenu-nav > li > a .caret { display: inline-block; }
+
+  /* Keep donate highlight readable on white background */
+  .am-header .tb-megamenu .nav > li.donate-menu > a,
+  .am-header .tb-megamenu .nav > li.last > a[href*="donate"] {
+    background: var(--am-accent) !important;
+    color: #fff !important;
+  }
+
+  /* ---- Submenu / mega-dropdown panels ----
+     Bootstrap's row-fluid uses float:left + percentage margins on .spanN
+     children — these push content wider than the container.
+     Reset everything to block flow, full-width, zero margins. */
+  .am-header .tb-megamenu .mega-dropdown-menu,
+  .am-header .tb-megamenu .dropdown-menu {
+    position: static !important;
+    float: none !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    background: var(--am-bg) !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 4px 0 12px !important;
+    margin: 0 !important;
+  }
+  /* The inner wrapper adds padding; keep it but clip at container width */
+  .am-header .tb-megamenu .mega-inner {
+    padding: 0 20px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  /* Undo Bootstrap row-fluid floats and percentage widths/margins */
+  .am-header .tb-megamenu .tb-megamenu-row.row-fluid {
+    width: 100% !important;
+    overflow: hidden;
+  }
+  .am-header .tb-megamenu .tb-megamenu-row.row-fluid [class*="span"] {
+    float: none !important;
+    display: block !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+    min-height: 0 !important;
+  }
+  .am-header .tb-megamenu .tb-megamenu-submenu .block-title,
+  .am-header .tb-megamenu .tb-megamenu-submenu h2 {
+    color: var(--am-muted) !important;
+    border-color: var(--am-line) !important;
+    margin-top: 8px;
+  }
+  .am-header .tb-megamenu .tb-megamenu-submenu a,
+  .am-header .tb-megamenu .tb-megamenu-submenu .mega-nav > li > a {
+    color: var(--am-ink) !important;
+    background: transparent !important;
+  }
+  .am-header .tb-megamenu .tb-megamenu-submenu a:hover {
+    color: var(--am-primary) !important;
+    background: #edf0f4 !important;
+  }
+
+  /* Collapsed submenus must stay fully hidden until their parent item is
+     tapped. tb-megamenu-touch.js adds .open to the tapped <li>; without this
+     gate every dropdown panel renders as a thin always-visible padding strip
+     ("ghost" boxes) behind the top-level items. */
+  .am-header .tb-megamenu .nav-collapse .dropdown-menu { display: none !important; }
+  .am-header .tb-megamenu .nav-collapse li.open > .dropdown-menu { display: block !important; }
+}
+@media (max-width: 560px) {
+  #footer-columns, .am-footer-columns { grid-template-columns: 1fr; }
+  .am-brand #site-name a, .am-brand .site-name a { font-size: 17px; }
+  .am-header .block-menu-menu-responsive-links .menu a { padding: 8px 11px; font-size: 0.8rem; }
+}
+
+/* ---------- Leaflet z-index containment ---------- */
+/* Leaflet controls default to z-index 800, which beats our sticky header and
+   expanded menus if they share the same stacking context. Clamping the control
+   containers to 490 keeps them below the header (1100) and mobile menu (1200).
+   This applies globally; the numbers are well above the map tiles/markers so
+   the controls still render on top of map content. */
+.leaflet-top,
+.leaflet-bottom { z-index: 490 !important; }

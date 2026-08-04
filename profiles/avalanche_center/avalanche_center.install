@@ -1,0 +1,2151 @@
+<?php
+/**
+ * @file
+ * Install-time hooks for the Avalanche Center distribution.
+ *
+ * Structural config (profiles/avalanche_center/config/) auto-imports from
+ * this profile's config/ directory via Backdrop's own
+ * config_install_default_config() as part of normal profile installation -
+ * nothing here needs to trigger that explicitly. Exception:
+ * config_install_default_config() only ever *creates* config, never
+ * overwrites it - see avalanche_center_install() below.
+ */
+
+/**
+ * Implements hook_install().
+ *
+ * Runs during profile installation, before the "Center setup" form
+ * (avalanche_center.profile's hook_install_tasks()) is ever shown - so it
+ * has no access to center-specific values a user hasn't entered yet. This
+ * only seeds sane fallback defaults for avalanche_center.settings, in case
+ * the setup form is ever skipped (e.g. an automated/scripted install that
+ * bypasses install_state tasks). The setup form's submit handler
+ * overwrites these with real values in the normal interactive install
+ * path - see avalanche_center.profile.
+ */
+function avalanche_center_install() {
+  $settings = config('avalanche_center.settings');
+  if (!$settings->get('danger_scale')) {
+    $settings->set('danger_scale', 'NAC');
+    $settings->set('map_center_lat', 0);
+    $settings->set('map_center_lng', 0);
+    $settings->set('map_zoom', 2);
+    $settings->save();
+  }
+
+  avalanche_center_force_apply_config(array(
+    'user.role.anonymous',
+    'user.role.authenticated',
+    // auto_nodetitle ships its own empty-default auto_nodetitle.settings
+    // when the module is enabled, so config_install_default_config() skips
+    // ours (which sets ant_advisory/ant_observation = "1", etc.). Without
+    // this the advisory/observation forms keep showing an editable title
+    // field instead of auto-generating and hiding it. Same overwrite-
+    // protection gotcha as the role configs above.
+    'auto_nodetitle.settings',
+    // Core's layout module ships its own layout.layout.default (the generic
+    // moscone_flipped layout) and layout.layout.admin_default, so
+    // config_install_default_config() skips ours. The result: only paths
+    // matching layout.layout.node (node/%, a name core does NOT ship, so it
+    // imports fine) get the responsive_sac theming - every other path
+    // (/advisory, /observations, /node/add/*, taxonomy pages, etc.) falls
+    // through to core's bare moscone_flipped default with no site header,
+    // mega-menu, or sidebars. Force ours into place so the whole site is
+    // themed, not just node pages.
+    'layout.layout.default',
+    'layout.layout.admin_default',
+    // metatag ships its own metatag.settings default when enabled, so ours
+    // is skipped - and core's default enables only the Open Graph tags, not
+    // the twitter:* Twitter Card tags or fb:* tags. avalanche_social_meta
+    // feeds twitter:image/og:image, so without ours a shared link gets a
+    // Facebook preview card but no Twitter/X card. Ours is a strict superset
+    // of core's enabled tag list (adds twitter:* + fb:*), so forcing it only
+    // turns more available tags on - found by the config-collision sweep.
+    // NOTE: deliberately NOT forcing the metatag.instance.* configs - ours
+    // ship disabled=true, but core's active copies are enabled, which is what
+    // we want (disabling them would switch metatags off entirely).
+    'metatag.settings',
+  ));
+
+  // Declaring themes[] in avalanche_center.info only makes them available -
+  // Backdrop doesn't enable or default to any of them on its own, and (like
+  // roles above) our profile ships no system.core.json to set theme_default
+  // via passive config import. Without this, the site is stuck on core's
+  // bare "stark" fallback theme, and any layout whose layout_template is
+  // "responsive_sac" (layout.layout.node/default.json, matching the Gulmarg
+  // baseline) fails outright since that theme was never enabled at all.
+  // Canonical baseline (Gulmarg) runs *_modern as the default theme, basis
+  // as the admin theme, with responsive_sac enabled (not default) purely to
+  // supply that layout template - reproduced here.
+  theme_enable(array('avalanche_modern', 'responsive_sac', 'responsive_bartik', 'basis'));
+  config_set('system.core', 'theme_default', 'avalanche_modern');
+  config_set('system.core', 'admin_theme', 'basis');
+  // Make 'administrator' the site's full-access super-admin role (bypasses all
+  // permission checks) — the canonical Backdrop admin setup.
+  config_set('system.core', 'user_admin_role', 'administrator');
+
+  avalanche_center_enable_glossary_filter();
+}
+
+/**
+ * Turns on the avalanche_glossary "Mark glossary terms" filter for the
+ * full_html format.
+ *
+ * Mirrors the live Gulmarg site, where the Lexicon filter runs on the same
+ * full-HTML WYSIWYG profile advisories are authored in - so glossary terms
+ * typed into an advisory (or any full_html content) auto-link to their
+ * definition. full_html is core-shipped config, so config_install_default_config()
+ * skips any version we ship; enable the filter on the active format here.
+ */
+function avalanche_center_enable_glossary_filter() {
+  $config = config('filter.format.full_html');
+  if ($config->isNew()) {
+    return;
+  }
+  $filters = $config->get('filters');
+  if (!is_array($filters)) {
+    $filters = array();
+  }
+  if (!isset($filters['avalanche_glossary_mark'])) {
+    $filters['avalanche_glossary_mark'] = array(
+      'module' => 'avalanche_glossary',
+      'status' => 1,
+      // After the other filters have produced their HTML.
+      'weight' => 20,
+      'settings' => array(),
+    );
+    $config->set('filters', $filters);
+    $config->save();
+  }
+}
+
+/**
+ * Enables Spanish as the default site language and imports the bundled
+ * interface translations.
+ *
+ * Called from the "Center setup" install task when the operator picks Spanish.
+ * The es.po shipped in this profile's translations/ directory was extracted
+ * from the reference Spanish-language avalanche center (real, human-verified
+ * strings) and is center-agnostic, so it is reusable by any Spanish install
+ * (e.g. a future Chilean center). English is left enabled as a secondary
+ * language so any untranslated string falls back to it.
+ */
+function avalanche_center_enable_spanish() {
+  // language + locale are profile dependencies, but be defensive if this
+  // helper is ever reused outside the standard install.
+  $needed = array();
+  if (!module_exists('language')) {
+    $needed[] = 'language';
+  }
+  if (!module_exists('locale')) {
+    $needed[] = 'locale';
+  }
+  if ($needed) {
+    module_enable($needed);
+  }
+
+  // Add Spanish and make it the default language. language_save() fills in the
+  // name/native/direction from the standard language list and updates the
+  // system.core language_default + language_count config.
+  language_save((object) array(
+    'langcode' => 'es',
+    'default' => TRUE,
+  ));
+
+  // Enabling locale turns on locale-url negotiation (path-prefix based), which
+  // makes an un-prefixed URL resolve inconsistently between es and en. This
+  // is a single-language Spanish site (English is only a string-level
+  // fallback, not a switchable second UI), so pin interface negotiation to the
+  // default language - es everywhere.
+  config_set('language.settings', 'language_negotiation', array(
+    'language' => array('language-default'),
+  ));
+
+  // Import the bundled translations against the strings registered so far.
+  // es.po is the core/contrib UI extract; avalanche_center.es.po carries this
+  // profile's own strings (navigation labels, demo content, reference page
+  // titles).
+  require_once BACKDROP_ROOT . '/core/includes/gettext.inc';
+  require_once BACKDROP_ROOT . '/core/includes/locale.inc';
+  $base = backdrop_get_path('profile', 'avalanche_center') . '/translations';
+  foreach (array('es.po', 'avalanche_center.es.po') as $filename) {
+    $path = $base . '/' . $filename;
+    if (is_file($path)) {
+      $file = (object) array('uri' => $path, 'filename' => $filename);
+      _locale_import_po($file, 'es', LOCALE_IMPORT_KEEP);
+    }
+    else {
+      watchdog('avalanche_center', 'Spanish translation file not found at %path.', array('%path' => $path), WATCHDOG_WARNING);
+    }
+  }
+
+  // Switch the active interface language to Spanish for the rest of the
+  // install request, so the t()-wrapped demo content created next comes out in
+  // Spanish (wherever a translation exists; untranslated strings fall back to
+  // English). Without this, content creation would run in the installer's own
+  // language (English).
+  $languages = language_list();
+  if (isset($languages['es'])) {
+    $GLOBALS['language'] = $languages['es'];
+    $GLOBALS['language_content'] = $languages['es'];
+  }
+
+  // The mega-menu dropdown blocks and sidebar link blocks store their link
+  // text as raw HTML in config (block.custom.*), which the block system
+  // renders verbatim - it never passes through t(), so the PO import above
+  // can't reach it. Rewrite those bodies to the target language here.
+  avalanche_center_localize_menu_blocks('es');
+
+  // View display titles, field labels and date-format patterns are stored in
+  // the exported views config as literal strings - Views never runs them
+  // through t() at render time, so, like the menu blocks, the PO import can't
+  // reach them. Rewrite the visitor-facing ones (homepage forecast/archive,
+  // announcements, observations, incidents, events, etc.) into the target
+  // language here. Also localizes the content-type display label.
+  avalanche_center_localize_views('es');
+
+  // The observations/incidents views carry multi-sentence explanatory HTML in
+  // their header areas (stored config, not t()) - localize those too.
+  avalanche_center_localize_view_headers('es');
+
+  // Menu titles double as the footer menu-block headings (blocks use the menu
+  // title when they set no title of their own), so localize the visitor-facing
+  // ones too.
+  avalanche_center_localize_menus('es');
+
+  // The observation submission form's field labels, help text, option lists
+  // and the content-type name are all stored config (not t()), so localize
+  // them here as well.
+  avalanche_center_localize_observation_form('es');
+
+  // The Field Work Plan (fwp) trip-planning form is likewise all stored config.
+  avalanche_center_localize_fwp_form('es');
+
+  // The guided forecast wizard builds its UI client-side with Backdrop.t();
+  // register those JS strings and rebuild the per-language JS so the wizard
+  // renders in Spanish on the very first visit (not only after a later rebuild).
+  avalanche_center_register_forecast_tool_js('es');
+
+  // Spanish-speaking avalanche centers (Chile, Argentina, ...) forecast in
+  // metric, so default the weather tables to metric units.
+  config_set('avalanche_modern.settings', 'weather_units', 'metric');
+
+  // Give the main navigation Spanish public URLs (/pronostico instead of
+  // /forecast, /observaciones instead of /observations, ...) via path aliases.
+  // The internal router paths stay English/generic, so the module code remains
+  // center-agnostic; only the visible URL changes, and only for this language.
+  avalanche_center_create_url_aliases('es');
+}
+
+/**
+ * Internal router path => localized URL-alias map for a language.
+ *
+ * ASCII aliases only (no accents): browsers percent-encode non-ASCII and
+ * Backdrop's own alias handling transliterates them, so an accented alias is
+ * fragile. The visible link text keeps its accents ("Pronóstico"); only the
+ * URL slug is ASCII ("pronostico"). Returns an empty array for languages with
+ * no map, so callers can loop unconditionally.
+ *
+ * @param string $langcode
+ *   Target language.
+ *
+ * @return array
+ *   source (internal path) => alias (URL slug).
+ */
+function avalanche_center_url_alias_map($langcode) {
+  if ($langcode === 'es') {
+    return array(
+      'forecast' => 'pronostico',
+      'archive' => 'archivo',
+      'text-advisory' => 'pronostico-texto',
+      'observations' => 'observaciones',
+      'observations-map' => 'observaciones-mapa',
+      'observations-archive' => 'observaciones-archivo',
+      'observations-map-archive' => 'observaciones-mapa-archivo',
+      'incidents' => 'incidentes',
+      'incidents-map' => 'incidentes-mapa',
+      'incidents-archive' => 'incidentes-archivo',
+      'incidents-map-archive' => 'incidentes-mapa-archivo',
+    );
+  }
+  return array();
+}
+
+/**
+ * Creates localized URL aliases for the main navigation paths.
+ *
+ * Aliases a bare router/view path (e.g. the module's "forecast" hook_menu
+ * callback, or a view's "observations" page) to a localized slug. Because
+ * url() resolves system paths to their alias automatically, every link the
+ * code builds with url('forecast') then emits "/pronostico" without any code
+ * change. Idempotent: an existing alias for the same source is removed first,
+ * so re-running (or a migration) always lands on exactly the mapped slug.
+ *
+ * @param string $langcode
+ *   Target language; a no-op if no alias map is shipped for it.
+ */
+function avalanche_center_create_url_aliases($langcode) {
+  foreach (avalanche_center_url_alias_map($langcode) as $source => $alias) {
+    // Clear any prior alias for this source so url() output is deterministic.
+    path_delete(array('source' => $source));
+    // path_save() takes its argument by reference (it writes back the new pid),
+    // so it needs a variable, not an array literal.
+    $path = array(
+      'source' => $source,
+      'alias' => $alias,
+      'langcode' => LANGUAGE_NONE,
+    );
+    path_save($path);
+  }
+}
+
+/**
+ * Rewrites the custom link-block bodies (mega-menu dropdowns + sidebar link
+ * lists) into the given language.
+ *
+ * These blocks (block.custom.2/4/5/6/7/18) hold their link text as stored
+ * HTML that the block module outputs as-is, so unlike t()-wrapped strings the
+ * interface-translation import never touches them. Their link *targets* (the
+ * URL aliases) are language-independent and stay the same; only the visible
+ * text changes. Center-agnostic - the link labels are generic - so any
+ * same-language install (e.g. a future Chilean center) reuses them.
+ *
+ * @param string $langcode
+ *   Target language. A no-op if no translations are shipped for it.
+ */
+function avalanche_center_localize_menu_blocks($langcode) {
+  $bodies = array();
+  if ($langcode === 'es') {
+    $bodies = array(
+      2 => '<div><a href="/pronostico">Pronóstico de Avalanchas de Hoy</a></div>' . "\n"
+        . '<div><a href="/archivo">Archivo de Pronósticos</a></div>' . "\n",
+      4 => '<div><a href="/how-to-read-avalanche-forecast">Cómo Leer el Pronóstico</a></div>' . "\n"
+        . '<div><a href="/avalanche-danger-scale">La Escala de Peligro</a></div>' . "\n"
+        . '<div><a href="/avalanche-problems">Problemas de Avalancha</a></div>' . "\n",
+      5 => '<div><a href="/observaciones">Observaciones - Vista de Lista</a></div>' . "\n"
+        . '<div><a href="/observaciones-mapa">Observaciones - Vista de Mapa</a></div>' . "\n"
+        . '<div><a href="/observaciones-archivo">Observaciones Archivadas - Vista de Lista</a></div>' . "\n"
+        . '<div><a href="/observaciones-mapa-archivo">Observaciones Archivadas - Vista de Mapa</a></div>' . "\n",
+      6 => '<div><a href="/incidentes">Incidentes - Vista de Lista</a></div>' . "\n"
+        . '<div><a href="/incidentes-mapa">Incidentes - Vista de Mapa</a></div>' . "\n"
+        . '<div><a href="/incidentes-archivo">Incidentes Archivados - Vista de Lista</a></div>' . "\n"
+        . '<div><a href="/incidentes-mapa-archivo">Incidentes Archivados - Vista de Mapa</a></div>' . "\n",
+      7 => '<div class="submit-obs-button" style="text-align:center"><a href="/node/add/observation">Enviar Observaciones</a></div>' . "\n",
+      18 => '<div style="text-align:center"><span class="submit-obs-button" style="display:inline-block;height:42px;"><a href="/node/add/observation">Enviar Observaciones</a></span></div>' . "\n",
+    );
+  }
+
+  foreach ($bodies as $delta => $value) {
+    $config = config('block.custom.' . $delta);
+    if ($config->isNew()) {
+      // Block not present in this install; skip rather than create a stub.
+      continue;
+    }
+    $config->set('body.value', $value);
+    $config->save();
+  }
+}
+
+/**
+ * Rewrites Views display titles, field labels and date-format patterns into
+ * the given language.
+ *
+ * Everything a shipped View shows that isn't node content - the display/page
+ * title ("Most Current Avalanche Forecast:"), the field labels ("Recent
+ * Observations", "Mountain Weather", the weather grid, ...) and the date
+ * format patterns - lives as literal strings in the views.view.* config.
+ * Views emits them verbatim; they never pass through t(), so the interface-
+ * translation (PO) import can't touch them. This walks the relevant view
+ * configs and replaces the exact English strings with their target-language
+ * equivalents (exact-match only, so machine names and untranslated strings
+ * are left untouched). It also localizes the forecast content-type's display
+ * label. Center-agnostic: the strings are generic forecast-site vocabulary,
+ * so any same-language install reuses them.
+ *
+ * @param string $langcode
+ *   Target language. A no-op if no map is shipped for it.
+ */
+function avalanche_center_localize_views($langcode) {
+  if ($langcode !== 'es') {
+    return;
+  }
+
+  // Exact English -> Spanish for every visitor-facing view "title" and
+  // "label". Applied by exact match only.
+  $strings = array(
+    // advisory_views: display/page titles.
+    'Most Current Avalanche Forecast:' => 'Pronóstico de Avalancha Más Reciente:',
+    'Archived Avalanche Forecasts' => 'Pronósticos de Avalancha Archivados',
+    'Overall Danger Ratings for the Week' => 'Grados de Peligro Generales de la Semana',
+    'The Bottom Line:' => 'Lo Más Importante:',
+    'Time Out' => 'Hora de Salida',
+    'Checked In' => 'Regreso Registrado',
+    'Time Back In' => 'Hora de Regreso',
+    'Members & Contact' => 'Integrantes y Contacto',
+    'Field Work Plans' => 'Planes de Trabajo de Campo',
+    'List of Field Work Plans' => 'Lista de Planes de Trabajo de Campo',
+    'The Bottom Line from the Avalanche Forecast' => 'Lo Más Importante del Pronóstico de Avalancha',
+    'Avalanche Forecast' => 'Pronóstico de Avalancha',
+    'Avalanche Danger Rating' => 'Grado de Peligro de Avalancha',
+    'Avalanche Forecasts and Snow, Weather, and Avalanche Information' => 'Pronósticos de Avalancha e Información de Nieve, Clima y Avalanchas',
+    // Pre-rename ("Advisory") equivalents of the titles/labels above, plus the
+    // trailing-space variants, so this map localizes both a fresh post-rename
+    // install AND an existing site being migrated from before the
+    // advisory->forecast rename (its config still carries the old strings).
+    'Most Current Avalanche Advisory:' => 'Pronóstico de Avalancha Más Reciente:',
+    'Archived Avalanche Advisories' => 'Pronósticos de Avalancha Archivados',
+    'The Bottom Line from the Avalanche Advisory' => 'Lo Más Importante del Pronóstico de Avalancha',
+    'Avalanche Advisory published on' => 'Pronóstico de Avalancha publicado el',
+    'This advisory is valid for' => 'Este pronóstico es válido para',
+    'Date the advisory was published:' => 'Fecha de publicación del pronóstico:',
+    'Advisory' => 'Pronóstico',
+    'Forecast' => 'Pronóstico',
+    'Avalanche Advisory ' => 'Pronóstico de Avalancha ',
+    'Avalanche Forecast ' => 'Pronóstico de Avalancha ',
+    // advisory_views: displayed field labels.
+    'Recent Observations' => 'Observaciones Recientes',
+    'Bottom Line' => 'Lo Más Importante',
+    'Mountain Weather' => 'Clima de Montaña',
+    'Overall Danger Rating' => 'Grado de Peligro General',
+    'Avalanche Forecast published on' => 'Pronóstico de Avalancha publicado el',
+    'This forecast is valid for' => 'Este pronóstico es válido para',
+    'Date the forecast was published:' => 'Fecha de publicación del pronóstico:',
+    'Today the avalanche danger is' => 'Hoy el peligro de avalancha es',
+    'Total Snow Depth' => 'Profundidad Total de Nieve',
+    'Region' => 'Región',
+    'Avalanche Problem #1' => 'Problema de Avalancha #1',
+    'Avalanche Problem #2' => 'Problema de Avalancha #2',
+    'Avalanche Problem #3' => 'Problema de Avalancha #3',
+    // Weather grid (Today / Tonight / Tomorrow x 7-8 / 8-9 x metric).
+    'Today 7-8 Snow' => 'Hoy 7-8 Nieve',
+    'Today 7-8 Temp' => 'Hoy 7-8 Temp.',
+    'Today 7-8 Weather ' => 'Hoy 7-8 Clima ',
+    'Today 7-8 Wind Direction' => 'Hoy 7-8 Dirección del Viento',
+    'Today 7-8 Wind Speed' => 'Hoy 7-8 Velocidad del Viento',
+    'Today 8-9 Snow' => 'Hoy 8-9 Nieve',
+    'Today 8-9 Temp' => 'Hoy 8-9 Temp.',
+    'Today 8-9 Weather' => 'Hoy 8-9 Clima',
+    'Today 8-9 Wind Direction' => 'Hoy 8-9 Dirección del Viento',
+    'Today 8-9 Wind Speed' => 'Hoy 8-9 Velocidad del Viento',
+    'Tonight 7-8 Snow' => 'Esta Noche 7-8 Nieve',
+    'Tonight 7-8 Temp' => 'Esta Noche 7-8 Temp.',
+    'Tonight 7-8 Weather' => 'Esta Noche 7-8 Clima',
+    'Tonight 7-8 Wind Direction' => 'Esta Noche 7-8 Dirección del Viento',
+    'Tonight 7-8 Wind Speed' => 'Esta Noche 7-8 Velocidad del Viento',
+    'Tonight 8-9 Snow' => 'Esta Noche 8-9 Nieve',
+    'Tonight 8-9 Temp' => 'Esta Noche 8-9 Temp.',
+    'Tonight 8-9 Weather' => 'Esta Noche 8-9 Clima',
+    'Tonight 8-9 Wind Direction' => 'Esta Noche 8-9 Dirección del Viento',
+    'Tonight 8-9 Wind Speed' => 'Esta Noche 8-9 Velocidad del Viento',
+    'Tomorrow 7-8 Snow' => 'Mañana 7-8 Nieve',
+    'Tomorrow 7-8 Temp' => 'Mañana 7-8 Temp.',
+    'Tomorrow 7-8 Weather' => 'Mañana 7-8 Clima',
+    'Tomorrow 7-8 Wind Direction' => 'Mañana 7-8 Dirección del Viento',
+    'Tomorrow 7-8 Wind Speed' => 'Mañana 7-8 Velocidad del Viento',
+    'Tomorrow 8-9 Snow' => 'Mañana 8-9 Nieve',
+    'Tomorrow 8-9 Temp' => 'Mañana 8-9 Temp.',
+    'Tomorrow 8-9 Weather' => 'Mañana 8-9 Clima',
+    'Tomorrow 8-9 Wind Direction' => 'Mañana 8-9 Dirección del Viento',
+    'Tomorrow 8-9 Wind Speed' => 'Mañana 8-9 Velocidad del Viento',
+    // home_announcements / banner_ads (note the misspelled variant too).
+    'Announcements and News:' => 'Anuncios y Noticias:',
+    'Annoucements and News:' => 'Anuncios y Noticias:',
+    // media_gallery (homepage "Recent Observations:" block title).
+    'Recent Observations:' => 'Observaciones Recientes:',
+    // observations view.
+    'Snowpack, Weather, and Avalanche Observations' => 'Observaciones de Nieve, Clima y Avalanchas',
+    'Location' => 'Ubicación',
+    'Observation made by' => 'Observación realizada por',
+    'Date and time of observation' => 'Fecha y hora de la observación',
+    'Date and time of observation or avalanche occurrence' => 'Fecha y hora de la observación o del evento de avalancha',
+    'Snowpack, Avalanche, Weather Images' => 'Imágenes de Nieve, Avalancha y Clima',
+    'Snowpack, Avalanche, Weather Videos' => 'Videos de Nieve, Avalancha y Clima',
+    'Snowpit or crown profile photo or graph' => 'Foto o gráfico de perfil de nieve o corona',
+    // incidents.
+    'Avalanche Incidents' => 'Incidentes de Avalancha',
+    // events_upcoming.
+    'Upcoming Events:' => 'Próximos Eventos:',
+    'Events' => 'Eventos',
+    'Event Calendar' => 'Calendario de Eventos',
+    'Event Calendar Day' => 'Calendario de Eventos - Día',
+    'Event Calendar Week' => 'Calendario de Eventos - Semana',
+    'Event Calendar Month' => 'Calendario de Eventos - Mes',
+    'Event Calendar Year' => 'Calendario de Eventos - Año',
+    // week_in_review_views (note the misspelled "Arichives" as shipped).
+    'Week in Review' => 'Resumen Semanal',
+    'Week in Review Arichives' => 'Archivo de Resúmenes Semanales',
+    // advisory_board.
+    'Advisory Board' => 'Junta Asesora',
+    'Board of Directors' => 'Junta Directiva',
+    'Forecasters' => 'Pronosticadores',
+    'Professional Observers' => 'Observadores Profesionales',
+    'Staff' => 'Personal',
+    // considerable_sponsors (per-tier blocks + list).
+    'Sponsors' => 'Patrocinadores',
+    'Sponsors List' => 'Lista de Patrocinadores',
+    'Summit Sponsors' => 'Patrocinadores Cumbre',
+    'Extreme Sponsors' => 'Patrocinadores Extremo',
+    'High Sponsors' => 'Patrocinadores Alto',
+    'Considerable Sponsors' => 'Patrocinadores Considerable',
+    'Moderate Sponsors' => 'Patrocinadores Moderado',
+    'Low Sponsors' => 'Patrocinadores Bajo',
+  );
+
+  // Date-format patterns (PHP date() syntax). The English ordinal ("jS" ->
+  // "29th") and "at"/"@" separators read wrong in Spanish; use the
+  // "j de F de Y a las G:i" convention. Month/day names themselves are
+  // translated by locale at format time. The ISO machine format is left as-is.
+  $dates = array(
+    'l, F jS, Y' => 'l, j \d\e F \d\e Y',
+    'F j, Y \a\t G:i' => 'j \d\e F \d\e Y \a \l\a\s G:i',
+    'F j, Y \a\t G:i a' => 'j \d\e F \d\e Y \a \l\a\s G:i a',
+    'F j, Y \@ g:ia' => 'j \d\e F \d\e Y \a \l\a\s g:ia',
+  );
+
+  // Every shipped view is scanned, but only exact-match strings are touched,
+  // so the map itself scopes the change.
+  $config_dir = backdrop_get_path('profile', 'avalanche_center') . '/config';
+  foreach (glob($config_dir . '/views.view.*.json') as $file) {
+    $name = basename($file, '.json');
+    $config = config($name);
+    if ($config->isNew()) {
+      continue;
+    }
+    $data = $config->get();
+    $changed = FALSE;
+    avalanche_center_localize_walk($data, array('title' => TRUE, 'label' => TRUE), $strings, $changed);
+    avalanche_center_localize_walk($data, array('custom_date_format' => TRUE), $dates, $changed);
+    if ($changed) {
+      $config->setData($data);
+      $config->save();
+    }
+  }
+
+  // Content-type display label (admin: /node/add, content lists). The machine
+  // name stays "advisory"; only the human label changes.
+  $type = config('node.type.advisory');
+  if (!$type->isNew()) {
+    $type->set('name', 'Pronóstico');
+    $type->save();
+  }
+}
+
+/**
+ * Localizes the visitor-facing menu titles.
+ *
+ * Menu titles are stored config (not t()), and the footer menu blocks render
+ * the menu title as their heading (they set no title of their own). Exact-
+ * match guarded: only the shipped English default is replaced, so a center's
+ * own renamed menu title is preserved on a migration.
+ *
+ * @param string $langcode
+ *   Target language; a no-op if no map is shipped for it.
+ */
+function avalanche_center_localize_menus($langcode) {
+  if ($langcode !== 'es') {
+    return;
+  }
+  $titles = array(
+    'main-menu' => array('Main menu' => 'Menú Principal'),
+    'menu-about' => array('About' => 'Acerca de'),
+    'menu-archives' => array('People' => 'Usuarios'),
+    'menu-contact' => array('Resources' => 'Recursos'),
+    'menu-doormat-menu' => array('Footer Menu' => 'Enlaces'),
+    'menu-responsive-links' => array('Responsive Links' => 'Enlaces Adaptables'),
+  );
+  foreach ($titles as $menu_name => $map) {
+    $config = config('menu.menu.' . $menu_name);
+    if ($config->isNew()) {
+      continue;
+    }
+    $current = $config->get('title');
+    if (isset($map[$current])) {
+      $config->set('title', $map[$current]);
+      $config->save();
+    }
+  }
+}
+
+/**
+ * Localizes the observation submission form: content-type name/title/help,
+ * every field instance's label + description, and the option lists (allowed
+ * values) on its select fields. All of these are stored config, never t(), so
+ * the PO import can't reach them. Center-agnostic generic SWAG-style
+ * observation vocabulary; option lists are also converted to metric where they
+ * carried imperial units. A no-op for languages with no map.
+ *
+ * @param string $langcode
+ *   Target language.
+ */
+function avalanche_center_localize_observation_form($langcode) {
+  if ($langcode !== 'es') {
+    return;
+  }
+
+  // Content type.
+  $type = config('node.type.observation');
+  if (!$type->isNew()) {
+    $type->set('name', 'Observación');
+    $type->set('title_label', 'Un título breve, por ej.: «Avalancha en el Filo Norte», «Nueva acumulación de viento en...» o «Perfil de nieve en...»');
+    $type->set('help', 'Esta página es para enviar observaciones al centro de avalanchas. Incluya toda la información que pueda: los detalles ayudan a la comunidad a tomar mejores decisiones.');
+    $type->save();
+  }
+
+  // Field instance labels.
+  $labels = array(
+    'body' => 'Descripción de las Condiciones de Nieve, Clima y Avalanchas',
+    'field_avalanche_length' => 'Largo de la Avalancha (recorrido vertical)',
+    'field_avalanche_type' => 'Tipo de Avalancha',
+    'field_avalanche_width' => 'Ancho de la Avalancha (ancho promedio)',
+    'field_blowing_snow_detail' => 'Ventisca',
+    'field_comments_on_danger_rating_' => 'Comentarios',
+    'field_conditions_alerts_tax_term' => 'Alertas de Condiciones',
+    'field_crown_height' => 'Altura de la Corona',
+    'field_destructive_size' => 'Tamaño Destructivo',
+    'field_elevation_of_observation' => 'Elevación de la Observación',
+    'field_email' => 'Correo Electrónico',
+    'field_highest_precipitation_rate' => 'Tasa Máxima de Precipitación',
+    'field_is_this_an_avalanche_obser' => '¿Es esta una observación de avalancha?',
+    'field_location' => 'Ubicación',
+    'field_number_of_full_burials' => 'Número de personas totalmente enterradas',
+    'field_number_of_partial_burials' => 'Número de personas parcialmente enterradas',
+    'field_number_of_people_caught_2' => 'Número de personas atrapadas',
+    'field_number_of_similar_avalanch' => 'Número adicional de avalanchas similares',
+    'field_ob_air_temp' => 'Temperatura del Aire',
+    'field_ob_aspect' => 'Orientación',
+    'field_ob_date_time' => 'Fecha y Hora de la Observación o Fecha y Hora Estimada de la Avalancha',
+    'field_ob_loc_name' => 'Nombre del Lugar',
+    'field_ob_precip' => 'Precipitación',
+    'field_observer_name' => 'Nombre',
+    'field_ob_snowpit_photo' => 'Foto o gráfico de perfil de nieve o corona',
+    'field_ob_weak_layer' => 'Plano de Falla / Capa Débil',
+    'field_ob_wind_dir' => 'Dirección del Viento',
+    'field_ob_wind_speed' => 'Velocidad del Viento',
+    'field_persistent_weak_layers' => 'Capas Débiles Persistentes',
+    'field_position' => 'Observación realizada por',
+    'field_published_ob' => '¿Publicar esta observación en el sitio web?',
+    'field_region' => 'Región',
+    'field_relative_size' => 'Tamaño Relativo',
+    'field_share_this_observation_' => '¿Compartir esta observación en las redes sociales, suscripciones por correo y feeds RSS del sitio?',
+    'field_sky_cover' => 'Cobertura del Cielo',
+    'field_slope' => 'Ángulo de la Pendiente en la Zona de Inicio',
+    'field_snowpack_avalanche_weather' => 'Imágenes de Nieve, Avalancha y Clima',
+    'field_snowpack_avalanche_wx_vids' => 'Videos de Nieve, Avalancha y Clima',
+    'field_starting_elevation' => 'Elevación de Inicio',
+    'field_terrain_alerts' => 'Alertas de Terreno',
+    'field_terrain_aspects' => 'Terreno: orientaciones',
+    'field_terrain_elevations' => 'Terreno: elevaciones',
+    'field_today_s_assessed_hazard_ab' => 'Estabilidad Evaluada Hoy — Sobre el Límite Arbóreo',
+    'field_today_s_assessed_hazard_be' => 'Estabilidad Evaluada Hoy — Bajo el Límite Arbóreo',
+    'field_today_s_assessed_hazard_ne' => 'Estabilidad Evaluada Hoy — Cerca del Límite Arbóreo',
+    'field_total_snow_depth' => 'Profundidad Total de Nieve',
+    'field_trigger_modifier' => 'Modificador del Detonante',
+    'field_trigger' => 'Detonante',
+  );
+  // Field instance descriptions (only those that carry help text).
+  $descriptions = array(
+    'field_elevation_of_observation' => 'Sugerencias: 1800-2100 m / 2100-2400 m / 2400-2700 m',
+    'field_email' => 'Su correo solo se usará para contactarlo si tenemos preguntas sobre su observación. No se publicará.',
+    'field_ob_date_time' => '<i>Seleccione la fecha en que realizó esta observación o la fecha estimada de la avalancha.</i>',
+    'field_ob_loc_name' => 'Indique el nombre del lugar donde realizó su observación.',
+    'field_observer_name' => 'Nombre Apellido, por ejemplo: Juan Pérez. Su nombre puede mostrarse públicamente junto a la observación.',
+    'field_position' => '<p>Use este campo para describir quién es usted (por ejemplo, público general, guía o patrullero).</p>',
+    'field_published_ob' => 'Su información de contacto permanecerá anónima.',
+    'field_share_this_observation_' => 'Su información de contacto permanecerá anónima.',
+    'field_sky_cover' => 'Cantidad de cobertura nubosa',
+    'field_snowpack_avalanche_wx_vids' => 'Pegue el enlace de YouTube o Vimeo de su video.',
+    'field_starting_elevation' => 'Sugerencias: bajo el límite arbóreo / cerca del límite arbóreo / sobre el límite arbóreo',
+    'field_trigger' => 'Sugerencias: Desconocido / Natural / Esquiador / Motonieve / Explosivo',
+  );
+  foreach ($labels as $field => $label) {
+    $config = config('field.instance.node.observation.' . $field);
+    if ($config->isNew()) {
+      continue;
+    }
+    $config->set('label', $label);
+    if (isset($descriptions[$field])) {
+      $config->set('description', $descriptions[$field]);
+    }
+    $config->save();
+  }
+
+  // Option lists (allowed_values) on the shared fields. Keys are the stored
+  // values and never change; only the human labels are translated. Metric
+  // where the original carried imperial units.
+  $compass = array('n' => 'Norte', 'ne' => 'Noreste', 'e' => 'Este', 'se' => 'Sureste', 's' => 'Sur', 'sw' => 'Suroeste', 'w' => 'Oeste', 'nw' => 'Noroeste');
+  $dict_options = array(
+    'field_ob_aspect' => $compass,
+    'field_ob_wind_dir' => $compass,
+    'field_ob_precip' => array('none' => 'Ninguna', 'rain' => 'Lluvia', 'snow' => 'Nieve', 'mix' => 'Mezcla de lluvia y nieve'),
+    'field_ob_wind_speed' => array('calm' => 'Calmo', 'light' => 'Ligero', 'moderate' => 'Moderado', 'strong' => 'Fuerte', 'gale' => 'Vendaval'),
+    'field_blowing_snow_detail' => array('none' => 'Ninguna', 'light' => 'Ligera', 'moderate' => 'Moderada', 'intense' => 'Intensa', 'previous' => 'Previa'),
+    'field_ob_air_temp' => array('below freezing' => 'Bajo cero', 'above freezing' => 'Sobre cero'),
+    'field_sky_cover' => array(
+      'CLR' => 'Despejado',
+      'FEW' => 'Poco nuboso — hasta 2/8 cubierto',
+      'SCT' => 'Disperso — Parcialmente nublado — 3/8 a 4/8 cubierto',
+      'BRK' => 'Fragmentado — Mayormente nublado — más de 4/8 y menos de 8/8',
+      'OVC' => 'Cubierto — 8/8 cubierto',
+      'X' => 'Oscurecido por niebla, etc.',
+      'increasing-clouds' => 'Nubosidad en aumento',
+      'decreasing-clouds' => 'Nubosidad en disminución',
+    ),
+    'field_ob_weak_layer' => array('storm' => 'Nieve reciente', 'old' => 'Nieve antigua', 'old-new-interface' => 'Interfaz nieve nueva/antigua', 'ground' => 'Suelo', 'other' => 'Otro', 'unknown' => 'Desconocido'),
+    'field_avalanche_type' => array('unknown' => 'Desconocido', 'dry-loose' => 'Nieve suelta seca / Sluff', 'wet-loose' => 'Nieve húmeda suelta', 'Wind Slab' => 'Placa de Viento', 'Storm Slab' => 'Placa de Tormenta', 'wet-slab' => 'Placa Húmeda', 'Persistent Slab' => 'Placa Persistente', 'Deep Slab' => 'Placa Persistente Profunda', 'cornice' => 'Cornisa', 'glide' => 'Deslizamiento (Glide)'),
+    'field_relative_size' => array('R1' => 'R1 Muy pequeña', 'R2' => 'R2 Pequeña', 'R3' => 'R3 Mediana', 'R4' => 'R4 Grande', 'R5' => 'R5 Muy grande', 'unknown' => 'desconocido'),
+    'field_destructive_size' => array(
+      'D1' => 'D1 Relativamente inofensiva para las personas.',
+      'D2' => 'D2 Podría enterrar, herir o matar a una persona.',
+      'D3' => 'D3 Podría enterrar y destruir un automóvil, dañar un camión, destruir una',
+      'wood frame house, or break a few trees.' => 'casa de madera o quebrar algunos árboles.',
+      'D4' => 'D4 Podría destruir un vagón de tren, un camión grande, varios',
+      'buildings, or a substantial amount of forest.' => 'edificios o una cantidad importante de bosque.',
+      'D5' => 'D5 Podría arrasar el paisaje. La mayor avalancha conocida.',
+      'unknown' => 'desconocido',
+    ),
+    'field_highest_precipitation_rate' => array('S-1' => 'Nevada muy ligera (S-1)', 'S1' => 'Nevada ligera (S1)', 'S2' => 'Nevada moderada (S2)', 'S5' => 'Nevada intensa (S5)', 'S10' => 'Nevada muy intensa (S10)', 'RV' => 'Lluvia muy ligera (RV)', 'RL' => 'Lluvia ligera (RL)', 'RM' => 'Lluvia moderada (RM)', 'RH' => 'Lluvia intensa (RH)'),
+    'field_position' => array('Public' => 'Público', 'Forecaster' => 'Pronosticador', 'Professional Observer' => 'Observador Profesional', 'Guide' => 'Guía', 'Educator' => 'Educador', 'Program Manager' => 'Director de Programa', 'Board of Directors' => 'Junta Directiva', 'Advisory Board' => 'Junta Asesora'),
+    'field_persistent_weak_layers' => array('On the surface' => 'En la superficie', 'Buried' => 'Enterrada', 'Not observed' => 'No observada', 'Not present' => 'No presente'),
+    'field_terrain_alerts' => array('Slopes Steeper than 30 degrees' => 'Pendientes de más de 30 grados', 'Obvious Slide Path' => 'Vía de avalancha evidente', 'Trigger Points' => 'Puntos de detonación', 'Terrain Traps' => 'Trampas de terreno', 'Terrain Matches the Forecast' => 'El terreno coincide con el pronóstico', 'Terrain Matches the Advisory' => 'El terreno coincide con el pronóstico'),
+    'field_terrain_elevations' => array('Above Treeline' => 'Sobre el límite arbóreo', 'Near Treeline' => 'Cerca del límite arbóreo', 'Below Treeline' => 'Bajo el límite arbóreo'),
+    'field_today_s_assessed_hazard_ab' => array('Insufficient Data' => 'Datos insuficientes', 'VG' => 'Muy Buena', 'G' => 'Buena', 'F' => 'Regular', 'P' => 'Mala', 'VP' => 'Muy Mala'),
+    'field_trigger_modifier' => array('intentionally-triggered' => 'Detonada intencionalmente', 'accidentally-triggered' => 'Detonada accidentalmente', 'remotely-triggered' => 'Detonada a distancia', 'cornice-fall-triggered' => 'Detonada por caída de cornisa'),
+    'field_crown_height' => array('-1' => 'Menos de 0,3 m', '1' => '0,3 m', '2' => '0,6 m', '3' => '0,9 m', '4' => '1,2 m', '5' => '1,5 m', '6' => '1,8 m', '7' => '2,1 m', '8' => '2,4 m', '9' => '2,7 m', '10' => '3 m', '11' => 'Más de 3 m'),
+    'field_number_of_similar_avalanch' => array('7' => 'Más de 10'),
+    'field_published_ob' => array('yes' => 'Sí', 'no' => 'No'),
+    'field_share_this_observation_' => array('yes' => 'Sí', 'no' => 'No'),
+    'field_region' => array('Other' => 'Otro'),
+  );
+  // The two assessed-hazard sibling fields share the same option set.
+  $dict_options['field_today_s_assessed_hazard_be'] = $dict_options['field_today_s_assessed_hazard_ab'];
+  $dict_options['field_today_s_assessed_hazard_ne'] = $dict_options['field_today_s_assessed_hazard_ab'];
+
+  foreach ($dict_options as $field => $map) {
+    $config = config('field.field.' . $field);
+    if ($config->isNew()) {
+      continue;
+    }
+    $allowed = $config->get('settings.allowed_values');
+    if (!is_array($allowed)) {
+      continue;
+    }
+    foreach ($map as $key => $label) {
+      if (array_key_exists($key, $allowed)) {
+        $allowed[$key] = $label;
+      }
+    }
+    $config->set('settings.allowed_values', $allowed);
+    $config->save();
+  }
+
+  // List-style allowed_values (numerically indexed): translate matching values
+  // in place, preserving order.
+  $list_options = array(
+    'field_is_this_an_avalanche_obser' => array('Yes' => 'Sí', 'No' => 'No'),
+    'field_number_of_full_burials' => array('More than 5' => 'Más de 5'),
+    'field_number_of_partial_burials' => array('More than 5' => 'Más de 5'),
+    'field_number_of_people_caught_2' => array('More than 5' => 'Más de 5'),
+  );
+  foreach ($list_options as $field => $map) {
+    $config = config('field.field.' . $field);
+    if ($config->isNew()) {
+      continue;
+    }
+    $allowed = $config->get('settings.allowed_values');
+    if (!is_array($allowed)) {
+      continue;
+    }
+    foreach ($allowed as $i => $val) {
+      if (isset($map[$val])) {
+        $allowed[$i] = $map[$val];
+      }
+    }
+    $config->set('settings.allowed_values', $allowed);
+    $config->save();
+  }
+
+  // Field groups (the form's fieldsets/tabs). The label lives both at the top
+  // level and under format_settings; set both. The "professional assessment"
+  // group also carries a large US/Canada SWAG stability-rating table in its
+  // description - replace it with a concise Spanish note (the SWAG table links
+  // out to US resources and isn't a fit for a generic/Spanish center).
+  $group_labels = array(
+    'group_avalanche_det' => 'Detalles de la Avalancha',
+    'group_observation' => 'Observación',
+    'group_people_involved' => 'Personas Involucradas',
+    'group_pro_assessment' => 'Evaluación Profesional',
+    'group_size' => 'Tamaño',
+    'group_snowpack' => 'Detalles del Manto de Nieve',
+    'group_snowpack_terrain' => 'Terreno',
+    'group_terrain' => 'Terreno',
+    'group_trigger' => 'Detonante',
+    'group_weather' => 'Detalles del Clima',
+  );
+  $group_descriptions = array(
+    'group_pro_assessment' => 'Para las definiciones de los términos de estabilidad, consulte el sistema de clasificación de estabilidad de la nieve (SWAG). Las clasificaciones van de Muy Buena (VG) a Muy Mala (VP), según la sensibilidad a los detonantes, la actividad de avalanchas naturales y los resultados de las pruebas de estabilidad.',
+  );
+  foreach ($group_labels as $group => $label) {
+    $config = config('field_group.field_group.node.observation.form.' . $group);
+    if ($config->isNew()) {
+      continue;
+    }
+    $config->set('label', $label);
+    $config->set('format_settings.label', $label);
+    if (isset($group_descriptions[$group])) {
+      $config->set('format_settings.instance_settings.description', $group_descriptions[$group]);
+    }
+    $config->save();
+  }
+
+  // The "Conditions Alerts" checkboxes on the form are taxonomy terms (DB
+  // content, stored in English - the reference sites never translated this
+  // vocabulary). Rename them by exact match, so a center's own edits are left
+  // alone. Imperial thresholds are converted to metric.
+  $conditions_alerts = array(
+    'Avalanche Activity' => 'Actividad de Avalanchas',
+    'Other Signs of Instability (cracking, whumpfing, collapsing)' => 'Otras Señales de Inestabilidad (grietas, whumpf, colapsos)',
+    'Shooting Cracks' => 'Grietas que se Propagan',
+    'Collapsing / whumpfing noises' => 'Ruidos de Colapso / Whumpf',
+    'Persistent Problem' => 'Problema Persistente',
+    'Recent Loading' => 'Carga Reciente',
+    'More Than a Foot of New Snow' => 'Más de 30 cm de Nieve Nueva',
+    'Snowfall Rates of More Than 1 in/hr' => 'Tasa de Nevada Mayor a 2 cm/h',
+    'Blowing Snow' => 'Ventisca',
+    'Rain on Snow' => 'Lluvia sobre Nieve',
+    'Rapid or Prolonged Warming' => 'Calentamiento Rápido o Prolongado',
+    'Rollerballs / Pinwheels' => 'Bolas de Nieve / Rodados',
+    'Strong Sunshine' => 'Sol Intenso',
+    'Warm Temperatures' => 'Temperaturas Cálidas',
+  );
+  if (db_table_exists('taxonomy_term_data')) {
+    foreach ($conditions_alerts as $en => $es) {
+      db_update('taxonomy_term_data')
+        ->fields(array('name' => $es))
+        ->condition('vocabulary', 'conditions_alerts')
+        ->condition('name', $en)
+        ->execute();
+    }
+  }
+}
+
+/**
+ * Localizes the Field Work Plan (fwp) trip-planning form.
+ *
+ * Same situation as the observation form: fwp's content-type name, its field
+ * instance labels/descriptions (on the node and on each field-collection
+ * sub-form), its option lists (allowed_values), and its field-group fieldset
+ * labels are all stored config, never passed through t(), so the PO import
+ * can't reach them. This rewrites them in the active config. Idempotent;
+ * exact-match guarded so a center's own edits are left alone. Center-agnostic
+ * (generic backcountry field-work terminology). Metric/localized where the
+ * original carried US-specific units or wording.
+ *
+ * @param string $langcode
+ *   Target language; only 'es' is shipped.
+ */
+/**
+ * Registers the guided forecast wizard's client-side JS strings for translation.
+ *
+ * wizard.js and prefill.js build their interface at runtime via Backdrop.t().
+ * Backdrop only serves a translated string to the client once the source has
+ * been registered with a 'javascript' location (normally discovered lazily when
+ * the page is first built). Parsing the files here, right after the PO import,
+ * plus rebuilding the per-language JS, means the wizard is fully translated on
+ * the first visit instead of after a later cache rebuild. Idempotent.
+ *
+ * @param string $langcode
+ *   Target language; only 'es' is shipped.
+ */
+function avalanche_center_register_forecast_tool_js($langcode) {
+  require_once BACKDROP_ROOT . '/core/includes/locale.inc';
+  $mod = backdrop_get_path('module', 'avalanche_forecast_tool');
+  if ($mod) {
+    foreach (array('/js/wizard.js', '/js/prefill.js') as $js) {
+      $file = $mod . $js;
+      if (is_file($file) && function_exists('_locale_parse_js_file')) {
+        _locale_parse_js_file($file);
+      }
+    }
+  }
+  if (function_exists('_locale_rebuild_js')) {
+    _locale_rebuild_js($langcode);
+  }
+}
+
+function avalanche_center_localize_fwp_form($langcode) {
+  if ($langcode !== 'es') {
+    return;
+  }
+
+  // Content type.
+  $type = config('node.type.fwp');
+  if (!$type->isNew()) {
+    $type->set('name', 'Plan de Trabajo de Campo');
+    $type->set('description', 'Un formulario para registrar los peligros, la mitigación de peligros, los objetivos y los planes de desplazamiento del trabajo de campo.');
+    $type->save();
+  }
+
+  // Field instance labels, keyed by "<entity_type>.<bundle>.<field_name>" so a
+  // sub-field name that appears in more than one bundle can be addressed.
+  $labels = array(
+    // Node-level fields.
+    'node.fwp.field_field_work_date' => 'Fecha del Trabajo de Campo',
+    'node.fwp.field_responsible_party' => 'Persona Responsable',
+    'node.fwp.field_trip_members' => 'Integrantes de la Salida',
+    'node.fwp.field_avalanche_problems' => 'Problemas de Avalancha',
+    'node.fwp.field_weather_or_snowpack' => 'Cambios Críticos en el Clima o el Manto de Nieve',
+    'node.fwp.field_forecast_confidence' => 'Confianza del Pronóstico',
+    'node.fwp.field_hazard_trend' => 'Factores que Podrían Aumentar el Peligro',
+    'node.fwp.field_other_environmental_hazard' => 'Otros Peligros del Entorno',
+    'node.fwp.field_strategic_mind_set' => 'Mentalidad Estratégica',
+    'node.fwp.field_data_wanted' => 'Datos Buscados',
+    'node.fwp.field_terrain_choice' => 'Elección del Terreno',
+    'node.fwp.field_vehicle_location_and_infor' => 'Ubicación e Información del Vehículo',
+    'node.fwp.field_hazard_mitigation_measures' => 'Medidas de Mitigación del Peligro',
+    'node.fwp.field_destination_and_route' => 'Destino y Ruta',
+    'node.fwp.field_tracking_link' => 'Enlace de Seguimiento en Vivo',
+    'node.fwp.field_approved_by' => 'Aprobado Por',
+    // Responsible Party collection.
+    'field_collection_item.field_responsible_party.field_responsible_party_name' => 'Nombre de la Persona Responsable',
+    'field_collection_item.field_responsible_party.field_responsible_party_phone_nu' => 'Teléfono de la Persona Responsable',
+    'field_collection_item.field_responsible_party.field_responsible_party_email' => 'Correo de la Persona Responsable',
+    // Trip Members collection.
+    'field_collection_item.field_trip_members.field_trip_member_name' => 'Nombre del Integrante',
+    'field_collection_item.field_trip_members.field_trip_member_phone_number' => 'Teléfono del Integrante',
+    'field_collection_item.field_trip_members.field_trip_member_email' => 'Correo del Integrante',
+    'field_collection_item.field_trip_members.field_travel_method' => 'Medio de Desplazamiento',
+    'field_collection_item.field_trip_members.field_clothing' => 'Vestimenta',
+    'field_collection_item.field_trip_members.field_communication_equipment' => 'Equipo de Comunicación',
+    'field_collection_item.field_trip_members.field_avalanche_safety_equipment' => 'Equipo de Seguridad en Avalanchas',
+    'field_collection_item.field_trip_members.field_other_equipment' => 'Otro Equipo',
+    'field_collection_item.field_trip_members.field_emergency_contact' => 'Contacto de Emergencia',
+    // Emergency Contact (nested) collection.
+    'field_collection_item.field_emergency_contact.field_emergency_contact_name' => 'Nombre del Contacto de Emergencia',
+    'field_collection_item.field_emergency_contact.field_emergency_contact_phone_nu' => 'Teléfono del Contacto de Emergencia',
+    // Destination and Route collection.
+    'field_collection_item.field_destination_and_route.field_destination' => 'Destino',
+    'field_collection_item.field_destination_and_route.field_brief_route_description' => 'Breve Descripción de la Ruta',
+    // Vehicle Location and Information collection.
+    'field_collection_item.field_vehicle_location_and_infor.field_vehicle_color' => 'Color del Vehículo',
+    'field_collection_item.field_vehicle_location_and_infor.field_vehicle_description' => 'Descripción del Vehículo',
+    'field_collection_item.field_vehicle_location_and_infor.field_fs_door_number_or_license_' => 'Patente o Identificación del Vehículo',
+    'field_collection_item.field_vehicle_location_and_infor.field_vehicle_parking_location' => 'Ubicación de Estacionamiento del Vehículo',
+  );
+  // Field instance descriptions (only those that carry help text).
+  $descriptions = array(
+    'node.fwp.field_approved_by' => 'El supervisor o pronosticador que aprobó este plan de trabajo de campo.',
+    'node.fwp.field_data_wanted' => '¿Qué está buscando y por qué?',
+    'node.fwp.field_terrain_choice' => '¿A qué tipo de terreno necesita ingresar para obtener los datos requeridos?',
+    'node.fwp.field_weather_or_snowpack' => '¿Algún cambio crítico en el clima o el manto de nieve?',
+    'node.fwp.field_hazard_trend' => '¿Qué factores podrían aumentar el peligro existente?',
+    'node.fwp.field_responsible_party' => 'La persona u oficina que hace seguimiento hoy y conoce su plan de desplazamiento.',
+    'field_collection_item.field_trip_members.field_travel_method' => ' Sugerencias: Esquís / Motonieve / Splitboard / Raquetas / A pie.',
+    'field_collection_item.field_trip_members.field_clothing' => ' Sugerencias: Primera capa sintética o de lana / Pantalón soft shell / Chaqueta soft shell / Cortaviento / 2 pares de guantes / Chaqueta de pluma o alta loft / Gorro abrigado / Protección ocular adecuada / Calzado adecuado / Chaqueta impermeable / Pantalón impermeable / Chaqueta de polar / Pantalón térmico.',
+  );
+  foreach ($labels as $key => $label) {
+    $config = config('field.instance.' . $key);
+    if ($config->isNew()) {
+      continue;
+    }
+    $config->set('label', $label);
+    if (isset($descriptions[$key])) {
+      $config->set('description', $descriptions[$key]);
+    }
+    $config->save();
+  }
+
+  // Option lists (allowed_values). Keys are the stored values and never
+  // change; only the human labels are translated.
+  $dict_options = array(
+    'field_avalanche_problems' => array(
+      1 => 'Placa de Tormenta',
+      2 => 'Placa Persistente Profunda',
+      3 => 'Placa de Viento',
+      4 => 'Placa Húmeda',
+      5 => 'Placa Persistente',
+      6 => 'Nieve Húmeda Suelta',
+      7 => 'Nieve Suelta Seca',
+      8 => 'Precaución Normal',
+      9 => 'Cornisa',
+    ),
+    'field_forecast_confidence' => array('Low' => 'Baja', 'Medium' => 'Media', 'High' => 'Alta'),
+    'field_strategic_mind_set' => array(
+      'Assessment' => 'Evaluación',
+      'Stepping Out' => 'Avanzando (Stepping Out)',
+      'Status Quo' => 'Statu Quo',
+      'Stepping Back' => 'Retrocediendo (Stepping Back)',
+      'Entrenchment' => 'Atrincheramiento',
+      'Open Season' => 'Temporada Abierta',
+      'Spring Diurnal' => 'Ciclo Diurno Primaveral',
+    ),
+    'field_communication_equipment' => array('Cell Phone' => 'Teléfono Celular', 'SPOT' => 'inReach', 'Radio' => 'Radio'),
+    'field_avalanche_safety_equipment' => array('Beacon' => 'Detector (ARVA)', 'Shovel' => 'Pala', 'Probe' => 'Sonda', 'Airbag' => 'Airbag', 'Avalung' => 'Avalung'),
+    'field_other_equipment' => array(
+      'Helmet' => 'Casco',
+      'First Aid Kit' => 'Botiquín de Primeros Auxilios',
+      'Water' => 'Agua',
+      'Food' => 'Comida',
+      'Emergency Shelter' => 'Refugio de Emergencia',
+      'Repair Kit' => 'Kit de Reparación',
+      'Snow Saw' => 'Sierra de Nieve',
+      'Snow Study Kit' => 'Kit de Estudio de Nieve',
+      'Skins' => 'Pieles de Foca',
+      'Headlamp' => 'Linterna Frontal',
+      'Extra Batteries' => 'Baterías de Repuesto',
+      'Knife' => 'Cuchillo',
+      'Fire Starter' => 'Encendedor',
+      'Signalling Device' => 'Dispositivo de Señalización',
+    ),
+  );
+  foreach ($dict_options as $field => $map) {
+    $config = config('field.field.' . $field);
+    if ($config->isNew()) {
+      continue;
+    }
+    $allowed = $config->get('settings.allowed_values');
+    if (!is_array($allowed)) {
+      continue;
+    }
+    foreach ($map as $stored_key => $label) {
+      if (array_key_exists($stored_key, $allowed)) {
+        $allowed[$stored_key] = $label;
+      }
+    }
+    $config->set('settings.allowed_values', $allowed);
+    $config->save();
+  }
+
+  // Field groups (the form's fieldsets). Label lives both at the top level and
+  // under format_settings; set both.
+  $group_labels = array(
+    'field_group.field_group.node.fwp.form.group_todays_hazards' => 'Peligros de Hoy',
+    'field_group.field_group.node.fwp.form.group_field_work_objectives' => 'Objetivos del Trabajo de Campo',
+    'field_group.field_group.node.fwp.form.group_travel_plan' => 'Plan de Desplazamiento Propuesto',
+    'field_group.field_group.field_collection_item.field_trip_members.form.group_equipment' => 'Equipo',
+  );
+  foreach ($group_labels as $name => $label) {
+    $config = config($name);
+    if ($config->isNew()) {
+      continue;
+    }
+    $config->set('label', $label);
+    $config->set('format_settings.label', $label);
+    $config->save();
+  }
+
+  // The Travel Method and Clothing check-box lists use the select_or_other
+  // widget, whose options live in the widget's "available_options" setting as a
+  // newline list of "value|label" pairs. Translate the label (right of the
+  // pipe) while keeping the stored value (left) in English, so checked data
+  // stays consistent across languages - same key-stable approach as the
+  // allowed_values lists above.
+  $widget_options = array(
+    'field.instance.field_collection_item.field_trip_members.field_travel_method' =>
+      "Skis|Esquís\nSnowmobile|Motonieve\nSplitboard|Splitboard\nSnowshoes|Raquetas\nFoot|A pie",
+    'field.instance.field_collection_item.field_trip_members.field_clothing' =>
+      "Synthetic or Wool Base Layers|Primera capa sintética o de lana\n" .
+      "Soft Shell Snow Pants|Pantalón soft shell\n" .
+      "Soft Shell Snow Jacket|Chaqueta soft shell\n" .
+      "Windbreaker|Cortaviento\n" .
+      "2 Pairs of Gloves|Al menos 2 pares de guantes\n" .
+      "High Loft Insulated Jacket|Chaqueta de pluma / alta loft\n" .
+      "Warm Hat|Gorro abrigado\n" .
+      "Appropriate Eyewear|Protección ocular adecuada\n" .
+      "Appropriate Footwear|Calzado adecuado\n" .
+      "Waterproof Jacket|Chaqueta impermeable\n" .
+      "Waterproof Pants|Pantalón impermeable\n" .
+      "Fleece Jacket|Chaqueta de polar\n" .
+      "Insulated Pants|Pantalón térmico",
+  );
+  foreach ($widget_options as $name => $options) {
+    $config = config($name);
+    if ($config->isNew()) {
+      continue;
+    }
+    $config->set('widget.settings.available_options', $options);
+    // "Other" free-text option and its title.
+    $config->set('widget.settings.other', 'Otro');
+    $config->set('widget.settings.other_title', 'Otro');
+    $config->save();
+  }
+
+  // User-profile fields the avalanche_fwp module adds (labels are stored config).
+  $user_labels = array(
+    'field.instance.user.user.field_display_name' => 'Nombre (como se muestra en el sitio web)',
+    'field.instance.user.user.field_mobile_phone' => 'Teléfono Móvil',
+    'field.instance.user.user.field_tracking_link' => 'Enlace de Seguimiento en Vivo Predeterminado',
+    'field.instance.user.user.field_vehicle_location_and_infor' => 'Vehículo Predeterminado',
+    'field.instance.user.user.field_avalanche_safety_equipment' => 'Equipo de Seguridad en Avalanchas Predeterminado',
+    'field.instance.user.user.field_communication_equipment' => 'Equipo de Comunicación Predeterminado',
+    'field.instance.user.user.field_other_equipment' => 'Otro Equipo Predeterminado',
+    'field.instance.user.user.field_clothing' => 'Vestimenta Predeterminada',
+    'field.instance.taxonomy_term.region.field_region_timezone' => 'Zona Horaria',
+  );
+  foreach ($user_labels as $name => $label) {
+    $config = config($name);
+    if (!$config->isNew()) {
+      $config->set('label', $label);
+      $config->save();
+    }
+  }
+}
+
+/**
+ * Rewrites the observations/incidents views' header-area explanatory text.
+ *
+ * These views show a multi-sentence intro paragraph above the list/map (a
+ * Views "area" handler, stored as HTML in config - never through t(), so the
+ * PO import can't reach it, same as the menu blocks). Each shipped view has
+ * the paragraph on several displays (list page, map page, archives); this sets
+ * the target-language copy on every one. Idempotent (overwrites). The English
+ * shipped copy is already the generic version, so this only runs for other
+ * languages. Center-agnostic - generic backcountry-observation boilerplate.
+ *
+ * @param string $langcode
+ *   Target language; a no-op if no copy is shipped for it.
+ */
+function avalanche_center_localize_view_headers($langcode) {
+  if ($langcode !== 'es') {
+    return;
+  }
+
+  $obs_disclaimer = '<p>Estas observaciones describen las condiciones en un único punto en el tiempo y el espacio, y pueden no representar las condiciones donde usted planea desplazarse. Provienen de diversas fuentes —algunas profesionales, otras del público— y no se puede garantizar su calidad ni exactitud. Utilícelas como una parte de su recopilación de información y nunca base sus decisiones en un solo dato. Envíe sus propias observaciones mediante los botones a continuación.</p>';
+  $obs_map = '<p>Este mapa muestra las observaciones de manto de nieve y de avalanchas enviadas. Las observaciones de manto de nieve se muestran con marcadores azules y las de avalanchas con marcadores rojos. Haga clic en un marcador para ver la observación.</p>';
+  $inc_desc = '<p>Esta página muestra los incidentes de avalancha reportados en el backcountry que involucraron a una persona atrapada, enterrada y/o herida.</p>';
+
+  // config name => (display machine name => header HTML).
+  $headers = array(
+    'views.view.observations' => array(
+      'default' => $obs_disclaimer,
+      'page_1' => $obs_disclaimer,
+      'page_5' => $obs_disclaimer,
+      'page_2' => $obs_map,
+      'page_4' => $obs_map,
+    ),
+    'views.view.incidents' => array(
+      'default' => $inc_desc,
+      'page_2' => $inc_desc,
+      'page_3' => $inc_desc,
+    ),
+  );
+
+  foreach ($headers as $config_name => $displays) {
+    $config = config($config_name);
+    if ($config->isNew()) {
+      continue;
+    }
+    $data = $config->get();
+    $changed = FALSE;
+    foreach ($displays as $display => $html) {
+      if (!isset($data['display'][$display]['display_options']['header']['area'])) {
+        continue;
+      }
+      $area = &$data['display'][$display]['display_options']['header']['area'];
+      // Header content is either a scalar string or a {value, format} array,
+      // depending on the area handler - preserve whichever shape it has.
+      if (isset($area['content']) && is_array($area['content'])) {
+        $area['content']['value'] = $html;
+      }
+      else {
+        $area['content'] = $html;
+      }
+      unset($area);
+      $changed = TRUE;
+    }
+    if ($changed) {
+      $config->setData($data);
+      $config->save();
+    }
+  }
+}
+
+/**
+ * Recursively replaces string values under whitelisted keys using an
+ * exact-match map. Helper for avalanche_center_localize_views().
+ *
+ * @param array $data
+ *   Config data, modified by reference.
+ * @param array $keys
+ *   Keys whose string values are eligible for replacement (as a set:
+ *   key => TRUE).
+ * @param array $map
+ *   Exact English => translated string map.
+ * @param bool $changed
+ *   Set to TRUE (by reference) if any replacement was made.
+ */
+function avalanche_center_localize_walk(&$data, $keys, $map, &$changed) {
+  if (!is_array($data)) {
+    return;
+  }
+  foreach ($data as $key => &$value) {
+    if (is_array($value)) {
+      avalanche_center_localize_walk($value, $keys, $map, $changed);
+    }
+    elseif (isset($keys[$key]) && is_string($value) && isset($map[$value])) {
+      $value = $map[$value];
+      $changed = TRUE;
+    }
+  }
+}
+
+/**
+ * Force-applies specific shipped config files, overwriting whatever's
+ * already active.
+ *
+ * config_install_default_config() (which normally imports everything in
+ * profiles/avalanche_center/config/) only ever creates new config, never
+ * overwrites existing config - by design, so it's safe to re-run. But it
+ * means any config name a *module we depend on* also ships its own default
+ * for silently keeps that module's default instead of ours, if that
+ * module gets enabled first (nearly always true for core modules, since
+ * profiles install last). Found via Phase 7's greenfield install test:
+ * `user` module ships its own empty-permission `user.role.anonymous` /
+ * `user.role.authenticated`, so our exported versions (with real
+ * permissions - "access content" etc.) were silently discarded, leaving
+ * anonymous visitors and logged-in users alike unable to view the site at
+ * all. Re-applied here, explicitly, after normal config import has run.
+ *
+ * @param array $config_names
+ *   Config object names (matching a .json filename, minus the extension)
+ *   to load from this profile's config/ directory and force-save over
+ *   whatever's currently active.
+ */
+function avalanche_center_force_apply_config($config_names) {
+  $config_dir = backdrop_get_path('profile', 'avalanche_center') . '/config';
+  foreach ($config_names as $name) {
+    $file = $config_dir . '/' . $name . '.json';
+    if (!file_exists($file)) {
+      continue;
+    }
+    $data = json_decode(file_get_contents($file), TRUE);
+    if (!is_array($data)) {
+      continue;
+    }
+    unset($data['_config_name']);
+    config($name)->setData($data)->save();
+  }
+}
+
+/**
+ * Creates a full demo dataset - two forecast-zone regions with an advisory
+ * each, plus at least one node in every other content type, real menu
+ * links, and the taxonomy terms a couple of shipped Views filter on - so a
+ * fresh install actually looks like a real, populated center site (matching
+ * the Gulmarg/Argentina baseline structurally) instead of one empty page.
+ *
+ * Found via a Phase 7 parity pass against both reference sites' live
+ * databases: the homepage's block placement (layout.layout.node.json) was
+ * already correctly exported back in Phase 5 - every block Gulmarg's
+ * front page actually uses (danger map, sponsors, media gallery, events,
+ * announcements, etc.) is really there. It just had nothing to show,
+ * because (a) menu links and custom-block content are database content in
+ * Backdrop, not config, so Phase 4/5's config-only export correctly never
+ * captured them, and (b) none of the content types those blocks' Views
+ * query had a single node in a fresh install. This function is what fills
+ * that gap. See plan §21.
+ *
+ * @param float $lat
+ *   Map center latitude, from the setup form.
+ * @param float $lng
+ *   Map center longitude, from the setup form.
+ */
+function avalanche_center_create_demo_content($lat, $lng) {
+  module_load_include('inc', 'geofield', 'libraries/geophp/geoPHP');
+
+  $page_category = avalanche_center_demo_terms('page_category', array('skiday'));
+  $class_type = avalanche_center_demo_terms('class_type', array('general', 'snowmobile'));
+  $sponsor_level = avalanche_center_demo_terms('sponsor_level', array(
+    'Summit', 'Extreme', 'High', 'Considerable', 'Moderate', 'Low',
+  ));
+
+  // Two forecast zones, offset from the map center so they don't overlap,
+  // each with its own advisory - a single-region demo undersells centers
+  // that forecast for more than one zone, which is the norm, not the
+  // exception, on both reference sites.
+  $region_a = avalanche_center_demo_region(t('North Zone'), $lat, $lng, 0.12, -0.03);
+  $region_b = avalanche_center_demo_region(t('South Zone'), $lat, $lng, -0.12, 0.03);
+  avalanche_center_demo_advisory($region_a, 1, t('This is a demo avalanche forecast created automatically at install so the danger map has something to show. Watch for wind slab and cornice hazards on steep, wind-loaded slopes. Replace it with a real forecast, or delete it.'));
+  avalanche_center_demo_advisory($region_b, 2, t('A second demo avalanche forecast for the second demo forecast zone. Evaluate the snowpack carefully for persistent slab instabilities before entering avalanche terrain. Replace it with a real forecast, or delete it.'));
+
+  // Dedicated home page. Matching the Gulmarg/Argentina baseline, the front
+  // page is its own standalone "page" node aliased to "home", NOT a promoted
+  // forecast - the danger map (a layout block conditioned on the "home"
+  // path) is the home page's main content, and the page node itself carries
+  // no body so nothing competes with the map. The layout hides the node
+  // title on the front page, so this renders as just the map.
+  $home_page = avalanche_center_demo_node('page', array(
+    'title' => t('Home'),
+  ));
+
+  // One demo "page" node per generic destination the demo menus below
+  // link to - real centers will have their own About/Contact/etc. pages,
+  // these just mean the menus aren't pointing at nothing out of the box.
+  $about_page = avalanche_center_demo_node('page', array(
+    'title' => t('About Us'),
+    'body' => array('value' => t('Tell visitors who your center is and what you do. Replace this placeholder page with your own About page.'), 'format' => 'filtered_html'),
+  ));
+  $donate_page = avalanche_center_demo_node('page', array(
+    'title' => t('Donate'),
+    'body' => array('value' => avalanche_center_demo_donate_body(), 'format' => 'full_html'),
+  ));
+  $contact_page = avalanche_center_demo_node('page', array(
+    'title' => t('Contact Us'),
+    'body' => array('value' => t('Add your center\'s contact details here. Replace this placeholder with your own page.'), 'format' => 'filtered_html'),
+  ));
+  $faq_page = avalanche_center_demo_node('page', array(
+    'title' => t('Frequently Asked Questions'),
+    'body' => array('value' => t('Answer the questions your visitors ask most. Replace this placeholder with your own page.'), 'format' => 'filtered_html'),
+  ));
+
+  // Three ready-to-use avalanche-education reference pages (generic,
+  // industry-standard content: how to read a forecast, the danger scale, and
+  // the nine avalanche problem types). Given fixed aliases so the Advisory
+  // dropdown's "Forecast Resources" links resolve. A center can edit or
+  // delete them like any other page.
+  avalanche_center_demo_reference_page(t('How to Read the Avalanche Forecast'), 'how-to-read-avalanche-forecast', 'how-to-read-avalanche-forecast.html');
+
+  // The danger-scale page follows the chosen preset: SAC gets the South
+  // American scale (title + body), NAC the North American one. The alias is
+  // deliberately preset-independent so the Advisory-dropdown and how-to-read
+  // links resolve either way.
+  if (config_get('avalanche_center.settings', 'danger_scale') === 'SAC') {
+    avalanche_center_demo_reference_page(t('South American Avalanche Danger Scale'), 'avalanche-danger-scale', 'south-american-avalanche-danger-scale.html');
+  }
+  else {
+    avalanche_center_demo_reference_page(t('North American Avalanche Danger Scale'), 'avalanche-danger-scale', 'north-american-avalanche-danger-scale.html');
+  }
+
+  avalanche_center_demo_reference_page(t('Avalanche Problems'), 'avalanche-problems', 'avalanche-problems.html');
+
+  // Populate the Avalanche Terms glossary (names, definitions, and synonyms).
+  // The "Mark glossary terms" filter (avalanche_glossary) then auto-links
+  // these terms wherever they appear in full_html content, e.g. advisories.
+  avalanche_center_import_avalanche_terms();
+
+  // Populate the hierarchical Conditions Alerts vocabulary (the observation
+  // form's "Conditions Alerts" field references it).
+  avalanche_center_import_conditions_alerts();
+
+  // The sponsor-tier home-page blocks also filter on expiration date being
+  // in the future, so give the demo sponsor one.
+  avalanche_center_demo_node('sponsor', array(
+    'title' => t('Example Sponsor'),
+    'field_sponsor_name' => array('value' => t('Example Sponsor')),
+    'field_sponsor_link' => array('url' => 'https://example.com', 'title' => t('Example Sponsor')),
+    'field_expiration_date' => array('value' => date('Y-m-d H:i:s', strtotime('+1 year'))),
+    'taxonomy_vocabulary_4' => array('tid' => $sponsor_level['Summit']),
+  ));
+
+  avalanche_center_demo_node('announcements', array(
+    'title' => t('Welcome to Our New Website'),
+    'body' => array('value' => t('This is a demo announcement. Replace it with your own site news.'), 'format' => 'filtered_html'),
+  ));
+
+  // The events_upcoming view filters on the event's *end* date (value2)
+  // being in the future, so demo events need both a start and an end date
+  // (field_event_date's todate is "optional"), or they never show as
+  // "upcoming".
+  avalanche_center_demo_node('events', array(
+    'title' => t('Community Ski Day'),
+    'body' => array('value' => t('A demo community ski day event.'), 'format' => 'filtered_html'),
+    'field_event_date' => array('value' => date('Y-m-d H:i:s', strtotime('+2 weeks')), 'value2' => date('Y-m-d H:i:s', strtotime('+2 weeks +4 hours'))),
+    'field_page_category' => array('tid' => $page_category['skiday']),
+  ));
+  avalanche_center_demo_node('events', array(
+    'title' => t('Avalanche Awareness Night'),
+    'body' => array('value' => t('A demo public awareness event.'), 'format' => 'filtered_html'),
+    'field_event_date' => array('value' => date('Y-m-d H:i:s', strtotime('+3 weeks')), 'value2' => date('Y-m-d H:i:s', strtotime('+3 weeks +2 hours'))),
+  ));
+
+  avalanche_center_demo_node('class', array(
+    'title' => t('Introduction to Avalanche Safety'),
+    'body' => array('value' => t('A demo introductory avalanche safety class.'), 'format' => 'filtered_html'),
+    'field_event_date' => array('value' => date('Y-m-d H:i:s', strtotime('+1 month')), 'value2' => date('Y-m-d H:i:s', strtotime('+1 month +3 hours'))),
+    'field_class_type' => array('tid' => $class_type['general']),
+  ));
+  avalanche_center_demo_node('class', array(
+    'title' => t('Snowmobiler Avalanche Awareness'),
+    'body' => array('value' => t('A demo avalanche safety class for snowmobilers.'), 'format' => 'filtered_html'),
+    'field_event_date' => array('value' => date('Y-m-d H:i:s', strtotime('+5 weeks')), 'value2' => date('Y-m-d H:i:s', strtotime('+5 weeks +3 hours'))),
+    'field_class_type' => array('tid' => $class_type['snowmobile']),
+  ));
+
+  avalanche_center_demo_node('week_in_review', array(
+    'title' => t('Week in Review'),
+    'body' => array('value' => t('A demo weekly summary of conditions and observations.'), 'format' => 'filtered_html'),
+  ));
+
+  avalanche_center_demo_node('observation', array(
+    'title' => t('Demo Observation'),
+    'field_is_this_an_avalanche_obser' => array('value' => 0),
+    'field_ob_date_time' => array('value' => date('Y-m-d H:i:s')),
+    'field_ob_loc_name' => array('value' => t('Near the demo forecast zone')),
+    'field_published_ob' => array('value' => 'yes'),
+    'field_share_this_observation_' => array('value' => 'yes'),
+  ));
+
+  avalanche_center_demo_node('avalanche_education', array(
+    'title' => t('Avalanche Education Program'),
+    'body' => array('value' => t('A demo overview of your education program.'), 'format' => 'filtered_html'),
+  ));
+
+  avalanche_center_demo_node('avalanche_watch', array(
+    'title' => t('Avalanche Watch'),
+    'body' => array('value' => t('A demo avalanche watch, issued ahead of a forecast when conditions may warrant one.'), 'format' => 'filtered_html'),
+    'field_duration' => array('value' => 48),
+    'field_expected_danger_rating' => array('value' => 'Considerable'),
+    'field_overalldanger' => array('value' => 3),
+  ));
+
+  avalanche_center_demo_node('banner_ad', array(
+    'title' => t('Example Sponsor Banner'),
+    'body' => array('value' => t('A demo sponsor banner ad.'), 'format' => 'filtered_html'),
+    'field_expiration_date' => array('value' => date('Y-m-d H:i:s', strtotime('+1 year'))),
+  ));
+
+  avalanche_center_demo_node('card', array(
+    'title' => t('Featured Card'),
+    'body' => array('value' => t('A demo featured content card.'), 'format' => 'filtered_html'),
+  ));
+
+  avalanche_center_demo_node('custom_map', array(
+    'title' => t('Custom Map Example'),
+    'field_map_region' => array('geom' => sprintf('POINT(%F %F)', $lng, $lat)),
+    'field_region_color' => array('value' => '#FF0000'),
+  ));
+
+  avalanche_center_demo_node('feed_item', array(
+    'title' => t('Feed Item Example'),
+    'field_feed_item_description' => array('value' => t('A demo feed item description.'), 'format' => 'filtered_html'),
+  ));
+
+  avalanche_center_demo_node('feed', array(
+    'title' => t('Feed Example'),
+  ));
+
+  avalanche_center_demo_node('fwp', array(
+    'title' => t('Field Work Plan Example'),
+    'field_terrain_choice' => array('value' => t('Demo terrain choice notes.'), 'format' => 'filtered_html'),
+    'field_field_work_date' => array('value' => date('Y-m-d H:i:s')),
+  ));
+
+  avalanche_center_demo_node('map', array(
+    'title' => t('Site Map'),
+    'body' => array('value' => t('A demo site map page.'), 'format' => 'filtered_html'),
+  ));
+
+  avalanche_center_demo_node('media_gallery', array(
+    'title' => t('Photo Gallery Example'),
+  ));
+
+  avalanche_center_demo_node('post', array(
+    'title' => t('Sample Blog Post'),
+    'body' => array('value' => t('A demo blog-style post.'), 'format' => 'filtered_html'),
+  ));
+
+  avalanche_center_demo_node('simplenews', array(
+    'title' => t('Sample Newsletter Issue'),
+    'body' => array('value' => t('A demo newsletter issue.'), 'format' => 'filtered_html'),
+  ));
+
+  avalanche_center_demo_node('snowpack_summary', array(
+    'title' => t('Snowpack Summary Example'),
+    'field_bottom_line' => array('value' => t('A demo snowpack summary bottom line.'), 'format' => 'filtered_html'),
+    'field_disclaimer' => array('value' => t('Demo disclaimer text.'), 'format' => 'filtered_html'),
+    'field_duration' => array('value' => 24),
+    'field_forecast_region' => array('tid' => $region_a),
+  ));
+
+  // People, tagged with the field_display_order values the shipped
+  // advisory_board view's "board"/"forecasters"/"non-profit-staff" page
+  // displays each filter on (see plan §21) - without these, those 3 menu-
+  // archives destinations would be empty pages.
+  avalanche_center_demo_node('people', array(
+    'title' => t('Jane Doe'),
+    'field_sac_people_name' => array('value' => t('Jane Doe')),
+    'field_display_order' => array('value' => 1),
+  ));
+  avalanche_center_demo_node('people', array(
+    'title' => t('John Smith'),
+    'field_sac_people_name' => array('value' => t('John Smith')),
+    'field_display_order' => array('value' => 9),
+  ));
+  avalanche_center_demo_node('people', array(
+    'title' => t('Alex Lee'),
+    'field_sac_people_name' => array('value' => t('Alex Lee')),
+    'field_display_order' => array('value' => 6),
+  ));
+
+  // ski_days/snowmobile_classes (profiles/avalanche_center/config/) filter
+  // on a hardcoded taxonomy term ID copied straight from Gulmarg's own
+  // database - meaningless on a fresh install, where term IDs are assigned
+  // at creation time above. Patch both views to point at the real ones.
+  avalanche_center_patch_view_term_filter('ski_days', 'default', 'field_page_category_tid', array($page_category['skiday']));
+  avalanche_center_patch_view_term_filter('snowmobile_classes', 'default', 'field_class_type_tid', array($class_type['snowmobile']));
+
+  // The considerable_sponsors view has one block display per sponsor tier,
+  // each with a hardcoded sponsor_level term ID from Gulmarg's database
+  // (block_1 = Extreme = tid 2, ... block_8 = Summit = tid 17). Repoint each
+  // at the tier term this install just created so the tier blocks on the
+  // home page actually match the demo sponsor. Same hardcoded-tid problem as
+  // ski_days above.
+  $sponsor_tier_blocks = array(
+    'block_1' => array($sponsor_level['Extreme']),
+    'block_2' => array($sponsor_level['High']),
+    'block_3' => array($sponsor_level['Considerable']),
+    'block_4' => array($sponsor_level['Moderate']),
+    'block_5' => array($sponsor_level['Low']),
+    'block_6' => array($sponsor_level['Summit']),
+    'block_7' => array($sponsor_level['Summit']),
+    'block_8' => array($sponsor_level['Summit']),
+  );
+  foreach ($sponsor_tier_blocks as $display => $tids) {
+    avalanche_center_patch_view_term_filter('considerable_sponsors', $display, 'tid', $tids);
+  }
+
+  avalanche_center_demo_menu_links($about_page->nid, $donate_page->nid, $contact_page->nid, $faq_page->nid);
+
+  // Point the front page at the dedicated home page node (a bodyless "page"
+  // node, created above), not at a forecast - matching the Gulmarg/Argentina
+  // baseline, where site_frontpage is a standalone "page" node aliased to
+  // "home" (Gulmarg: node/5950), not a promoted advisory. Core's default
+  // front page ("node", the promoted-content list) doesn't match the node/%
+  // layout the danger map block lives in, so without this the map renders
+  // nowhere. A real center repoints this at its own landing content later.
+  config_set('system.core', 'site_frontpage', 'node/' . $home_page->nid);
+
+  // Alias the home page node to "home". Many home-page blocks (danger map,
+  // media gallery, announcements, sponsor tiers, etc.) carry a path-
+  // visibility condition of "home" rather than "<front>", and on both
+  // reference sites it's this alias on the front-page node that makes those
+  // conditions match. Without it only the few blocks conditioned on
+  // "<front>" render, leaving the home page half-empty.
+  $alias = array('source' => 'node/' . $home_page->nid, 'alias' => 'home');
+  path_save($alias);
+}
+
+/**
+ * Creates a forecast-zone region term with a small placeholder polygon.
+ *
+ * @param string $name
+ *   Term name.
+ * @param float $lat
+ *   Map center latitude.
+ * @param float $lng
+ *   Map center longitude.
+ * @param float $lat_offset
+ *   Degrees to offset the polygon's center from $lat, so multiple demo
+ *   zones don't overlap.
+ * @param float $lng_offset
+ *   Degrees to offset the polygon's center from $lng.
+ *
+ * @return int
+ *   The new term's tid.
+ */
+function avalanche_center_demo_region($name, $lat, $lng, $lat_offset, $lng_offset) {
+  $center_lat = $lat + $lat_offset;
+  $center_lng = $lng + $lng_offset;
+  $delta = 0.05;
+  $wkt = sprintf(
+    'POLYGON((%F %F, %F %F, %F %F, %F %F, %F %F))',
+    $center_lng - $delta, $center_lat - $delta,
+    $center_lng + $delta, $center_lat - $delta,
+    $center_lng + $delta, $center_lat + $delta,
+    $center_lng - $delta, $center_lat + $delta,
+    $center_lng - $delta, $center_lat - $delta
+  );
+
+  // taxonomy_term_save() type-hints against the Entity API's TaxonomyTerm
+  // class, not stdClass - entity_create() returns the right class
+  // (TaxonomyTerm's bundle key is 'vocabulary', per taxonomy_entity_info()'s
+  // 'bundle keys').
+  $term = entity_create('taxonomy_term', array('vocabulary' => 'region'));
+  $term->name = $name;
+  $term->description = t('Placeholder forecast zone created at install. Replace with your real forecast zones, or delete this one.');
+  $term->format = filter_default_format();
+  $term->field_region_map[LANGUAGE_NONE][0]['geom'] = $wkt;
+  taxonomy_term_save($term);
+  return $term->tid;
+}
+
+/**
+ * Creates a demo advisory for a forecast-zone region.
+ *
+ * @param int $region_tid
+ *   The region term's tid to reference.
+ * @param int $danger_level
+ *   Overall danger level (1-5) for this demo advisory.
+ * @param string $bottom_line
+ *   Bottom-line text.
+ *
+ * @return Node
+ *   The saved advisory node.
+ */
+function avalanche_center_demo_advisory($region_tid, $danger_level, $bottom_line) {
+  $node = entity_create('node', array('type' => 'advisory'));
+  node_object_prepare($node);
+  $node->title = t('Demo Avalanche Forecast');
+  $node->language = LANGUAGE_NONE;
+  $node->status = 1;
+  $node->promote = 0;
+  $node->uid = 1;
+
+  $node->field_forecast_region[LANGUAGE_NONE][0]['tid'] = $region_tid;
+  $node->field_overalldanger[LANGUAGE_NONE][0]['value'] = $danger_level;
+  $node->field_danger_rating_1[LANGUAGE_NONE][0]['value'] = 'Low';
+  $node->field_danger_rating_2[LANGUAGE_NONE][0]['value'] = 'Low';
+  $node->field_danger_rating_3[LANGUAGE_NONE][0]['value'] = 'Low';
+  $node->field_duration[LANGUAGE_NONE][0]['value'] = 24;
+  $node->field_bottom_line[LANGUAGE_NONE][0]['value'] = $bottom_line;
+  // full_html to match how advisories are authored on the live sites (the
+  // "full html + mark glossary terms" WYSIWYG profile), so the glossary
+  // auto-link filter marks terms in the bottom line.
+  $node->field_bottom_line[LANGUAGE_NONE][0]['format'] = 'full_html';
+
+  // field_rose_{1,2,3} (danger_rose_picker, from the danger_rose module) are
+  // not Field-API "required" on advisory, but danger_rose_field_schema()
+  // declares all 24 of its per-aspect columns NOT NULL with no fallback -
+  // saving a node that never sets any value for these fields hits a DB
+  // constraint violation, not a Field API validation error. Zero-fill them.
+  $empty_rose = array_fill(0, 24, 0);
+  foreach (array('field_rose_1', 'field_rose_2', 'field_rose_3') as $rose_field) {
+    $node->{$rose_field}[LANGUAGE_NONE][0] = $empty_rose;
+  }
+
+  node_save($node);
+  return $node;
+}
+
+/**
+ * Creates one demo node of a given content type.
+ *
+ * @param string $type
+ *   Node type machine name.
+ * @param array $values
+ *   Field values keyed by field name (or 'title'). Each non-title value is
+ *   assigned as-is to $node->{field}[LANGUAGE_NONE][0], so pass the exact
+ *   shape that field type expects (e.g. array('value' => ...) for a text
+ *   field, array('tid' => ...) for a term reference, array('geom' => ...)
+ *   for a geofield).
+ *
+ * @return Node
+ *   The saved node.
+ */
+function avalanche_center_demo_node($type, array $values) {
+  $node = entity_create('node', array('type' => $type));
+  node_object_prepare($node);
+  $node->language = LANGUAGE_NONE;
+  $node->status = 1;
+  $node->promote = 0;
+  $node->uid = 1;
+  $node->title = $values['title'];
+  unset($values['title']);
+
+  foreach ($values as $field => $value) {
+    $node->{$field}[LANGUAGE_NONE][0] = $value;
+  }
+
+  node_save($node);
+  return $node;
+}
+
+/**
+ * Creates a reference "page" node from a shipped HTML content file, at a
+ * fixed URL alias.
+ *
+ * Used for the generic avalanche-education pages (how to read a forecast,
+ * the danger scale, avalanche problems) whose bodies live in this profile's
+ * content/ directory. A fixed alias is forced (replacing pathauto's
+ * auto-generated one) so the Advisory-dropdown links to these pages resolve
+ * on every install regardless of node ID.
+ *
+ * @param string $title
+ *   Page title.
+ * @param string $alias
+ *   The URL alias to force (e.g. 'avalanche-problems').
+ * @param string $filename
+ *   Filename within profiles/avalanche_center/content/.
+ *
+ * @return Node
+ *   The saved node.
+ */
+function avalanche_center_demo_reference_page($title, $alias, $filename) {
+  $dir = backdrop_get_path('profile', 'avalanche_center') . '/content/';
+
+  // Reference-page bodies are raw HTML loaded verbatim (not run through t()),
+  // so on a non-English install prefer a language-matched translation of the
+  // body - e.g. avalanche-problems.es.html for a Spanish install - falling
+  // back to the English file when no translation is shipped.
+  $file = $dir . $filename;
+  $langcode = config_get('system.core', 'language_default');
+  if (!empty($langcode) && $langcode !== 'en') {
+    $localized = $dir . preg_replace('/\.html$/', '.' . $langcode . '.html', $filename);
+    if (file_exists($localized)) {
+      $file = $localized;
+    }
+  }
+
+  $body = file_exists($file) ? file_get_contents($file) : '';
+
+  $node = avalanche_center_demo_node('page', array(
+    'title' => $title,
+    'body' => array('value' => $body, 'format' => 'full_html'),
+  ));
+
+  // Force our own alias: node_save() above already let pathauto assign one
+  // (basic-page/<title>), so clear any existing alias for this node before
+  // saving the fixed one the menu links depend on.
+  path_delete(array('source' => 'node/' . $node->nid));
+  $path = array('source' => 'node/' . $node->nid, 'alias' => $alias);
+  path_save($path);
+
+  return $node;
+}
+
+/**
+ * Builds the placeholder Donate-page body.
+ *
+ * Deliberately example content, not a finished page: a center drops its own
+ * donation button/embed into the "Donate Online" box and replaces the
+ * bracketed [tokens] with its real address, tax ID, etc. The prose and the
+ * "Other Ways to Give" categories are genericized from the Gulmarg
+ * (/donate-old) and Argentina (/donate) reference pages - no center-specific
+ * names, addresses, tax IDs, or memorial funds carried over. Rendered with
+ * the full_html format so a pasted payment-provider embed works.
+ *
+ * @return string
+ *   HTML for the node body.
+ */
+function avalanche_center_demo_donate_body() {
+  $intro = t('This is a placeholder Donate page. Replace the example text below with your own donation information, and drop your real donation button or embed into the "Donate Online" box.');
+  $support_h = t('Support the Avalanche Center');
+  $support_p = t('Our avalanche center is a nonprofit organization. We rely on donations, memberships, and fundraising to keep producing daily avalanche forecasts, observations, and education for our community. Please consider making a tax-deductible gift - every contribution helps keep this service free for everyone who travels in avalanche terrain.');
+  $online_h = t('Donate Online');
+  $online_box = t('Add your donation button or embed here.');
+  $online_hint = t('Paste the embed code from your payment provider (PayPal, Stripe, Donorbox, Fundly, GoFundMe, etc.) in place of this box - for example a PayPal "Donate" button, or a simple link like the one below.');
+  $online_link = t('Donate with PayPal');
+  $other_h = t('Other Ways to Give');
+  $mail_h = t('By Mail');
+  $mail_p = t('Prefer to mail a check? Send donations to:');
+  $corp_h = t('Corporate Giving &amp; Sponsorship');
+  $corp_p = t('We rely on the generous support of individuals, corporate partners, resorts, and foundations who share our vision. Corporate contributions and sponsorships directly support our forecasting and education programs. See our current sponsors or contact us to discuss partnership opportunities.');
+  $endow_h = t('Endowment Fund');
+  $endow_p = t('An endowment fund helps ensure the long-term sustainability of avalanche forecasting and awareness in our region. Contact us to learn how you can contribute.');
+  $memorial_h = t('Memorial &amp; Tribute Gifts');
+  $memorial_p = t('Honor a friend, family member, or fellow backcountry traveler with a memorial or tribute gift supporting avalanche awareness and education.');
+  $planned_h = t('Planned Giving');
+  $planned_p = t('Have you thought of including the avalanche center in your estate planning? By naming a nonprofit as a beneficiary of your will or life insurance, you can leave behind a lasting legacy of avalanche safety. Talk to your estate-planning professional for details.');
+  $tax_h = t('Tax Information');
+  $tax_p = t('We are a 501(c)(3) nonprofit organization and donations are tax-deductible to the extent allowed by law. Our tax ID (EIN) is <strong>[your EIN here]</strong>. Recognition on our website is available for individual and corporate donors - email us for details.');
+  $thanks = t('Thank you for your support - we cannot operate without you!');
+
+  return <<<HTML
+<p><em>$intro</em></p>
+
+<h2>$support_h</h2>
+<p>$support_p</p>
+
+<h2>$online_h</h2>
+<div style="border:2px dashed #999; padding:1.5em; text-align:center; background:#f7f7f7;">
+  <p><strong>$online_box</strong></p>
+  <p>$online_hint</p>
+  <p><a href="https://www.paypal.com/donate" target="_blank" rel="noopener">$online_link</a></p>
+</div>
+
+<h2>$other_h</h2>
+
+<h3>$mail_h</h3>
+<p>$mail_p<br />
+[Your Avalanche Center]<br />
+[Street Address]<br />
+[City, State ZIP]</p>
+
+<h3>$corp_h</h3>
+<p>$corp_p</p>
+
+<h3>$endow_h</h3>
+<p>$endow_p</p>
+
+<h3>$memorial_h</h3>
+<p>$memorial_p</p>
+
+<h3>$planned_h</h3>
+<p>$planned_p</p>
+
+<h2>$tax_h</h2>
+<p>$tax_p</p>
+
+<p><em>$thanks</em></p>
+HTML;
+}
+
+/**
+ * Creates a set of taxonomy terms in a vocabulary, keyed by name.
+ *
+ * @param string $vocabulary
+ *   Vocabulary machine name.
+ * @param array $names
+ *   Term names to create.
+ *
+ * @return array
+ *   Map of name => new tid.
+ */
+function avalanche_center_demo_terms($vocabulary, array $names) {
+  $tids = array();
+  foreach ($names as $name) {
+    $term = entity_create('taxonomy_term', array('vocabulary' => $vocabulary));
+    $term->name = $name;
+    taxonomy_term_save($term);
+    $tids[$name] = $term->tid;
+  }
+  return $tids;
+}
+
+/**
+ * Imports the Avalanche Terms glossary from the shipped JSON data file.
+ *
+ * Creates one taxonomy term per entry in content/avalanche-terms.json, in the
+ * "avalanche_terms" vocabulary, with its definition (HTML, full_html format)
+ * and any synonyms (field_synonyms). These feed both the glossary page and
+ * the "Mark glossary terms" content filter.
+ */
+function avalanche_center_import_avalanche_terms() {
+  $file = backdrop_get_path('profile', 'avalanche_center') . '/content/avalanche-terms.json';
+  if (!file_exists($file)) {
+    return;
+  }
+  $entries = json_decode(file_get_contents($file), TRUE);
+  if (!is_array($entries)) {
+    return;
+  }
+
+  foreach ($entries as $entry) {
+    if (empty($entry['name'])) {
+      continue;
+    }
+    $term = entity_create('taxonomy_term', array('vocabulary' => 'avalanche_terms'));
+    $term->name = $entry['name'];
+    // Strip any trailing whitespace or leftover \r\n escape sequences so the
+    // rendered definition doesn't end with a stray blank line.
+    $description = isset($entry['description']) ? $entry['description'] : '';
+    $term->description = preg_replace('/(\\\\r|\\\\n|\s)+$/', '', $description);
+    $term->format = 'full_html';
+    if (!empty($entry['synonyms']) && is_array($entry['synonyms'])) {
+      $delta = 0;
+      foreach ($entry['synonyms'] as $synonym) {
+        $synonym = trim($synonym);
+        if ($synonym === '') {
+          continue;
+        }
+        $term->field_synonyms[LANGUAGE_NONE][$delta]['value'] = $synonym;
+        $delta++;
+      }
+    }
+    taxonomy_term_save($term);
+  }
+}
+
+/**
+ * Imports the hierarchical Conditions Alerts vocabulary from the shipped
+ * content/conditions-alerts.json file.
+ *
+ * Each top-level entry becomes a term in the "conditions_alerts" vocabulary;
+ * its "children" become child terms (parent set to the top-level term), so
+ * the observation form's multi-select "Conditions Alerts" field shows the
+ * same grouped hierarchy as the reference site. Order is preserved as term
+ * weight. Duplicate child names under different parents (e.g. "Rain on Snow"
+ * appears under two groups) are created as distinct terms, matching the
+ * source.
+ */
+function avalanche_center_import_conditions_alerts() {
+  $file = backdrop_get_path('profile', 'avalanche_center') . '/content/conditions-alerts.json';
+  if (!file_exists($file)) {
+    return;
+  }
+  $entries = json_decode(file_get_contents($file), TRUE);
+  if (!is_array($entries)) {
+    return;
+  }
+
+  $weight = 0;
+  foreach ($entries as $entry) {
+    if (empty($entry['name'])) {
+      continue;
+    }
+    $parent = entity_create('taxonomy_term', array('vocabulary' => 'conditions_alerts'));
+    $parent->name = $entry['name'];
+    // parent must be an array - taxonomy's postSave() iterates over it.
+    $parent->parent = array(0);
+    $parent->weight = $weight++;
+    taxonomy_term_save($parent);
+
+    if (!empty($entry['children']) && is_array($entry['children'])) {
+      $child_weight = 0;
+      foreach ($entry['children'] as $child_name) {
+        $child_name = trim($child_name);
+        if ($child_name === '') {
+          continue;
+        }
+        $child = entity_create('taxonomy_term', array('vocabulary' => 'conditions_alerts'));
+        $child->name = $child_name;
+        $child->parent = array($parent->tid);
+        $child->weight = $child_weight++;
+        taxonomy_term_save($child);
+      }
+    }
+  }
+}
+
+/**
+ * Patches a shipped view's taxonomy-term filter to a real tid.
+ *
+ * ski_days/snowmobile_classes (profiles/avalanche_center/config/) were
+ * copied from Gulmarg's own exported config with their term-ID filter
+ * values intact - meaningless on any other install, since taxonomy term
+ * IDs are assigned per-database at creation time, not portable structural
+ * data. Same force-apply pattern as avalanche_center_force_apply_config(),
+ * but editing one nested filter value instead of replacing the whole file.
+ *
+ * @param string $view_name
+ *   View machine name (e.g. 'ski_days').
+ * @param string $display
+ *   The display whose filter to patch (e.g. 'default', 'block_1').
+ * @param string $filter_id
+ *   The filter's key in that display's display_options.filters (e.g.
+ *   'field_page_category_tid').
+ * @param array $tids
+ *   The real term IDs to filter on.
+ */
+function avalanche_center_patch_view_term_filter($view_name, $display, $filter_id, array $tids) {
+  $config = config('views.view.' . $view_name);
+  $path = "display.$display.display_options.filters.$filter_id.value";
+  $config->set($path, array_map('strval', $tids));
+  $config->save();
+}
+
+/**
+ * Creates the main/footer/secondary menu links a fresh install otherwise
+ * has none of - menu links are database content in Backdrop, not config,
+ * so profiles/avalanche_center/config/'s menu.menu.*.json files only ship
+ * the empty menu containers. Structure (which menus, how many levels)
+ * mirrors Gulmarg/Argentina's actual live main-menu/footer/about/archives/
+ * contact menus; labels and destinations are generic, pointing at this
+ * distribution's own real paths and the demo pages created above - not
+ * copied verbatim from either site's site-specific link text/URLs.
+ *
+ * @param int $about_nid
+ *   The demo "About Us" page node ID.
+ * @param int $donate_nid
+ *   The demo "Donate" page node ID.
+ * @param int $contact_nid
+ *   The demo "Contact Us" page node ID.
+ * @param int $faq_nid
+ *   The demo "Frequently Asked Questions" page node ID.
+ */
+function avalanche_center_demo_menu_links($about_nid, $donate_nid, $contact_nid, $faq_nid) {
+  // Main menu - mirrors Gulmarg's live main-menu structure (top-level items
+  // and their nesting), pointed at this distribution's own generic paths.
+  // Gulmarg's own submenu groups are Observations (-> Submit Observations
+  // -> Submit Professional Observations, three levels deep), Education, and
+  // Event Calendar. The calendar's Month/Week/Day/Year children need the
+  // contrib "calendar" module (which neither reference site actually
+  // ships), so Events points at the working events list instead of dead
+  // calendar-style sub-pages. Site-specific Gulmarg items with no generic
+  // equivalent (the two "rescue grid map" children, the external Fundly
+  // donate link) are dropped.
+  avalanche_center_demo_menu_link('main-menu', t('Home'), '<front>', -10);
+
+  $advisory_mlid = avalanche_center_demo_menu_link('main-menu', t('Forecast'), 'forecast', -9);
+
+  $obs_mlid = avalanche_center_demo_menu_link('main-menu', t('Observations'), 'observations', -8);
+  $submit_mlid = avalanche_center_demo_menu_link('main-menu', t('Submit Observations'), 'node/add/observation', 0, $obs_mlid);
+  avalanche_center_demo_menu_link('main-menu', t('Submit Professional Observations'), 'node/add/observation', 0, $submit_mlid);
+
+  $incidents_mlid = avalanche_center_demo_menu_link('main-menu', t('Incidents'), 'incidents', -7);
+
+  $edu_mlid = avalanche_center_demo_menu_link('main-menu', t('Education'), 'education', -6);
+  avalanche_center_demo_menu_link('main-menu', t('Avalanche Terms'), 'avalanche-terms', 0, $edu_mlid);
+  avalanche_center_demo_menu_link('main-menu', t('Know Before You Go'), 'https://kbyg.org/', 1, $edu_mlid);
+
+  avalanche_center_demo_menu_link('main-menu', t('Events'), 'events', -5);
+  avalanche_center_demo_menu_link('main-menu', t('Sponsors'), 'sponsors-list', -4);
+  avalanche_center_demo_menu_link('main-menu', t('About Us'), 'node/' . $about_nid, -3);
+  $donate_mlid = avalanche_center_demo_menu_link('main-menu', t('Donate'), 'node/' . $donate_nid, -2);
+
+  // Build the TB Mega Menu dropdowns, matching Gulmarg's live tb_megamenus
+  // layout: Advisory/Observations/Incidents each open a 2-column dropdown of
+  // custom link blocks; Education opens a normal child-item dropdown (left
+  // to tb_megamenu's own sync). The Donate item gets the "donate-menu" CSS
+  // class so the theme paints it in the accent color, as on both reference
+  // sites. See avalanche_center_build_megamenu().
+  avalanche_center_build_megamenu(array(
+    'advisory' => $advisory_mlid,
+    'observations' => $obs_mlid,
+    'incidents' => $incidents_mlid,
+    'donate' => $donate_mlid,
+  ));
+
+  avalanche_center_demo_menu_link('menu-doormat-menu', t('Observations'), 'observations', -50);
+  avalanche_center_demo_menu_link('menu-doormat-menu', t('Avalanche Terms'), 'avalanche-terms', -49);
+  avalanche_center_demo_menu_link('menu-doormat-menu', t('Events'), 'events', -48);
+  avalanche_center_demo_menu_link('menu-doormat-menu', t('RSS Feed'), 'rss.xml', -47);
+  avalanche_center_demo_menu_link('menu-doormat-menu', t('Email Subscriptions'), 'newsletter/subscriptions', -46);
+
+  avalanche_center_demo_menu_link('menu-about', t('News and Announcements'), 'news', -10);
+  avalanche_center_demo_menu_link('menu-about', t('About Us'), 'node/' . $about_nid, -9);
+  avalanche_center_demo_menu_link('menu-about', t('Contact Us'), 'node/' . $contact_nid, -8);
+
+  avalanche_center_demo_menu_link('menu-archives', t('Forecasters'), 'forecasters', -10);
+  avalanche_center_demo_menu_link('menu-archives', t('Board of Directors'), 'board', -9);
+  avalanche_center_demo_menu_link('menu-archives', t('Non Profit Staff'), 'non-profit-staff', -8);
+
+  avalanche_center_demo_menu_link('menu-contact', t('Frequently Asked Questions'), 'node/' . $faq_nid, -50);
+
+  avalanche_center_demo_menu_link('menu-responsive-links', t('Forecast'), 'forecast', 1);
+  avalanche_center_demo_menu_link('menu-responsive-links', t('Observations'), 'observations', 2);
+  avalanche_center_demo_menu_link('menu-responsive-links', t('Donate'), 'node/' . $donate_nid, 3);
+}
+
+/**
+ * Saves one menu link.
+ *
+ * @param string $menu_name
+ *   Menu machine name.
+ * @param string $title
+ *   Link title.
+ * @param string $path
+ *   Internal path (or an external URL, or '<front>').
+ * @param int $weight
+ *   Sort weight.
+ * @param int $plid
+ *   Parent mlid, or 0 for a top-level link.
+ *
+ * @return int
+ *   The new link's mlid.
+ */
+function avalanche_center_demo_menu_link($menu_name, $title, $path, $weight = 0, $plid = 0) {
+  $link = array(
+    'menu_name' => $menu_name,
+    'link_title' => $title,
+    'link_path' => $path,
+    'weight' => $weight,
+    'plid' => $plid,
+    // customized = 1 marks the link as human-created ("don't touch"). Without
+    // it, menu_rebuild()'s _menu_navigation_links_rebuild() cleanup pass
+    // deletes any link with customized = 0 whose router path isn't a
+    // currently-registered *visible* menu router item - which silently wiped
+    // most of these demo links on the first attempt, since view-page and
+    // module paths aren't always registered as visible at the moment the
+    // post-install cache flush rebuilds the menu. This is the same flag the
+    // menu admin UI sets on every link a person adds by hand.
+    'customized' => 1,
+  );
+  menu_link_save($link);
+  return isset($link['mlid']) ? $link['mlid'] : 0;
+}
+
+/**
+ * Writes the TB Mega Menu configuration for the main menu.
+ *
+ * tb_megamenu stores its per-menu layout in the tb_megamenus DB table (not
+ * config), keyed by menu_name+language, as two JSON blobs: block_config
+ * (animation/behaviour) and menu_config (per-top-level-item column layout,
+ * keyed by mlid). Reproduces Gulmarg's live mega-menu: Advisory,
+ * Observations, and Incidents each open a 2-column dropdown of custom link
+ * blocks (block.custom.2/4/5/6/7, shipped in this profile's config), with
+ * the same column widths, submenu width, animation, and item styling.
+ * Education and the rest are left out of menu_config so tb_megamenu's own
+ * sync renders them as ordinary child-item dropdowns.
+ *
+ * The mlid keys can't be shipped as static config (mlids are assigned per
+ * database when the links are created), so this runs at install time with
+ * the real mlids captured in avalanche_center_demo_menu_links().
+ *
+ * @param array $mlids
+ *   Map with 'advisory', 'observations', 'incidents' => top-level mlid.
+ */
+function avalanche_center_build_megamenu($mlids) {
+  // Behaviour block - copied verbatim from Gulmarg's tb_megamenus row.
+  $block_config = array(
+    'animation' => 'none',
+    'duration' => 400,
+    'delay' => 200,
+    'style' => '',
+    'auto-arrow' => '1',
+    'always-show-submenu' => '0',
+  );
+
+  // Shared styling for every configured top-level item, matching Gulmarg.
+  $item_config = array(
+    'class' => '', 'xicon' => '', 'caption' => '', 'alignsub' => 'left',
+    'group' => '0', 'hidewcol' => '0', 'hidesub' => '0',
+  );
+  $submenu_config = array('width' => '500', 'class' => '', 'group' => '0');
+
+  // Helper: one column holding a single block, by full "module--delta" key.
+  $block_col = function ($block_key, $width) {
+    return array(
+      'col_content' => array(array(
+        'block_key' => $block_key,
+        'type' => 'block',
+        'tb_item_config' => array(),
+      )),
+      'col_config' => array(
+        'width' => (string) $width, 'class' => '', 'hidewcol' => '', 'showblocktitle' => '1',
+      ),
+    );
+  };
+
+  // Advisory: 2 cols (6/6) - the zone-aware Forecast Links block (a module
+  //   block, not a static custom block, so its links change with the number
+  //   of forecast zones - see avalanche_danger_map_advisory_links()) |
+  //   Forecast Resources (block.custom.4).
+  // Observations: 2 cols (7/5) - Observations | Submit Observations.
+  // Incidents: 2 cols (6/6) - Incidents | Submit Observations.
+  $menu_config = array(
+    (string) $mlids['advisory'] => array(
+      'rows_content' => array(array(
+        $block_col('avalanche_danger_map--advisory_links', 6),
+        $block_col('block--4', 6),
+      )),
+      'submenu_config' => $submenu_config,
+      'item_config' => $item_config,
+    ),
+    (string) $mlids['observations'] => array(
+      'rows_content' => array(array($block_col('block--5', 7), $block_col('block--7', 5))),
+      'submenu_config' => $submenu_config,
+      'item_config' => $item_config,
+    ),
+    (string) $mlids['incidents'] => array(
+      'rows_content' => array(array($block_col('block--6', 6), $block_col('block--7', 6))),
+      'submenu_config' => $submenu_config,
+      'item_config' => $item_config,
+    ),
+    // Donate: no dropdown, just tag the <li> with "donate-menu" so the theme
+    // paints it in the accent color (tb_megamenu copies item_config.class
+    // onto the rendered <li>). Both reference sites highlight Donate this way.
+    (string) $mlids['donate'] => array(
+      'rows_content' => array(),
+      'submenu_config' => array('width' => '', 'class' => '', 'group' => '0'),
+      'item_config' => array('class' => 'donate-menu') + $item_config,
+    ),
+  );
+
+  // tb_megamenu stores (and looks up) its config per language: at render time
+  // it reads the row for the current interface language and, if missing,
+  // auto-syncs a blank default - which drops the dropdowns and the Donate
+  // highlight. Key the row to the site's default language so a Spanish install
+  // (es) finds it, not just an English one. (Interface negotiation is pinned
+  // to language-default, so the render language equals this.)
+  $langcode = config_get('system.core', 'language_default');
+  if (empty($langcode)) {
+    $langcode = 'en';
+  }
+  db_merge('tb_megamenus')
+    ->key(array('menu_name' => 'main-menu', 'language' => $langcode))
+    ->fields(array(
+      'block_config' => json_encode($block_config),
+      'menu_config' => json_encode($menu_config),
+    ))
+    ->execute();
+}

@@ -1,0 +1,8 @@
+type = module
+name = Avalanche Forecast Tool
+description = A guided, optional wizard that walks forecasters through the CMAH/NAPADS process (avalanche problems, likelihood via the Statham Fig 2 matrix, size, hazard chart, and a suggested danger rating) then pre-fills the advisory form. Promotes consistent ratings across regions and forecasters.
+package = Avalanche Center
+backdrop = 1.x
+configure = admin/config/system/avalanche-forecast-tool
+
+dependencies[] = node

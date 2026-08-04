@@ -1,0 +1,129 @@
+name = Avalanche Center
+description = Installable distribution for avalanche forecast center websites (danger maps, observations, advisories, glossary).
+type = profile
+backdrop = 1.x
+
+; --- Core module dependencies ---
+; Cross-checked against system.extensions.json (both sites) during Phase 5 -
+; that file mirrors the DB-stored enabled/disabled state, unlike the rest of
+; config. Confirmed: Commerce, registration, gmap_polygon_field, emfield,
+; hs_taxonomy, media, select_or_other, and term_reference_tree are all
+; disabled on both sites (their config is dead cruft, excluded - see plan
+; §16/§18); "email" is enabled on both sites but its module code isn't
+; present in either reference codebase - needs sourcing from
+; backdropcms.org before first install (field_email on the observation type
+; depends on it structurally, not just optionally).
+dependencies[] = node
+dependencies[] = field
+dependencies[] = field_ui
+dependencies[] = image
+dependencies[] = taxonomy
+dependencies[] = path
+; language + locale are enabled for every install so that source strings are
+; registered from the start; the "Center setup" task only imports the bundled
+; Spanish .po and switches the default language when Spanish is chosen.
+dependencies[] = language
+dependencies[] = locale
+dependencies[] = views
+dependencies[] = views_ui
+dependencies[] = block
+dependencies[] = menu
+dependencies[] = comment
+dependencies[] = date
+dependencies[] = link
+dependencies[] = list
+dependencies[] = number
+dependencies[] = options
+dependencies[] = file
+dependencies[] = config
+; Missed by the Phase 5 system.extensions.json cross-check above (it's
+; enabled on both sites but has no content-model footprint of its own) -
+; caught by Phase 7's greenfield install: avalanche_modern's template.php
+; calls backdrop_get_form('search_form') unconditionally in the header.
+dependencies[] = search
+; Found by directly diffing Gulmarg's live enabled-module list (system table)
+; against this file during a demo-site parity pass - all core, already
+; vendored since we ship full Backdrop core, just never declared:
+dependencies[] = admin_bar
+dependencies[] = ckeditor5
+dependencies[] = color
+dependencies[] = contextual
+dependencies[] = dashboard
+dependencies[] = dblog
+dependencies[] = entityreference
+
+; --- Contrib modules (verified identical across Gulmarg + Argentina, see
+; AVALANCHE_CENTER_DISTRIBUTION_PLAN.md §2) ---
+dependencies[] = addressfield
+dependencies[] = auto_nodetitle
+dependencies[] = backup_migrate
+dependencies[] = colorbox
+dependencies[] = conditional_fields
+dependencies[] = css_injector
+; Enabled on both reference sites (system.extensions.json), but its module
+; code isn't present in either codebase - source from backdropcms.org.
+; field_email (observation) depends on it.
+dependencies[] = email
+dependencies[] = elysia_cron
+dependencies[] = entity_plus
+dependencies[] = entity_token
+dependencies[] = entity_ui
+dependencies[] = field_collection
+dependencies[] = field_group
+dependencies[] = field_permissions
+dependencies[] = select_or_other
+dependencies[] = twilio
+dependencies[] = avalanche_fwp
+dependencies[] = geocoder
+dependencies[] = geofield
+; geofield_map is a submodule shipped inside geofield/modules/ - already
+; vendored, just never declared (found via the same live-module diff above).
+dependencies[] = geofield_map
+dependencies[] = geolocation
+dependencies[] = imce
+dependencies[] = job_scheduler
+dependencies[] = leaflet
+dependencies[] = leaflet_widget
+; leaflet_views/leaflet_more_maps are submodules shipped inside
+; leaflet/modules/ - already vendored, just never declared.
+dependencies[] = leaflet_views
+dependencies[] = leaflet_more_maps
+dependencies[] = metatag
+; The submodules that actually output og:/twitter: meta tags into <head> -
+; metatag alone doesn't render anything without them. Already vendored
+; inside metatag/, just never declared.
+dependencies[] = metatag_facebook
+dependencies[] = metatag_opengraph
+dependencies[] = metatag_twitter_cards
+dependencies[] = metatag_views
+dependencies[] = node_clone
+dependencies[] = pathauto
+dependencies[] = rules
+; rules_admin/rules_scheduler are submodules shipped inside rules/ - already
+; vendored, just never declared.
+dependencies[] = rules_admin
+dependencies[] = rules_scheduler
+dependencies[] = scheduler
+dependencies[] = seo_meta
+dependencies[] = simplenews
+dependencies[] = tb_megamenu
+dependencies[] = token_custom
+dependencies[] = token_filter
+dependencies[] = views_bulk_operations
+; actions_permissions is a submodule shipped inside views_bulk_operations/
+; modules/ - already vendored, just never declared.
+dependencies[] = actions_permissions
+dependencies[] = youtube
+
+; --- Custom modules ---
+dependencies[] = danger_rose
+dependencies[] = avalanche_danger_map
+dependencies[] = avalanche_glossary
+dependencies[] = avalanche_social_meta
+dependencies[] = avalanche_forecast_tool
+dependencies[] = avalanche_center_update
+
+; --- Themes ---
+themes[] = avalanche_modern
+themes[] = responsive_sac
+themes[] = responsive_bartik

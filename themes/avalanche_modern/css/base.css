@@ -1,0 +1,89 @@
+/**
+ * Avalanche Center Modern - design system / base
+ */
+
+:root {
+  /* Brand */
+  --am-bg: #f4f6f8;
+  --am-surface: #ffffff;
+  --am-ink: #1b2733;
+  --am-ink-soft: #51606e;
+  --am-muted: #8a97a3;
+  --am-line: #e3e8ee;
+  --am-primary: #0b5fa5;
+  --am-primary-dark: #084a82;
+  --am-accent: #ce4141;
+  --am-dark: #16202b;
+  --am-dark-2: #1f2c39;
+
+  /* North American danger scale */
+  --am-danger-0: #bdc3c7;
+  --am-danger-1: #50b849;
+  --am-danger-2: #fff200;
+  --am-danger-3: #f7941d;
+  --am-danger-4: #ed1c24;
+  --am-danger-5: #231f20;
+
+  /* Type */
+  --am-font-head: 'Barlow Semi Condensed', 'Arial Narrow', sans-serif;
+  --am-font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  /* Spacing / radius / shadow */
+  --am-radius: 12px;
+  --am-radius-sm: 8px;
+  --am-shadow: 0 1px 3px rgba(16, 32, 48, 0.08), 0 6px 24px rgba(16, 32, 48, 0.06);
+  --am-shadow-sm: 0 1px 2px rgba(16, 32, 48, 0.10);
+  --am-maxw: 1180px;
+}
+
+html body {
+  background: var(--am-bg);
+  color: var(--am-ink);
+  font-family: var(--am-font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--am-font-head);
+  color: var(--am-ink);
+  line-height: 1.15;
+  letter-spacing: 0.2px;
+  margin: 0 0 0.5em;
+  font-weight: 600;
+}
+h1 { font-size: 2.1rem; }
+h2 { font-size: 1.6rem; }
+h3 { font-size: 1.25rem; }
+
+p { margin: 0 0 1rem; }
+
+a { color: var(--am-primary); text-decoration: none; }
+a:hover { color: var(--am-primary-dark); text-decoration: underline; }
+
+img { max-width: 100%; height: auto; }
+
+.am-container {
+  max-width: var(--am-maxw);
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* Danger color utility backgrounds */
+.am-d0 { background: var(--am-danger-0); color: #1b2733; }
+.am-d1 { background: var(--am-danger-1); color: #0d2a0d; }
+.am-d2 { background: var(--am-danger-2); color: #4a4400; }
+.am-d3 { background: var(--am-danger-3); color: #4a2c00; }
+.am-d4 { background: var(--am-danger-4); color: #fff; }
+.am-d5 { background: var(--am-danger-5); color: #fff; }
+
+/* Visually-hidden */
+.am-visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  overflow: hidden; clip: rect(1px,1px,1px,1px);
+  white-space: nowrap;
+}

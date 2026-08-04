@@ -1,0 +1,217 @@
+<?php
+/**
+ * @file
+ * Avalanche Center Update Check.
+ *
+ * Surfaces a warning on the Status report (admin/reports/status) when a newer
+ * TAGGED RELEASE of the Avalanche Center template is available upstream, for
+ * sites deployed as a git checkout of the template repo (the recommended
+ * production model — you `git pull` to update). See the README.
+ *
+ * How it decides: the newest release tag present in the server's local git
+ * checkout vs. the newest tag on the remote. When you `git pull`, the fetched
+ * tags catch the local copy up and the warning clears. The remote check runs on
+ * cron and is cached, so the Status report itself makes no network call.
+ *
+ * Configuration (settings.php):
+ *   $settings['avalanche_center_github_token'] = 'github_pat_...'; // read-only; the repo is private
+ *   $settings['avalanche_center_repo']         = 'andyanderso/avalanche-center-template'; // default
+ *   // Optional overrides:
+ *   $settings['avalanche_center_repo_root']    = '/var/www/your-site'; // where .git lives, if auto-detect fails
+ *   $settings['avalanche_center_update_url']   = 'https://.../version.json'; // a public marker instead of the GitHub API
+ */
+
+define('AVALANCHE_CENTER_UPDATE_STATE', 'avalanche_center_update:remote');
+
+/**
+ * The default repository (owner/name) the template is published under.
+ */
+function avalanche_center_update_repo() {
+  return settings_get('avalanche_center_repo', 'andyanderso/avalanche-center-template');
+}
+
+/**
+ * Locates the git checkout root (the directory containing .git). Walks up from
+ * this module's own path — which works when the distribution IS the git
+ * checkout — or uses an explicit settings override.
+ */
+function avalanche_center_update_repo_root() {
+  $override = settings_get('avalanche_center_repo_root', '');
+  if ($override) {
+    return is_dir($override . '/.git') ? $override : NULL;
+  }
+  $dir = __DIR__;
+  for ($i = 0; $i < 8; $i++) {
+    if (is_dir($dir . '/.git')) {
+      return $dir;
+    }
+    $parent = dirname($dir);
+    if ($parent === $dir) {
+      break;
+    }
+    $dir = $parent;
+  }
+  return NULL;
+}
+
+/**
+ * Returns the highest (newest) version-like tag from a list, or NULL.
+ */
+function avalanche_center_update_highest(array $tags) {
+  $best = NULL;
+  foreach ($tags as $t) {
+    $t = trim($t);
+    if ($t === '') {
+      continue;
+    }
+    if ($best === NULL || version_compare(ltrim($t, 'vV'), ltrim($best, 'vV'), '>')) {
+      $best = $t;
+    }
+  }
+  return $best;
+}
+
+/**
+ * The newest release tag present in the local git checkout (loose + packed
+ * refs), read from the filesystem — no shell/exec needed. NULL if not a git
+ * checkout or no tags exist.
+ */
+function avalanche_center_update_local_tag() {
+  $root = avalanche_center_update_repo_root();
+  if (!$root) {
+    return NULL;
+  }
+  $tags = array();
+  $loose = $root . '/.git/refs/tags';
+  if (is_dir($loose)) {
+    foreach (scandir($loose) as $f) {
+      if ($f !== '.' && $f !== '..') {
+        $tags[] = $f;
+      }
+    }
+  }
+  $packed = $root . '/.git/packed-refs';
+  if (is_file($packed)) {
+    foreach (file($packed) as $line) {
+      if (preg_match('#\brefs/tags/(\S+)#', $line, $m)) {
+        $tags[] = $m[1];
+      }
+    }
+  }
+  return $tags ? avalanche_center_update_highest($tags) : NULL;
+}
+
+/**
+ * Fetches the newest release tag from upstream. Uses a public "version marker"
+ * URL when configured, otherwise the GitHub tags API (with the read-only token,
+ * since the repo is private). Returns NULL on any failure.
+ */
+function avalanche_center_update_fetch_remote() {
+  $url = settings_get('avalanche_center_update_url', '');
+  if ($url) {
+    $resp = backdrop_http_request($url);
+    if (isset($resp->code) && $resp->code == 200 && !empty($resp->data)) {
+      $data = json_decode($resp->data, TRUE);
+      if (is_array($data)) {
+        if (isset($data['version'])) {
+          return $data['version'];
+        }
+        // Or a list of tag objects/strings.
+        $names = array();
+        foreach ($data as $t) {
+          if (is_string($t)) {
+            $names[] = $t;
+          }
+          elseif (isset($t['name'])) {
+            $names[] = $t['name'];
+          }
+        }
+        return $names ? avalanche_center_update_highest($names) : NULL;
+      }
+    }
+    return NULL;
+  }
+
+  $token = settings_get('avalanche_center_github_token', '');
+  $headers = array(
+    'User-Agent' => 'avalanche-center-update-check',
+    'Accept' => 'application/vnd.github+json',
+  );
+  if ($token) {
+    $headers['Authorization'] = 'token ' . $token;
+  }
+  $api = 'https://api.github.com/repos/' . avalanche_center_update_repo() . '/tags?per_page=100';
+  $resp = backdrop_http_request($api, array('headers' => $headers, 'timeout' => 15));
+  if (!isset($resp->code) || $resp->code != 200 || empty($resp->data)) {
+    return NULL;
+  }
+  $tags = json_decode($resp->data, TRUE);
+  $names = array();
+  foreach ((array) $tags as $t) {
+    if (isset($t['name'])) {
+      $names[] = $t['name'];
+    }
+  }
+  return $names ? avalanche_center_update_highest($names) : NULL;
+}
+
+/**
+ * Implements hook_cron().
+ *
+ * Refreshes the cached upstream release tag (at most once per ~6 hours) so the
+ * Status report never has to make a network call itself.
+ */
+function avalanche_center_update_cron() {
+  $state = state_get(AVALANCHE_CENTER_UPDATE_STATE, array());
+  if (!empty($state['checked']) && (REQUEST_TIME - $state['checked']) < 21600) {
+    return;
+  }
+  $latest = avalanche_center_update_fetch_remote();
+  state_set(AVALANCHE_CENTER_UPDATE_STATE, array(
+    'latest' => $latest,
+    'checked' => REQUEST_TIME,
+  ));
+}
+
+/**
+ * Implements hook_requirements().
+ *
+ * Adds an "Avalanche Center template" row to the Status report.
+ */
+function avalanche_center_update_requirements($phase) {
+  if ($phase !== 'runtime') {
+    return array();
+  }
+  $req = array('title' => t('Avalanche Center template'));
+  $repo = avalanche_center_update_repo();
+  $releases_url = 'https://github.com/' . $repo . '/releases';
+
+  $local = avalanche_center_update_local_tag();
+  if ($local === NULL) {
+    $req['value'] = t('Not a git checkout');
+    $req['severity'] = REQUIREMENT_INFO;
+    $req['description'] = t('Update checking is unavailable because the distribution code is not a git checkout (or has no release tags yet). Deploy it as a <code>git clone</code> of the template repository and cut a tagged release to enable checks. See the project README.');
+    return array('avalanche_center_update' => $req);
+  }
+
+  $state = state_get(AVALANCHE_CENTER_UPDATE_STATE, array());
+  $latest = isset($state['latest']) ? $state['latest'] : NULL;
+
+  if ($latest === NULL) {
+    $req['value'] = t('Installed @v (upstream not checked yet)', array('@v' => $local));
+    $req['severity'] = REQUIREMENT_INFO;
+    $req['description'] = t('The upstream release has not been checked yet. Ensure cron runs, and configure a GitHub token (or a public version URL) in settings.php so the private repository can be read. See the project README.');
+    return array('avalanche_center_update' => $req);
+  }
+
+  if (version_compare(ltrim($latest, 'vV'), ltrim($local, 'vV'), '>')) {
+    $req['value'] = t('Update available: @latest (installed @local)', array('@latest' => $latest, '@local' => $local));
+    $req['severity'] = REQUIREMENT_WARNING;
+    $req['description'] = t('A newer template release (<strong>@latest</strong>) is available. Update the server with <code>git pull</code> in the distribution directory, then run <code>drush updatedb</code> and clear caches. <a href="@rel">Release notes</a>.', array('@latest' => $latest, '@rel' => $releases_url));
+  }
+  else {
+    $req['value'] = t('Up to date (@v)', array('@v' => $local));
+    $req['severity'] = REQUIREMENT_OK;
+  }
+  return array('avalanche_center_update' => $req);
+}

@@ -1,0 +1,5 @@
+name = Avalanche Center Update Check
+description = Flags on the Status report (and via Drush) when a newer tagged release of the Avalanche Center template is available upstream.
+type = module
+backdrop = 1.x
+version = 1.x-1.0

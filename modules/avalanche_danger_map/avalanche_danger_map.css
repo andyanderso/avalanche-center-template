@@ -1,0 +1,213 @@
+.avalanche-danger-map {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+.danger-map-legend {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0;
+  margin-top: 6px;
+  font-size: 0.82em;
+  text-decoration: none;
+  overflow: hidden;
+  border-radius: 4px;
+  border: 1px solid rgba(128,128,128,0.35);
+  width: 100%;
+}
+.danger-map-legend .legend-item {
+  flex: 1;
+  padding: 5px 4px;
+  font-weight: bold;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  box-shadow: inset -1px 0 0 rgba(128,128,128,0.35);
+}
+.danger-map-legend .legend-item:last-child {
+  box-shadow: none;
+}
+.danger-map-legend:hover .legend-item {
+  opacity: 0.85;
+}
+
+/* Map popup styles */
+.danger-map-popup h4 {
+  margin: 0 0 6px 0;
+  font-size: 1em;
+  font-weight: bold;
+}
+.danger-map-popup-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.danger-map-popup-icon {
+  flex: none;
+  height: 30px;
+  width: auto;
+}
+.danger-map-popup-rating {
+  flex: 1;
+  padding: 4px 8px;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+  border: 1px solid rgba(128,128,128,0.35);
+}
+.danger-map-popup-rating-level {
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 1.05em;
+}
+.danger-map-popup-rating-caption {
+  font-size: 0.8em;
+}
+.danger-map-popup-advice {
+  font-size: 0.9em;
+  line-height: 1.4;
+  margin-bottom: 8px;
+  color: #333;
+}
+.danger-map-popup-link {
+  margin-top: 6px;
+  text-align: right;
+}
+.danger-map-popup-link a {
+  font-size: 0.9em;
+  font-weight: bold;
+  color: #1a6496;
+  text-decoration: none;
+}
+.danger-map-popup-link a:hover {
+  text-decoration: underline;
+}
+
+/* Multi-zone advisory summary (/advisory when a center has >1 zone).
+   Mirrors the NAC / Bridger-Teton forecast card. */
+.am-advisory-summary {
+  display: grid;
+  /* Two cards side by side, spanning the page on wide screens. */
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 24px 0;
+}
+/* Stack to a single column once each card would be narrower than ~300px. */
+@media (max-width: 680px) {
+  .am-advisory-summary {
+    grid-template-columns: 1fr;
+  }
+}
+.am-advisory-card {
+  border: 1px solid #c4c9cd;
+  border-radius: 10px;
+  background: #fff;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+.am-advisory-card-stripe {
+  height: 7px;
+  width: 100%;
+  flex: 0 0 auto;
+}
+.am-advisory-card-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+.am-advisory-card-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #edf0f2;
+}
+.am-advisory-card-icon {
+  width: 72px;
+  height: 72px;
+  flex: 0 0 auto;
+  max-width: none;
+}
+.am-advisory-card-zone {
+  margin: 0 0 2px;
+  font-size: 1.5rem;
+  line-height: 1.1;
+  color: #515558;
+}
+.am-advisory-card-danger {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #6a6f73;
+  font-size: 0.9rem;
+}
+.am-advisory-card-meta {
+  display: flex;
+  flex-wrap: nowrap;
+  margin-bottom: 18px;
+}
+.am-advisory-card-meta-item {
+  padding: 0 14px;
+  border-left: 1px solid #dfe3e6;
+  font-size: 0.85rem;
+  color: #333;
+  line-height: 1.35;
+  min-width: 0;
+}
+.am-advisory-card-meta-item:first-child {
+  border-left: 0;
+  padding-left: 0;
+}
+.am-advisory-card-meta-label {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #8a8f93;
+}
+.am-advisory-card-bottomline {
+  flex: 1 1 auto;
+  margin-bottom: 20px;
+}
+.am-advisory-card-bottomline-title {
+  margin: 0 0 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #767b7f;
+}
+.am-advisory-card-bottomline-text {
+  font-size: 1.15rem;
+  line-height: 1.5;
+  color: #222;
+}
+.am-advisory-card-bottomline-text p:last-child {
+  margin-bottom: 0;
+}
+.am-advisory-card-more {
+  align-self: flex-start;
+  display: inline-block;
+  padding: 11px 22px;
+  background: #1a6496;
+  color: #fff;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+.am-advisory-card-more:hover,
+.am-advisory-card-more:focus {
+  background: #14507a;
+  color: #fff;
+}

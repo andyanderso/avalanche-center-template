@@ -1,0 +1,187 @@
+/**
+ * Avalanche Center Modern - observations & incidents.
+ *
+ * Cleaner single-observation node pages plus modern listing tables.
+ */
+
+/* ---------- Single observation / incident node ---------- */
+.node-observation .content,
+.node-incident .content { font-family: var(--am-font-body); }
+
+.node-observation .field,
+.node-incident .field { margin: 0 0 0.7rem; }
+
+/* Inline label/value pairs */
+.node-observation .field-label-inline .field-label,
+.node-incident .field-label-inline .field-label {
+  display: inline;
+  font-weight: 700;
+  color: var(--am-ink);
+  padding-right: 0.35rem;
+}
+.node-observation .field-label-inline .field-items,
+.node-observation .field-label-inline .field-item,
+.node-incident .field-label-inline .field-items,
+.node-incident .field-label-inline .field-item { display: inline; color: var(--am-ink-soft); }
+
+/* Above-label fields (text blocks, map, dates) */
+.node-observation .field-label-above > .field-label,
+.node-incident .field-label-above > .field-label {
+  font-family: var(--am-font-head);
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--am-ink);
+  margin: 1rem 0 0.3rem;
+}
+.node-observation .field-type-text-with-summary p,
+.node-incident .field-type-text-with-summary p { margin: 0 0 0.85rem; line-height: 1.65; }
+
+/* Conditions-alert lists rendered as tags */
+.node-observation .field-name-field-conditions-alerts .field-items,
+.node-observation .field-type-list-text.field-label-above .field-items { line-height: 1.9; }
+
+/* Map (geofield / leaflet) */
+.node-observation .field-name-field-location [id^="leaflet-map"],
+.node-incident [id^="leaflet-map"] {
+  border: 1px solid var(--am-line);
+  border-radius: var(--am-radius-sm);
+  box-shadow: var(--am-shadow-sm);
+  overflow: hidden;
+}
+
+/* Field groups (fieldsets / htabs) as clean sections */
+.node-observation fieldset.field-group-htab,
+.node-observation .field-group-htabs-wrapper fieldset,
+.node-observation fieldset.collapsible,
+.node-incident fieldset.collapsible {
+  background: var(--am-surface);
+  border: 1px solid var(--am-line);
+  border-radius: var(--am-radius-sm);
+  box-shadow: var(--am-shadow-sm);
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+}
+.node-observation fieldset > legend,
+.node-incident fieldset > legend {
+  font-family: var(--am-font-head);
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: var(--am-ink);
+  padding: 0 0.4rem;
+}
+
+/* Image gallery (colorbox thumbnails) */
+.node-observation .field-name-field-snowpack-avalanche-weather .field-items,
+.node-observation .field-name-field-ob-snowpit-photo .field-items,
+.node-incident .field-type-image .field-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.7rem;
+  margin-top: 0.5rem;
+}
+.node-observation .field-name-field-snowpack-avalanche-weather .field-item,
+.node-observation .field-name-field-ob-snowpit-photo .field-item,
+.node-incident .field-type-image .field-item { margin: 0; }
+.node-observation .field-name-field-snowpack-avalanche-weather img,
+.node-observation .field-name-field-ob-snowpit-photo img,
+.node-incident .field-type-image img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: var(--am-radius-sm);
+  box-shadow: var(--am-shadow-sm);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  cursor: zoom-in;
+}
+.node-observation .field-name-field-snowpack-avalanche-weather a:hover img,
+.node-observation .field-name-field-ob-snowpit-photo a:hover img { transform: translateY(-2px); box-shadow: var(--am-shadow); }
+
+/* ---------- Observation / incident listing tables ---------- */
+.view-observations .view-header,
+.view-incidents .view-header {
+  background: var(--am-surface);
+  border: 1px solid var(--am-line);
+  border-radius: var(--am-radius-sm);
+  box-shadow: var(--am-shadow-sm);
+  padding: 1.1rem 1.3rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.92rem;
+  color: var(--am-ink-soft);
+  line-height: 1.6;
+}
+.view-observations .view-header p,
+.view-incidents .view-header p { margin: 0 0 0.85rem; }
+
+.submit-obs-button a {
+  display: inline-block;
+  background: var(--am-primary);
+  color: #fff !important;
+  padding: 0.6rem 1.5rem;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: var(--am-shadow-sm);
+}
+.submit-obs-button a:hover { background: var(--am-primary-dark); }
+
+.view-observations .views-table,
+.view-incidents .views-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--am-surface);
+  border: 1px solid var(--am-line);
+  border-radius: var(--am-radius-sm);
+  overflow: hidden;
+  box-shadow: var(--am-shadow-sm);
+}
+.view-observations .views-table thead th,
+.view-incidents .views-table thead th {
+  background: var(--am-dark);
+  color: #fff;
+  font-family: var(--am-font-head);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-align: left;
+  padding: 0.75rem 0.85rem;
+  border: 0;
+}
+.view-observations .views-table thead th a,
+.view-incidents .views-table thead th a { color: #fff; }
+.view-observations .views-table td,
+.view-incidents .views-table td {
+  padding: 0.7rem 0.85rem;
+  border-top: 1px solid var(--am-line);
+  vertical-align: top;
+  font-size: 0.92rem;
+}
+.view-observations .views-table tbody tr:hover td,
+.view-incidents .views-table tbody tr:hover td { background: #f6f9fb; }
+.view-observations .views-table img,
+.view-incidents .views-table img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin: 2px;
+}
+
+/* Map-display views (observations-map etc.) */
+.view-display-id-page_map [id^="leaflet-map"],
+.view [id^="leaflet-map"] {
+  border: 1px solid var(--am-line);
+  border-radius: var(--am-radius-sm);
+  box-shadow: var(--am-shadow-sm);
+  overflow: hidden;
+}
+
+@media (max-width: 700px) {
+  .view-observations .views-table,
+  .view-incidents .views-table,
+  .view-observations .views-table thead,
+  .view-observations .views-table tbody,
+  .view-observations .views-table tr,
+  .view-observations .views-table td { display: block; width: 100%; box-sizing: border-box; }
+  .view-observations .views-table thead { display: none; }
+  .view-observations .views-table td { border-top: 0; border-bottom: 1px solid var(--am-line); }
+  .view-observations .views-table tr { border-bottom: 2px solid var(--am-line); padding: 0.4rem 0; }
+}

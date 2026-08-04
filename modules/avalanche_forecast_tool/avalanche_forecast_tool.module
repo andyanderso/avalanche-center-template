@@ -1,0 +1,650 @@
+<?php
+/**
+ * @file
+ * Avalanche Forecast Tool: an optional guided wizard on top of the advisory
+ * (forecast) content type.
+ *
+ * The wizard walks a forecaster through the CMAH/NAPADS process — pick
+ * avalanche problems (guided by observed conditions), set each problem's
+ * location, sensitivity and distribution (from which Likelihood is derived by
+ * the Statham et al. 2018 Fig 2 matrix), and size — then renders a hazard
+ * chart (Fig 3) and a *suggested* danger rating per elevation band. On
+ * approval it pre-fills /node/add/advisory; the forecaster still reviews and
+ * saves, and still enters the actual danger rating themselves.
+ *
+ * The deterministic engine is what delivers consistency across regions and
+ * forecasters; it never writes the danger rating automatically.
+ */
+
+/**
+ * The advisory (forecast) content type the wizard targets.
+ */
+define('AVALANCHE_FORECAST_TOOL_TYPE', 'advisory');
+
+/**
+ * Session key holding a pending wizard payload waiting to pre-fill the form.
+ */
+define('AVALANCHE_FORECAST_TOOL_PENDING', 'avalanche_forecast_tool_pending');
+
+/**
+ * Implements hook_permission().
+ */
+function avalanche_forecast_tool_permission() {
+  return array(
+    'use avalanche forecast tool' => array(
+      'title' => t('Use the guided avalanche forecast tool'),
+      'description' => t('Access the guided wizard that helps build an avalanche forecast.'),
+    ),
+    'review forecasts with ai' => array(
+      'title' => t('Review forecasts with AI'),
+      'description' => t('Run the optional AI writing/consistency review on a saved forecast. Requires AI review to be enabled and an API key configured.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function avalanche_forecast_tool_menu() {
+  $items = array();
+
+  $items['forecast-tool'] = array(
+    'title' => 'Guided forecast tool',
+    'page callback' => 'avalanche_forecast_tool_wizard_page',
+    'access callback' => 'avalanche_forecast_tool_access',
+    'type' => MENU_CALLBACK,
+    'file' => 'avalanche_forecast_tool.pages.inc',
+  );
+
+  // AJAX endpoint: stash an approved wizard payload for the add form to read.
+  $items['forecast-tool/apply'] = array(
+    'page callback' => 'avalanche_forecast_tool_apply',
+    'access callback' => 'avalanche_forecast_tool_access',
+    'type' => MENU_CALLBACK,
+    'file' => 'avalanche_forecast_tool.pages.inc',
+  );
+
+  // Flip the tool's on/off switch from the forecast form (admins only).
+  $items['forecast-tool/toggle'] = array(
+    'page callback' => 'avalanche_forecast_tool_toggle',
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_CALLBACK,
+  );
+
+  // Optional AI review, as a local task (tab) on a saved forecast node.
+  $items['node/%node/ai-review'] = array(
+    'title' => 'AI review',
+    'page callback' => 'avalanche_forecast_tool_ai_review_page',
+    'page arguments' => array(1),
+    'access callback' => 'avalanche_forecast_tool_ai_review_access',
+    'access arguments' => array(1),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 10,
+    'file' => 'avalanche_forecast_tool.ai.inc',
+  );
+
+  $items['admin/config/system/avalanche-forecast-tool'] = array(
+    'title' => 'Avalanche Forecast Tool',
+    'description' => 'Configure the guided forecast wizard.',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('avalanche_forecast_tool_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'avalanche_forecast_tool.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Whether the guided tool is switched on.
+ *
+ * A lightweight on/off switch (default ON) so a site can disable the tool
+ * without disabling the whole module on the modules page. Togglable from the
+ * forecast form and the tool settings.
+ */
+function avalanche_forecast_tool_enabled() {
+  $v = config_get('avalanche_forecast_tool.settings', 'enabled');
+  // Absent (never configured) means on, so existing installs keep the tool.
+  return ($v === NULL) ? TRUE : (bool) $v;
+}
+
+/**
+ * Access callback: who may use the guided wizard.
+ *
+ * Anyone who can create a forecast can use the tool that helps write one. When
+ * the tool is switched off, only administrators (who can switch it back on)
+ * retain access.
+ */
+function avalanche_forecast_tool_access($account = NULL) {
+  if (!avalanche_forecast_tool_enabled() && !user_access('administer site configuration', $account)) {
+    return FALSE;
+  }
+  return user_access('use avalanche forecast tool', $account)
+    || node_access('create', AVALANCHE_FORECAST_TOOL_TYPE, $account);
+}
+
+/**
+ * Menu/page callback: flip the tool's on/off switch, then return to the form.
+ *
+ * Token-protected; access is restricted to site administrators via hook_menu.
+ */
+function avalanche_forecast_tool_toggle() {
+  if (empty($_GET['token']) || !backdrop_valid_token($_GET['token'], 'aft-toggle')) {
+    return MENU_ACCESS_DENIED;
+  }
+  $to = !empty($_GET['to']);
+  config_set('avalanche_forecast_tool.settings', 'enabled', $to);
+  // No status message: the entry banner on the form below already reflects the
+  // new state (a second "the tool is now on/off" message would just duplicate it).
+  backdrop_goto('node/add/advisory');
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter() for the advisory node form.
+ *
+ * Two jobs:
+ *  - Phase 0: on a fresh forecast, offer the guided tool as an alternative to
+ *    filling the form by hand (optional; can be made required by a setting).
+ *  - Phase 4: if the user just approved a wizard run, hand the assembled
+ *    values to JS which pre-fills the form fields.
+ */
+function avalanche_forecast_tool_form_advisory_node_form_alter(&$form, &$form_state) {
+  // Only offer/prefill on the create form, not when editing an existing node.
+  $node = isset($form['#node']) ? $form['#node'] : NULL;
+  $is_new = $node && empty($node->nid);
+  if (!$is_new || !avalanche_forecast_tool_access()) {
+    return;
+  }
+
+  // Phase 4: a payload was approved in the wizard — pass it to the prefill JS.
+  $pending = isset($_SESSION[AVALANCHE_FORECAST_TOOL_PENDING])
+    ? $_SESSION[AVALANCHE_FORECAST_TOOL_PENDING] : NULL;
+  if ($pending) {
+    unset($_SESSION[AVALANCHE_FORECAST_TOOL_PENDING]);
+    $path = backdrop_get_path('module', 'avalanche_forecast_tool');
+    $form['#attached']['js'][] = $path . '/js/prefill.js';
+    $form['#attached']['css'][] = $path . '/css/wizard.css';
+    $form['#attached']['js'][] = array(
+      'type' => 'setting',
+      'data' => array('avalancheForecastToolPrefill' => $pending),
+    );
+    return;
+  }
+
+  // Phase 0: the entry-point prompt. If guided mode is required, this becomes a
+  // hard gate; otherwise it is a dismissible banner and the form stays usable.
+  $config = config('avalanche_forecast_tool.settings');
+  $require = (bool) $config->get('require_guided');
+  $can_toggle = user_access('administer site configuration');
+  $css = backdrop_get_path('module', 'avalanche_forecast_tool') . '/css/wizard.css';
+
+  // Switched off: forecasters never reach here (access gate). Administrators do,
+  // so give them an in-form way to switch it back on without the modules page.
+  if (!avalanche_forecast_tool_enabled()) {
+    if ($can_toggle) {
+      $on_link = l(t('Turn it on'), 'forecast-tool/toggle', array(
+        'query' => array('to' => 1, 'token' => backdrop_get_token('aft-toggle')),
+        'attributes' => array('class' => array('button', 'aft-start-button')),
+      ));
+      $form['avalanche_forecast_tool_entry'] = array(
+        '#markup' => '<div class="aft-entry aft-entry--off messages status">'
+          . '<p><strong>' . t('The guided forecast tool is turned off.') . '</strong> '
+          . t('Forecasters see only the plain form below.') . '</p>'
+          . '<p>' . $on_link . '</p></div>',
+        '#weight' => -100,
+      );
+      $form['#attached']['css'][] = $css;
+    }
+    return;
+  }
+
+  $start = l(t('Start the guided forecast tool'), 'forecast-tool', array(
+    'attributes' => array('class' => array('button', 'button-primary', 'aft-start-button')),
+  ));
+
+  // Administrators get a quiet "turn it off" control alongside the prompt.
+  $off_link = '';
+  if ($can_toggle) {
+    $off_link = '<p class="aft-entry-admin">' . l(t('Turn off the guided tool'), 'forecast-tool/toggle', array(
+      'query' => array('to' => 0, 'token' => backdrop_get_token('aft-toggle')),
+      'attributes' => array('class' => array('aft-toggle-off')),
+    )) . '</p>';
+  }
+
+  if ($require) {
+    $message = '<div class="aft-entry aft-entry--required messages warning">'
+      . '<p>' . t('This site is configured to build forecasts with the guided tool.') . '</p>'
+      . '<p>' . $start . '</p>'
+      . $off_link
+      . '</div>';
+  }
+  else {
+    $message = '<div class="aft-entry messages status">'
+      . '<p><strong>' . t('Build this forecast with the guided tool?') . '</strong> '
+      . t('It walks you through the avalanche problems, likelihood, size and a suggested danger rating, then fills in the form for you — helping ratings stay consistent across regions and forecasters. You can also just fill out the form below.') . '</p>'
+      . '<p>' . $start . '</p>'
+      . $off_link
+      . '</div>';
+  }
+
+  $form['avalanche_forecast_tool_entry'] = array(
+    '#markup' => $message,
+    '#weight' => -100,
+  );
+  $form['#attached']['css'][] = $css;
+}
+
+/**
+ * Which measurement units to show in the tool: 'metric', 'imperial' or 'both'.
+ *
+ * Defaults from the site language when unset (Spanish → metric, otherwise
+ * both) and is overridable on the tool settings form.
+ */
+function avalanche_forecast_tool_units() {
+  $v = config_get('avalanche_forecast_tool.settings', 'units');
+  if ($v === 'metric' || $v === 'imperial' || $v === 'both') {
+    return $v;
+  }
+  $lang = language_default();
+  return (is_object($lang) && !empty($lang->langcode) && $lang->langcode !== 'en') ? 'metric' : 'both';
+}
+
+/**
+ * Formats one measurement per the units setting, given its metric and imperial
+ * renderings (e.g. "1.5 m" and "5 ft"). Use for inline measurements in text.
+ */
+function avalanche_forecast_tool_measure($metric, $imperial) {
+  switch (avalanche_forecast_tool_units()) {
+    case 'metric':
+      return $metric;
+    case 'imperial':
+      return $imperial;
+    default:
+      return t('@metric (@imperial)', array('@metric' => $metric, '@imperial' => $imperial));
+  }
+}
+
+/**
+ * The typical destructive-size scale (path length + mass) for a size class,
+ * rendered in the configured units. Figures from Statham et al. (2018) Table 4.
+ */
+function avalanche_forecast_tool_size_scale($m, $ft, $t, $tons) {
+  switch (avalanche_forecast_tool_units()) {
+    case 'metric':
+      return t('≈@m m · ~@t t', array('@m' => $m, '@t' => $t));
+    case 'imperial':
+      return t('≈@ft ft · ~@tons tons', array('@ft' => $ft, '@tons' => $tons));
+    default:
+      return t('≈@m m (@ft ft) · ~@t t (@tons tons)', array('@m' => $m, '@ft' => $ft, '@t' => $t, '@tons' => $tons));
+  }
+}
+
+/**
+ * Builds the configuration object handed to the wizard JS.
+ *
+ * All display strings go through t() here so the interface language (and the
+ * profile's Spanish localizer) can translate them. The algorithm itself
+ * (matrix, danger table, pairing rules) is data, not translated.
+ */
+function avalanche_forecast_tool_settings_data() {
+  // Problem types. Keys MUST match field_type_N allowed_values on the advisory
+  // type. "Deep Slab" (key 2) is the CMAH "Deep Persistent Slab".
+  $problems = array(
+    array('key' => '1', 'label' => t('Storm Slab'), 'slab' => TRUE,
+      'desc' => t('Soft slab of recent storm snow (last ~24–48h).')),
+    array('key' => '3', 'label' => t('Wind Slab'), 'slab' => TRUE,
+      'desc' => t('Cohesive slab formed by wind-drifted snow.')),
+    array('key' => '5', 'label' => t('Persistent Slab'), 'slab' => TRUE,
+      'desc' => t('Slab resting on a buried, persistent weak layer.')),
+    array('key' => '2', 'label' => t('Deep Persistent Slab'), 'slab' => TRUE,
+      'desc' => t('Thick, hard slab on a deeply buried basal weak layer; stubborn but large.')),
+    array('key' => '4', 'label' => t('Wet Slab'), 'slab' => TRUE,
+      'desc' => t('Cohesive slab released by free water reaching a buried layer.')),
+    array('key' => '7', 'label' => t('Loose Dry'), 'slab' => FALSE,
+      'desc' => t('Sluffing of dry, cohesionless surface snow.')),
+    array('key' => '6', 'label' => t('Loose Wet'), 'slab' => FALSE,
+      'desc' => t('Loose, wet, cohesionless snow from melt or rain.')),
+    array('key' => '9', 'label' => t('Cornice'), 'slab' => FALSE,
+      'desc' => t('Overhanging cornice failure, which may also trigger a slab below.')),
+    array('key' => '10', 'label' => t('Glide'), 'slab' => FALSE,
+      'desc' => t('Full-depth glide release, often preceded by glide cracks.')),
+    array('key' => '8', 'label' => t('Normal Caution'), 'slab' => FALSE,
+      'desc' => t('No specific avalanche problem; general caution only.')),
+  );
+
+  // Observed-conditions checklist for the guided-Q&A type suggester. Each
+  // condition points at the problem type(s) it suggests. (Guidance Table 1.)
+  $conditions = array(
+    array('id' => 'new_snow', 'suggests' => array('1'),
+      'label' => t('New snow in the last 24–48 hours forming a slab')),
+    array('id' => 'wind_loading', 'suggests' => array('3'),
+      'label' => t('Recent wind-loading / blowing snow (last ~3 days)')),
+    array('id' => 'buried_pwl', 'suggests' => array('5'),
+      'label' => t('A buried persistent weak layer that is reactive')),
+    array('id' => 'deep_pwl', 'suggests' => array('2'),
+      'label' => t('A deep, hard slab (~@d+) on a basal weak layer; stubborn, produces large avalanches',
+        array('@d' => avalanche_forecast_tool_measure(t('1.5 m'), t('5 ft'))))),
+    array('id' => 'surface_wet', 'suggests' => array('6'),
+      'label' => t('Free water at the snow surface (melt or rain), loose wet snow')),
+    array('id' => 'water_to_layer', 'suggests' => array('4'),
+      'label' => t('Free water percolating down to a buried layer (wet slab release)')),
+    array('id' => 'dry_loose', 'suggests' => array('7'),
+      'label' => t('Dry, loose surface snow sluffing on steep terrain')),
+    array('id' => 'cornices', 'suggests' => array('9'),
+      'label' => t('Large or failing cornices')),
+    array('id' => 'glide', 'suggests' => array('10'),
+      'label' => t('Glide cracks or recent glide-avalanche activity')),
+    array('id' => 'none', 'suggests' => array('8'),
+      'label' => t('No significant instability observed')),
+  );
+
+  // Sensitivity to triggers (Statham Table 5), ordered low → high. Descriptions
+  // are backcountry-focused: what a traveler would see and how easily a rider
+  // could trigger the problem, rather than avalanche-control (explosives) terms.
+  $sensitivity = array(
+    array('key' => 'unreactive', 'label' => t('Unreactive'),
+      'desc' => t('Human and natural avalanches are unlikely, and very hard to trigger — even large explosives and large cornices do not trigger avalanches.')),
+    array('key' => 'stubborn', 'label' => t('Stubborn'),
+      'desc' => t('Few or no natural avalanches; Human triggered avalanches are tough to trigger unless a person finds a trigger point like a thin or weak spot — larger triggers like multiple people on a slope, large cornices, or explosives may still trigger avalanches.')),
+    array('key' => 'reactive', 'label' => t('Reactive'),
+      'desc' => t('Several natural avalanches; Human triggered avalanches are easy to trigger — a ski cut or a single rider on the slope can set one off. Single hand charges easily trigger avalanches.')),
+    array('key' => 'touchy', 'label' => t('Touchy'),
+      'desc' => t('Widespread natural avalanches; Human triggering is almost certain — look for remote triggers, collapsing "whumpfs" and shooting cracks. Small explosives or cornice failures may trigger multiple avalanches.')),
+  );
+
+  // Spatial distribution (Statham Table 6), ordered narrow → wide.
+  $distribution = array(
+    array('key' => 'isolated', 'label' => t('Isolated'),
+      'desc' => t('Spotty; a few specific features; evidence is rare and hard to find.')),
+    array('key' => 'specific', 'label' => t('Specific'),
+      'desc' => t('Features with common characteristics; evidence exists but is not obvious.')),
+    array('key' => 'widespread', 'label' => t('Widespread'),
+      'desc' => t('Many locations and features; evidence is everywhere and easy to find.')),
+  );
+
+  // Likelihood matrix (Statham Fig 2): distribution × sensitivity → likelihood.
+  // Values are field_likelihood_N keys (1 Unlikely … 5 Certain; Fig 2's
+  // "Almost Certain" maps to the field's "Certain").
+  $matrix = array(
+    'widespread' => array('unreactive' => '1', 'stubborn' => '2', 'reactive' => '4', 'touchy' => '5'),
+    'specific'   => array('unreactive' => '1', 'stubborn' => '2', 'reactive' => '3', 'touchy' => '4'),
+    'isolated'   => array('unreactive' => '1', 'stubborn' => '1', 'reactive' => '2', 'touchy' => '3'),
+  );
+
+  $likelihood_labels = array(
+    '1' => t('Unlikely'),
+    '2' => t('Possible'),
+    '3' => t('Likely'),
+    '4' => t('Very Likely'),
+    '5' => t('Certain'),
+  );
+
+  // Sizes: field_size_N keys 1–5 = D1–D5. Each carries a typical destructive
+  // scale (path length + mass, Statham et al. 2018 Table 4) shown in the
+  // configured units (metric / imperial / both).
+  $sizes = array(
+    array('key' => '1', 'label' => t('D1'), 'desc' => t('Small — relatively harmless to people.'),
+      'scale' => avalanche_forecast_tool_size_scale('10', '33', '10', '11')),
+    array('key' => '2', 'label' => t('D2'), 'desc' => t('Large — could bury, injure or kill a person.'),
+      'scale' => avalanche_forecast_tool_size_scale('100', '330', '100', '110')),
+    array('key' => '3', 'label' => t('D3'), 'desc' => t('Very large — could bury a car, destroy a house.'),
+      'scale' => avalanche_forecast_tool_size_scale('1,000', '3,300', '1,000', '1,100')),
+    array('key' => '4', 'label' => t('D4'), 'desc' => t('Historic — could destroy a rail car or several buildings.'),
+      'scale' => avalanche_forecast_tool_size_scale('2,000', '6,600', '10,000', '11,000')),
+    array('key' => '5', 'label' => t('D5'), 'desc' => t('Largest known — could gouge terrain, destroy a village.'),
+      'scale' => avalanche_forecast_tool_size_scale('3,000', '9,800', '100,000', '110,000')),
+  );
+
+  // Danger suggestion table. likelihood (1–5) × size (1–5) → danger label.
+  // This is an interpretation of the CMAH hazard chart, presented as a
+  // suggestion only; the forecaster sets the actual rating. Danger is
+  // judgment, not a formula (Statham 2018 is explicit on this).
+  // Categorical per-band suggestion = the primary (first-listed) level of each
+  // gradient cell below, so the pill/pyramid stays consistent with the chart.
+  $danger_table = array(
+    // size:      D1            D2              D3              D4              D5
+    '5' => array('Considerable', 'Considerable', 'Considerable', 'High',        'Extreme'),      // Certain
+    '4' => array('Moderate',     'Considerable', 'Considerable', 'High',        'High'),         // Very Likely
+    '3' => array('Moderate',     'Moderate',     'Considerable', 'Considerable', 'Considerable'), // Likely
+    '2' => array('Low',          'Moderate',     'Moderate',     'Moderate',     'Considerable'), // Possible
+    '1' => array('Low',          'Low',          'Low',          'Low',          'Moderate'),     // Unlikely
+  );
+
+  // Colour grid for the hazard-chart gradient. Each cell is one or two danger
+  // levels; a two-level cell is rendered as a 50/50 blend of those colours, so
+  // the gradient transitions smoothly. (Provided by the forecast lead.)
+  $C = 'Considerable'; $M = 'Moderate'; $H = 'High'; $L = 'Low'; $E = 'Extreme';
+  $gradient_table = array(
+    // size:      D1            D2            D3            D4            D5
+    '5' => array(array($C, $M), array($C, $H), array($C, $H), array($H, $E), array($E)),       // Certain
+    '4' => array(array($M),     array($C, $H), array($C, $H), array($H),     array($H)),        // Very Likely
+    '3' => array(array($M),     array($M, $C), array($C),     array($C),     array($C, $H)),    // Likely
+    '2' => array(array($L),     array($M),     array($M),     array($M, $C), array($C)),        // Possible
+    '1' => array(array($L),     array($L),     array($L),     array($L, $M), array($M)),        // Unlikely
+  );
+  // field_danger_rating_N stores these exact strings; localise for display.
+  $danger_labels = array(
+    'No Rating'    => t('No Rating'),
+    'Low'          => t('Low'),
+    'Moderate'     => t('Moderate'),
+    'Considerable' => t('Considerable'),
+    'High'         => t('High'),
+    'Extreme'      => t('Extreme'),
+  );
+
+  // Chart colours follow the site's active danger-scale preset (NAC or SAC) so
+  // the hazard chart matches the rest of the site. danger_map keys by level
+  // 0–5; re-key by the danger label the tool works in.
+  $danger_colors = array(
+    'No Rating' => '#939598', 'Low' => '#50B848', 'Moderate' => '#FFF200',
+    'Considerable' => '#F7941E', 'High' => '#ED1C24', 'Extreme' => '#231F20',
+  );
+  if (function_exists('avalanche_danger_map_get_preset')) {
+    $preset = avalanche_danger_map_get_preset();
+    if (!empty($preset['colors'])) {
+      $by_level = array('No Rating', 'Low', 'Moderate', 'Considerable', 'High', 'Extreme');
+      foreach ($by_level as $level => $label) {
+        if (isset($preset['colors'][$level])) {
+          $danger_colors[$label] = $preset['colors'][$level];
+        }
+      }
+    }
+  }
+
+  // Discouraged pairings (Guidance Table 1). Flag when both are used AND their
+  // location/likelihood/size overlap; ask the forecaster to justify.
+  $pairing = array(
+    array('a' => '1', 'b' => '3',
+      'reason' => t('Storm slabs form during storms and often exist in both exposed and sheltered terrain. Wind slabs only exist in wind-loaded terrain. If the slabs exist in both sheltered and wind-loaded terrain and formed during a storm, use storm slabs. If the slabs exist in wind-loaded areas (ie not enough new snow to produce slabs in sheltered areas or the slabs are only formed by wind blowing old snow around), use wind slabs.')),
+    array('a' => '5', 'b' => '2',
+      'reason' => t('Persistent Slab and Deep Persistent Slab describe the same family of buried weak layers; pair them only when they differ meaningfully in distribution, likelihood or size.')),
+    array('a' => '6', 'b' => '4',
+      'reason' => t('Loose Wet and Wet Slab are both wet problems; pair them only when they differ meaningfully in distribution, likelihood or size.')),
+    array('a' => '7', 'b' => '6',
+      'reason' => t('Loose Dry and Loose Wet are the same loose-snow problem in different states; you would not normally have both at once.')),
+  );
+
+  return array(
+    'problems' => $problems,
+    'conditions' => $conditions,
+    'rosePaths' => avalanche_forecast_tool_rose_paths(),
+    'pyramidPaths' => array(
+      'lower' => 'M40.632,203.317l169.248,0.079l40.166,96.604l-249.519,-0.097l40.105,-96.586Z',
+      'mid'   => 'M207.532,197.909l-164.605,0.049l40.134,-96.303l84.407,-0.046l40.064,96.3Z',
+      'upper' => 'M165.209,96.238l-80.038,-0.012l40.041,-96.226l39.997,96.238Z',
+    ),
+    'help' => avalanche_forecast_tool_help_texts(),
+    'problemHelp' => avalanche_forecast_tool_problem_help(),
+    'sensitivity' => $sensitivity,
+    'distribution' => $distribution,
+    'matrix' => $matrix,
+    'likelihoodLabels' => $likelihood_labels,
+    'sizes' => $sizes,
+    'dangerTable' => $danger_table,
+    'gradientTable' => $gradient_table,
+    'dangerLabels' => $danger_labels,
+    'dangerColors' => $danger_colors,
+    'pairing' => $pairing,
+    'aspects' => array('N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'),
+    // Elevation-band labels: use the site's configured labels (same as the
+    // forecast form/display) when the theme provides them, else the defaults.
+    'bands' => array(
+      array('key' => 'above', 'label' => avalanche_forecast_tool_band_label('upper', t('Above Treeline'))),
+      array('key' => 'near', 'label' => avalanche_forecast_tool_band_label('middle', t('Near Treeline'))),
+      array('key' => 'below', 'label' => avalanche_forecast_tool_band_label('lower', t('Below Treeline'))),
+    ),
+    'maxProblems' => 3,
+    'applyUrl' => url('forecast-tool/apply'),
+    'addFormUrl' => url('node/add/advisory'),
+    'token' => backdrop_get_token('avalanche_forecast_tool'),
+  );
+}
+
+/**
+ * Per-problem-type help, including how each problem can transition into another
+ * (from the reference problem descriptions). Keyed by field_type_N value; only
+ * the types with meaningful transition behaviour carry a popup.
+ */
+function avalanche_forecast_tool_problem_help() {
+  return array(
+    // Storm Slab.
+    '1' => t('Storm Slabs release a cohesive layer of new storm snow, breaking within the storm snow or at the old/new interface. They form during storms and are usually widespread across terrain that received similar snowfall. Transitions: storm slabs that formed in wind-loaded areas may become Wind Slabs as the sheltered storm snow stabilises; if they overlie a persistent weak layer (surface hoar, depth hoar, near-surface facets) they may develop into — or be forecast from the start as — Persistent Slabs.'),
+    // Wind Slab.
+    '3' => t('Wind Slabs release a cohesive layer of wind-drifted snow. They form in specific, somewhat predictable locations — leeward of ridges, in cross-loaded gullies — and can be soft to hard, often smooth or sounding hollow. Transitions: a Wind Slab that overlies a persistent weak layer may be termed a Persistent Slab, or develop into one, with longer-lasting instability.'),
+    // Persistent Slab.
+    '5' => t('Persistent Slabs release when the bond to a buried persistent weak layer (surface hoar, depth hoar, near-surface facets, faceted crusts) breaks. They are hard to predict, can be triggered remotely or long after a storm, and can propagate widely. Transitions: a Persistent Slab can build into a Deep Persistent Slab as additional snow and wind events thicken the slab over the same weak layer.'),
+    // Deep Persistent Slab.
+    '2' => t('Deep Persistent Slabs release a thick, hard slab on a deeply buried basal weak layer. They are stubborn to trigger but produce large, destructive avalanches. They commonly evolve from a Persistent Slab as successive snow and wind events build a thicker slab over the same weak layer.'),
+  );
+}
+
+/**
+ * The full danger-scale table (Danger Level / Travel Advice / Likelihood / Size
+ * and Distribution), pulled from the same preset- and language-specific content
+ * file the /avalanche-danger-scale reference page uses, so the tool shows the
+ * exact same table. Returns the <table>…</table> HTML, or '' if unavailable.
+ */
+function avalanche_forecast_tool_danger_scale_table() {
+  $scale = config_get('avalanche_center.settings', 'danger_scale');
+  $base = ($scale === 'SAC')
+    ? 'south-american-avalanche-danger-scale'
+    : 'north-american-avalanche-danger-scale';
+  $dir = backdrop_get_path('profile', 'avalanche_center') . '/content';
+
+  // Prefer the default-language companion file (matches the reference page).
+  $langcode = 'en';
+  if (function_exists('language_default')) {
+    $def = language_default();
+    if (!empty($def->langcode)) {
+      $langcode = $def->langcode;
+    }
+  }
+  $candidates = array();
+  if ($langcode !== 'en') {
+    $candidates[] = "$dir/$base.$langcode.html";
+  }
+  $candidates[] = "$dir/$base.html";
+
+  $html = '';
+  foreach ($candidates as $file) {
+    if (is_file($file)) {
+      $html = file_get_contents($file);
+      break;
+    }
+  }
+  if ($html === '') {
+    return '';
+  }
+
+  // Extract the danger-scale table.
+  $marker = strpos($html, 'napads-danger-scale');
+  $start = ($marker !== FALSE) ? strrpos(substr($html, 0, $marker), '<table') : strpos($html, '<table');
+  if ($start === FALSE) {
+    return '';
+  }
+  $end = strpos($html, '</table>', $start);
+  if ($end === FALSE) {
+    return '';
+  }
+  return substr($html, $start, $end - $start + strlen('</table>'));
+}
+
+/**
+ * Elevation-band label, matching the forecast form: prefer the active theme's
+ * configured band label (theme setting <pos>_elevation_band), else the default.
+ *
+ * @param string $pos
+ *   'upper' | 'middle' | 'lower'.
+ * @param string $default
+ *   Fallback label.
+ */
+function avalanche_forecast_tool_band_label($pos, $default) {
+  if (function_exists('theme_get_setting')) {
+    $val = theme_get_setting($pos . '_elevation_band');
+    if (!empty($val)) {
+      return $val;
+    }
+  }
+  return $default;
+}
+
+/**
+ * The 24 NAC aspect/elevation rose sectors, mapped to the wizard's band/aspect
+ * scheme so the wizard's clickable rose matches the published forecast exactly.
+ *
+ * Paths are the canonical avalanche.org octagon (same source the theme's
+ * avalanche_modern_rose_svg() uses). Band mapping: upper = above treeline,
+ * middle = near, lower = below. Aspect index 0=N clockwise to 7=NW.
+ */
+function avalanche_forecast_tool_rose_paths() {
+  $paths = array(
+    'north upper' => 'M529.716,527l68.371,-166.7l-138.1,0l69.729,166.7Z',
+    'north middle' => 'M666.581,193.63l-277.081,0l69.27,166.67l138.541,0l69.27,-166.67Z',
+    'north lower' => 'M734.1,26.997l-414.2,0l69.943,166.67l275.865,0l68.392,-166.67Z',
+    'northeast upper' => 'M529.716,527l166.22,-69.529l-97.651,-97.652l-68.569,167.181Z',
+    'northeast middle' => 'M862.222,388.05l-195.925,-195.926l-68.873,166.835l97.963,97.963l166.835,-68.872Z',
+    'northeast lower' => 'M1027.79,317.966l-292.884,-292.884l-68.396,167.311l195.066,195.066l166.214,-69.493Z',
+    'east upper' => 'M527.716,528.339l166.7,68.371l0,-138.1l-166.7,69.729Z',
+    'east middle' => 'M861.086,665.204l0,-277.081l-166.67,69.27l0,138.541l166.67,69.27Z',
+    'east lower' => 'M1027.72,732.723l0,-414.2l-166.67,69.943l0,275.865l166.67,68.392Z',
+    'southeast upper' => 'M527.716,528.339l69.529,166.22l97.652,-97.651l-167.181,-68.569Z',
+    'southeast middle' => 'M666.666,860.845l195.926,-195.925l-166.835,-68.872l-97.963,97.962l68.872,166.835Z',
+    'southeast lower' => 'M736.75,1026.42l292.884,-292.884l-167.311,-68.396l-195.066,195.066l69.493,166.214Z',
+    'south upper' => 'M527.918,528.416l-68.371,166.7l138.1,0l-69.729,-166.7Z',
+    'south middle' => 'M391.053,861.786l277.081,0l-69.27,-166.67l-138.541,0l-69.27,166.67Z',
+    'south lower' => 'M323.534,1028.42l414.2,0l-69.943,-166.67l-275.865,0l-68.392,166.67Z',
+    'southwest upper' => 'M527.918,528.416l-166.22,69.529l97.651,97.652l68.569,-167.181Z',
+    'southwest middle' => 'M195.412,667.366l195.926,195.926l68.872,-166.835l-97.963,-97.963l-166.835,68.872Z',
+    'southwest lower' => 'M29.841,737.451l292.884,292.883l68.396,-167.31l-195.066,-195.067l-166.214,69.494Z',
+    'west upper' => 'M528.918,527.077l-166.7,-68.371l0,138.1l166.7,-69.729Z',
+    'west middle' => 'M195.548,390.212l0,277.081l166.67,-69.27l0,-138.541l-166.67,-69.27Z',
+    'west lower' => 'M28.915,322.693l0,414.2l166.67,-69.943l0,-275.865l-166.67,-68.392Z',
+    'northwest upper' => 'M529.918,527.077l-69.529,-166.22l-97.652,97.651l167.181,68.569Z',
+    'northwest middle' => 'M390.968,194.571l-195.926,195.926l166.835,68.872l97.963,-97.963l-68.872,-166.835Z',
+    'northwest lower' => 'M318.884,27l-292.884,292.884l167.311,68.396l195.066,-195.066l-69.493,-166.214Z',
+  );
+  $aspects = array('north' => 0, 'northeast' => 1, 'east' => 2, 'southeast' => 3, 'south' => 4, 'southwest' => 5, 'west' => 6, 'northwest' => 7);
+  $bands = array('upper' => 'above', 'middle' => 'near', 'lower' => 'below');
+  $out = array();
+  foreach ($paths as $key => $d) {
+    $parts = explode(' ', $key);
+    $out[] = array('band' => $bands[$parts[1]], 'aspect' => $aspects[$parts[0]], 'd' => $d);
+  }
+  return $out;
+}
+
+/**
+ * Short help excerpts from the CMAH (Statham et al. 2018), surfaced as info
+ * popups next to the matching wizard step. Kept concise; each cites its source.
+ */
+function avalanche_forecast_tool_help_texts() {
+  return array(
+    'problems' => t('The conceptual model assesses each avalanche problem on its own by four factors — its type, its location (aspect and elevation), its likelihood of triggering, and its destructive size — then combines them into the avalanche hazard. About three problems describe a forecast. — Statham et al. (2018), Fig. 1'),
+    'sensitivity' => t('Sensitivity to triggers is how easily the problem releases: from Unreactive (no natural or human triggering) through Stubborn and Reactive to Touchy (natural avalanches numerous, triggering almost certain). — Statham et al. (2018), Table 5'),
+    'distribution' => t('Spatial distribution is how widely the problem is found: from Isolated (a few specific features, evidence hard to find) through Specific to Widespread (many features, evidence everywhere). — Statham et al. (2018), Table 6'),
+    'likelihood' => t('Likelihood of avalanches combines sensitivity and distribution on a fixed matrix — a widespread, touchy problem is almost certain; an isolated, unreactive one is unlikely. This tool reads the value straight from that matrix. — Statham et al. (2018), Fig. 2'),
+    'size' => t('Destructive size uses the D-scale, from D1 (relatively harmless to people) to D5 (could destroy a village). Assess the largest avalanche the problem could produce, and keep the range to about two sizes. — Statham et al. (2018)'),
+    'hazardChart' => t('The hazard chart plots each problem by its likelihood (vertical) and destructive size (horizontal). Problems toward the upper right represent greater avalanche hazard. — Statham et al. (2018), Fig. 3'),
+    'danger' => t('Danger is a judgment that summarises the problems for an elevation band — it is not a direct calculation. This suggestion follows the hazard chart, but you weigh the problems, the terrain and the day, and set the rating yourself. — Statham et al. (2018)'),
+  );
+}

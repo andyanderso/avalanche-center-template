@@ -1,0 +1,231 @@
+/**
+ * Avalanche Center Modern - homepage.
+ *
+ * Modernizes the front page: danger-map hero, horizontal danger scale bar,
+ * "current advisory" call-to-action, recent-observations card gallery, and
+ * announcements list. Targets the markup produced by the existing blocks.
+ */
+
+body.front .am-main-wrapper.is-front .am-content { width: 100%; }
+body.front #content > .block { margin-bottom: 2rem; }
+
+/* Two-column grid below the hero: advisory CTA spans both columns, then a
+   wide Recent Observations column (2/3) beside a News & Announcements
+   column (1/3). */
+body.front .am-sidebar {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem 2rem;
+  align-items: start;
+}
+body.front .am-sidebar > .block { margin-bottom: 0; }
+body.front .am-sidebar > .block-views-advisory-views-block-4 { grid-column: 1 / -1; }
+body.front .am-sidebar > .block-views-media-gallery-block { grid-column: 1; }
+body.front .am-sidebar > .block-views-home-announcements-block-1 { grid-column: 2; }
+
+/* ---------- Danger map hero ---------- */
+body.front .block-avalanche-danger-map-danger-map {
+  background: var(--am-surface);
+  border: 1px solid var(--am-line);
+  border-radius: var(--am-radius);
+  box-shadow: var(--am-shadow);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+body.front .block-avalanche-danger-map-danger-map > .block-title {
+  margin: 0;
+  padding: 1.1rem 1.4rem;
+  background: var(--am-primary-dark);
+  color: var(--am-surface);
+  font-family: var(--am-font-head);
+  font-weight: 600;
+  font-size: 1.45rem;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+body.front .block-avalanche-danger-map-danger-map .block-content { padding: 0; }
+body.front #avalanche-danger-map {
+  width: 100% !important;
+  height: 460px !important;
+}
+
+/* Front-page node body (holds the danger scale legend) */
+body.front #content .node-page { margin: 0; }
+body.front #content .node-page .content { margin: 0; }
+
+/* ---------- Horizontal danger scale bar ---------- */
+body.front #danger-scale-bar-container {
+  margin: 0 0 2rem;
+  border-radius: 0 0 var(--am-radius) var(--am-radius);
+  overflow: hidden;
+  box-shadow: var(--am-shadow-sm);
+}
+body.front #danger-scale-bar {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+body.front #danger-scale-bar > a {
+  display: flex;
+  width: 100%;
+  text-decoration: none;
+}
+body.front .danger-scale-rating-item {
+  flex: 1;
+  list-style: none;
+  margin: 0;
+  padding: 0.7rem 0.3rem;
+  text-align: center;
+  color: #fff;
+  font-family: var(--am-font-head);
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
+  transition: filter 0.15s ease;
+}
+body.front #danger-scale-bar > a:hover .danger-scale-rating-item { filter: brightness(1.08); }
+body.front #low-li-item { background: var(--am-danger-1); }
+body.front #mod-li-item { background: var(--am-danger-2); color: #1e2326; }
+body.front #cons-li-item { background: var(--am-danger-3); }
+body.front #high-li-item { background: var(--am-danger-4); }
+body.front #extr-li-item { background: var(--am-danger-5); }
+
+/* ---------- Section block titles (sidebar blocks on front) ---------- */
+body.front .am-sidebar .block > .block-title {
+  font-family: var(--am-font-head);
+  font-weight: 600;
+  font-size: 1.5rem;
+  color: var(--am-dark);
+  margin: 0 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--am-line);
+}
+
+/* ---------- Most current advisory CTA ---------- */
+/* Gradient flows from the same dark-navy as the header into the primary blue,
+   giving visual continuity with the #16202b header while clearly marking
+   the advisory as the primary call-to-action. */
+body.front .block-views-advisory-views-block-4 {
+  background: var(--am-primary-dark);
+  border-radius: var(--am-radius);
+  box-shadow: var(--am-shadow);
+  padding: 1.5rem;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+body.front .block-views-advisory-views-block-4 > .block-title {
+  color: #e8edf2 !important;
+  border: 0;
+  font-size: 1.35rem;
+  margin: 0 0 0.85rem;
+  padding: 0;
+}
+body.front .block-views-advisory-views-block-4 .views-row { margin: 0; }
+body.front .current-advisory-link a {
+  display: inline-block;
+  background: #fff;
+  color: var(--am-dark);
+  font-weight: 700;
+  font-size: 1.05rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 999px;
+  text-decoration: none;
+  box-shadow: var(--am-shadow-sm);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+body.front .current-advisory-link a:hover { transform: translateY(-1px); box-shadow: var(--am-shadow); }
+body.front .current-advisory-link a::after { content: " \2192"; }
+
+/* ---------- Recent observations gallery ---------- */
+body.front .block-views-media-gallery-block .views-view-responsive-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+body.front .block-views-media-gallery-block .views-grid-box { margin: 0 !important; }
+body.front .ob-thumb-wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--am-surface);
+  border: 1px solid var(--am-line);
+  border-radius: var(--am-radius-sm);
+  overflow: hidden;
+  box-shadow: var(--am-shadow-sm);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+body.front .ob-thumb-wrap:hover { transform: translateY(-2px); box-shadow: var(--am-shadow); }
+/* Whole card is a link to the observation; keep it looking like a card. */
+body.front a.ob-card-link { display: block; height: 100%; color: inherit; text-decoration: none; }
+body.front a.ob-card-link:hover { text-decoration: none; color: inherit; }
+body.front .ob-thumb { display: block; line-height: 0; background: #e9eef2; }
+/* No-image observations: drop the empty thumbnail box so the card is just labels. */
+body.front .ob-thumb:empty { display: none; }
+body.front .ob-thumb a { display: block; }
+body.front .ob-thumb img {
+  width: 100% !important;
+  height: 150px !important;
+  object-fit: cover;
+  display: block;
+}
+body.front .ob-labels { padding: 0.75rem 0.85rem; font-family: var(--am-font-body); }
+body.front .ob-labels strong {
+  display: block;
+  font-size: 0.92rem;
+  line-height: 1.3;
+  color: var(--am-ink);
+  margin-bottom: 0.3rem;
+}
+body.front .ob-labels br { display: none; }
+body.front .ob-labels .date-display-single { color: var(--am-muted); font-size: 0.8rem; }
+body.front .block-views-media-gallery-block .more-link { text-align: right; margin-top: 0.75rem; }
+body.front .block-views-media-gallery-block .more-link a { color: var(--am-primary); font-weight: 600; text-decoration: none; }
+
+/* ---------- Announcements ---------- */
+body.front .block-views-home-announcements-block-1 .views-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--am-surface);
+  border: 1px solid var(--am-line);
+  border-radius: var(--am-radius-sm);
+  overflow: hidden;
+  box-shadow: var(--am-shadow-sm);
+}
+body.front .block-views-home-announcements-block-1 .views-table td {
+  padding: 1rem 1.1rem;
+  border-bottom: 1px solid var(--am-line);
+}
+body.front .block-views-home-announcements-block-1 .views-table tr:last-child td { border-bottom: 0; }
+body.front .block-views-home-announcements-block-1 .views-field-title > a {
+  font-family: var(--am-font-head);
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--am-primary);
+  text-decoration: none;
+}
+body.front .block-views-home-announcements-block-1 .views-field-title > a:hover { text-decoration: underline; }
+body.front .block-views-home-announcements-block-1 .views-field-title p {
+  margin: 0.35rem 0 0;
+  color: var(--am-ink-soft);
+  font-size: 0.92rem;
+}
+body.front .block-views-home-announcements-block-1 .feed-icon { margin-top: 0.75rem; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  /* Stack the two columns: observations then announcements */
+  body.front .am-sidebar { grid-template-columns: 1fr; }
+  body.front .am-sidebar > .block-views-advisory-views-block-4,
+  body.front .am-sidebar > .block-views-media-gallery-block,
+  body.front .am-sidebar > .block-views-home-announcements-block-1 { grid-column: 1; }
+  body.front .am-sidebar > .block { margin-bottom: 0.5rem; }
+}
+@media (max-width: 860px) {
+  body.front .block-views-media-gallery-block .views-view-responsive-grid { grid-template-columns: repeat(2, 1fr); }
+  body.front #avalanche-danger-map { height: 340px !important; }
+}
+@media (max-width: 520px) {
+  body.front .danger-scale-rating-item { font-size: 0.7rem; padding: 0.55rem 0.15rem; }
+  body.front .block-views-media-gallery-block .views-view-responsive-grid { grid-template-columns: 1fr 1fr; }
+}

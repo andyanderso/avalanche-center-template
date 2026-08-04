@@ -1,0 +1,66 @@
+/* Avalanche Glossary Styles */
+.glossary-alphabet {
+  margin: 1em 0 2em;
+  padding: 0.75em 1em;
+  background: #f5f5f5;
+  border-radius: 4px;
+  font-size: 1.1em;
+  letter-spacing: 0.05em;
+}
+.glossary-alphabet a.glossary-letter-link {
+  font-weight: bold;
+  color: #333;
+  text-decoration: none;
+  padding: 2px 4px;
+}
+.glossary-alphabet a.glossary-letter-link:hover {
+  color: #cc0000;
+  text-decoration: underline;
+}
+.glossary-letter-inactive {
+  color: #aaa;
+}
+.glossary-letter-group {
+  margin-bottom: 2em;
+}
+h2.glossary-letter {
+  font-size: 1.6em;
+  color: #333;
+  border-bottom: 2px solid #cc0000;
+  padding-bottom: 0.25em;
+  margin-bottom: 0.75em;
+}
+dl.glossary-terms {
+  margin: 0;
+}
+dt.glossary-term {
+  font-weight: bold;
+  font-size: 1.05em;
+  margin-top: 0.75em;
+}
+dt.glossary-term a {
+  color: #222;
+  text-decoration: none;
+}
+dt.glossary-term a:hover {
+  color: #cc0000;
+  text-decoration: underline;
+}
+dd.glossary-definition {
+  margin-left: 1.5em;
+  color: #444;
+}
+dd.glossary-definition p {
+  margin: 0.25em 0;
+}
+
+/* Glossary terms auto-linked in content by the "Mark glossary terms" filter. */
+.lexicon-term {
+  border-bottom: 1px dotted currentColor;
+  text-decoration: none;
+  cursor: help;
+}
+.lexicon-term:hover,
+.lexicon-term:focus {
+  border-bottom-style: solid;
+}
