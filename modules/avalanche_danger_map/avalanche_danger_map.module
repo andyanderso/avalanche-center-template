@@ -155,6 +155,23 @@ function avalanche_danger_map_views_pre_render(&$view) {
   if (in_array($view->name, array('observations', 'incidents'), TRUE)) {
     avalanche_danger_map_enable_region_outlines();
   }
+
+  // "Most current forecast" front-page block (advisory_views:block_4). For a
+  // multi-zone center, one advisory isn't "the" forecast - retitle the block
+  // and turn its link into an "All Avalanche Forecasts" button pointing at the
+  // all-zones forecast page. Single-zone centers keep the original date link.
+  if ($view->name === 'advisory_views' && $view->current_display === 'block_4') {
+    $zones = avalanche_danger_map_get_zone_summaries();
+    if (count($zones) > 1) {
+      $view->set_title(t('Get The Most Recent Avalanche Forecasts:'));
+      if (isset($view->field['created'])) {
+        $view->field['created']->options['alter']['alter_text'] = 1;
+        $view->field['created']->options['alter']['text'] = t('All Avalanche Forecasts');
+        $view->field['created']->options['alter']['make_link'] = 1;
+        $view->field['created']->options['alter']['path'] = 'forecast';
+      }
+    }
+  }
 }
 
 /**

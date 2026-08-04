@@ -1259,3 +1259,9 @@ msgstr "5 ft"
 
 msgid "Record on the form as:"
 msgstr "Registrar en el formulario como:"
+
+msgid "Get The Most Recent Avalanche Forecasts:"
+msgstr "Pronósticos de Avalancha Más Recientes:"
+
+msgid "All Avalanche Forecasts"
+msgstr "Todos los Pronósticos de Avalancha"
