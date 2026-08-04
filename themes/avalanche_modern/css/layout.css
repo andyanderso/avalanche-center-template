@@ -525,9 +525,13 @@ html.admin-bar .am-header .tb-megamenu .nav-collapse {
     position: absolute;
     top: 100%;
     /* Anchored to .am-logo-row (full-bleed offset parent), so left/right:0
-       spans the whole viewport edge-to-edge — no viewport-unit math. */
+       spans the whole viewport edge-to-edge — no viewport-unit math.
+       width:100% is explicit because Firefox shrink-wraps this absolutely-
+       positioned Bootstrap .nav-collapse to its content (~1 char) when only
+       left/right:0 are set; Chrome stretches it either way. */
     left: 0;
     right: 0;
+    width: 100%;
     background: #fff;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
     z-index: 1200;
