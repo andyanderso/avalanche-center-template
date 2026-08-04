@@ -648,6 +648,66 @@ function avalanche_danger_map_travel_advice($rating) {
 }
 
 /**
+ * Region-adaptive timezone abbreviation for a timestamp.
+ *
+ * PHP's 'T' date token returns a real abbreviation for most zones (PDT, CET,
+ * IST, NZST, ...) so an install in those regions "just works". But the IANA
+ * data gives some zones - chiefly South America - no letter code, so 'T'
+ * returns a bare numeric offset ("-04"). For those we substitute the common
+ * regional abbreviation, keyed by timezone NAME (offsets are ambiguous: "-04"
+ * is CLT, AST, BOT, VET, ... depending on where you are) and DST-aware. Any
+ * zone PHP already abbreviates is returned unchanged, so no per-install config
+ * is needed - it adapts to whatever region the profile is installed in.
+ *
+ * @param int|null $timestamp
+ *   Unix timestamp; defaults to now.
+ * @param string|null $tz
+ *   Timezone name; defaults to the active (site/user) timezone - pass the same
+ *   $tz used to format the displayed time so the abbreviation matches.
+ *
+ * @return string
+ *   Abbreviation (e.g. "PST", "CLT"), or '' on failure.
+ */
+function avalanche_danger_map_tz_abbrev($timestamp = NULL, $tz = NULL) {
+  if ($timestamp === NULL) {
+    $timestamp = REQUEST_TIME;
+  }
+  if ($tz === NULL) {
+    $tz = date_default_timezone_get();
+  }
+  try {
+    $dt = new DateTime('@' . (int) $timestamp);
+    $dt->setTimezone(new DateTimeZone($tz));
+  }
+  catch (Exception $e) {
+    return '';
+  }
+  $abbr = $dt->format('T');
+  // Only override when PHP fell back to a bare numeric offset (+HH / -HH).
+  if (preg_match('/^[+-]\d/', $abbr)) {
+    // Timezone name (or America/Argentina/* prefix) => array(standard, dst).
+    $map = array(
+      'America/Santiago'     => array('CLT', 'CLST'),
+      'America/Punta_Arenas' => array('CLT', 'CLST'),
+      'America/Argentina'    => array('ART', 'ART'),
+      'America/La_Paz'       => array('BOT', 'BOT'),
+      'America/Lima'         => array('PET', 'PET'),
+      'America/Bogota'       => array('COT', 'COT'),
+      'America/Guayaquil'    => array('ECT', 'ECT'),
+      'America/Caracas'      => array('VET', 'VET'),
+    );
+    $is_dst = (int) $dt->format('I');
+    foreach ($map as $zone => $abbrs) {
+      if ($tz === $zone || strpos($tz, $zone . '/') === 0) {
+        $abbr = $is_dst ? $abbrs[1] : $abbrs[0];
+        break;
+      }
+    }
+  }
+  return $abbr;
+}
+
+/**
  * Implements hook_block_info().
  */
 function avalanche_danger_map_block_info() {
