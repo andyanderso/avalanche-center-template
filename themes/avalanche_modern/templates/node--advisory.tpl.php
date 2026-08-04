@@ -31,13 +31,20 @@ $band_elev = array(
 $size_cat = function ($d) { $d = (int) $d; return $d >= 4 ? 4 : $d; };
 $size_pos = function ($d) use ($size_cat) { return (($size_cat($d) - 1) / 3) * 100; };
 
-$danger_scale = array(
-  1 => array(t('Low'), 'rgb(80, 184, 72)'),
-  2 => array(t('Moderate'), 'rgb(255, 242, 0)'),
-  3 => array(t('Considerable'), 'rgb(247, 148, 30)'),
-  4 => array(t('High'), 'rgb(237, 28, 36)'),
-  5 => array(t('Extreme'), 'rgb(35, 31, 32)'),
-);
+// Build the inline "Danger Scale" legend from the active preset (NAC/SAC +
+// config overrides) so it matches the front-page map and the elevation pyramid,
+// rather than hardcoding NAC colors/labels. Falls back to the theme's NAC
+// helpers if the danger-map module is disabled.
+$danger_preset = function_exists('avalanche_danger_map_get_preset') ? avalanche_danger_map_get_preset() : NULL;
+$danger_colors = (!empty($danger_preset['colors'])) ? $danger_preset['colors'] : avalanche_modern_danger_colors();
+$danger_labels = (!empty($danger_preset['labels'])) ? $danger_preset['labels'] : avalanche_modern_danger_labels();
+$danger_scale = array();
+foreach (array(1, 2, 3, 4, 5) as $_lvl) {
+  $danger_scale[$_lvl] = array(
+    isset($danger_labels[$_lvl]) ? $danger_labels[$_lvl] : '',
+    isset($danger_colors[$_lvl]) ? $danger_colors[$_lvl] : '',
+  );
+}
 
 // PHP 8 safety: $classes/$attributes can arrive as arrays or pre-rendered
 // strings depending on caller; normalize before use in the <article> tag.
@@ -127,12 +134,15 @@ $article_attributes = is_array($attributes) ? backdrop_attributes($attributes) :
                   <?php endforeach; ?>
                 </div>
               </div>
+              <?php $danger_legend_url = (!empty($danger_preset['legend_url'])) ? $danger_preset['legend_url'] : ''; ?>
+              <?php if ($danger_legend_url): ?>
               <div class="nac-dangerScale-expand">
-                <a class="nac-btn nac-btn-primary" href="https://avalanche.org/avalanche-encyclopedia/danger-scale/" target="_blank" rel="noopener">
+                <a class="nac-btn nac-btn-primary" href="<?php print check_url($danger_legend_url); ?>" target="_blank" rel="noopener">
                   <svg class="nac-icon" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"></path></svg>
                   <?php print t('Danger Scale'); ?>
                 </a>
               </div>
+              <?php endif; ?>
             </div>
           </div>
 
@@ -180,9 +190,9 @@ $article_attributes = is_array($attributes) ? backdrop_attributes($attributes) :
                             <div class="nac-elevationMarker nac-elevationMarkerUpper"></div>
                             <div class="nac-elevationMarker nac-elevationMarkerMiddle"></div>
                             <div class="nac-elevationMarker nac-elevationMarkerLower"></div>
-                            <div class="nac-elevationLabel nac-elevationLabelUpper"><?php print t('Above Treeline'); ?></div>
-                            <div class="nac-elevationLabel nac-elevationLabelMiddle"><?php print t('Near Treeline'); ?></div>
-                            <div class="nac-elevationLabel nac-elevationLabelLower"><?php print t('Below Treeline'); ?></div>
+                            <div class="nac-elevationLabel nac-elevationLabelUpper"><?php print check_plain($band_elev['upper']); ?></div>
+                            <div class="nac-elevationLabel nac-elevationLabelMiddle"><?php print check_plain($band_elev['mid']); ?></div>
+                            <div class="nac-elevationLabel nac-elevationLabelLower"><?php print check_plain($band_elev['lower']); ?></div>
                           </div>
                           <?php print avalanche_modern_rose_svg($p['rose']); ?>
                         </div>

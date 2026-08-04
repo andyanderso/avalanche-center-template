@@ -8,6 +8,16 @@
  * North American Public Avalanche Danger Scale colors (level 0-5).
  */
 function avalanche_modern_danger_colors() {
+  // Honor the active danger-scale preset (NAC/SAC + config overrides) so the
+  // forecast node's legend and elevation pyramid match the front-page map
+  // instead of always rendering NAC colors. Falls back to NAC if the danger-map
+  // module is disabled.
+  if (function_exists('avalanche_danger_map_get_preset')) {
+    $preset = avalanche_danger_map_get_preset();
+    if (!empty($preset['colors']) && is_array($preset['colors'])) {
+      return $preset['colors'];
+    }
+  }
   return array(
     0 => '#939598',
     1 => '#50B848',

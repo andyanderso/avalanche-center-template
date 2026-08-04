@@ -16,7 +16,6 @@ regions[highlighted]         = Highlighted
 regions[megamenu]            = Megamenu
 regions[featured]            = Featured
 regions[content]             = Content
-regions[side_decor]          = Side Decor
 regions[sidebar_first]       = Sidebar First
 regions[sidebar_second]      = Sidebar Second
 regions[triptych_first]      = Triptych First

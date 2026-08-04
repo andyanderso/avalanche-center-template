@@ -842,7 +842,10 @@ function avalanche_danger_map_get_data() {
 
     $result[] = array(
       'tid' => $region->tid,
-      'name' => $region->name,
+      // Region names are stored unfiltered (forecasters can edit region terms)
+      // and get concatenated into the Leaflet popup HTML client-side, so escape
+      // here at the boundary to prevent stored XSS.
+      'name' => check_plain($region->name),
       'geojson' => $geojson,
       'danger_rating' => $danger_rating,
       'color' => isset($colors[$danger_rating]) ? $colors[$danger_rating] : $colors[0],
@@ -854,7 +857,8 @@ function avalanche_danger_map_get_data() {
       'label' => isset($labels[$danger_rating]) ? $labels[$danger_rating] : $labels[0],
       'icon_url' => avalanche_danger_map_icon_url($danger_rating),
       'travel_advice' => $region_travel_advice,
-      'advisory_url' => $advisory_url,
+      // Escaped: this is concatenated into an href in the popup HTML client-side.
+      'advisory_url' => check_url($advisory_url),
       'expired' => !empty($advisory_info['expired']),
     );
   }

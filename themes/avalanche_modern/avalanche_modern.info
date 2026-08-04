@@ -26,7 +26,6 @@ regions[megamenu] = Megamenu
 
 regions[featured] = Featured
 regions[content] = Content
-regions[side_decor] = Side decor
 regions[sidebar_first] = Sidebar first
 regions[sidebar_second] = Sidebar second
 
