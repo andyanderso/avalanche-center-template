@@ -1,0 +1,33 @@
+{
+  // Backdrop/Drupal use non-standard extensions for PHP files. Map them so Zed
+  // highlights, folds, and runs the PHP language server on them.
+  "file_types": {
+    "PHP": ["*.module", "*.install", "*.inc", "*.profile", "*.theme", "*.engine", "*.test"]
+  },
+
+  // Backdrop coding standard: 2-space indent, spaces (not tabs). Auto-format is
+  // left off so the PHP formatter's style doesn't fight the project standard;
+  // turn it on later if you wire up php-cs-fixer with a Backdrop ruleset.
+  "languages": {
+    "PHP": {
+      "tab_size": 2,
+      "hard_tabs": false,
+      "format_on_save": "off"
+    }
+  },
+
+  // Keep the file finder (cmd-P) and project search focused on our code, not
+  // vendored/minified/build noise.
+  "file_scan_exclusions": [
+    "**/.git",
+    "**/.svn",
+    "**/.hg",
+    "**/CVS",
+    "**/.DS_Store",
+    "**/node_modules",
+    "**/*.min.js",
+    "**/*.min.css",
+    "**/*.map",
+    "**/dist"
+  ]
+}

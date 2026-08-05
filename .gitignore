@@ -16,3 +16,6 @@ Thumbs.db
 
 # --- Session scratch (never commit) ---
 chat-*.txt
+
+# Symlinked Backdrop core for local IDE/LSP resolution only — not part of the profile
+/core
